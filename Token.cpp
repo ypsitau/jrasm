@@ -10,6 +10,7 @@ String Token::ToString() const
 		{ TYPE_White,			"Wh"	},
 		{ TYPE_Number,			"Num"	},
 		{ TYPE_Symbol,			"Sym"	},
+		{ TYPE_Colon,			":"		},
 		{ TYPE_Comma,			","		},
 		{ TYPE_Plus,			"+"		},
 		{ TYPE_Minus,			"-"		},

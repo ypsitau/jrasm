@@ -29,9 +29,15 @@ bool Parser::FeedToken(const Token &token)
 	::printf("%s\n", token.ToString().c_str());
 	switch (_stat) {
 	case STAT_LineTop: {
+		if (token.IsType(Token::TYPE_Symbol)) {
+			_stat = STAT_Label;
+		} else if (token.IsType(Token::TYPE_White)) {
+			_stat = STAT_Instruction;
+		}
 		break;
 	}
 	case STAT_Label: {
+		
 		break;
 	}
 	case STAT_Instruction: {

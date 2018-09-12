@@ -43,6 +43,8 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_HexNumber;
 		} else if (ch == ';') {
 			_stat = STAT_Comment;
+		} else if (ch == ':') {
+			rtn = CompleteToken(Token::TYPE_Colon);
 		} else if (ch == ',') {
 			rtn = CompleteToken(Token::TYPE_Comma);
 		} else if (ch == '+') {

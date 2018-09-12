@@ -14,6 +14,7 @@ public:
 		TYPE_White,
 		TYPE_Number,
 		TYPE_Symbol,
+		TYPE_Colon,
 		TYPE_Comma,
 		TYPE_Plus,
 		TYPE_Minus,
@@ -35,6 +36,7 @@ private:
 	bool _validStrFlag;
 public:
 	inline Token() : _type(TYPE_None), _num(0), _validStrFlag(false) {}
+	inline bool IsType(Type type) const { return _type == type; }
 	inline void Set(Type type) {
 		_type = type;
 		_validStrFlag = false;
