@@ -4,7 +4,7 @@
 #ifndef __TOKENIZER_H__
 #define __TOKENIZER_H__
 
-#include "Common.h"
+#include "Token.h"
 
 class Tokenizer {
 public:

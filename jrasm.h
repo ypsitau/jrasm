@@ -4,6 +4,6 @@
 #ifndef __JRASM_H__
 #define __JRASM_H__
 
-#include "Common.h"
+#include "Tokenizer.h"
 
 #endif
