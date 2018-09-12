@@ -293,10 +293,15 @@ bool Parse(const char *fileName)
 
 int main(int argc, char *argv[])
 {
+#if 0
 	if (argc < 2) {
 		::fprintf(stderr, "usage: jasm file");
 		::exit(1);
 	}
 	::Parse(argv[1]);
+#endif
+	FILE *fp = ::fopen("test.cjr", "wb");
+	CJRFormat::Write(fp, "hello", 0x2000, (const UInt8 *)"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f", 16);
+	::fclose(fp);
 	return 0;
 }

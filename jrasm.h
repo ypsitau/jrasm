@@ -6,5 +6,6 @@
 
 #include "MmlParser.h"
 #include "Tokenizer.h"
+#include "CJRFormat.h"
 
 #endif
