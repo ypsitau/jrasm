@@ -4,6 +4,7 @@
 #ifndef __JRASM_H__
 #define __JRASM_H__
 
+#include "MmlParser.h"
 #include "Tokenizer.h"
 
 #endif
