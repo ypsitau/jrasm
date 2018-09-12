@@ -3,12 +3,21 @@
 //=============================================================================
 #include "jrasm.h"
 
-class ListenerEx : public Tokenizer::Listener {
+class Parser : public Tokenizer::Listener {
+private:
+	Tokenizer _tokenizer;
 public:
+	Parser();
+	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
+	inline const char *GetErrMsg() const { return _tokenizer.GetErrMsg(); }
 	virtual bool FeedToken(const Token &token);
 };
 
-bool ListenerEx::FeedToken(const Token &token)
+Parser::Parser() : _tokenizer(this)
+{
+}
+
+bool Parser::FeedToken(const Token &token)
 {
 	::printf("%s\n", token.ToString().c_str());
 	return true;
@@ -18,13 +27,12 @@ bool Parse(const char *fileName)
 {
 	FILE *fp;
 	fp = ::fopen(fileName, "rt");
-	ListenerEx listener;
-	Tokenizer tokenizer(&listener);
+	Parser parser;
 	for (;;) {
 		int chRaw = ::fgetc(fp);
 		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
-		if (!tokenizer.FeedChar(ch)) {
-			::fprintf(stderr, "%s\n", tokenizer.GetErrMsg());
+		if (!parser.FeedChar(ch)) {
+			::fprintf(stderr, "%s\n", parser.GetErrMsg());
 		}
 		if (ch == '\0') break;
 	}
