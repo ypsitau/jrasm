@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string>
+#include <deque>
 
 typedef std::string String;
 typedef int8_t		Int8;		// signed 8bit
@@ -21,28 +22,18 @@ typedef uint64_t	UInt64;		// unsigned 64bit
 
 #define ArraySizeOf(x) (sizeof(x) / sizeof(x[0]))
 
-#define DeclarePushback(T, n) \
-T __pushbackBuff[n];  \
-int __idxPushbackStore; \
-int __idxPushbackLoad;
-
-#define InitializePushback() \
-__idxPushbackStore = 0; \
-__idxPushbackLoad = 0
+#define DeclarePushback(T) \
+std::deque<T> __pushbackDeque;
 
 #define BeginPushbackRegion(var) \
-__pushbackBuff[__idxPushbackStore++] = var; \
-if (__idxPushbackStore >= ArraySizeOf(__pushbackBuff)) { __idxPushbackStore = 0; }  \
-while (__idxPushbackLoad != __idxPushbackStore) { \
-var = __pushbackBuff[__idxPushbackLoad++]; \
-if (__idxPushbackLoad >= ArraySizeOf(__pushbackBuff)) { __idxPushbackLoad = 0; }
+__pushbackDeque.push_back(var); \
+while (!__pushbackDeque.empty()) { \
+var = __pushbackDeque.front(); __pushbackDeque.pop_front()
 
 #define EndPushbackRegion() \
 }
 
-#define Pushback(value) do { \
-	__pushbackBuff[__idxPushbackStore++] = (value); \
-	if (__idxPushbackStore >= ArraySizeOf(__pushbackBuff)) { __idxPushbackStore = 0; }  \
-} while (0)
+#define Pushback(value) \
+__pushbackDeque.push_back(value);
 
 #endif

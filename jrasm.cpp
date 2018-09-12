@@ -102,7 +102,7 @@ private:
 	UInt16 _num;
 	String _str;
 	Token _token;
-	DeclarePushback(char, 8);
+	DeclarePushback(char);
 public:
 	Tokenizer();
 	Result FeedChar(char ch);
@@ -119,14 +119,13 @@ public:
 
 Tokenizer::Tokenizer() : _stat(STAT_LineTop), _num(0)
 {
-	InitializePushback();
 }
 
 Tokenizer::Result Tokenizer::FeedChar(char ch)
 {
 	Result result = RESULT_None;
 	BeginPushbackRegion(ch);
-	//::printf("%c .. %d\n", ch, _stat);
+	::printf("%c .. %d\n", ch, _stat);
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (IsEOF(ch) || IsEOL(ch)) {
