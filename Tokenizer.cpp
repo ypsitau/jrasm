@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------
 // Tokenizer
 //-----------------------------------------------------------------------------
-Tokenizer::Tokenizer(Listener *pListener) : _stat(STAT_LineTop), _pListener(pListener), _num(0)
+Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
+	_stat(STAT_LineTop), _pListener(pListener), _fileNameSrc(fileNameSrc), _num(0), _nLines(0)
 {
 }
 
@@ -26,7 +27,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_Neutral: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			rtn = CompleteToken(Token::TYPE_NewLine);
+			rtn = CompleteToken(Token::TYPE_EOL);
 			_stat = STAT_LineTop;
 		} else if (IsWhite(ch)) {
 			_stat = STAT_White;
@@ -68,9 +69,9 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = CompleteToken(Token::TYPE_ParenthesisR);
 		} else {
 			if (::isprint(ch)) {
-				FormatErrMsg("invalid character: %c", ch);
+				SetErrMsg("invalid character: %c", ch);
 			} else {
-				FormatErrMsg("invalid character: 0x%02x", ch);
+				SetErrMsg("invalid character: 0x%02x", ch);
 			}
 			return false;
 		}
@@ -88,7 +89,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_Comment: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			rtn = CompleteToken(Token::TYPE_NewLine);
+			rtn = CompleteToken(Token::TYPE_EOL);
 			_stat = STAT_LineTop;
 		} else {
 			// nothing to do
@@ -135,7 +136,8 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	}
 	EndPushbackRegion();
-	return true;
+	if (IsEOL(ch)) _nLines++;
+	return rtn;
 }
 
 bool Tokenizer::CompleteToken(Token::Type type)
@@ -156,11 +158,14 @@ bool Tokenizer::CompleteToken(Token::Type type, const String &str, UInt32 num)
 	return _pListener->FeedToken(_token);
 }
 
-void Tokenizer::FormatErrMsg(const char *format, ...)
+void Tokenizer::SetErrMsg(const char *format, ...)
 {
 	char buff[256];
 	va_list ap;
+	_errMsg = _fileNameSrc;
+	::sprintf(buff, ":%d ", _nLines + 1);
+	_errMsg += buff;
 	va_start(ap, format);
 	::vsprintf(buff, format, ap);
-	_errMsg = buff;
+	_errMsg += buff;
 }

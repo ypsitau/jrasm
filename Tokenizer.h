@@ -22,21 +22,23 @@ public:
 		STAT_Symbol,
 	};
 private:
-	Listener *_pListener;
-	String _errMsg;
 	Stat _stat;
+	Listener *_pListener;
+	String _fileNameSrc;
+	String _errMsg;
 	UInt16 _num;
 	String _str;
 	Token _token;
+	int _nLines;
 public:
-	Tokenizer(Listener *pListener);
+	Tokenizer(Listener *pListener, const String &fileNameSrc);
 	bool FeedChar(char ch);
+	void SetErrMsg(const char *format, ...);
 	inline const char *GetErrMsg() const { return _errMsg.c_str(); }
 private:
 	bool CompleteToken(Token::Type type);
 	bool CompleteToken(Token::Type type, const String &str);
 	bool CompleteToken(Token::Type type, const String &str, UInt32 num);
-	void FormatErrMsg(const char *format, ...);
 	inline static bool IsEOF(char ch) { return ch == '\0'; }
 	inline static bool IsEOL(char ch) { return ch == '\n'; }
 	inline static bool IsWhite(char ch) { return ch == ' ' || ch == '\t'; }

@@ -10,7 +10,7 @@ class Token {
 public:
 	enum Type {
 		TYPE_None,
-		TYPE_NewLine,
+		TYPE_EOL,
 		TYPE_White,
 		TYPE_Number,
 		TYPE_Symbol,
@@ -51,6 +51,8 @@ public:
 	}
 	inline UInt32 GetNumber() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
+	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
+	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
 	String ToString() const;
 };
 
