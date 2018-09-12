@@ -2,4 +2,4 @@
 	gcc -c $<
 
 jrasm: jrasm.o
-	gcc -o jrasm $+
+	gcc -o jrasm $+ -lc++
