@@ -5,7 +5,14 @@
 
 class Parser : public Tokenizer::Listener {
 private:
+	enum Stat {
+		STAT_LineTop,
+		STAT_Label,
+		STAT_Instruction,
+	};
+private:
 	Tokenizer _tokenizer;
+	Stat _stat;
 public:
 	Parser();
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
@@ -13,13 +20,25 @@ public:
 	virtual bool FeedToken(const Token &token);
 };
 
-Parser::Parser() : _tokenizer(this)
+Parser::Parser() : _tokenizer(this), _stat(STAT_LineTop)
 {
 }
 
 bool Parser::FeedToken(const Token &token)
 {
 	::printf("%s\n", token.ToString().c_str());
+	switch (_stat) {
+	case STAT_LineTop: {
+		break;
+	}
+	case STAT_Label: {
+		break;
+	}
+	case STAT_Instruction: {
+		break;
+	}
+	}
+		
 	return true;
 }
 
