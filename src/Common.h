@@ -61,6 +61,8 @@ __pushbackFlag = true
 // Type definitions
 //-----------------------------------------------------------------------------
 typedef std::string String;
+typedef String Binary;
+
 typedef int8_t		Int8;		// signed 8bit
 typedef int16_t		Int16;		// signed 16bit
 typedef int32_t		Int32;		// signed 32bit

@@ -1,7 +1,7 @@
 .cpp.o:
 	gcc -std=c++11 -c $<
 
-jrasm: jrasm.o Common.o Token.o Tokenizer.o MmlParser.o CJRFormat.o
+jrasm: jrasm.o Common.o Token.o Tokenizer.o MmlParser.o CJRFormat.o InstInfo.o Element.o
 	gcc -o jrasm $+ -lc++
 
 clean:

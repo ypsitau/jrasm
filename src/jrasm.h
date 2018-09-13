@@ -7,5 +7,7 @@
 #include "MmlParser.h"
 #include "Tokenizer.h"
 #include "CJRFormat.h"
+#include "Element.h"
+#include "InstInfo.h"
 
 #endif
