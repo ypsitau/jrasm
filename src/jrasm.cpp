@@ -58,6 +58,7 @@ private:
 public:
 	InstInfo(const String &symbol);
 public:
+	//bool ApplyRule();
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline void AddRule(Rule *pRule) { _ruleOwner.push_back(pRule); }
 	static InstInfo *Syntax_ACC(const String &symbol, UInt8 codeACC);
