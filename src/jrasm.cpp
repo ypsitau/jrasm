@@ -5,7 +5,7 @@
 #include "jrasm.h"
 
 class ElementList;
-
+class ElementOwner;
 typedef String Binary;
 
 //-----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ typedef String Binary;
 class InstInfo {
 public:
 	class Rule {
-	private:
+	protected:
 		UInt8 _code;
 	public:
 		inline Rule(UInt8 code) : _code(code) {}
@@ -25,15 +25,21 @@ public:
 	private:
 		char _chAcc;
 	public:
+		enum { bytes = 1 };
+	public:
 		inline Rule_ACC(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_REL : public Rule {
 	public:
+		enum { bytes = 2 };
+	public:
 		inline Rule_REL(UInt8 code) : Rule(code) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_INH : public Rule {
+	public:
+		enum { bytes = 1 };
 	public:
 		inline Rule_INH(UInt8 code) : Rule(code) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
@@ -42,12 +48,16 @@ public:
 	private:
 		char _chAcc;
 	public:
+		enum { bytes = 2 };
+	public:
 		inline Rule_IMM(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_DIR : public Rule {
 	private:
 		char _chAcc;
+	public:
+		enum { bytes = 2 };
 	public:
 		inline Rule_DIR(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
@@ -56,12 +66,16 @@ public:
 	private:
 		char _chAcc;
 	public:
+		enum { bytes = 2 };
+	public:
 		inline Rule_IDX(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_EXT : public Rule {
 	private:
 		char _chAcc;
+	public:
+		enum { bytes = 3 };
 	public:
 		inline Rule_EXT(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
@@ -113,6 +127,65 @@ public:
 		insert(std::make_pair(ToLower(pInstInfo->GetSymbol()), pInstInfo));
 	}
 	const InstInfo *Lookup(const char *symbol) const;
+};
+
+//-----------------------------------------------------------------------------
+// Element
+//-----------------------------------------------------------------------------
+class Element {
+public:
+	enum Type {
+		TYPE_Inst,
+		TYPE_A,
+		TYPE_B,
+		TYPE_X,
+		TYPE_Number,
+		TYPE_Symbol,
+		TYPE_String,
+		TYPE_BinOp,
+		TYPE_Bracket,
+		TYPE_Parenthesis,
+	};
+private:
+	int _cntRef;
+	Type _type;
+	std::auto_ptr<ElementOwner> _pElemChildren;
+public:
+	DeclareReferenceAccessor(Element);
+public:
+	Element(Type type);
+protected:
+	virtual ~Element();
+public:
+	bool IsType(Type type) const { return _type == type; }
+	void AddChild(Element *pElement);
+	ElementOwner &GetChildren() { return *_pElemChildren; }
+	const ElementOwner &GetChildren() const { return *_pElemChildren; }
+	//virtual bool Reduce() = 0;
+	virtual String ToString() const = 0;
+};
+
+//-----------------------------------------------------------------------------
+// ElementList
+//-----------------------------------------------------------------------------
+class ElementList : public std::vector<Element *> {
+public:
+	String ToString() const;
+	void Print() const;
+};
+
+//-----------------------------------------------------------------------------
+// ElementStack
+//-----------------------------------------------------------------------------
+typedef std::vector<Element *> ElementStack;
+
+//-----------------------------------------------------------------------------
+// ElementOwner
+//-----------------------------------------------------------------------------
+class ElementOwner : public ElementList {
+public:
+	~ElementOwner();
+	void Clear();
 };
 
 //-----------------------------------------------------------------------------
@@ -327,37 +400,88 @@ InstInfo::Rule::~Rule()
 
 size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &elemList)
 {
-	return 0;
+	if (_chAcc == '\0') {
+		// OP .. _chAcc == '\0'
+		if (elemList.size() != 0) return 0;
+	} else {
+		// OP a ... _chAcc == 'a'
+		// OP b ... _chAcc == 'b'
+		if (elemList.size() != 1) return 0;
+	}
+	buff += _code;
+	return bytes;
 }
 
 size_t InstInfo::Rule_REL::Apply(Binary &buff, const ElementList &elemList)
 {
+	// OP disp
+	if (elemList.size() != 1) return 0;
+	buff += _code;
 	return 0;
 }
 
 size_t InstInfo::Rule_INH::Apply(Binary &buff, const ElementList &elemList)
 {
-	return 0;
+	// OP
+	if (elemList.size() != 0) return 0;
+	buff += _code;
+	return bytes;
 }
 
 size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &elemList)
 {
-	return 0;
+	if (_chAcc == '\0') {
+		// OP #data8 ... _chAcc == '\0'
+		if (elemList.size() != 1) return 0;
+	} else {
+		// OP a,#data8 ... _chAcc == 'a'
+		// OP b,#data8 ... _chAcc == 'b'
+		if (elemList.size() != 2) return 0;
+	}
+	buff += _code;
+	return bytes;
 }
 
 size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &elemList)
 {
-	return 0;
+	if (_chAcc == '\0') {
+		// OP (addr8) ... _chAcc == '\0'
+		if (elemList.size() != 1) return 0;
+	} else {
+		// OP a,(addr8) ... _chAcc == 'a'
+		// OP b,(addr8) ... _chAcc == 'b'
+		if (elemList.size() != 2) return 0;
+	}
+	buff += _code;
+	return bytes;
 }
 
 size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &elemList)
 {
-	return 0;
+	if (_chAcc == '\0') {
+		// OP [x+data8] ... _chAcc == '\0'
+		if (elemList.size() != 1) return 0;
+	} else {
+		// OP a,[x+data8] ... _chAcc == 'a'
+		// OP b,[x+data8] ... _chAcc == 'b'
+		if (elemList.size() != 2) return 0;
+	}
+	buff += _code;
+	return bytes;
 }
 
 size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &elemList)
 {
-	return 0;
+	if (_chAcc == '\0') {
+		// OP [addr16] ... _chAcc == '\0'
+		if (elemList.size() != 1) return 0;
+	} else {
+		// OP a,[addr16] ... _chAcc == 'a'
+		// OP b,[addr16] ... _chAcc == 'b'
+		if (elemList.size() != 2) return 0;
+	}
+	buff += _code;
+	return bytes;
 }
 
 //-----------------------------------------------------------------------------
@@ -376,50 +500,6 @@ void InstInfo::RuleOwner::Clear()
 	clear();
 }
 
-//-----------------------------------------------------------------------------
-// Element
-//-----------------------------------------------------------------------------
-class Element {
-public:
-	enum Type {
-		TYPE_Inst,
-		TYPE_A,
-		TYPE_B,
-		TYPE_X,
-		TYPE_Number,
-		TYPE_Symbol,
-		TYPE_String,
-		TYPE_BinOp,
-		TYPE_Bracket,
-		TYPE_Parenthesis,
-	};
-private:
-	int _cntRef;
-	Type _type;
-	std::auto_ptr<ElementOwner> _pElemChildren;
-public:
-	DeclareReferenceAccessor(Element);
-public:
-	Element(Type type);
-protected:
-	virtual ~Element();
-public:
-	bool IsType(Type type) const { return _type == type; }
-	void AddChild(Element *pElement);
-	ElementOwner &GetChildren() { return *_pElemChildren; }
-	const ElementOwner &GetChildren() const { return *_pElemChildren; }
-	//virtual bool Reduce() = 0;
-	virtual String ToString() const = 0;
-};
-
-//-----------------------------------------------------------------------------
-// ElementList
-//-----------------------------------------------------------------------------
-class ElementList : public std::vector<Element *> {
-public:
-	String ToString() const;
-	void Print() const;
-};
 
 String ElementList::ToString() const
 {
@@ -437,20 +517,6 @@ void ElementList::Print() const
 		::printf("%s\n", pElement->ToString().c_str());
 	}
 }
-
-//-----------------------------------------------------------------------------
-// ElementStack
-//-----------------------------------------------------------------------------
-typedef std::vector<Element *> ElementStack;
-
-//-----------------------------------------------------------------------------
-// ElementOwner
-//-----------------------------------------------------------------------------
-class ElementOwner : public ElementList {
-public:
-	~ElementOwner();
-	void Clear();
-};
 
 //-----------------------------------------------------------------------------
 // Element
