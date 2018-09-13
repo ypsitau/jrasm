@@ -4,16 +4,62 @@
 #include "stdafx.h"
 #include "jrasm.h"
 
+class ElementList;
+
 //-----------------------------------------------------------------------------
 // InstInfo
 //-----------------------------------------------------------------------------
 class InstInfo {
+public:
+	class Rule {
+	private:
+		UInt8 _code;
+	public:
+		inline Rule(UInt8 code) : _code(code) {}
+		//virtual bool Apply(const ElementList &elemList) = 0;
+	};
+	class Rule_ACC : public Rule {
+	public:
+		inline Rule_ACC(UInt8 code) : Rule(code) {}
+	};
+	class Rule_REL : public Rule {
+	public:
+		inline Rule_REL(UInt8 code) : Rule(code) {}
+	};
+	class Rule_INH : public Rule {
+	public:
+		inline Rule_INH(UInt8 code) : Rule(code) {}
+	};
+	class Rule_IMM : public Rule {
+	public:
+		inline Rule_IMM(UInt8 code) : Rule(code) {}
+	};
+	class Rule_DIR : public Rule {
+	public:
+		inline Rule_DIR(UInt8 code) : Rule(code) {}
+	};
+	class Rule_IDX : public Rule {
+	public:
+		inline Rule_IDX(UInt8 code) : Rule(code) {}
+	};
+	class Rule_EXT : public Rule {
+	public:
+		inline Rule_EXT(UInt8 code) : Rule(code) {}
+	};
+	typedef std::vector<Rule *> RuleList;
+	class RuleOwner : public RuleList {
+	public:
+		~RuleOwner();
+		void Clear();
+	};
 private:
 	String _symbol;
+	RuleOwner _ruleOwner;
 public:
 	InstInfo(const String &symbol);
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline void AddRule(Rule *pRule) { _ruleOwner.push_back(pRule); }
 	static InstInfo *Syntax_ACC(const String &symbol, UInt8 codeACC);
 	static InstInfo *Syntax_REL(const String &symbol, UInt8 codeREL);
 	static InstInfo *Syntax_INH(const String &symbol, UInt8 codeINH);
@@ -150,30 +196,37 @@ InstInfo::InstInfo(const String &symbol) : _symbol(symbol)
 InstInfo *InstInfo::Syntax_ACC(const String &symbol, UInt8 codeACC)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_REL(const String &symbol, UInt8 codeREL)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_REL(codeREL));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_INH(const String &symbol, UInt8 codeINH)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_INH(codeINH));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A));
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
 }
 
@@ -181,6 +234,9 @@ InstInfo *InstInfo::Syntax_DIR_IDX_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
 }
 
@@ -189,6 +245,10 @@ InstInfo *InstInfo::Syntax_DIR_IDX_IMM_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
 }
 
@@ -196,6 +256,10 @@ InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
 	const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A));
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
 }
 
@@ -205,6 +269,12 @@ InstInfo *InstInfo::Syntax_AxB_DIR_IDX_EXT(
 	UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B));
 	return pInstInfo;
 }
 
@@ -214,10 +284,34 @@ InstInfo *InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT(
 	UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_A));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A));
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_B));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B));
 	return pInstInfo;
 }
 
 class ElementOwner;
+
+//-----------------------------------------------------------------------------
+// InstInfo::RuleOwner
+//-----------------------------------------------------------------------------
+InstInfo::RuleOwner::~RuleOwner()
+{
+	Clear();
+}
+
+void InstInfo::RuleOwner::Clear()
+{
+	for (auto pRule : *this) {
+		delete pRule;
+	}
+	clear();
+}
 
 //-----------------------------------------------------------------------------
 // Element
