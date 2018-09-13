@@ -92,13 +92,15 @@ public:
 	};
 private:
 	String _symbol;
+	String _syntaxDesc;
 	RuleOwner _ruleOwner;
 public:
-	InstInfo(const String &symbol);
+	InstInfo(const String &symbol, const String &syntaxDesc);
 public:
-	//bool ApplyRule();
+	bool ApplyRule(Binary &buff, const ElementList &elemList) const;
 	static const InstInfo *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline const char *GetSyntaxDesc() const { return _syntaxDesc.c_str(); }
 	inline void AddRule(Rule *pRule) { _ruleOwner.push_back(pRule); }
 	static InstInfo *Syntax_ACC(const String &symbol, UInt8 codeACC);
 	static InstInfo *Syntax_REL(const String &symbol, UInt8 codeREL);

@@ -37,6 +37,7 @@ protected:
 	virtual ~Element();
 public:
 	bool IsType(Type type) const { return _type == type; }
+	Type GetType() const { return _type; }
 	void AddChild(Element *pElement);
 	ElementOwner &GetChildren() { return *_pElemChildren; }
 	const ElementOwner &GetChildren() const { return *_pElemChildren; }
@@ -76,33 +77,7 @@ private:
 public:
 	inline Element_Inst(const String &symbol) : Element(TYPE_Inst), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	virtual String ToString() const;
-};
-
-//-----------------------------------------------------------------------------
-// Element_A
-//-----------------------------------------------------------------------------
-class Element_A : public Element {
-public:
-	inline Element_A() : Element(TYPE_A) {}
-	virtual String ToString() const;
-};
-
-//-----------------------------------------------------------------------------
-// Element_B
-//-----------------------------------------------------------------------------
-class Element_B : public Element {
-public:
-	inline Element_B() : Element(TYPE_B) {}
-	virtual String ToString() const;
-};
-
-//-----------------------------------------------------------------------------
-// Element_X
-//-----------------------------------------------------------------------------
-class Element_X : public Element {
-public:
-	inline Element_X() : Element(TYPE_X) {}
+	inline const ElementOwner &GetOperands() const { return GetChildren(); }
 	virtual String ToString() const;
 };
 

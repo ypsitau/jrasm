@@ -76,15 +76,7 @@ bool Parser::FeedToken(const Token &token)
 		} else if (token.IsType(Token::TYPE_Comma)) {
 			
 		} else if (token.IsType(Token::TYPE_Symbol)) {
-			if (token.MatchICase("a")) {
-				_elemStack.back()->AddChild(new Element_A());
-			} else if (token.MatchICase("b")) {
-				_elemStack.back()->AddChild(new Element_B());
-			} else if (token.MatchICase("x")) {
-				_elemStack.back()->AddChild(new Element_X());
-			} else {
-				_elemStack.back()->AddChild(new Element_Symbol(token.GetString()));
-			}
+			_elemStack.back()->AddChild(new Element_Symbol(token.GetString()));
 		} else if (token.IsType(Token::TYPE_Number)) {
 			_elemStack.back()->AddChild(new Element_Number(token.GetNumber()));
 		} else if (token.IsType(Token::TYPE_Plus)) {
@@ -141,12 +133,22 @@ bool Parse(const char *fileName)
 	}
 	::fclose(fp);
 	const ElementList &elemList = parser.GetInstructions();
-	elemList.Print();
+	//elemList.Print();
 	for (auto pElem : elemList) {
 		if (!pElem->IsType(Element::TYPE_Inst)) continue;
 		const Element_Inst *pElemEx = dynamic_cast<const Element_Inst *>(pElem);
-		
-
+		const InstInfo *pInstInfo = InstInfo::Lookup(pElemEx->GetSymbol());
+		if (pInstInfo == nullptr) {
+			::printf("unknown instruction: %s\n", pElemEx->GetSymbol());
+		} else {
+			::printf("%s .. ", pElemEx->ToString().c_str());
+		}
+		Binary buff;
+		pInstInfo->ApplyRule(buff, pElemEx->GetOperands());
+		for (auto data : buff) {
+			::printf(" %02x", static_cast<UInt8>(data));
+		}
+		:: printf("\n");
 	}
 	return true;
 }

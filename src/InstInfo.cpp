@@ -8,7 +8,8 @@
 //-----------------------------------------------------------------------------
 InstInfoMap *InstInfo::_pInstInfoMap = nullptr;
 
-InstInfo::InstInfo(const String &symbol) : _symbol(symbol)
+InstInfo::InstInfo(const String &symbol, const String &syntaxDesc) :
+	_symbol(symbol), _syntaxDesc(syntaxDesc)
 {
 }
 
@@ -21,30 +22,40 @@ const InstInfo *InstInfo::Lookup(const char *symbol)
 	return _pInstInfoMap->Lookup(symbol);
 }
 
+bool InstInfo::ApplyRule(Binary &buff, const ElementList &operands) const
+{
+	for (auto pRule : _ruleOwner) {
+		size_t bytes = pRule->Apply(buff, operands);
+		if (bytes != 0) return true;
+	}
+	// error
+	return false;
+}
+
 InstInfo *InstInfo::Syntax_ACC(const String &symbol, UInt8 codeACC)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "ACC");
 	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_REL(const String &symbol, UInt8 codeREL)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "REL");
 	pInstInfo->AddRule(new InstInfo::Rule_REL(codeREL));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_INH(const String &symbol, UInt8 codeINH)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "INH");
 	pInstInfo->AddRule(new InstInfo::Rule_INH(codeINH));
 	return pInstInfo;
 }
 
 InstInfo *InstInfo::Syntax_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "ACC_ACC");
 	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A));
 	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B));
 	return pInstInfo;
@@ -52,7 +63,7 @@ InstInfo *InstInfo::Syntax_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 
 
 InstInfo *InstInfo::Syntax_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "IDX_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
 	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
@@ -61,7 +72,7 @@ InstInfo *InstInfo::Syntax_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 co
 InstInfo *InstInfo::Syntax_DIR_IDX_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "DIR_IDX_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
 	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
@@ -72,7 +83,7 @@ InstInfo *InstInfo::Syntax_DIR_IDX_EXT(
 InstInfo *InstInfo::Syntax_DIR_IDX_IMM_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "DIR_IDX_IMM_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
 	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM));
@@ -83,7 +94,7 @@ InstInfo *InstInfo::Syntax_DIR_IDX_IMM_EXT(
 InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
 	const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "ACC_ACC_IDX_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A, "a"));
 	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B, "b"));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
@@ -94,7 +105,7 @@ InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
 InstInfo *InstInfo::Syntax_IMM_DIR_IDX_EXT(
 	const String &symbol, UInt8 codeIMM, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "IMM_DIR_IDX_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM));
 	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
@@ -107,7 +118,7 @@ InstInfo *InstInfo::Syntax_AxB_DIR_IDX_EXT(
 	UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
 	UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "AxB_DIR_IDX_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, "a"));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, "a"));
 	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, "a"));
@@ -122,7 +133,7 @@ InstInfo *InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT(
 	UInt8 codeIMM_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
 	UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
-	InstInfo *pInstInfo = new InstInfo(symbol);
+	InstInfo *pInstInfo = new InstInfo(symbol, "AxB_IMM_DIR_IDX_EXT");
 	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_A, "a"));
 	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, "a"));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, "a"));
@@ -141,16 +152,16 @@ InstInfo::Rule::~Rule()
 {
 }
 
-size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP .. _accName is empty
-		if (elemList.size() != 0) return 0;
+		if (operands.size() != 0) return 0;
 	} else {
 		// OP a ... _accName is "a"
 		// OP b ... _accName is "b"
-		if (elemList.size() != 1) return 0;
-		const Element *pElem = elemList.front();
+		if (operands.size() != 1) return 0;
+		const Element *pElem = operands.front();
 		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
@@ -158,36 +169,36 @@ size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &elemList)
 	return bytes;
 }
 
-size_t InstInfo::Rule_REL::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_REL::Apply(Binary &buff, const ElementList &operands)
 {
 	// OP disp
-	if (elemList.size() != 1) return 0;
+	if (operands.size() != 1) return 0;
 	buff += _code;
 	return 0;
 }
 
-size_t InstInfo::Rule_INH::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_INH::Apply(Binary &buff, const ElementList &operands)
 {
 	// OP
-	if (elemList.size() != 0) return 0;
+	if (operands.size() != 0) return 0;
 	buff += _code;
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
-		if (elemList.size() != 1) return 0;
+		if (operands.size() != 1) return 0;
 	} else {
 		// OP a,data8 ... _accName is "a"
 		// OP b,data8 ... _accName is "b"
-		if (elemList.size() != 2) return 0;
-		const Element *pElem = elemList.front();
+		if (operands.size() != 2) return 0;
+		const Element *pElem = operands.front();
 		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Element *pElem = elemList.back();
+	const Element *pElem = operands.back();
 	if (!pElem->IsType(Element::TYPE_Number)) return 0;
 	UInt32 num = dynamic_cast<const Element_Number *>(pElem)->GetNumber();
 	if (num > 0xff) {
@@ -198,53 +209,59 @@ size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &elemList)
 	return bytes;
 }
 
-size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
-		if (elemList.size() != 1) return 0;
+		if (operands.size() != 1) return 0;
 	} else {
 		// OP a,(addr8) ... _accName is "a"
 		// OP b,(addr8) ... _accName is "b"
-		if (elemList.size() != 2) return 0;
-		const Element *pElem = elemList.front();
+		if (operands.size() != 2) return 0;
+		const Element *pElem = operands.front();
 		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
+	const Element *pElem = operands.back();
+	if (!pElem->IsType(Element::TYPE_Parenthesis)) return 0;
 	buff += _code;
 	return bytes;
 }
 
-size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
-		if (elemList.size() != 1) return 0;
+		if (operands.size() != 1) return 0;
 	} else {
 		// OP a,[x+data8] ... _accName is "a"
 		// OP b,[x+data8] ... _accName is "b"
-		if (elemList.size() != 2) return 0;
-		const Element *pElem = elemList.front();
+		if (operands.size() != 2) return 0;
+		const Element *pElem = operands.front();
 		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
+	const Element *pElem = operands.back();
+	if (!pElem->IsType(Element::TYPE_Bracket)) return 0;
 	buff += _code;
 	return bytes;
 }
 
-size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &elemList)
+size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
-		if (elemList.size() != 1) return 0;
+		if (operands.size() != 1) return 0;
 	} else {
 		// OP a,[addr16] ... _accName is "a"
 		// OP b,[addr16] ... _accName is "b"
-		if (elemList.size() != 2) return 0;
-		const Element *pElem = elemList.front();
+		if (operands.size() != 2) return 0;
+		const Element *pElem = operands.front();
 		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
+	const Element *pElem = operands.back();
+	if (!pElem->IsType(Element::TYPE_Bracket)) return 0;
 	buff += _code;
 	return bytes;
 }
@@ -299,6 +316,9 @@ void InstInfoMap::Initialize()
 	Add(InstInfo::Syntax_REL				("bge", 0x2c));
 	Add(InstInfo::Syntax_REL				("bgt", 0x2e));
 	Add(InstInfo::Syntax_REL				("bhi", 0x22));
+	Add(InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT("bit", 0x85, 0x95, 0xa5, 0xb5, 0xc5, 0xd5, 0xe5, 0xf5));
+	Add(InstInfo::Syntax_IMM_DIR_IDX_EXT	("bita", 0x85, 0x95, 0xa5, 0xb5));
+	Add(InstInfo::Syntax_IMM_DIR_IDX_EXT	("bitb", 0xc5, 0xd5, 0xe5, 0xf5));
 	Add(InstInfo::Syntax_REL				("ble", 0x2f));
 	Add(InstInfo::Syntax_REL				("bls", 0x23));
 	Add(InstInfo::Syntax_REL				("blt", 0x2d));
