@@ -120,12 +120,15 @@ InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
 	return pInstInfo;
 }
 
+class ElementOwner;
+
 //-----------------------------------------------------------------------------
 // Element
 //-----------------------------------------------------------------------------
 class Element {
 public:
 	enum Type {
+		TYPE_Inst,
 		TYPE_A,
 		TYPE_B,
 		TYPE_X,
@@ -139,20 +142,52 @@ public:
 private:
 	int _cntRef;
 	Type _type;
+	std::auto_ptr<ElementOwner> _pElemChildren;
 public:
 	DeclareReferenceAccessor(Element);
 public:
-	inline Element(Type type) : _cntRef(1), _type(type) {}
+	Element(Type type);
 protected:
 	virtual ~Element();
 public:
+	bool IsType(Type type) const { return _type == type; }
+	void AddChild(Element *pElement);
+	ElementOwner &GetChildren() { return *_pElemChildren; }
+	const ElementOwner &GetChildren() const { return *_pElemChildren; }
 	//virtual bool Reduce() = 0;
+	virtual String ToString() const = 0;
 };
 
 //-----------------------------------------------------------------------------
 // ElementList
 //-----------------------------------------------------------------------------
-typedef std::vector<Element *> ElementList;
+class ElementList : public std::vector<Element *> {
+public:
+	String ToString() const;
+	void Print() const;
+};
+
+String ElementList::ToString() const
+{
+	String rtn;
+	for (auto pElement : *this) {
+		if (!rtn.empty()) rtn += ",";
+		rtn += pElement->ToString();
+	}
+	return rtn;
+}
+
+void ElementList::Print() const
+{
+	for (auto pElement : *this) {
+		::printf("%s\n", pElement->ToString().c_str());
+	}
+}
+
+//-----------------------------------------------------------------------------
+// ElementStack
+//-----------------------------------------------------------------------------
+typedef std::vector<Element *> ElementStack;
 
 //-----------------------------------------------------------------------------
 // ElementOwner
@@ -166,8 +201,17 @@ public:
 //-----------------------------------------------------------------------------
 // Element
 //-----------------------------------------------------------------------------
+Element::Element(Type type) : _cntRef(1), _type(type), _pElemChildren(new ElementOwner())
+{
+}
+
 Element::~Element()
 {
+}
+
+void Element::AddChild(Element *pElement)
+{
+	_pElemChildren->push_back(pElement);
 }
 
 //-----------------------------------------------------------------------------
@@ -186,27 +230,70 @@ void ElementOwner::Clear()
 	clear();
 }
 
+class Element_Inst : public Element {
+private:
+	String _symbol;
+public:
+	inline Element_Inst(const String &symbol) : Element(TYPE_Inst), _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	virtual String ToString() const;
+};
+
+String Element_Inst::ToString() const
+{
+	String str = _symbol;
+	str += " ";
+	str += GetChildren().ToString();
+	return str;
+}
+
 class Element_A : public Element {
 public:
 	inline Element_A() : Element(TYPE_A) {}
+	virtual String ToString() const;
 };
+
+String Element_A::ToString() const
+{
+	return "A";
+}
 
 class Element_B : public Element {
 public:
 	inline Element_B() : Element(TYPE_B) {}
+	virtual String ToString() const;
 };
+
+String Element_B::ToString() const
+{
+	return "B";
+}
 
 class Element_X : public Element {
 public:
 	inline Element_X() : Element(TYPE_X) {}
+	virtual String ToString() const;
 };
+
+String Element_X::ToString() const
+{
+	return "X";
+}
 
 class Element_Number : public Element {
 private:
 	UInt32 _num;
 public:
 	inline Element_Number(UInt32 num) : Element(TYPE_Number), _num(num) {}
+	virtual String ToString() const;
 };
+
+String Element_Number::ToString() const
+{
+	char buff[128];
+	::sprintf_s(buff, "$%x", _num);
+	return buff;
+}
 
 class Element_Symbol : public Element {
 private:
@@ -220,23 +307,50 @@ public:
 	inline void InvalidateNumber() { _validNumFlag = false; }
 	inline UInt32 GetNumber() const { return _num; }
 	inline bool IsValidNumber() const { return _validNumFlag; }
+	virtual String ToString() const;
 };
+
+String Element_Symbol::ToString() const
+{
+	return _symbol;
+}
 
 class Element_String : public Element {
 private:
 	String _str;
 public:
 	inline Element_String(const String &str) : Element(TYPE_String), _str(str) {}
+	virtual String ToString() const;
 };
 
+String Element_String::ToString() const
+{
+	String str;
+	str = "\"";
+	str += _str;
+	str += "\"";
+	return str;
+}
+
 class Element_BinOp : public Element {
-private:
-	AutoPtr<Element> _pElementL;
-	AutoPtr<Element> _pElementR;
 public:
-	inline Element_BinOp(Element *pElementL, Element *pElementR) :
-		Element(TYPE_BinOp), _pElementL(pElementL), _pElementR(pElementR) {}
+	inline Element_BinOp(Element *pElementL, Element *pElementR) : Element(TYPE_BinOp) {
+		GetChildren().push_back(pElementL);
+		GetChildren().push_back(pElementR);
+	}
+	const Element *GetLeft() const { return GetChildren()[0]; }
+	const Element *GetRight() const { return GetChildren()[1]; }
+	virtual String ToString() const;
 };
+
+String Element_BinOp::ToString() const
+{
+	String str;
+	str = GetLeft()->ToString();
+	str += " + ";
+	str += GetRight()->ToString();
+	return str;
+}
 
 class Element_BinOp_Add : public Element_BinOp {
 public:
@@ -263,20 +377,34 @@ public:
 };
 
 class Element_Bracket : public Element {
-private:
-	AutoPtr<Element> _pElementChild;
 public:
-	inline Element_Bracket(Element *pElementChild) :
-		Element(TYPE_Bracket), _pElementChild(pElementChild) {}
+	inline Element_Bracket() : Element(TYPE_Bracket) {}
+	virtual String ToString() const;
 };
 
+String Element_Bracket::ToString() const
+{
+	String str;
+	str = "[";
+	str += GetChildren().ToString();
+	str += "]";
+	return str;
+}
+
 class Element_Parenthesis : public Element {
-private:
-	AutoPtr<Element> _pElementChild;
 public:
-	inline Element_Parenthesis(Element *pElementChild) :
-		Element(TYPE_Parenthesis), _pElementChild(pElementChild) {}
+	inline Element_Parenthesis() : Element(TYPE_Parenthesis) {}
+	virtual String ToString() const;
 };
+
+String Element_Parenthesis::ToString() const
+{
+	String str;
+	str = "(";
+	str += GetChildren().ToString();
+	str += ")";
+	return str;
+}
 
 //-----------------------------------------------------------------------------
 // Parser
@@ -288,15 +416,15 @@ private:
 		STAT_Label,
 		STAT_Instruction,
 		STAT_Operand,
-		STAT_Bracket,
-		STAT_Parenthesis,
 	};
 private:
 	Tokenizer _tokenizer;
 	Stat _stat;
 	ElementOwner _elemOwner;
+	ElementStack _elemStack;
 public:
 	Parser(const String &fileNameSrc);
+	inline const ElementOwner &GetInstructions() const { return _elemOwner; }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline const char *GetErrMsg() const { return _tokenizer.GetErrMsg(); }
 	virtual bool FeedToken(const Token &token);
@@ -332,8 +460,10 @@ bool Parser::FeedToken(const Token &token)
 	}
 	case STAT_Instruction: {
 		if (token.IsType(Token::TYPE_Symbol)) {
-			
-			::printf("%s\n", token.ToString().c_str());
+			Element *pElem = new Element_Inst(token.GetString());
+			_elemOwner.push_back(pElem);
+			_elemStack.push_back(pElem);
+			_stat = STAT_Operand;
 		} else {
 			_tokenizer.SetErrMsg("instruction or pseudo command is expected");
 			rtn = false;
@@ -344,19 +474,22 @@ bool Parser::FeedToken(const Token &token)
 		if (token.IsType(Token::TYPE_White)) {
 			// nothing to do
 		} else if (token.IsType(Token::TYPE_EOL)) {
+			_elemStack.pop_back();
+			_stat = STAT_LineTop;
+		} else if (token.IsType(Token::TYPE_Comma)) {
 			
 		} else if (token.IsType(Token::TYPE_Symbol)) {
 			if (token.MatchICase("a")) {
-				_elemOwner.push_back(new Element_A());
+				_elemStack.back()->AddChild(new Element_A());
 			} else if (token.MatchICase("b")) {
-				_elemOwner.push_back(new Element_B());
+				_elemStack.back()->AddChild(new Element_B());
 			} else if (token.MatchICase("x")) {
-				_elemOwner.push_back(new Element_X());
+				_elemStack.back()->AddChild(new Element_X());
 			} else {
-				_elemOwner.push_back(new Element_Symbol(token.GetString()));
+				_elemStack.back()->AddChild(new Element_Symbol(token.GetString()));
 			}
 		} else if (token.IsType(Token::TYPE_Number)) {
-			_elemOwner.push_back(new Element_Number(token.GetNumber()));
+			_elemStack.back()->AddChild(new Element_Number(token.GetNumber()));
 		} else if (token.IsType(Token::TYPE_Plus)) {
 			new Element_BinOp_Add(nullptr, nullptr);
 		} else if (token.IsType(Token::TYPE_Minus)) {
@@ -366,24 +499,26 @@ bool Parser::FeedToken(const Token &token)
 		} else if (token.IsType(Token::TYPE_Slash)) {
 			new Element_BinOp_Div(nullptr, nullptr);
 		} else if (token.IsType(Token::TYPE_BracketL)) {
-			_stat = STAT_Bracket;
+			Element *pElem = new Element_Bracket();
+			_elemStack.back()->AddChild(pElem);
+			_elemStack.push_back(pElem);
+		} else if (token.IsType(Token::TYPE_BracketR)) {
+			if (!_elemStack.back()->IsType(Element::TYPE_Bracket)) {
+				_tokenizer.SetErrMsg("no opening bracket matched");
+			}
+			_elemStack.pop_back();
 		} else if (token.IsType(Token::TYPE_ParenthesisL)) {
-			_stat = STAT_Parenthesis;
+			Element *pElem = new Element_Parenthesis();
+			_elemStack.back()->AddChild(pElem);
+			_elemStack.push_back(pElem);
+		} else if (token.IsType(Token::TYPE_ParenthesisR)) {
+			if (!_elemStack.back()->IsType(Element::TYPE_Parenthesis)) {
+				_tokenizer.SetErrMsg("no opening parenthesis matched");
+			}
+			_elemStack.pop_back();
 		} else {
 			_tokenizer.SetErrMsg("invalid format of operands");
 			rtn = false;
-		}
-		break;
-	}
-	case STAT_Bracket: {
-		if (token.IsType(Token::TYPE_BracketR)) {
-			_stat = STAT_Operand;
-		}
-		break;
-	}
-	case STAT_Parenthesis: {
-		if (token.IsType(Token::TYPE_ParenthesisR)) {
-			_stat = STAT_Operand;
 		}
 		break;
 	}
@@ -408,6 +543,7 @@ bool Parse(const char *fileName)
 		if (ch == '\0') break;
 	}
 	::fclose(fp);
+	parser.GetInstructions().Print();
 	return true;
 }
 

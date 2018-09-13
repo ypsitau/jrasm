@@ -110,7 +110,7 @@ bool Tokenizer::FeedChar(char ch)
 	case STAT_DecNumber: {
 		if (IsDigit(ch)) {
 			_str += ch;
-			_num += ch - '0';
+			_num = _num * 10 + (ch - '0');
 		} else {
 			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
 			_stat = STAT_Neutral;
@@ -121,13 +121,13 @@ bool Tokenizer::FeedChar(char ch)
 	case STAT_HexNumber: {
 		if (IsDigit(ch)) {
 			_str += ch;
-			_num += ch - '0';
+			_num = (_num << 4) + (ch - '0');
 		} else if ('a' <= ch && ch <= 'f') {
 			_str += ch;
-			_num += ch - 'a' + 10;
+			_num = (_num << 4) + (ch - 'a' + 10);
 		} else if ('A' <= ch && ch <= 'F') {
 			_str += ch;
-			_num += ch - 'A' + 10;
+			_num = (_num << 4) + (ch - 'A' + 10);
 		} else {
 			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
 			_stat = STAT_Neutral;
