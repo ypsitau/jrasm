@@ -15,9 +15,6 @@ class Element {
 public:
 	enum Type {
 		TYPE_Inst,
-		TYPE_A,
-		TYPE_B,
-		TYPE_X,
 		TYPE_Number,
 		TYPE_Symbol,
 		TYPE_String,

@@ -184,6 +184,7 @@ bool Tokenizer::CompleteToken(Token::Type type, const String &str)
 
 bool Tokenizer::CompleteToken(Token::Type type, const String &str, UInt32 num)
 {
+	//::printf("CompleteToken(%d)\n", type);
 	_token.Set(type, str, num);
 	return _pListener->FeedToken(_token);
 }

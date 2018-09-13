@@ -205,7 +205,7 @@ size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &operands)
 		// error
 	}
 	buff += _code;
-	buff += static_cast<UInt8>(num);
+	//buff += static_cast<UInt8>(num);
 	return bytes;
 }
 
