@@ -5,6 +5,122 @@
 #include "jrasm.h"
 
 //-----------------------------------------------------------------------------
+// InstInfo
+//-----------------------------------------------------------------------------
+class InstInfo {
+private:
+	String _symbol;
+public:
+	InstInfo(const String &symbol);
+public:
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	static InstInfo *Syntax_ACC(const String &symbol, UInt8 codeACC);
+	static InstInfo *Syntax_REL(const String &symbol, UInt8 codeREL);
+	static InstInfo *Syntax_INH(const String &symbol, UInt8 codeINH);
+	static InstInfo *Syntax_ACC_IMM_DIR_IDX_EXT(
+		const String &symbol,
+		UInt8 codeIMM_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
+		UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B);
+	static InstInfo *Syntax_DIR_IDX_IMM_EXT(
+		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT);
+	static InstInfo *Syntax_ACC_ACC_IDX_EXT(
+		const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT);
+};
+
+//-----------------------------------------------------------------------------
+// InstInfoMap
+//-----------------------------------------------------------------------------
+class InstInfoMap : public std::map<String, InstInfo *> {
+public:
+	~InstInfoMap();
+	void Initialize();
+	inline void Add(InstInfo *pInstInfo) {
+		insert(std::make_pair(ToLower(pInstInfo->GetSymbol()), pInstInfo));
+	}
+	const InstInfo *Lookup(const char *symbol) const;
+};
+
+//-----------------------------------------------------------------------------
+// InstInfoMap
+//-----------------------------------------------------------------------------
+InstInfoMap::~InstInfoMap()
+{
+	for (auto iter : *this) {
+		delete iter.second;
+	}
+}
+
+void InstInfoMap::Initialize()
+{
+	Add(InstInfo::Syntax_ACC				("aba", 0x1b));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("adc", 0x89, 0x99, 0xa9, 0xb9, 0xc9, 0xd9, 0xe9, 0xf9));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("add", 0x8b, 0x9b, 0xab, 0xbb, 0xcb, 0xdb, 0xeb, 0xfb));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("and", 0x84, 0x94, 0xa4, 0xb4, 0xc4, 0xd4, 0xe4, 0xf4));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("asl", 0x48, 0x58, 0x68, 0x78));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("asr", 0x47, 0x57, 0x67, 0x77));
+	Add(InstInfo::Syntax_REL				("bcc", 0x24));
+	Add(InstInfo::Syntax_REL				("bcs", 0x25));
+	Add(InstInfo::Syntax_REL				("beq", 0x27));
+	Add(InstInfo::Syntax_REL				("bge", 0x2c));
+	Add(InstInfo::Syntax_REL				("bgt", 0x2e));
+}
+
+const InstInfo *InstInfoMap::Lookup(const char *symbol) const
+{
+	String symbolLower = ToLower(symbol);
+	const_iterator iter = find(symbolLower);
+	return (iter == end())? nullptr : iter->second;
+}
+
+//-----------------------------------------------------------------------------
+// InstInfo
+//-----------------------------------------------------------------------------
+InstInfo::InstInfo(const String &symbol) : _symbol(symbol)
+{
+}
+
+InstInfo *InstInfo::Syntax_ACC(const String &symbol, UInt8 codeACC)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+InstInfo *InstInfo::Syntax_REL(const String &symbol, UInt8 codeREL)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+InstInfo *InstInfo::Syntax_INH(const String &symbol, UInt8 codeINH)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+InstInfo *InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT(
+	const String &symbol,
+	UInt8 codeIMM_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
+	UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+InstInfo *InstInfo::Syntax_DIR_IDX_IMM_EXT(
+	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
+	const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+//-----------------------------------------------------------------------------
 // Element
 //-----------------------------------------------------------------------------
 class Element {
@@ -297,6 +413,7 @@ bool Parse(const char *fileName)
 
 int main(int argc, char *argv[])
 {
+
 #if 1
 	if (argc < 2) {
 		::fprintf(stderr, "usage: jasm file\n");

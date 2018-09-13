@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <map>
 
 //-----------------------------------------------------------------------------
 // Macros
@@ -94,5 +95,10 @@ public:
 private:
 	inline void operator=(const T *p) {}
 };
+
+//-----------------------------------------------------------------------------
+// Utilities
+//-----------------------------------------------------------------------------
+String ToLower(const char *str);
 
 #endif
