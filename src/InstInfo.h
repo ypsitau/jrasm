@@ -48,13 +48,20 @@ public:
 		inline Rule_INH(UInt8 code) : Rule(code) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
-	class Rule_IMM : public Rule {
+	class Rule_IMM8 : public Rule {
 	private:
 		String _accName;
 	public:
 		enum { bytes = 2 };
 	public:
-		inline Rule_IMM(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
+		inline Rule_IMM8(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+	};
+	class Rule_IMM16 : public Rule {
+	public:
+		enum { bytes = 3 };
+	public:
+		inline Rule_IMM16(UInt8 code) : Rule(code) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_DIR : public Rule {
@@ -109,20 +116,22 @@ public:
 	static InstInfo *Syntax_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT);
 	static InstInfo *Syntax_DIR_IDX_EXT(
 		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT);
-	static InstInfo *Syntax_DIR_IDX_IMM_EXT(
-		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT);
+	static InstInfo *Syntax_DIR_IDX_IMM8_EXT(
+		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM8, UInt8 codeEXT);
+	static InstInfo *Syntax_DIR_IDX_IMM16_EXT(
+		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM16, UInt8 codeEXT);
 	static InstInfo *Syntax_ACC_ACC_IDX_EXT(
 		const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT);
-	static InstInfo *Syntax_IMM_DIR_IDX_EXT(
-		const String &symbol, UInt8 codeIMM, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT);
+	static InstInfo *Syntax_IMM8_DIR_IDX_EXT(
+		const String &symbol, UInt8 codeIMM8, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT);
 	static InstInfo *Syntax_AxB_DIR_IDX_EXT	(
 		const String &symbol,
 		UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
 		UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B);
-	static InstInfo *Syntax_AxB_IMM_DIR_IDX_EXT(
+	static InstInfo *Syntax_AxB_IMM8_DIR_IDX_EXT(
 		const String &symbol,
-		UInt8 codeIMM_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
-		UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B);
+		UInt8 codeIMM8_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
+		UInt8 codeIMM8_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B);
 };
 
 //-----------------------------------------------------------------------------
