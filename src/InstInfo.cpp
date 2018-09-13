@@ -22,10 +22,10 @@ const InstInfo *InstInfo::Lookup(const char *symbol)
 	return _pInstInfoMap->Lookup(symbol);
 }
 
-bool InstInfo::ApplyRule(Binary &buff, const ElementList &operands) const
+bool InstInfo::ApplyRule(Context &context, const ElementList &operands) const
 {
 	for (auto pRule : _ruleOwner) {
-		size_t bytes = pRule->Apply(buff, operands);
+		size_t bytes = pRule->Apply(context, operands);
 		if (bytes != 0) return true;
 	}
 	// error
@@ -162,7 +162,7 @@ InstInfo::Rule::~Rule()
 {
 }
 
-size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_ACC::Apply(Context &context, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP .. _accName is empty
@@ -175,27 +175,27 @@ size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &operands)
 		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
-	buff += _code;
+	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_REL::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_REL::Apply(Context &context, const ElementList &operands)
 {
 	// OP disp
 	if (operands.size() != 1) return 0;
-	buff += _code;
+	context.PutByte(_code);
 	return 0;
 }
 
-size_t InstInfo::Rule_INH::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_INH::Apply(Context &context, const ElementList &operands)
 {
 	// OP
 	if (operands.size() != 0) return 0;
-	buff += _code;
+	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM8::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_IMM8::Apply(Context &context, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
@@ -211,31 +211,31 @@ size_t InstInfo::Rule_IMM8::Apply(Binary &buff, const ElementList &operands)
 	const Element *pElem = operands.back();
 	if (!pElem->IsType(Element::TYPE_Number)) return 0;
 	UInt32 num = dynamic_cast<const Element_Number *>(pElem)->GetNumber();
-	buff += _code;
+	context.PutByte(_code);
 	if (num > 0xff) {
 		// error
 	}
-	buff += static_cast<UInt8>(num);
+	context.PutByte(static_cast<UInt8>(num));
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM16::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_IMM16::Apply(Context &context, const ElementList &operands)
 {
 	// OP data16
 	if (operands.size() != 1) return 0;
 	const Element *pElem = operands.back();
 	if (!pElem->IsType(Element::TYPE_Number)) return 0;
 	UInt32 num = dynamic_cast<const Element_Number *>(pElem)->GetNumber();
-	buff += _code;
+	context.PutByte(_code);
 	if (num > 0xffff) {
 		// error
 	}
-	buff += static_cast<UInt8>(num >> 8);
-	buff += static_cast<UInt8>(num);
+	context.PutByte(static_cast<UInt8>(num >> 8));
+	context.PutByte(static_cast<UInt8>(num));
 	return bytes;
 }
 
-size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_DIR::Apply(Context &context, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
@@ -250,11 +250,11 @@ size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &operands)
 	}
 	const Element *pElem = operands.back();
 	if (!pElem->IsType(Element::TYPE_Parenthesis)) return 0;
-	buff += _code;
+	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_IDX::Apply(Context &context, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
@@ -269,11 +269,11 @@ size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &operands)
 	}
 	const Element *pElem = operands.back();
 	if (!pElem->IsType(Element::TYPE_Bracket)) return 0;
-	buff += _code;
+	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &operands)
+size_t InstInfo::Rule_EXT::Apply(Context &context, const ElementList &operands)
 {
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
@@ -288,7 +288,7 @@ size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &operands)
 	}
 	const Element *pElem = operands.back();
 	if (!pElem->IsType(Element::TYPE_Bracket)) return 0;
-	buff += _code;
+	context.PutByte(_code);
 	return bytes;
 }
 

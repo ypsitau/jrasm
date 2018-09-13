@@ -23,7 +23,7 @@ public:
 	public:
 		inline Rule(UInt8 code) : _code(code) {}
 		virtual ~Rule();
-		virtual size_t Apply(Binary &buff, const ElementList &elemList) = 0;
+		virtual size_t Apply(Context &context, const ElementList &elemList) = 0;
 	};
 	class Rule_ACC : public Rule {
 	private:
@@ -32,21 +32,21 @@ public:
 		enum { bytes = 1 };
 	public:
 		inline Rule_ACC(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_REL : public Rule {
 	public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_REL(UInt8 code) : Rule(code) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_INH : public Rule {
 	public:
 		enum { bytes = 1 };
 	public:
 		inline Rule_INH(UInt8 code) : Rule(code) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_IMM8 : public Rule {
 	private:
@@ -55,14 +55,14 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IMM8(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_IMM16 : public Rule {
 	public:
 		enum { bytes = 3 };
 	public:
 		inline Rule_IMM16(UInt8 code) : Rule(code) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_DIR : public Rule {
 	private:
@@ -71,7 +71,7 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_DIR(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_IDX : public Rule {
 	private:
@@ -80,7 +80,7 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IDX(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	class Rule_EXT : public Rule {
 	private:
@@ -89,7 +89,7 @@ public:
 		enum { bytes = 3 };
 	public:
 		inline Rule_EXT(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual size_t Apply(Binary &buff, const ElementList &elemList);
+		virtual size_t Apply(Context &context, const ElementList &elemList);
 	};
 	typedef std::vector<Rule *> RuleList;
 	class RuleOwner : public RuleList {
@@ -104,7 +104,7 @@ private:
 public:
 	InstInfo(const String &symbol, const String &syntaxDesc);
 public:
-	bool ApplyRule(Binary &buff, const ElementList &elemList) const;
+	bool ApplyRule(Context &context, const ElementList &elemList) const;
 	static const InstInfo *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const char *GetSyntaxDesc() const { return _syntaxDesc.c_str(); }

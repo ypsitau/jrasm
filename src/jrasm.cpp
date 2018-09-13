@@ -143,9 +143,9 @@ bool Parse(const char *fileName)
 		} else {
 			::printf("%s .. ", pElemEx->ToString().c_str());
 		}
-		Binary buff;
-		pInstInfo->ApplyRule(buff, pElemEx->GetOperands());
-		for (auto data : buff) {
+		Context context;
+		pInstInfo->ApplyRule(context, pElemEx->GetOperands());
+		for (auto data : context.GetBuffer()) {
 			::printf(" %02x", static_cast<UInt8>(data));
 		}
 		:: printf("\n");
