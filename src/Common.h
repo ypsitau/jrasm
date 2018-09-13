@@ -18,6 +18,14 @@
 #if defined(_MSC_VER)
 #define strcasecmp _stricmp
 #else
+typedef int errno_t;
+inline errno_t fopen_s(FILE **fp, const char *filename, const char *mode)
+{
+	return (((*fp) = ::fopen(filename, mode)) == nullptr)? -1 : 0;
+}
+#define sprintf_s sprintf
+#define vsprintf_s vsprintf
+#define strncpy_s strncpy
 #endif
 
 #define ArraySizeOf(x) (sizeof(x) / sizeof(x[0]))
