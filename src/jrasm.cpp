@@ -6,6 +6,8 @@
 
 class ElementList;
 
+typedef String Binary;
+
 //-----------------------------------------------------------------------------
 // InstInfo
 //-----------------------------------------------------------------------------
@@ -16,35 +18,43 @@ public:
 		UInt8 _code;
 	public:
 		inline Rule(UInt8 code) : _code(code) {}
-		//virtual bool Apply(const ElementList &elemList) = 0;
+		virtual ~Rule();
+		virtual size_t Apply(Binary &buff, const ElementList &elemList) = 0;
 	};
 	class Rule_ACC : public Rule {
 	public:
 		inline Rule_ACC(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_REL : public Rule {
 	public:
 		inline Rule_REL(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_INH : public Rule {
 	public:
 		inline Rule_INH(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_IMM : public Rule {
 	public:
 		inline Rule_IMM(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_DIR : public Rule {
 	public:
 		inline Rule_DIR(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_IDX : public Rule {
 	public:
 		inline Rule_IDX(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_EXT : public Rule {
 	public:
 		inline Rule_EXT(UInt8 code) : Rule(code) {}
+		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	typedef std::vector<Rule *> RuleList;
 	class RuleOwner : public RuleList {
@@ -297,6 +307,48 @@ InstInfo *InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT(
 }
 
 class ElementOwner;
+
+//-----------------------------------------------------------------------------
+// InstInfo::Rule
+//-----------------------------------------------------------------------------
+InstInfo::Rule::~Rule()
+{
+}
+
+size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
+
+size_t InstInfo::Rule_REL::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
+
+size_t InstInfo::Rule_INH::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
+
+size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
+
+size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
+
+size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
+
+size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &elemList)
+{
+	return 0;
+}
 
 //-----------------------------------------------------------------------------
 // InstInfo::RuleOwner
