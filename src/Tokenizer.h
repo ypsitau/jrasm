@@ -20,6 +20,8 @@ public:
 		STAT_Neutral,
 		STAT_White,
 		STAT_Comment,
+		STAT_DetectZero,
+		STAT_OctNumber,
 		STAT_DecNumber,
 		STAT_HexNumber,
 		STAT_Symbol,
@@ -48,9 +50,9 @@ private:
 	inline static bool IsEOL(char ch) { return ch == '\n'; }
 	inline static bool IsWhite(char ch) { return ch == ' ' || ch == '\t'; }
 	inline static bool IsSymbolFirst(char ch) {
-		return ::isalpha(ch) || ch == '@' || ch == '.';
+		return ::isalpha(ch) || ch == '@' || ch == '.' || ch == '$';
 	}
-	inline static bool IsSymbolFollow(char ch) { return IsSymbolFirst(ch) || ::isdigit(ch) || ch == '$'; }
+	inline static bool IsSymbolFollow(char ch) { return IsSymbolFirst(ch) || ::isdigit(ch); }
 	inline static bool IsDigit(char ch) { return ::isdigit(ch); }
 };
 

@@ -56,7 +56,7 @@ String Element_Inst::ToString() const
 String Element_Number::ToString() const
 {
 	char buff[128];
-	::sprintf_s(buff, "$%x", _num);
+	::sprintf_s(buff, "0x%x", _num);
 	return buff;
 }
 

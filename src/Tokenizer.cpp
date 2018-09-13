@@ -38,16 +38,16 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == '"') {
 			_str.clear();
 			_stat = STAT_String;
+		} else if (ch == '0') {
+			_num = 0;
+			_str.clear();
+			_str += ch;
+			_stat = STAT_DetectZero;
 		} else if (IsDigit(ch)) {
 			_num = 0;
 			_str.clear();
 			_stat = STAT_DecNumber;
 			Pushback();
-		} else if (ch == '$') {
-			_num = 0;
-			_str.clear();
-			_str += '$';
-			_stat = STAT_HexNumber;
 		} else if (ch == ';') {
 			_stat = STAT_Comment;
 		} else if (ch == ':') {
@@ -76,7 +76,7 @@ bool Tokenizer::FeedChar(char ch)
 			} else {
 				SetErrMsg("invalid character: 0x%02x", ch);
 			}
-			return false;
+			rtn = false;
 		}
 		break;
 	}
@@ -133,6 +133,34 @@ bool Tokenizer::FeedChar(char ch)
 		} else {
 			SetErrMsg("invalid escape character");
 			rtn = false;
+		}
+		break;
+	}
+	case STAT_DetectZero: {
+		if (ch == 'x') {
+			_str += ch;
+			_stat = STAT_HexNumber;
+		} else if (::isdigit(ch)) {
+			_stat = STAT_OctNumber;
+			Pushback();
+		} else {
+			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_OctNumber: {
+		if ('0' <= ch && ch <= '7') {
+			_str += ch;
+			_num = _num * 8 + (ch - '0');
+		} else if ('8' <= ch && ch <= '9') {
+			SetErrMsg("decimal number must not start with zero");
+			rtn = false;
+		} else {
+			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
+			_stat = STAT_Neutral;
+			Pushback();
 		}
 		break;
 	}
