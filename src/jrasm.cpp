@@ -17,10 +17,16 @@ public:
 	static InstInfo *Syntax_ACC(const String &symbol, UInt8 codeACC);
 	static InstInfo *Syntax_REL(const String &symbol, UInt8 codeREL);
 	static InstInfo *Syntax_INH(const String &symbol, UInt8 codeINH);
+	static InstInfo *Syntax_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B);
+	static InstInfo *Syntax_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT);
 	static InstInfo *Syntax_ACC_IMM_DIR_IDX_EXT(
 		const String &symbol,
 		UInt8 codeIMM_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
 		UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B);
+	static InstInfo *Syntax_ACC_DIR_IDX_EXT	(
+		const String &symbol,
+		UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
+		UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B);
 	static InstInfo *Syntax_DIR_IDX_IMM_EXT(
 		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT);
 	static InstInfo *Syntax_ACC_ACC_IDX_EXT(
@@ -63,6 +69,71 @@ void InstInfoMap::Initialize()
 	Add(InstInfo::Syntax_REL				("beq", 0x27));
 	Add(InstInfo::Syntax_REL				("bge", 0x2c));
 	Add(InstInfo::Syntax_REL				("bgt", 0x2e));
+	Add(InstInfo::Syntax_REL				("bhi", 0x22));
+	Add(InstInfo::Syntax_REL				("ble", 0x2f));
+	Add(InstInfo::Syntax_REL				("bls", 0x23));
+	Add(InstInfo::Syntax_REL				("blt", 0x2d));
+	Add(InstInfo::Syntax_REL				("bmi", 0x2b));
+	Add(InstInfo::Syntax_REL				("bne", 0x26));
+	Add(InstInfo::Syntax_REL				("bpl", 0x2a));
+	Add(InstInfo::Syntax_REL				("bra", 0x20));
+	Add(InstInfo::Syntax_REL				("bsr", 0x8d));
+	Add(InstInfo::Syntax_REL				("bvc", 0x28));
+	Add(InstInfo::Syntax_REL				("bvs", 0x29));
+	Add(InstInfo::Syntax_INH				("cba", 0x11));
+	Add(InstInfo::Syntax_INH				("clc", 0x0c));
+	Add(InstInfo::Syntax_INH				("cli", 0x0e));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("clr", 0x4f, 0x5f, 0x6f, 0x7f));
+	Add(InstInfo::Syntax_INH				("clv", 0x0a));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("cmp", 0x81, 0x91, 0xa1, 0xb1, 0xc1, 0xd1, 0xe1, 0xf1));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("com", 0x43, 0x53, 0x63, 0x73));
+	Add(InstInfo::Syntax_DIR_IDX_IMM_EXT	("cpx", 0x9c, 0xac, 0x8c, 0xbc));
+	Add(InstInfo::Syntax_INH				("daa", 0x19));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("dec", 0x4a, 0x5a, 0x6a, 0x7a));
+	Add(InstInfo::Syntax_INH				("des", 0x34));
+	Add(InstInfo::Syntax_INH				("dex", 0x09));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("eor", 0x88, 0x98, 0xa8, 0xb8, 0xc8, 0xd8, 0xe8, 0xf8));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("inc", 0x4c, 0x5c, 0x6c, 0x7c));
+	Add(InstInfo::Syntax_INH				("ins", 0x31));
+	Add(InstInfo::Syntax_INH				("inx", 0x08));
+	Add(InstInfo::Syntax_IDX_EXT			("jmp", 0x6e, 0x7e));
+	Add(InstInfo::Syntax_IDX_EXT			("jsr", 0xad, 0xbd));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("lda", 0x86, 0x96, 0xa6, 0xb6, 0xc6, 0xd6, 0xe6, 0xf6));
+	Add(InstInfo::Syntax_DIR_IDX_IMM_EXT	("lds", 0x9e, 0xae, 0x8e, 0xbe));
+	Add(InstInfo::Syntax_DIR_IDX_IMM_EXT	("ldx", 0xde, 0xee, 0xce, 0xfe));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("lsr", 0x44, 0x54, 0x64, 0x74));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("neg", 0x40, 0x50, 0x60, 0x70));
+	Add(InstInfo::Syntax_INH				("nop", 0x01));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("ora", 0x8a, 0x9a, 0xaa, 0xba, 0xca, 0xda, 0xea, 0xfa));
+	Add(InstInfo::Syntax_ACC_ACC			("psh", 0x36, 0x37));
+	Add(InstInfo::Syntax_ACC_ACC			("pul", 0x32, 0x32));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("rol", 0x49, 0x59, 0x69, 0x79));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("ror", 0x46, 0x56, 0x66, 0x76));
+	Add(InstInfo::Syntax_INH				("rti", 0x3b));
+	Add(InstInfo::Syntax_INH				("rts", 0x39));
+	Add(InstInfo::Syntax_INH				("sba", 0x10));
+	Add(InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT("sbc", 0x82, 0x92, 0xa2, 0xb2, 0xc2, 0xd2, 0xe2, 0xf2));
+	Add(InstInfo::Syntax_INH				("sec", 0x0d));
+	Add(InstInfo::Syntax_INH				("sei", 0x0f));
+	Add(InstInfo::Syntax_INH				("sev", 0x0b));
+	Add(InstInfo::Syntax_ACC_DIR_IDX_EXT	("sta", 0x97, 0xa7, 0xb7, 0xe7, 0xe7, 0xf7));
+#if 0
+
+
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+	Add(InstInfo::Syntax_				("", 0x));
+#endif
 }
 
 const InstInfo *InstInfoMap::Lookup(const char *symbol) const
@@ -97,6 +168,18 @@ InstInfo *InstInfo::Syntax_INH(const String &symbol, UInt8 codeINH)
 	return pInstInfo;
 }
 
+InstInfo *InstInfo::Syntax_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
+InstInfo *InstInfo::Syntax_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
 InstInfo *InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT(
 	const String &symbol,
 	UInt8 codeIMM_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
@@ -105,6 +188,16 @@ InstInfo *InstInfo::Syntax_ACC_IMM_DIR_IDX_EXT(
 	InstInfo *pInstInfo = new InstInfo(symbol);
 	return pInstInfo;
 }
+
+InstInfo *InstInfo::Syntax_ACC_DIR_IDX_EXT(
+	const String &symbol,
+	UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
+	UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
+{
+	InstInfo *pInstInfo = new InstInfo(symbol);
+	return pInstInfo;
+}
+
 
 InstInfo *InstInfo::Syntax_DIR_IDX_IMM_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM, UInt8 codeEXT)
