@@ -32,3 +32,10 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio Project Files
+*.filters
+*.user
+/msc/x86
+/msc/x64
+/msc/.vs
