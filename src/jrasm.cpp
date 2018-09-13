@@ -120,23 +120,17 @@ void InstInfoMap::Initialize()
 	Add(InstInfo::Syntax_INH				("sev", 0x0b));
 	Add(InstInfo::Syntax_AxB_DIR_IDX_EXT	("sta", 0x97, 0xa7, 0xb7, 0xe7, 0xe7, 0xf7));
 	Add(InstInfo::Syntax_DIR_IDX_EXT		("sts", 0x9f, 0xaf, 0xbf));
-#if 0
-
-
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-	Add(InstInfo::Syntax_				("", 0x));
-#endif
+	Add(InstInfo::Syntax_DIR_IDX_EXT		("stx", 0xdf, 0xef, 0xff));
+	Add(InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT("sub", 0x80, 0x90, 0xa0, 0xb0, 0xc0, 0xd0, 0xe0, 0xf0));
+	Add(InstInfo::Syntax_INH				("swi", 0x3f));
+	Add(InstInfo::Syntax_INH				("tab", 0x16));
+	Add(InstInfo::Syntax_INH				("tap", 0x06));
+	Add(InstInfo::Syntax_INH				("tba", 0x17));
+	Add(InstInfo::Syntax_INH				("tpa", 0x07));
+	Add(InstInfo::Syntax_ACC_ACC_IDX_EXT	("tst", 0x4d, 0x5d, 0x6d, 0x7d));
+	Add(InstInfo::Syntax_INH				("tsx", 0x30));
+	Add(InstInfo::Syntax_INH				("txs", 0x35));
+	Add(InstInfo::Syntax_INH				("wai", 0x3e));
 }
 
 const InstInfo *InstInfoMap::Lookup(const char *symbol) const
