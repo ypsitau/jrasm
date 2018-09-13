@@ -23,11 +23,11 @@ public:
 	};
 	class Rule_ACC : public Rule {
 	private:
-		char _chAcc;
+		String _accName;
 	public:
 		enum { bytes = 1 };
 	public:
-		inline Rule_ACC(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
+		inline Rule_ACC(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_REL : public Rule {
@@ -46,38 +46,38 @@ public:
 	};
 	class Rule_IMM : public Rule {
 	private:
-		char _chAcc;
+		String _accName;
 	public:
 		enum { bytes = 2 };
 	public:
-		inline Rule_IMM(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
+		inline Rule_IMM(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_DIR : public Rule {
 	private:
-		char _chAcc;
+		String _accName;
 	public:
 		enum { bytes = 2 };
 	public:
-		inline Rule_DIR(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
+		inline Rule_DIR(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_IDX : public Rule {
 	private:
-		char _chAcc;
+		String _accName;
 	public:
 		enum { bytes = 2 };
 	public:
-		inline Rule_IDX(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
+		inline Rule_IDX(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_EXT : public Rule {
 	private:
-		char _chAcc;
+		String _accName;
 	public:
 		enum { bytes = 3 };
 	public:
-		inline Rule_EXT(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
+		inline Rule_EXT(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	typedef std::vector<Rule *> RuleList;
@@ -186,6 +186,132 @@ class ElementOwner : public ElementList {
 public:
 	~ElementOwner();
 	void Clear();
+};
+
+//-----------------------------------------------------------------------------
+// Element_Inst
+//-----------------------------------------------------------------------------
+class Element_Inst : public Element {
+private:
+	String _symbol;
+public:
+	inline Element_Inst(const String &symbol) : Element(TYPE_Inst), _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_A
+//-----------------------------------------------------------------------------
+class Element_A : public Element {
+public:
+	inline Element_A() : Element(TYPE_A) {}
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_B
+//-----------------------------------------------------------------------------
+class Element_B : public Element {
+public:
+	inline Element_B() : Element(TYPE_B) {}
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_X
+//-----------------------------------------------------------------------------
+class Element_X : public Element {
+public:
+	inline Element_X() : Element(TYPE_X) {}
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_Number
+//-----------------------------------------------------------------------------
+class Element_Number : public Element {
+private:
+	UInt32 _num;
+public:
+	inline Element_Number(UInt32 num) : Element(TYPE_Number), _num(num) {}
+	inline UInt32 GetNumber() const { return _num; }
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_Symbol
+//-----------------------------------------------------------------------------
+class Element_Symbol : public Element {
+private:
+	String _str;
+	UInt32 _num;
+	bool _validNumFlag;
+public:
+	inline Element_Symbol(const String &str) :
+		Element(TYPE_Symbol), _str(str), _num(0), _validNumFlag(false) {}
+	inline void SetNumber(UInt32 num) { _num = num; _validNumFlag = true; }
+	inline void InvalidateNumber() { _validNumFlag = false; }
+	inline UInt32 GetNumber() const { return _num; }
+	inline bool IsValidNumber() const { return _validNumFlag; }
+	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
+	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_String
+//-----------------------------------------------------------------------------
+class Element_String : public Element {
+private:
+	String _str;
+public:
+	inline Element_String(const String &str) : Element(TYPE_String), _str(str) {}
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Element_BinOp
+//-----------------------------------------------------------------------------
+class Element_BinOp : public Element {
+public:
+	inline Element_BinOp(Element *pElementL, Element *pElementR) : Element(TYPE_BinOp) {
+		GetChildren().push_back(pElementL);
+		GetChildren().push_back(pElementR);
+	}
+	const Element *GetLeft() const { return GetChildren()[0]; }
+	const Element *GetRight() const { return GetChildren()[1]; }
+	virtual String ToString() const;
+};
+
+class Element_BinOp_Add : public Element_BinOp {
+public:
+	inline Element_BinOp_Add(Element *pElementL, Element *pElementR) :
+		Element_BinOp(pElementL, pElementR) {}
+};
+
+class Element_BinOp_Sub : public Element_BinOp {
+public:
+	inline Element_BinOp_Sub(Element *pElementL, Element *pElementR) :
+		Element_BinOp(pElementL, pElementR) {}
+};
+
+class Element_BinOp_Mul : public Element_BinOp {
+public:
+	inline Element_BinOp_Mul(Element *pElementL, Element *pElementR) :
+		Element_BinOp(pElementL, pElementR) {}
+};
+
+class Element_BinOp_Div : public Element_BinOp {
+public:
+	inline Element_BinOp_Div(Element *pElementL, Element *pElementR) :
+		Element_BinOp(pElementL, pElementR) {}
+};
+
+class Element_Bracket : public Element {
+public:
+	inline Element_Bracket() : Element(TYPE_Bracket) {}
+	virtual String ToString() const;
 };
 
 //-----------------------------------------------------------------------------
@@ -350,8 +476,8 @@ InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
 	const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
-	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B, "b"));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
 	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
@@ -363,12 +489,12 @@ InstInfo *InstInfo::Syntax_AxB_DIR_IDX_EXT(
 	UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B, 'b'));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B, 'b'));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B, "b"));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B, "b"));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B, "b"));
 	return pInstInfo;
 }
 
@@ -378,18 +504,16 @@ InstInfo *InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT(
 	UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
-	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, 'a'));
-	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_B, 'b'));
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B, 'b'));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B, 'b'));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, "a"));
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_B, "b"));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B, "b"));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B, "b"));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B, "b"));
 	return pInstInfo;
 }
-
-class ElementOwner;
 
 //-----------------------------------------------------------------------------
 // InstInfo::Rule
@@ -400,13 +524,16 @@ InstInfo::Rule::~Rule()
 
 size_t InstInfo::Rule_ACC::Apply(Binary &buff, const ElementList &elemList)
 {
-	if (_chAcc == '\0') {
-		// OP .. _chAcc == '\0'
+	if (_accName.empty()) {
+		// OP .. _accName is empty
 		if (elemList.size() != 0) return 0;
 	} else {
-		// OP a ... _chAcc == 'a'
-		// OP b ... _chAcc == 'b'
+		// OP a ... _accName is "a"
+		// OP b ... _accName is "b"
 		if (elemList.size() != 1) return 0;
+		const Element *pElem = elemList.front();
+		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
 	buff += _code;
 	return bytes;
@@ -430,27 +557,40 @@ size_t InstInfo::Rule_INH::Apply(Binary &buff, const ElementList &elemList)
 
 size_t InstInfo::Rule_IMM::Apply(Binary &buff, const ElementList &elemList)
 {
-	if (_chAcc == '\0') {
-		// OP #data8 ... _chAcc == '\0'
+	if (_accName.empty()) {
+		// OP data8 ... _accName is empty
 		if (elemList.size() != 1) return 0;
 	} else {
-		// OP a,#data8 ... _chAcc == 'a'
-		// OP b,#data8 ... _chAcc == 'b'
+		// OP a,data8 ... _accName is "a"
+		// OP b,data8 ... _accName is "b"
 		if (elemList.size() != 2) return 0;
+		const Element *pElem = elemList.front();
+		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
+	}
+	const Element *pElem = elemList.back();
+	if (!pElem->IsType(Element::TYPE_Number)) return 0;
+	UInt32 num = dynamic_cast<const Element_Number *>(pElem)->GetNumber();
+	if (num > 0xff) {
+		// error
 	}
 	buff += _code;
+	buff += static_cast<UInt8>(num);
 	return bytes;
 }
 
 size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &elemList)
 {
-	if (_chAcc == '\0') {
-		// OP (addr8) ... _chAcc == '\0'
+	if (_accName.empty()) {
+		// OP (addr8) ... _accName is empty
 		if (elemList.size() != 1) return 0;
 	} else {
-		// OP a,(addr8) ... _chAcc == 'a'
-		// OP b,(addr8) ... _chAcc == 'b'
+		// OP a,(addr8) ... _accName is "a"
+		// OP b,(addr8) ... _accName is "b"
 		if (elemList.size() != 2) return 0;
+		const Element *pElem = elemList.front();
+		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
 	buff += _code;
 	return bytes;
@@ -458,13 +598,16 @@ size_t InstInfo::Rule_DIR::Apply(Binary &buff, const ElementList &elemList)
 
 size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &elemList)
 {
-	if (_chAcc == '\0') {
-		// OP [x+data8] ... _chAcc == '\0'
+	if (_accName.empty()) {
+		// OP [x+data8] ... _accName is empty
 		if (elemList.size() != 1) return 0;
 	} else {
-		// OP a,[x+data8] ... _chAcc == 'a'
-		// OP b,[x+data8] ... _chAcc == 'b'
+		// OP a,[x+data8] ... _accName is "a"
+		// OP b,[x+data8] ... _accName is "b"
 		if (elemList.size() != 2) return 0;
+		const Element *pElem = elemList.front();
+		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
 	buff += _code;
 	return bytes;
@@ -472,13 +615,16 @@ size_t InstInfo::Rule_IDX::Apply(Binary &buff, const ElementList &elemList)
 
 size_t InstInfo::Rule_EXT::Apply(Binary &buff, const ElementList &elemList)
 {
-	if (_chAcc == '\0') {
-		// OP [addr16] ... _chAcc == '\0'
+	if (_accName.empty()) {
+		// OP [addr16] ... _accName is empty
 		if (elemList.size() != 1) return 0;
 	} else {
-		// OP a,[addr16] ... _chAcc == 'a'
-		// OP b,[addr16] ... _chAcc == 'b'
+		// OP a,[addr16] ... _accName is "a"
+		// OP b,[addr16] ... _accName is "b"
 		if (elemList.size() != 2) return 0;
+		const Element *pElem = elemList.front();
+		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
 	}
 	buff += _code;
 	return bytes;
@@ -535,6 +681,83 @@ void Element::AddChild(Element *pElement)
 }
 
 //-----------------------------------------------------------------------------
+// Element_Inst
+//-----------------------------------------------------------------------------
+String Element_Inst::ToString() const
+{
+	String str = _symbol;
+	str += " ";
+	str += GetChildren().ToString();
+	return str;
+}
+
+//-----------------------------------------------------------------------------
+// Element_A
+//-----------------------------------------------------------------------------
+String Element_A::ToString() const
+{
+	return "A";
+}
+
+//-----------------------------------------------------------------------------
+// Element_B
+//-----------------------------------------------------------------------------
+String Element_B::ToString() const
+{
+	return "B";
+}
+
+//-----------------------------------------------------------------------------
+// Element_X
+//-----------------------------------------------------------------------------
+String Element_X::ToString() const
+{
+	return "X";
+}
+
+//-----------------------------------------------------------------------------
+// Element_Number
+//-----------------------------------------------------------------------------
+String Element_Number::ToString() const
+{
+	char buff[128];
+	::sprintf_s(buff, "$%x", _num);
+	return buff;
+}
+
+//-----------------------------------------------------------------------------
+// Element_Symbol
+//-----------------------------------------------------------------------------
+String Element_Symbol::ToString() const
+{
+	return _str;
+}
+
+//-----------------------------------------------------------------------------
+// Element_String
+//-----------------------------------------------------------------------------
+String Element_String::ToString() const
+{
+	String str;
+	str = "\"";
+	str += _str;
+	str += "\"";
+	return str;
+}
+
+//-----------------------------------------------------------------------------
+// Element_BinOp
+//-----------------------------------------------------------------------------
+String Element_BinOp::ToString() const
+{
+	String str;
+	str = GetLeft()->ToString();
+	str += " + ";
+	str += GetRight()->ToString();
+	return str;
+}
+
+//-----------------------------------------------------------------------------
 // ElementOwner
 //-----------------------------------------------------------------------------
 ElementOwner::~ElementOwner()
@@ -550,157 +773,6 @@ void ElementOwner::Clear()
 	clear();
 }
 
-class Element_Inst : public Element {
-private:
-	String _symbol;
-public:
-	inline Element_Inst(const String &symbol) : Element(TYPE_Inst), _symbol(symbol) {}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	virtual String ToString() const;
-};
-
-String Element_Inst::ToString() const
-{
-	String str = _symbol;
-	str += " ";
-	str += GetChildren().ToString();
-	return str;
-}
-
-class Element_A : public Element {
-public:
-	inline Element_A() : Element(TYPE_A) {}
-	virtual String ToString() const;
-};
-
-String Element_A::ToString() const
-{
-	return "A";
-}
-
-class Element_B : public Element {
-public:
-	inline Element_B() : Element(TYPE_B) {}
-	virtual String ToString() const;
-};
-
-String Element_B::ToString() const
-{
-	return "B";
-}
-
-class Element_X : public Element {
-public:
-	inline Element_X() : Element(TYPE_X) {}
-	virtual String ToString() const;
-};
-
-String Element_X::ToString() const
-{
-	return "X";
-}
-
-class Element_Number : public Element {
-private:
-	UInt32 _num;
-public:
-	inline Element_Number(UInt32 num) : Element(TYPE_Number), _num(num) {}
-	virtual String ToString() const;
-};
-
-String Element_Number::ToString() const
-{
-	char buff[128];
-	::sprintf_s(buff, "$%x", _num);
-	return buff;
-}
-
-class Element_Symbol : public Element {
-private:
-	String _symbol;
-	UInt32 _num;
-	bool _validNumFlag;
-public:
-	inline Element_Symbol(const String &symbol) :
-		Element(TYPE_Symbol), _symbol(symbol), _num(0), _validNumFlag(false) {}
-	inline void SetNumber(UInt32 num) { _num = num; _validNumFlag = true; }
-	inline void InvalidateNumber() { _validNumFlag = false; }
-	inline UInt32 GetNumber() const { return _num; }
-	inline bool IsValidNumber() const { return _validNumFlag; }
-	virtual String ToString() const;
-};
-
-String Element_Symbol::ToString() const
-{
-	return _symbol;
-}
-
-class Element_String : public Element {
-private:
-	String _str;
-public:
-	inline Element_String(const String &str) : Element(TYPE_String), _str(str) {}
-	virtual String ToString() const;
-};
-
-String Element_String::ToString() const
-{
-	String str;
-	str = "\"";
-	str += _str;
-	str += "\"";
-	return str;
-}
-
-class Element_BinOp : public Element {
-public:
-	inline Element_BinOp(Element *pElementL, Element *pElementR) : Element(TYPE_BinOp) {
-		GetChildren().push_back(pElementL);
-		GetChildren().push_back(pElementR);
-	}
-	const Element *GetLeft() const { return GetChildren()[0]; }
-	const Element *GetRight() const { return GetChildren()[1]; }
-	virtual String ToString() const;
-};
-
-String Element_BinOp::ToString() const
-{
-	String str;
-	str = GetLeft()->ToString();
-	str += " + ";
-	str += GetRight()->ToString();
-	return str;
-}
-
-class Element_BinOp_Add : public Element_BinOp {
-public:
-	inline Element_BinOp_Add(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
-};
-
-class Element_BinOp_Sub : public Element_BinOp {
-public:
-	inline Element_BinOp_Sub(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
-};
-
-class Element_BinOp_Mul : public Element_BinOp {
-public:
-	inline Element_BinOp_Mul(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
-};
-
-class Element_BinOp_Div : public Element_BinOp {
-public:
-	inline Element_BinOp_Div(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
-};
-
-class Element_Bracket : public Element {
-public:
-	inline Element_Bracket() : Element(TYPE_Bracket) {}
-	virtual String ToString() const;
-};
 
 String Element_Bracket::ToString() const
 {
