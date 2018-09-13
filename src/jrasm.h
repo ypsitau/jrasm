@@ -8,6 +8,7 @@
 #include "Element.h"
 #include "InstInfo.h"
 #include "Tokenizer.h"
+#include "Parser.h"
 #include "CJRFormat.h"
 #include "MmlParser.h"
 
