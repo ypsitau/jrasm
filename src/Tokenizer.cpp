@@ -36,6 +36,9 @@ bool Tokenizer::FeedChar(char ch)
 			_str.clear();
 			_str += ch;
 			_stat = STAT_Symbol;
+		} else if (ch == '"') {
+			_str.clear();
+			_stat = STAT_String;
 		} else if (IsDigit(ch)) {
 			_num = 0;
 			_str.clear();
@@ -104,6 +107,33 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = CompleteToken(Token::TYPE_Symbol, _str);
 			_stat = STAT_Neutral;
 			Pushback();
+		}
+		break;
+	}
+	case STAT_String: {
+		if (IsEOF(ch) || IsEOL(ch)) {
+			SetErrMsg("unclosed string literal");
+			rtn = false;
+		} else if (ch == '"') {
+			rtn = CompleteToken(Token::TYPE_String, _str);
+			_stat = STAT_Neutral;
+		} else if (ch == '\\') {
+			_stat = STAT_StringEsc;
+		} else {
+			_str += ch;
+		}
+		break;
+	}
+	case STAT_StringEsc: {
+		if (ch == '"') {
+			_str += ch;
+		} else if (ch == 'n') {
+			_str += '\n';
+		} else if (ch == 'r') {
+			_str += '\r';
+		} else {
+			SetErrMsg("invalid escape character");
+			rtn = false;
 		}
 		break;
 	}

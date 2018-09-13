@@ -14,6 +14,7 @@ String Token::ToString() const
 		{ TYPE_White,			"White"		},
 		{ TYPE_Number,			"Number"	},
 		{ TYPE_Symbol,			"Symbol"	},
+		{ TYPE_String,			"String"	},
 		{ TYPE_Colon,			":"			},
 		{ TYPE_Comma,			","			},
 		{ TYPE_Plus,			"+"			},

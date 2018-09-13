@@ -14,6 +14,7 @@ public:
 		TYPE_White,
 		TYPE_Number,
 		TYPE_Symbol,
+		TYPE_String,
 		TYPE_Colon,
 		TYPE_Comma,
 		TYPE_Plus,
