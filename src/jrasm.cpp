@@ -22,8 +22,10 @@ public:
 		virtual size_t Apply(Binary &buff, const ElementList &elemList) = 0;
 	};
 	class Rule_ACC : public Rule {
+	private:
+		char _chAcc;
 	public:
-		inline Rule_ACC(UInt8 code) : Rule(code) {}
+		inline Rule_ACC(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_REL : public Rule {
@@ -37,23 +39,31 @@ public:
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_IMM : public Rule {
+	private:
+		char _chAcc;
 	public:
-		inline Rule_IMM(UInt8 code) : Rule(code) {}
+		inline Rule_IMM(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_DIR : public Rule {
+	private:
+		char _chAcc;
 	public:
-		inline Rule_DIR(UInt8 code) : Rule(code) {}
+		inline Rule_DIR(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_IDX : public Rule {
+	private:
+		char _chAcc;
 	public:
-		inline Rule_IDX(UInt8 code) : Rule(code) {}
+		inline Rule_IDX(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	class Rule_EXT : public Rule {
+	private:
+		char _chAcc;
 	public:
-		inline Rule_EXT(UInt8 code) : Rule(code) {}
+		inline Rule_EXT(UInt8 code, char chAcc = '\0') : Rule(code), _chAcc(chAcc) {}
 		virtual size_t Apply(Binary &buff, const ElementList &elemList);
 	};
 	typedef std::vector<Rule *> RuleList;
@@ -267,8 +277,8 @@ InstInfo *InstInfo::Syntax_ACC_ACC_IDX_EXT(
 	const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
-	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A));
-	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B));
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_ACC(codeACC_B, 'b'));
 	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX));
 	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT));
 	return pInstInfo;
@@ -280,12 +290,12 @@ InstInfo *InstInfo::Syntax_AxB_DIR_IDX_EXT(
 	UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A));
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B, 'b'));
 	return pInstInfo;
 }
 
@@ -295,14 +305,14 @@ InstInfo *InstInfo::Syntax_AxB_IMM_DIR_IDX_EXT(
 	UInt8 codeIMM_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	InstInfo *pInstInfo = new InstInfo(symbol);
-	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_A));
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A));
-	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_B));
-	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B));
-	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B));
-	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B));
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_A, 'a'));
+	pInstInfo->AddRule(new InstInfo::Rule_IMM(codeIMM_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_DIR(codeDIR_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_IDX(codeIDX_B, 'b'));
+	pInstInfo->AddRule(new InstInfo::Rule_EXT(codeEXT_B, 'b'));
 	return pInstInfo;
 }
 
