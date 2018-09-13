@@ -140,7 +140,14 @@ bool Parse(const char *fileName)
 		if (ch == '\0') break;
 	}
 	::fclose(fp);
-	parser.GetInstructions().Print();
+	const ElementList &elemList = parser.GetInstructions();
+	elemList.Print();
+	for (auto pElem : elemList) {
+		if (!pElem->IsType(Element::TYPE_Inst)) continue;
+		const Element_Inst *pElemEx = dynamic_cast<const Element_Inst *>(pElem);
+		
+
+	}
 	return true;
 }
 

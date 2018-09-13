@@ -6,8 +6,19 @@
 //-----------------------------------------------------------------------------
 // InstInfo
 //-----------------------------------------------------------------------------
+InstInfoMap *InstInfo::_pInstInfoMap = nullptr;
+
 InstInfo::InstInfo(const String &symbol) : _symbol(symbol)
 {
+}
+
+const InstInfo *InstInfo::Lookup(const char *symbol)
+{
+	if (_pInstInfoMap == nullptr) {
+		_pInstInfoMap = new InstInfoMap();
+		_pInstInfoMap->Initialize();
+	}
+	return _pInstInfoMap->Lookup(symbol);
 }
 
 InstInfo *InstInfo::Syntax_ACC(const String &symbol, UInt8 codeACC)

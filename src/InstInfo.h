@@ -8,11 +8,14 @@
 
 class ElementList;
 class ElementOwner;
+class InstInfoMap;
 
 //-----------------------------------------------------------------------------
 // InstInfo
 //-----------------------------------------------------------------------------
 class InstInfo {
+private:
+	static InstInfoMap *_pInstInfoMap;
 public:
 	class Rule {
 	protected:
@@ -94,6 +97,7 @@ public:
 	InstInfo(const String &symbol);
 public:
 	//bool ApplyRule();
+	static const InstInfo *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline void AddRule(Rule *pRule) { _ruleOwner.push_back(pRule); }
 	static InstInfo *Syntax_ACC(const String &symbol, UInt8 codeACC);
