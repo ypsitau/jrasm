@@ -6,16 +6,15 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context(const String &fileNameSrc, Generator *pGenerator) :
-	_fileNameSrc(fileNameSrc), _pGenerator(pGenerator)
+Context::Context(Generator *pGenerator) : _pGenerator(pGenerator)
 {
 }
 
-void Context::SetError(int lineNo, const char *format, ...)
+void Context::SetError(const char *fileName, int lineNo, const char *format, ...)
 {
 	char buff[256];
 	va_list ap;
-	_errMsg = _fileNameSrc;
+	_errMsg = fileName;
 	::sprintf_s(buff, ":%d ", lineNo);
 	_errMsg += buff;
 	va_start(ap, format);

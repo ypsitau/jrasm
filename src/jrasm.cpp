@@ -22,7 +22,7 @@ bool Parse(const char *fileName)
 	::fclose(fp);
 	const ExprList &exprList = parser.GetInstructions();
 	//exprList.Print();
-	Context context(fileName, new Generator_M6800());
+	Context context(new Generator_M6800());
 	for (auto pExpr : exprList) {
 		context.ClearBuffer();
 		pExpr->Generate(context);

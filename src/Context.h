@@ -11,18 +11,18 @@
 //-----------------------------------------------------------------------------
 class Context {
 private:
-	String _fileNameSrc;
-	Binary _buff;
 	std::unique_ptr<Generator> _pGenerator;
+	Binary _buff;
 	String _errMsg;
 public:
-	Context(const String &fileNameSrc, Generator *pGenerator);
-	inline const char *GetFileNameSrc() const { return _fileNameSrc.c_str(); }
+	Context(Generator *pGenerator);
 	inline const Generator *GetGenerator() const { return _pGenerator.get(); }
 	inline const Binary &GetBuffer() { return _buff; }
 	inline void PutByte(UInt8 data) { _buff += data; }
 	inline void ClearBuffer() { _buff.clear(); }
-	void SetError(int lineNo, const char *format, ...);
+	inline void ClearError() { _errMsg.clear(); }
+	inline bool IsError() const { return !_errMsg.empty(); }
+	void SetError(const char *fileName, int lineNo, const char *format, ...);
 	void Dump();
 };
 
