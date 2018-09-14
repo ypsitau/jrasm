@@ -19,6 +19,12 @@ void Expr::AddChild(Expr *pExpr)
 	_pExprChildren->push_back(pExpr);
 }
 
+bool Expr::Resolve(Context &context)
+{
+	// error
+	return false;
+}
+
 bool Expr::Generate(Context &context)
 {
 	// error
@@ -128,6 +134,28 @@ String Expr_Parenthesis::ToString() const
 }
 
 //-----------------------------------------------------------------------------
+// Expr_Label
+//-----------------------------------------------------------------------------
+String Expr_Label::ToString() const
+{
+	String str;
+	str = _str;
+	str += ":";
+	return str;
+}
+
+bool Expr_Label::Resolve(Context &context)
+{
+	return true;
+}
+
+bool Expr_Label::Generate(Context &context)
+{
+	// nothing to do
+	return true;
+}
+
+//-----------------------------------------------------------------------------
 // Expr_Inst
 //-----------------------------------------------------------------------------
 String Expr_Inst::ToString() const
@@ -136,6 +164,11 @@ String Expr_Inst::ToString() const
 	str += " ";
 	str += GetChildren().ToString();
 	return str;
+}
+
+bool Expr_Inst::Resolve(Context &context)
+{
+	return true;
 }
 
 bool Expr_Inst::Generate(Context &context)

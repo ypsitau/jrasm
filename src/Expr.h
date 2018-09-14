@@ -20,6 +20,7 @@ public:
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Parenthesis,
+		TYPE_Label,
 		TYPE_Inst,
 	};
 private:
@@ -38,6 +39,7 @@ public:
 	inline ExprOwner &GetChildren() { return *_pExprChildren; }
 	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
 	void AddChild(Expr *pExpr);
+	virtual bool Resolve(Context &context);
 	virtual bool Generate(Context &context);
 	virtual String ToString() const = 0;
 };
@@ -83,15 +85,8 @@ public:
 class Expr_Symbol : public Expr {
 private:
 	String _str;
-	UInt32 _num;
-	bool _validNumFlag;
 public:
-	inline Expr_Symbol(const String &str) :
-		Expr(TYPE_Symbol), _str(str), _num(0), _validNumFlag(false) {}
-	inline void SetNumber(UInt32 num) { _num = num; _validNumFlag = true; }
-	inline void InvalidateNumber() { _validNumFlag = false; }
-	inline UInt32 GetNumber() const { return _num; }
-	inline bool IsValidNumber() const { return _validNumFlag; }
+	inline Expr_Symbol(const String &str) : Expr(TYPE_Symbol), _str(str) {}
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
 	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
 	virtual String ToString() const;
@@ -144,6 +139,21 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Expr_Label
+//-----------------------------------------------------------------------------
+class Expr_Label : public Expr {
+private:
+	String _str;
+public:
+	inline Expr_Label(const String &str) : Expr(TYPE_Label), _str(str) {}
+	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
+	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
+	virtual bool Resolve(Context &context);
+	virtual bool Generate(Context &context);
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
 // Expr_Inst
 //-----------------------------------------------------------------------------
 class Expr_Inst : public Expr {
@@ -153,6 +163,7 @@ public:
 	inline Expr_Inst(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool Resolve(Context &context);
 	virtual bool Generate(Context &context);
 	virtual String ToString() const;
 };

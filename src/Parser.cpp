@@ -83,6 +83,8 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
+			Expr *pExpr = new Expr_Label(pToken->GetString());
+			_exprOwner.push_back(pExpr);
 			_stat = STAT_Label;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Instruction;
@@ -91,7 +93,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	}
 	case STAT_Label: {
 		if (pToken->IsType(TOKEN_Colon)) {
-			
+			_stat = STAT_Instruction;
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else {
@@ -106,6 +108,8 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprOwner.push_back(pExpr);
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;
+		} else if (pToken->IsType(TOKEN_EOL)) {
+			_stat = STAT_LineTop;
 		} else {
 			_tokenizer.SetErrMsg("instruction or pseudo command is expected");
 			rtn = false;

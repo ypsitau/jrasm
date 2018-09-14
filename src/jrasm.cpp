@@ -27,7 +27,11 @@ bool Parse(const char *fileName)
 		context.ClearBuffer();
 		pExpr->Generate(context);
 		::printf("%-32s", pExpr->ToString().c_str());
-		context.Dump();
+		if (context.GetBuffer().empty()) {
+			::printf("(none)\n");
+		} else {
+			context.Dump();
+		}
 	}
 	return true;
 }
