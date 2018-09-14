@@ -28,6 +28,7 @@ public:
 	inline const ExprOwner &GetInstructions() const { return _exprOwner; }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline const char *GetErrMsg() const { return _tokenizer.GetErrMsg(); }
+	bool ParseByPrec(AutoPtr<Token> pToken);
 public:
 	// implementation for Tokenizer::Listener
 	virtual bool FeedToken(AutoPtr<Token> pToken);
