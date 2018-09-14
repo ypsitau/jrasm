@@ -38,6 +38,8 @@ public:
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetChildren() { return *_pExprChildren; }
 	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
+	inline const char *GetFileNameSrc() const { return ""; }
+	inline int GetLineNo() const { return 0; }
 	void AddChild(Expr *pExpr);
 	virtual bool Resolve(Context &context);
 	virtual bool Generate(Context &context);

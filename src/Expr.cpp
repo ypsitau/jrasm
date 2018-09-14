@@ -21,13 +21,13 @@ void Expr::AddChild(Expr *pExpr)
 
 bool Expr::Resolve(Context &context)
 {
-	// error
+	context.SetError(this, "invalid format");
 	return false;
 }
 
 bool Expr::Generate(Context &context)
 {
-	// error
+	context.SetError(this, "invalid format");
 	return false;
 }
 
@@ -173,5 +173,5 @@ bool Expr_Inst::Resolve(Context &context)
 
 bool Expr_Inst::Generate(Context &context)
 {
-	return context.GetGenerator()->Generate(context, GetSymbol(), GetOperands());
+	return context.GetGenerator()->Generate(context, this);
 }

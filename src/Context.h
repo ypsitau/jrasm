@@ -6,6 +6,8 @@
 
 #include "Generator.h"
 
+class Expr;
+
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
@@ -22,7 +24,8 @@ public:
 	inline void ClearBuffer() { _buff.clear(); }
 	inline void ClearError() { _errMsg.clear(); }
 	inline bool IsError() const { return !_errMsg.empty(); }
-	void SetError(const char *fileName, int lineNo, const char *format, ...);
+	void SetError(const char *format, ...);
+	void SetError(const Expr *pExpr, const char *format, ...);
 	void Dump();
 };
 

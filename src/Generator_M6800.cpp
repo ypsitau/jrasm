@@ -131,13 +131,13 @@ Generator_M6800::Generator_M6800()
 	m.Add(Entry_INH					("wai", 0x3e));
 }
 
-bool Generator_M6800::Generate(Context &context, const char *symbol, const ExprList &operands) const
+bool Generator_M6800::Generate(Context &context, const Expr_Inst *pExpr) const
 {
-	const Entry *pEntry = _entryMap.Lookup(symbol);
+	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
-		::printf("unknown instruction: %s\n", symbol);
+		context.SetError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
 	}
-	if (!pEntry->ApplyRule(context, operands)) return false;
+	if (!pEntry->ApplyRule(context, pExpr)) return false;
 	return true;
 }
 
@@ -271,8 +271,9 @@ Generator_M6800::Rule::~Rule()
 {
 }
 
-size_t Generator_M6800::Rule_ACC::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_ACC::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP .. _accName is empty
 		if (operands.size() != 0) return 0;
@@ -288,24 +289,27 @@ size_t Generator_M6800::Rule_ACC::Apply(Context &context, const ExprList &operan
 	return bytes;
 }
 
-size_t Generator_M6800::Rule_REL::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_REL::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
 	if (operands.size() != 1) return 0;
 	context.PutByte(_code);
 	return 0;
 }
 
-size_t Generator_M6800::Rule_INH::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_INH::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	// OP
 	if (operands.size() != 0) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
 
-size_t Generator_M6800::Rule_IMM8::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_IMM8::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
 		if (operands.size() != 1) return 0;
@@ -317,9 +321,9 @@ size_t Generator_M6800::Rule_IMM8::Apply(Context &context, const ExprList &opera
 		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Expr *pExpr = operands.back();
-	if (!pExpr->IsType(Expr::TYPE_Number)) return 0;
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExpr)->GetNumber();
+	const Expr *pExprLast = operands.back();
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return 0;
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xff) {
 		// error
@@ -328,13 +332,14 @@ size_t Generator_M6800::Rule_IMM8::Apply(Context &context, const ExprList &opera
 	return bytes;
 }
 
-size_t Generator_M6800::Rule_IMM16::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_IMM16::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
 	if (operands.size() != 1) return 0;
-	const Expr *pExpr = operands.back();
-	if (!pExpr->IsType(Expr::TYPE_Number)) return 0;
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExpr)->GetNumber();
+	const Expr *pExprLast = operands.back();
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return 0;
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xffff) {
 		// error
@@ -344,8 +349,9 @@ size_t Generator_M6800::Rule_IMM16::Apply(Context &context, const ExprList &oper
 	return bytes;
 }
 
-size_t Generator_M6800::Rule_DIR::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_DIR::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
 		if (operands.size() != 1) return 0;
@@ -353,18 +359,19 @@ size_t Generator_M6800::Rule_DIR::Apply(Context &context, const ExprList &operan
 		// OP a,(addr8) ... _accName is "a"
 		// OP b,(addr8) ... _accName is "b"
 		if (operands.size() != 2) return 0;
-		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExprLast = operands.front();
+		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Expr *pExpr = operands.back();
-	if (!pExpr->IsType(Expr::TYPE_Parenthesis)) return 0;
+	const Expr *pExprLast = operands.back();
+	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
 
-size_t Generator_M6800::Rule_IDX::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_IDX::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
 		if (operands.size() != 1) return 0;
@@ -372,18 +379,19 @@ size_t Generator_M6800::Rule_IDX::Apply(Context &context, const ExprList &operan
 		// OP a,[x+data8] ... _accName is "a"
 		// OP b,[x+data8] ... _accName is "b"
 		if (operands.size() != 2) return 0;
-		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExprLast = operands.front();
+		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Expr *pExpr = operands.back();
-	if (!pExpr->IsType(Expr::TYPE_Bracket)) return 0;
+	const Expr *pExprLast = operands.back();
+	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
 
-size_t Generator_M6800::Rule_EXT::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_EXT::Apply(Context &context, const Expr_Inst *pExpr)
 {
+	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
 		if (operands.size() != 1) return 0;
@@ -395,8 +403,8 @@ size_t Generator_M6800::Rule_EXT::Apply(Context &context, const ExprList &operan
 		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
 		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Expr *pExpr = operands.back();
-	if (!pExpr->IsType(Expr::TYPE_Bracket)) return 0;
+	const Expr *pExprLast = operands.back();
+	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
@@ -425,10 +433,10 @@ Generator_M6800::Entry::Entry(const String &symbol, const String &syntaxDesc) :
 {
 }
 
-bool Generator_M6800::Entry::ApplyRule(Context &context, const ExprList &operands) const
+bool Generator_M6800::Entry::ApplyRule(Context &context, const Expr_Inst *pExpr) const
 {
 	for (auto pRule : _ruleOwner) {
-		size_t bytes = pRule->Apply(context, operands);
+		size_t bytes = pRule->Apply(context, pExpr);
 		if (bytes != 0) return true;
 	}
 	// error

@@ -8,6 +8,7 @@
 
 class Context;
 class ExprList;
+class Expr_Inst;
 
 //-----------------------------------------------------------------------------
 // Generator
@@ -16,7 +17,7 @@ class Generator {
 public:
 	inline Generator() {}
 	virtual ~Generator();
-	virtual bool Generate(Context &context, const char *symbol, const ExprList &operands) const = 0;
+	virtual bool Generate(Context &context, const Expr_Inst *pExpr) const = 0;
 };
 
 #endif

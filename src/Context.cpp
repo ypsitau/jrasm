@@ -10,12 +10,12 @@ Context::Context(Generator *pGenerator) : _pGenerator(pGenerator)
 {
 }
 
-void Context::SetError(const char *fileName, int lineNo, const char *format, ...)
+void Context::SetError(const Expr *pExpr, const char *format, ...)
 {
 	char buff[256];
 	va_list ap;
-	_errMsg = fileName;
-	::sprintf_s(buff, ":%d ", lineNo);
+	_errMsg = pExpr->GetFileNameSrc();
+	::sprintf_s(buff, ":%d ", pExpr->GetLineNo());
 	_errMsg += buff;
 	va_start(ap, format);
 	::vsprintf_s(buff, format, ap);
