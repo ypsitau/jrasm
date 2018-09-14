@@ -36,6 +36,8 @@
 # Visual Studio Project Files
 *.filters
 *.user
+
+/build
 /msc/x86
 /msc/x64
 /msc/.vs
