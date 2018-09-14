@@ -31,25 +31,24 @@ public:
 		const char *name;
 	};
 private:
+	int _cntRef;
 	Type _type;
 	String _str;
 	UInt32 _num;
 	bool _validStrFlag;
 public:
-	inline Token() : _type(TYPE_None), _num(0), _validStrFlag(false) {}
+	DeclareReferenceAccessor(Token);
+public:
+	inline Token(Type type) :
+		_cntRef(1), _type(type), _num(0), _validStrFlag(false) {}
+	inline Token(Type type, const String &str) :
+		_cntRef(1), _type(type), _str(str), _num(0), _validStrFlag(true) {}
+	inline Token(Type type, const String &str, UInt32 num) :
+		_cntRef(1), _type(type), _str(str), _num(num), _validStrFlag(true) {}
+private:
+	inline ~Token() {}
+public:
 	inline bool IsType(Type type) const { return _type == type; }
-	inline void Set(Type type) {
-		_type = type;
-		_validStrFlag = false;
-	}
-	inline void Set(Type type, const String &str) {
-		_type = type, _str = str;
-		_validStrFlag = true;
-	}
-	inline void Set(Type type, const String &str, UInt32 num) {
-		_type = type, _str = str, _num = num;
-		_validStrFlag = true;
-	}
 	inline UInt32 GetNumber() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }

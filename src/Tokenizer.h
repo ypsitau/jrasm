@@ -13,7 +13,7 @@ class Tokenizer {
 public:
 	class Listener {
 	public:
-		virtual bool FeedToken(const Token &token) = 0;
+		virtual bool FeedToken(AutoPtr<Token> pToken) = 0;
 	};
 	enum Stat {
 		STAT_LineTop,
@@ -35,7 +35,6 @@ private:
 	String _errMsg;
 	UInt16 _num;
 	String _str;
-	Token _token;
 	int _nLines;
 public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
@@ -43,9 +42,9 @@ public:
 	void SetErrMsg(const char *format, ...);
 	inline const char *GetErrMsg() const { return _errMsg.c_str(); }
 private:
-	bool CompleteToken(Token::Type type);
-	bool CompleteToken(Token::Type type, const String &str);
-	bool CompleteToken(Token::Type type, const String &str, UInt32 num);
+	bool FeedToken(Token::Type type);
+	bool FeedToken(Token::Type type, const String &str);
+	bool FeedToken(Token::Type type, const String &str, UInt32 num);
 	inline static bool IsEOF(char ch) { return ch == '\0'; }
 	inline static bool IsEOL(char ch) { return ch == '\n'; }
 	inline static bool IsWhite(char ch) { return ch == ' ' || ch == '\t'; }

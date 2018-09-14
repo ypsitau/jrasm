@@ -27,7 +27,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_Neutral: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			rtn = CompleteToken(Token::TYPE_EOL);
+			rtn = FeedToken(Token::TYPE_EOL);
 			_stat = STAT_LineTop;
 		} else if (IsWhite(ch)) {
 			_stat = STAT_White;
@@ -51,25 +51,25 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == ';') {
 			_stat = STAT_Comment;
 		} else if (ch == ':') {
-			rtn = CompleteToken(Token::TYPE_Colon);
+			rtn = FeedToken(Token::TYPE_Colon);
 		} else if (ch == ',') {
-			rtn = CompleteToken(Token::TYPE_Comma);
+			rtn = FeedToken(Token::TYPE_Comma);
 		} else if (ch == '+') {
-			rtn = CompleteToken(Token::TYPE_Plus);
+			rtn = FeedToken(Token::TYPE_Plus);
 		} else if (ch == '-') {
-			rtn = CompleteToken(Token::TYPE_Minus);
+			rtn = FeedToken(Token::TYPE_Minus);
 		} else if (ch == '*') {
-			rtn = CompleteToken(Token::TYPE_Asterisk);
+			rtn = FeedToken(Token::TYPE_Asterisk);
 		} else if (ch == '/') {
-			rtn = CompleteToken(Token::TYPE_Slash);
+			rtn = FeedToken(Token::TYPE_Slash);
 		} else if (ch == '[') {
-			rtn = CompleteToken(Token::TYPE_BracketL);
+			rtn = FeedToken(Token::TYPE_BracketL);
 		} else if (ch == ']') {
-			rtn = CompleteToken(Token::TYPE_BracketR);
+			rtn = FeedToken(Token::TYPE_BracketR);
 		} else if (ch == '(') {
-			rtn = CompleteToken(Token::TYPE_ParenthesisL);
+			rtn = FeedToken(Token::TYPE_ParenthesisL);
 		} else if (ch == ')') {
-			rtn = CompleteToken(Token::TYPE_ParenthesisR);
+			rtn = FeedToken(Token::TYPE_ParenthesisR);
 		} else {
 			if (::isprint(ch)) {
 				SetErrMsg("invalid character: %c", ch);
@@ -84,7 +84,7 @@ bool Tokenizer::FeedChar(char ch)
 		if (IsWhite(ch)) {
 			// nothing to do
 		} else {
-			rtn = CompleteToken(Token::TYPE_White);
+			rtn = FeedToken(Token::TYPE_White);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -92,7 +92,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_Comment: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			rtn = CompleteToken(Token::TYPE_EOL);
+			rtn = FeedToken(Token::TYPE_EOL);
 			_stat = STAT_LineTop;
 		} else {
 			// nothing to do
@@ -103,7 +103,7 @@ bool Tokenizer::FeedChar(char ch)
 		if (IsSymbolFollow(ch)) {
 			_str += ch;
 		} else {
-			rtn = CompleteToken(Token::TYPE_Symbol, _str);
+			rtn = FeedToken(Token::TYPE_Symbol, _str);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -114,7 +114,7 @@ bool Tokenizer::FeedChar(char ch)
 			SetErrMsg("unclosed string literal");
 			rtn = false;
 		} else if (ch == '"') {
-			rtn = CompleteToken(Token::TYPE_String, _str);
+			rtn = FeedToken(Token::TYPE_String, _str);
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {
 			_stat = STAT_StringEsc;
@@ -144,7 +144,7 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_OctNumber;
 			Pushback();
 		} else {
-			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(Token::TYPE_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -158,7 +158,7 @@ bool Tokenizer::FeedChar(char ch)
 			SetErrMsg("decimal number must not start with zero");
 			rtn = false;
 		} else {
-			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(Token::TYPE_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -169,7 +169,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = _num * 10 + (ch - '0');
 		} else {
-			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(Token::TYPE_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -186,7 +186,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = (_num << 4) + (ch - 'A' + 10);
 		} else {
-			rtn = CompleteToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(Token::TYPE_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -198,23 +198,19 @@ bool Tokenizer::FeedChar(char ch)
 	return rtn;
 }
 
-bool Tokenizer::CompleteToken(Token::Type type)
+bool Tokenizer::FeedToken(Token::Type type)
 {
-	_token.Set(type);
-	return _pListener->FeedToken(_token);
+	return _pListener->FeedToken(new Token(type));
 }
 
-bool Tokenizer::CompleteToken(Token::Type type, const String &str)
+bool Tokenizer::FeedToken(Token::Type type, const String &str)
 {
-	_token.Set(type, str);
-	return _pListener->FeedToken(_token);
+	return _pListener->FeedToken(new Token(type, str));
 }
 
-bool Tokenizer::CompleteToken(Token::Type type, const String &str, UInt32 num)
+bool Tokenizer::FeedToken(Token::Type type, const String &str, UInt32 num)
 {
-	//::printf("CompleteToken(%d)\n", type);
-	_token.Set(type, str, num);
-	return _pListener->FeedToken(_token);
+	return _pListener->FeedToken(new Token(type, str, num));
 }
 
 void Tokenizer::SetErrMsg(const char *format, ...)
