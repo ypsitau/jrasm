@@ -52,16 +52,16 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 					const Expr *pExprR = pToken1->GetExpr();
 					if (pToken2->IsType(TOKEN_Plus)) {
 						_tokenStack.Push(
-							new Token(new Expr_BinOp_Add(pExprL->Reference(), pExprR->Reference())));
+							new Token(new Expr_BinOp(Operator::Add, pExprL->Reference(), pExprR->Reference())));
 					} else if (pToken2->IsType(TOKEN_Minus)) {
 						_tokenStack.Push(
-							new Token(new Expr_BinOp_Sub(pExprL->Reference(), pExprR->Reference())));
+							new Token(new Expr_BinOp(Operator::Sub, pExprL->Reference(), pExprR->Reference())));
 					} else if (pToken2->IsType(TOKEN_Asterisk)) {
 						_tokenStack.Push(
-							new Token(new Expr_BinOp_Mul(pExprL->Reference(), pExprR->Reference())));
+							new Token(new Expr_BinOp(Operator::Mul, pExprL->Reference(), pExprR->Reference())));
 					} else if (pToken2->IsType(TOKEN_Slash)) {
 						_tokenStack.Push(
-							new Token(new Expr_BinOp_Div(pExprL->Reference(), pExprR->Reference())));
+							new Token(new Expr_BinOp(Operator::Div, pExprL->Reference(), pExprR->Reference())));
 					}
 				}
 			} else {

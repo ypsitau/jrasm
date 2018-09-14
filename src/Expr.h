@@ -4,7 +4,7 @@
 #ifndef __EXPR_H__
 #define __EXPR_H__
 
-#include "Common.h"
+#include "Operator.h"
 
 class ExprOwner;
 
@@ -125,8 +125,11 @@ public:
 // Expr_BinOp
 //-----------------------------------------------------------------------------
 class Expr_BinOp : public Expr {
+private:
+	const Operator *_pOperator;
 public:
-	inline Expr_BinOp(Expr *pExprL, Expr *pExprR) : Expr(TYPE_BinOp) {
+	inline Expr_BinOp(const Operator *pOperator, Expr *pExprL, Expr *pExprR) :
+			Expr(TYPE_BinOp), _pOperator(pOperator) {
 		GetChildren().push_back(pExprL);
 		GetChildren().push_back(pExprR);
 	}
@@ -135,36 +138,18 @@ public:
 	virtual String ToString() const;
 };
 
-class Expr_BinOp_Add : public Expr_BinOp {
-public:
-	inline Expr_BinOp_Add(Expr *pExprL, Expr *pExprR) :
-		Expr_BinOp(pExprL, pExprR) {}
-};
-
-class Expr_BinOp_Sub : public Expr_BinOp {
-public:
-	inline Expr_BinOp_Sub(Expr *pExprL, Expr *pExprR) :
-		Expr_BinOp(pExprL, pExprR) {}
-};
-
-class Expr_BinOp_Mul : public Expr_BinOp {
-public:
-	inline Expr_BinOp_Mul(Expr *pExprL, Expr *pExprR) :
-		Expr_BinOp(pExprL, pExprR) {}
-};
-
-class Expr_BinOp_Div : public Expr_BinOp {
-public:
-	inline Expr_BinOp_Div(Expr *pExprL, Expr *pExprR) :
-		Expr_BinOp(pExprL, pExprR) {}
-};
-
+//-----------------------------------------------------------------------------
+// Expr_Bracket
+//-----------------------------------------------------------------------------
 class Expr_Bracket : public Expr {
 public:
 	inline Expr_Bracket() : Expr(TYPE_Bracket) {}
 	virtual String ToString() const;
 };
 
+//-----------------------------------------------------------------------------
+// Expr_Parenthesis
+//-----------------------------------------------------------------------------
 class Expr_Parenthesis : public Expr {
 public:
 	inline Expr_Parenthesis() : Expr(TYPE_Parenthesis) {}

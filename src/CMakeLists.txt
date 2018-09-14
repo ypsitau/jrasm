@@ -12,6 +12,7 @@ add_executable(jrasm
 	Generator.cpp
 	Generator_M6800.cpp
 	MmlParser.cpp
+	Operator.cpp
 	Parser.cpp
 	Token.cpp
 	Tokenizer.cpp
