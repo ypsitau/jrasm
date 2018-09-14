@@ -12,6 +12,9 @@ Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
+	::printf("%s\n", pToken->ToString().c_str());
+	return true;
+#if 0
 	bool rtn = true;
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
@@ -47,11 +50,14 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		break;
 	}
 	case STAT_Operand: {
-		if (pToken->IsType(TOKEN_White)) {
+		if (pToken->HasPrecedence()) {
+			
+		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_exprStack.pop_back();
 			_stat = STAT_LineTop;
+#if 0
 		} else if (pToken->IsType(TOKEN_Comma)) {
 			
 		} else if (pToken->IsType(TOKEN_Symbol)) {
@@ -66,6 +72,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			new Expr_BinOp_Mul(nullptr, nullptr);
 		} else if (pToken->IsType(TOKEN_Slash)) {
 			new Expr_BinOp_Div(nullptr, nullptr);
+#endif
 		} else if (pToken->IsType(TOKEN_BracketL)) {
 			Expr *pExpr = new Expr_Bracket();
 			_exprStack.back()->AddChild(pExpr);
@@ -92,4 +99,5 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	}
 	}
 	return rtn;
+#endif
 }

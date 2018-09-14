@@ -51,6 +51,8 @@ private:
 	String _str;
 	UInt32 _num;
 	bool _validStrFlag;
+private:
+	static const Precedence _precMatrix[][7];
 public:
 	DeclareReferenceAccessor(Token);
 public:
@@ -63,13 +65,18 @@ public:
 private:
 	inline ~Token() {}
 public:
+	inline int GetCategory() const { return _pTokenInfo->category; }
 	inline const char *GetName() const { return _pTokenInfo->name; }
 	inline const char *GetSymbol() const { return _pTokenInfo->symbol; }
+	inline bool HasPrecedence() const { return GetCategory() != 0; }
 	inline bool IsType(const TokenInfo &tokenInfo) const { return _pTokenInfo->IsIdentical(tokenInfo); }
 	inline UInt32 GetNumber() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
 	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
+	inline static Precedence LookupPrec(const Token &tokenLeft, const Token &tokenRight) {
+		return _precMatrix[tokenLeft.GetCategory()][tokenRight.GetCategory()];
+	}
 	String ToString() const;
 };
 
