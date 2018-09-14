@@ -42,9 +42,9 @@ public:
 	void SetErrMsg(const char *format, ...);
 	inline const char *GetErrMsg() const { return _errMsg.c_str(); }
 private:
-	bool FeedToken(Token::Type type);
-	bool FeedToken(Token::Type type, const String &str);
-	bool FeedToken(Token::Type type, const String &str, UInt32 num);
+	bool FeedToken(const TokenInfo &tokenInfo);
+	bool FeedToken(const TokenInfo &tokenInfo, const String &str);
+	bool FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num);
 	inline static bool IsEOF(char ch) { return ch == '\0'; }
 	inline static bool IsEOL(char ch) { return ch == '\n'; }
 	inline static bool IsWhite(char ch) { return ch == ' ' || ch == '\t'; }

@@ -27,7 +27,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_Neutral: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			rtn = FeedToken(Token::TYPE_EOL);
+			rtn = FeedToken(TOKEN_EOL);
 			_stat = STAT_LineTop;
 		} else if (IsWhite(ch)) {
 			_stat = STAT_White;
@@ -51,25 +51,25 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == ';') {
 			_stat = STAT_Comment;
 		} else if (ch == ':') {
-			rtn = FeedToken(Token::TYPE_Colon);
+			rtn = FeedToken(TOKEN_Colon);
 		} else if (ch == ',') {
-			rtn = FeedToken(Token::TYPE_Comma);
+			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
-			rtn = FeedToken(Token::TYPE_Plus);
+			rtn = FeedToken(TOKEN_Plus);
 		} else if (ch == '-') {
-			rtn = FeedToken(Token::TYPE_Minus);
+			rtn = FeedToken(TOKEN_Minus);
 		} else if (ch == '*') {
-			rtn = FeedToken(Token::TYPE_Asterisk);
+			rtn = FeedToken(TOKEN_Asterisk);
 		} else if (ch == '/') {
-			rtn = FeedToken(Token::TYPE_Slash);
+			rtn = FeedToken(TOKEN_Slash);
 		} else if (ch == '[') {
-			rtn = FeedToken(Token::TYPE_BracketL);
+			rtn = FeedToken(TOKEN_BracketL);
 		} else if (ch == ']') {
-			rtn = FeedToken(Token::TYPE_BracketR);
+			rtn = FeedToken(TOKEN_BracketR);
 		} else if (ch == '(') {
-			rtn = FeedToken(Token::TYPE_ParenthesisL);
+			rtn = FeedToken(TOKEN_ParenthesisL);
 		} else if (ch == ')') {
-			rtn = FeedToken(Token::TYPE_ParenthesisR);
+			rtn = FeedToken(TOKEN_ParenthesisR);
 		} else {
 			if (::isprint(ch)) {
 				SetErrMsg("invalid character: %c", ch);
@@ -84,7 +84,7 @@ bool Tokenizer::FeedChar(char ch)
 		if (IsWhite(ch)) {
 			// nothing to do
 		} else {
-			rtn = FeedToken(Token::TYPE_White);
+			rtn = FeedToken(TOKEN_White);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -92,7 +92,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_Comment: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			rtn = FeedToken(Token::TYPE_EOL);
+			rtn = FeedToken(TOKEN_EOL);
 			_stat = STAT_LineTop;
 		} else {
 			// nothing to do
@@ -103,7 +103,7 @@ bool Tokenizer::FeedChar(char ch)
 		if (IsSymbolFollow(ch)) {
 			_str += ch;
 		} else {
-			rtn = FeedToken(Token::TYPE_Symbol, _str);
+			rtn = FeedToken(TOKEN_Symbol, _str);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -114,7 +114,7 @@ bool Tokenizer::FeedChar(char ch)
 			SetErrMsg("unclosed string literal");
 			rtn = false;
 		} else if (ch == '"') {
-			rtn = FeedToken(Token::TYPE_String, _str);
+			rtn = FeedToken(TOKEN_String, _str);
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {
 			_stat = STAT_StringEsc;
@@ -144,7 +144,7 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_OctNumber;
 			Pushback();
 		} else {
-			rtn = FeedToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -158,7 +158,7 @@ bool Tokenizer::FeedChar(char ch)
 			SetErrMsg("decimal number must not start with zero");
 			rtn = false;
 		} else {
-			rtn = FeedToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -169,7 +169,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = _num * 10 + (ch - '0');
 		} else {
-			rtn = FeedToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -186,7 +186,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = (_num << 4) + (ch - 'A' + 10);
 		} else {
-			rtn = FeedToken(Token::TYPE_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -198,19 +198,19 @@ bool Tokenizer::FeedChar(char ch)
 	return rtn;
 }
 
-bool Tokenizer::FeedToken(Token::Type type)
+bool Tokenizer::FeedToken(const TokenInfo &tokenInfo)
 {
-	return _pListener->FeedToken(new Token(type));
+	return _pListener->FeedToken(new Token(tokenInfo));
 }
 
-bool Tokenizer::FeedToken(Token::Type type, const String &str)
+bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str)
 {
-	return _pListener->FeedToken(new Token(type, str));
+	return _pListener->FeedToken(new Token(tokenInfo, str));
 }
 
-bool Tokenizer::FeedToken(Token::Type type, const String &str, UInt32 num)
+bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num)
 {
-	return _pListener->FeedToken(new Token(type, str, num));
+	return _pListener->FeedToken(new Token(tokenInfo, str, num));
 }
 
 void Tokenizer::SetErrMsg(const char *format, ...)
