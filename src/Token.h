@@ -4,7 +4,7 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
-#include "Common.h"
+#include "Expr.h"
 
 //-----------------------------------------------------------------------------
 // TokenInfo
@@ -51,6 +51,7 @@ private:
 	String _str;
 	UInt32 _num;
 	bool _validStrFlag;
+	AutoPtr<Expr> _pExpr;	// only valid for TOKEN_Expr
 private:
 	static const Precedence _precMatrix[][7];
 public:
@@ -62,6 +63,8 @@ public:
 		_cntRef(1), _pTokenInfo(&tokenInfo), _str(str), _num(0), _validStrFlag(true) {}
 	inline Token(const TokenInfo &tokenInfo, const String &str, UInt32 num) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _str(str), _num(num), _validStrFlag(true) {}
+	inline Token(const TokenInfo &tokenInfo, Expr *pExpr) :
+		_cntRef(1), _pTokenInfo(&tokenInfo), _num(0), _validStrFlag(false), _pExpr(pExpr) {}
 private:
 	inline ~Token() {}
 public:
@@ -72,6 +75,7 @@ public:
 	inline bool IsType(const TokenInfo &tokenInfo) const { return _pTokenInfo->IsIdentical(tokenInfo); }
 	inline UInt32 GetNumber() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
+	inline const Expr *GetExpr() const { return _pExpr.get(); }
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
 	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
 	inline static Precedence LookupPrec(const Token &tokenLeft, const Token &tokenRight) {
@@ -85,6 +89,7 @@ public:
 //-----------------------------------------------------------------------------
 class TokenStack : public std::vector<Token *> {
 public:
+	TokenStack();
 	~TokenStack();
 	reverse_iterator SeekTerminal(reverse_iterator p);
 	Token *Peek(int offset) { return *(rbegin() + offset); }

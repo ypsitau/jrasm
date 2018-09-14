@@ -57,6 +57,11 @@ String Token::ToString() const
 //-----------------------------------------------------------------------------
 // TokenStack
 //-----------------------------------------------------------------------------
+TokenStack::TokenStack()
+{
+	push_back(new Token(TOKEN_Begin));
+}
+
 TokenStack::~TokenStack()
 {
 }

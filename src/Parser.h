@@ -22,6 +22,7 @@ private:
 	Stat _stat;
 	ExprOwner _exprOwner;
 	ExprStack _exprStack;
+	TokenStack _tokenStack;
 public:
 	Parser(const String &fileNameSrc);
 	inline const ExprOwner &GetInstructions() const { return _exprOwner; }
