@@ -1,18 +1,18 @@
 //=============================================================================
-// InstInfo.h
+// Generator_M6800.h
 //=============================================================================
-#ifndef __INSTINFO_H__
-#define __INSTINFO_H__
+#ifndef __GENERATOR_M6800_H__
+#define __GENERATOR_M6800_H__
 
-#include "Common.h"
+#include "Generator.h"
 
 class ExprList;
 class ExprOwner;
 
 //-----------------------------------------------------------------------------
-// InstInfo
+// Generator_M6800
 //-----------------------------------------------------------------------------
-class InstInfo {
+class Generator_M6800 : public Generator {
 public:
 	class Rule {
 	protected:
@@ -118,7 +118,7 @@ public:
 private:
 	EntryMap _entryMap;
 public:
-	InstInfo();
+	Generator_M6800();
 	virtual bool EvalExpr(Context &context, const Expr *pExpr);
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);

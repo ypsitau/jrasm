@@ -1,12 +1,12 @@
 //=============================================================================
-// InstInfo.cpp
+// Generator_M6800.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// InstInfo
+// Generator_M6800
 //-----------------------------------------------------------------------------
-InstInfo::InstInfo()
+Generator_M6800::Generator_M6800()
 {
 	EntryMap &m = _entryMap;
 	m.Add(Entry_ACC					("aba", 0x1b));
@@ -131,7 +131,7 @@ InstInfo::InstInfo()
 	m.Add(Entry_INH					("wai", 0x3e));
 }
 
-bool InstInfo::EvalExpr(Context &context, const Expr *pExpr)
+bool Generator_M6800::EvalExpr(Context &context, const Expr *pExpr)
 {
 	if (pExpr->IsType(Expr::TYPE_Inst)) {
 		const Expr_Inst *pExprEx = dynamic_cast<const Expr_Inst *>(pExpr);
@@ -149,137 +149,137 @@ bool InstInfo::EvalExpr(Context &context, const Expr *pExpr)
 	return true;
 }
 
-InstInfo::Entry *InstInfo::Entry_ACC(const String &symbol, UInt8 codeACC)
+Generator_M6800::Entry *Generator_M6800::Entry_ACC(const String &symbol, UInt8 codeACC)
 {
 	Entry *pEntry = new Entry(symbol, "ACC");
 	pEntry->AddRule(new Rule_ACC(codeACC));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_REL(const String &symbol, UInt8 codeREL)
+Generator_M6800::Entry *Generator_M6800::Entry_REL(const String &symbol, UInt8 codeREL)
 {
 	Entry *pEntry = new Entry(symbol, "REL");
-	pEntry->AddRule(new InstInfo::Rule_REL(codeREL));
+	pEntry->AddRule(new Generator_M6800::Rule_REL(codeREL));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_INH(const String &symbol, UInt8 codeINH)
+Generator_M6800::Entry *Generator_M6800::Entry_INH(const String &symbol, UInt8 codeINH)
 {
 	Entry *pEntry = new Entry(symbol, "INH");
-	pEntry->AddRule(new InstInfo::Rule_INH(codeINH));
+	pEntry->AddRule(new Generator_M6800::Rule_INH(codeINH));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B)
+Generator_M6800::Entry *Generator_M6800::Entry_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B)
 {
 	Entry *pEntry = new Entry(symbol, "ACC_ACC");
-	pEntry->AddRule(new InstInfo::Rule_ACC(codeACC_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_ACC(codeACC_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_ACC(codeACC_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_ACC(codeACC_B, "b"));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT)
+Generator_M6800::Entry *Generator_M6800::Entry_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT)
 {
 	Entry *pEntry = new Entry(symbol, "IDX_EXT");
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_DIR_IDX_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_DIR_IDX_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT)
 {
 	Entry *pEntry = new Entry(symbol, "DIR_IDX_EXT");
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_DIR_IDX_IMM8_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_DIR_IDX_IMM8_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM8, UInt8 codeEXT)
 {
 	Entry *pEntry = new Entry(symbol, "DIR_IDX_IMM8_EXT");
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX));
-	pEntry->AddRule(new InstInfo::Rule_IMM8(codeIMM8));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
+	pEntry->AddRule(new Generator_M6800::Rule_IMM8(codeIMM8));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_DIR_IDX_IMM16_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_DIR_IDX_IMM16_EXT(
 	const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeIMM16, UInt8 codeEXT)
 {
 	Entry *pEntry = new Entry(symbol, "DIR_IDX_IMM16_EXT");
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX));
-	pEntry->AddRule(new InstInfo::Rule_IMM16(codeIMM16));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
+	pEntry->AddRule(new Generator_M6800::Rule_IMM16(codeIMM16));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_ACC_ACC_IDX_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_ACC_ACC_IDX_EXT(
 	const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B, UInt8 codeIDX, UInt8 codeEXT)
 {
 	Entry *pEntry = new Entry(symbol, "ACC_ACC_IDX_EXT");
-	pEntry->AddRule(new InstInfo::Rule_ACC(codeACC_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_ACC(codeACC_B, "b"));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT));
+	pEntry->AddRule(new Generator_M6800::Rule_ACC(codeACC_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_ACC(codeACC_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_IMM8_DIR_IDX_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_IMM8_DIR_IDX_EXT(
 	const String &symbol, UInt8 codeIMM8, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT)
 {
 	Entry *pEntry = new Entry(symbol, "IMM8_DIR_IDX_EXT");
-	pEntry->AddRule(new InstInfo::Rule_IMM8(codeIMM8));
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT));
+	pEntry->AddRule(new Generator_M6800::Rule_IMM8(codeIMM8));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_AxB_DIR_IDX_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_AxB_DIR_IDX_EXT(
 	const String &symbol,
 	UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
 	UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	Entry *pEntry = new Entry(symbol, "AxB_DIR_IDX_EXT");
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR_B, "b"));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX_B, "b"));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT_B, "b"));
 	return pEntry;
 }
 
-InstInfo::Entry *InstInfo::Entry_AxB_IMM8_DIR_IDX_EXT(
+Generator_M6800::Entry *Generator_M6800::Entry_AxB_IMM8_DIR_IDX_EXT(
 	const String &symbol,
 	UInt8 codeIMM8_A, UInt8 codeDIR_A, UInt8 codeIDX_A, UInt8 codeEXT_A,
 	UInt8 codeIMM8_B, UInt8 codeDIR_B, UInt8 codeIDX_B, UInt8 codeEXT_B)
 {
 	Entry *pEntry = new Entry(symbol, "AxB_IMM8_DIR_IDX_EXT");
-	pEntry->AddRule(new InstInfo::Rule_IMM8(codeIMM8_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT_A, "a"));
-	pEntry->AddRule(new InstInfo::Rule_IMM8(codeIMM8_B, "b"));
-	pEntry->AddRule(new InstInfo::Rule_DIR(codeDIR_B, "b"));
-	pEntry->AddRule(new InstInfo::Rule_IDX(codeIDX_B, "b"));
-	pEntry->AddRule(new InstInfo::Rule_EXT(codeEXT_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_IMM8(codeIMM8_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT_A, "a"));
+	pEntry->AddRule(new Generator_M6800::Rule_IMM8(codeIMM8_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_DIR(codeDIR_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX_B, "b"));
+	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT_B, "b"));
 	return pEntry;
 }
 
 //-----------------------------------------------------------------------------
-// InstInfo::Rule
+// Generator_M6800::Rule
 //-----------------------------------------------------------------------------
-InstInfo::Rule::~Rule()
+Generator_M6800::Rule::~Rule()
 {
 }
 
-size_t InstInfo::Rule_ACC::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_ACC::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP .. _accName is empty
@@ -296,7 +296,7 @@ size_t InstInfo::Rule_ACC::Apply(Context &context, const ExprList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_REL::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_REL::Apply(Context &context, const ExprList &operands)
 {
 	// OP disp
 	if (operands.size() != 1) return 0;
@@ -304,7 +304,7 @@ size_t InstInfo::Rule_REL::Apply(Context &context, const ExprList &operands)
 	return 0;
 }
 
-size_t InstInfo::Rule_INH::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_INH::Apply(Context &context, const ExprList &operands)
 {
 	// OP
 	if (operands.size() != 0) return 0;
@@ -312,7 +312,7 @@ size_t InstInfo::Rule_INH::Apply(Context &context, const ExprList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM8::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_IMM8::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
@@ -336,7 +336,7 @@ size_t InstInfo::Rule_IMM8::Apply(Context &context, const ExprList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM16::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_IMM16::Apply(Context &context, const ExprList &operands)
 {
 	// OP data16
 	if (operands.size() != 1) return 0;
@@ -352,7 +352,7 @@ size_t InstInfo::Rule_IMM16::Apply(Context &context, const ExprList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_DIR::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_DIR::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
@@ -371,7 +371,7 @@ size_t InstInfo::Rule_DIR::Apply(Context &context, const ExprList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_IDX::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_IDX::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
@@ -390,7 +390,7 @@ size_t InstInfo::Rule_IDX::Apply(Context &context, const ExprList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_EXT::Apply(Context &context, const ExprList &operands)
+size_t Generator_M6800::Rule_EXT::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
@@ -410,14 +410,14 @@ size_t InstInfo::Rule_EXT::Apply(Context &context, const ExprList &operands)
 }
 
 //-----------------------------------------------------------------------------
-// InstInfo::RuleOwner
+// Generator_M6800::RuleOwner
 //-----------------------------------------------------------------------------
-InstInfo::RuleOwner::~RuleOwner()
+Generator_M6800::RuleOwner::~RuleOwner()
 {
 	Clear();
 }
 
-void InstInfo::RuleOwner::Clear()
+void Generator_M6800::RuleOwner::Clear()
 {
 	for (auto pRule : *this) {
 		delete pRule;
@@ -426,14 +426,14 @@ void InstInfo::RuleOwner::Clear()
 }
 
 //-----------------------------------------------------------------------------
-// InstInfo::Entry
+// Generator_M6800::Entry
 //-----------------------------------------------------------------------------
-InstInfo::Entry::Entry(const String &symbol, const String &syntaxDesc) :
+Generator_M6800::Entry::Entry(const String &symbol, const String &syntaxDesc) :
 	_symbol(symbol), _syntaxDesc(syntaxDesc)
 {
 }
 
-bool InstInfo::Entry::ApplyRule(Context &context, const ExprList &operands) const
+bool Generator_M6800::Entry::ApplyRule(Context &context, const ExprList &operands) const
 {
 	for (auto pRule : _ruleOwner) {
 		size_t bytes = pRule->Apply(context, operands);
@@ -444,16 +444,16 @@ bool InstInfo::Entry::ApplyRule(Context &context, const ExprList &operands) cons
 }
 
 //-----------------------------------------------------------------------------
-// InstInfo::EntryMap
+// Generator_M6800::EntryMap
 //-----------------------------------------------------------------------------
-InstInfo::EntryMap::~EntryMap()
+Generator_M6800::EntryMap::~EntryMap()
 {
 	for (auto iter : *this) {
 		delete iter.second;
 	}
 }
 
-const InstInfo::Entry *InstInfo::EntryMap::Lookup(const char *symbol) const
+const Generator_M6800::Entry *Generator_M6800::EntryMap::Lookup(const char *symbol) const
 {
 	String symbolLower = ToLower(symbol);
 	const_iterator iter = find(symbolLower);

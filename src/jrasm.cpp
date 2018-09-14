@@ -22,10 +22,10 @@ bool Parse(const char *fileName)
 	::fclose(fp);
 	const ExprList &exprList = parser.GetInstructions();
 	//exprList.Print();
-	std::unique_ptr<InstInfo> pInstInfo(new InstInfo());
+	std::unique_ptr<Generator> pGenerator(new Generator_M6800());
 	for (auto pExpr : exprList) {
 		Context context;
-		pInstInfo->EvalExpr(context, pExpr);
+		pGenerator->EvalExpr(context, pExpr);
 		for (auto data : context.GetBuffer()) {
 			::printf(" %02x", static_cast<UInt8>(data));
 		}

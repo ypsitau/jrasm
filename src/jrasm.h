@@ -6,10 +6,9 @@
 
 #include "Context.h"
 #include "Expr.h"
-#include "InstInfo.h"
 #include "Tokenizer.h"
 #include "Parser.h"
-#include "Generator.h"
+#include "Generator_M6800.h"
 #include "CJRFormat.h"
 #include "MmlParser.h"
 
