@@ -119,7 +119,7 @@ private:
 	EntryMap _entryMap;
 public:
 	Generator_M6800();
-	virtual bool EvalExpr(Context &context, const Expr *pExpr);
+	virtual bool Generate(Context &context, const char *symbol, const ExprList &operands) const;
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);
 	static Entry *Entry_REL(const String &symbol, UInt8 codeREL);

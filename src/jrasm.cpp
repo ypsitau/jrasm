@@ -22,10 +22,12 @@ bool Parse(const char *fileName)
 	::fclose(fp);
 	const ExprList &exprList = parser.GetInstructions();
 	//exprList.Print();
-	std::unique_ptr<Generator> pGenerator(new Generator_M6800());
+	Context context(new Generator_M6800());
 	for (auto pExpr : exprList) {
-		Context context;
-		pGenerator->EvalExpr(context, pExpr);
+		context.ClearBuffer();
+		pExpr->Generate(context);
+		::printf("%-32s", pExpr->ToString().c_str());
+		context.Dump();
 	}
 	return true;
 }

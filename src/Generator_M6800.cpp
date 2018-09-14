@@ -131,25 +131,13 @@ Generator_M6800::Generator_M6800()
 	m.Add(Entry_INH					("wai", 0x3e));
 }
 
-bool Generator_M6800::EvalExpr(Context &context, const Expr *pExpr)
+bool Generator_M6800::Generate(Context &context, const char *symbol, const ExprList &operands) const
 {
-	if (pExpr->IsType(Expr::TYPE_Inst)) {
-		const Expr_Inst *pExprEx = dynamic_cast<const Expr_Inst *>(pExpr);
-		const Entry *pEntry = _entryMap.Lookup(pExprEx->GetSymbol());
-		if (pEntry == nullptr) {
-			::printf("unknown instruction: %s\n", pExprEx->GetSymbol());
-		} else {
-			::printf("%s .. ", pExprEx->ToString().c_str());
-		}
-		if (!pEntry->ApplyRule(context, pExprEx->GetOperands())) return false;
-		for (auto data : context.GetBuffer()) {
-			::printf(" %02x", static_cast<UInt8>(data));
-		}
-		::printf("\n");
-	} else {
-		// this shouldn't happen
-		return false;
+	const Entry *pEntry = _entryMap.Lookup(symbol);
+	if (pEntry == nullptr) {
+		::printf("unknown instruction: %s\n", symbol);
 	}
+	if (!pEntry->ApplyRule(context, operands)) return false;
 	return true;
 }
 

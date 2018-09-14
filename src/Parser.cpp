@@ -12,6 +12,7 @@ Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
+#if 0
 	for (;;) {
 		TokenStack::reverse_iterator ppTokenTop = _tokenStack.SeekTerminal(_tokenStack.rbegin());
 		::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
@@ -75,7 +76,8 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		}
 	}
 	return true;
-#if 0
+#endif
+#if 1
 	bool rtn = true;
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
@@ -111,14 +113,12 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		break;
 	}
 	case STAT_Operand: {
-		if (pToken->HasPrecedence()) {
-			
-		} else if (pToken->IsType(TOKEN_White)) {
+		if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_exprStack.pop_back();
 			_stat = STAT_LineTop;
-#if 0
+#if 1
 		} else if (pToken->IsType(TOKEN_Comma)) {
 			
 		} else if (pToken->IsType(TOKEN_Symbol)) {
@@ -126,13 +126,13 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_Number)) {
 			_exprStack.back()->AddChild(new Expr_Number(pToken->GetNumber()));
 		} else if (pToken->IsType(TOKEN_Plus)) {
-			new Expr_BinOp_Add(nullptr, nullptr);
+
 		} else if (pToken->IsType(TOKEN_Minus)) {
-			new Expr_BinOp_Sub(nullptr, nullptr);
+
 		} else if (pToken->IsType(TOKEN_Asterisk)) {
-			new Expr_BinOp_Mul(nullptr, nullptr);
+
 		} else if (pToken->IsType(TOKEN_Slash)) {
-			new Expr_BinOp_Div(nullptr, nullptr);
+
 #endif
 		} else if (pToken->IsType(TOKEN_BracketL)) {
 			Expr *pExpr = new Expr_Bracket();

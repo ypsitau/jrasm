@@ -19,6 +19,12 @@ void Expr::AddChild(Expr *pExpr)
 	_pExprChildren->push_back(pExpr);
 }
 
+bool Expr::Generate(Context &context)
+{
+	// error
+	return false;
+}
+
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
@@ -40,14 +46,19 @@ void ExprList::Print() const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Inst
+// ExprOwner
 //-----------------------------------------------------------------------------
-String Expr_Inst::ToString() const
+ExprOwner::~ExprOwner()
 {
-	String str = _symbol;
-	str += " ";
-	str += GetChildren().ToString();
-	return str;
+	Clear();
+}
+
+void ExprOwner::Clear()
+{
+	for (auto pExpr : *this) {
+		Expr::Delete(pExpr);
+	}
+	clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -117,17 +128,17 @@ String Expr_Parenthesis::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// ExprOwner
+// Expr_Inst
 //-----------------------------------------------------------------------------
-ExprOwner::~ExprOwner()
+String Expr_Inst::ToString() const
 {
-	Clear();
+	String str = _symbol;
+	str += " ";
+	str += GetChildren().ToString();
+	return str;
 }
 
-void ExprOwner::Clear()
+bool Expr_Inst::Generate(Context &context)
 {
-	for (auto pExpr : *this) {
-		Expr::Delete(pExpr);
-	}
-	clear();
+	return context.GetGenerator()->Generate(context, GetSymbol(), GetOperands());
 }

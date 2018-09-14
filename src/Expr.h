@@ -14,13 +14,13 @@ class ExprOwner;
 class Expr {
 public:
 	enum Type {
-		TYPE_Inst,
 		TYPE_Number,
 		TYPE_Symbol,
 		TYPE_String,
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Parenthesis,
+		TYPE_Inst,
 	};
 private:
 	int _cntRef;
@@ -33,12 +33,12 @@ public:
 protected:
 	virtual ~Expr();
 public:
-	bool IsType(Type type) const { return _type == type; }
-	Type GetType() const { return _type; }
+	inline bool IsType(Type type) const { return _type == type; }
+	inline Type GetType() const { return _type; }
+	inline ExprOwner &GetChildren() { return *_pExprChildren; }
+	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
 	void AddChild(Expr *pExpr);
-	ExprOwner &GetChildren() { return *_pExprChildren; }
-	const ExprOwner &GetChildren() const { return *_pExprChildren; }
-	//virtual bool Reduce() = 0;
+	virtual bool Generate(Context &context);
 	virtual String ToString() const = 0;
 };
 
@@ -63,19 +63,6 @@ class ExprOwner : public ExprList {
 public:
 	~ExprOwner();
 	void Clear();
-};
-
-//-----------------------------------------------------------------------------
-// Expr_Inst
-//-----------------------------------------------------------------------------
-class Expr_Inst : public Expr {
-private:
-	String _symbol;
-public:
-	inline Expr_Inst(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline const ExprOwner &GetOperands() const { return GetChildren(); }
-	virtual String ToString() const;
 };
 
 //-----------------------------------------------------------------------------
@@ -153,6 +140,20 @@ public:
 class Expr_Parenthesis : public Expr {
 public:
 	inline Expr_Parenthesis() : Expr(TYPE_Parenthesis) {}
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_Inst
+//-----------------------------------------------------------------------------
+class Expr_Inst : public Expr {
+private:
+	String _symbol;
+public:
+	inline Expr_Inst(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool Generate(Context &context);
 	virtual String ToString() const;
 };
 
