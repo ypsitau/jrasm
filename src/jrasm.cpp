@@ -22,17 +22,10 @@ bool Parse(const char *fileName)
 	::fclose(fp);
 	const ExprList &exprList = parser.GetInstructions();
 	//exprList.Print();
+	std::unique_ptr<InstInfo> pInstInfo(new InstInfo());
 	for (auto pExpr : exprList) {
-		if (!pExpr->IsType(Expr::TYPE_Inst)) continue;
-		const Expr_Inst *pExprEx = dynamic_cast<const Expr_Inst *>(pExpr);
-		const InstInfo *pInstInfo = InstInfo::Lookup(pExprEx->GetSymbol());
-		if (pInstInfo == nullptr) {
-			::printf("unknown instruction: %s\n", pExprEx->GetSymbol());
-		} else {
-			::printf("%s .. ", pExprEx->ToString().c_str());
-		}
 		Context context;
-		pInstInfo->ApplyRule(context, pExprEx->GetOperands());
+		pInstInfo->EvalExpr(context, pExpr);
 		for (auto data : context.GetBuffer()) {
 			::printf(" %02x", static_cast<UInt8>(data));
 		}
