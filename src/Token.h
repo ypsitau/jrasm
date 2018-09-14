@@ -63,8 +63,8 @@ public:
 		_cntRef(1), _pTokenInfo(&tokenInfo), _str(str), _num(0), _validStrFlag(true) {}
 	inline Token(const TokenInfo &tokenInfo, const String &str, UInt32 num) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _str(str), _num(num), _validStrFlag(true) {}
-	inline Token(const TokenInfo &tokenInfo, Expr *pExpr) :
-		_cntRef(1), _pTokenInfo(&tokenInfo), _num(0), _validStrFlag(false), _pExpr(pExpr) {}
+	inline Token(Expr *pExpr) :
+		_cntRef(1), _pTokenInfo(&TOKEN_Expr), _num(0), _validStrFlag(false), _pExpr(pExpr) {}
 private:
 	inline ~Token() {}
 public:
@@ -92,9 +92,11 @@ public:
 	TokenStack();
 	~TokenStack();
 	reverse_iterator SeekTerminal(reverse_iterator p);
-	Token *Peek(int offset) { return *(rbegin() + offset); }
 	void Clear();
 	String ToString() const;
+	inline Token *Peek(int offset) { return *(rbegin() + offset); }
+	inline void Push(Token *pToken) { push_back(pToken); }
+	inline Token *Pop() { Token *pToken = back(); pop_back(); return pToken; }
 	inline bool IsEmpty() const { return size() <= 1; }
 };
 

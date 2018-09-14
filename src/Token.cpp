@@ -29,18 +29,18 @@ const TokenInfo TOKEN_ParenthesisR =	{  0, "ParenthesisR",	")"		};
 //-----------------------------------------------------------------------------
 static const Token::Precedence
 	LT = Token::PREC_LT,
-	//EQ = Token::PREC_EQ,
+	EQ = Token::PREC_EQ,
 	GT = Token::PREC_GT,
 	xx = Token::PREC_Error;
 
 const Token::Precedence Token::_precMatrix[][7] = {
 	/*         e   B   +   *   V   ,   E */
 	/* e */ { xx, xx, xx, xx, xx, xx, xx },
-	/* B */ { xx, xx, LT, LT, LT, LT, LT },
-	/* + */ { xx, xx, GT, LT, LT, LT, LT },
-	/* * */ { xx, xx, GT, GT, LT, LT, LT },
-	/* V */ { xx, xx, GT, GT, GT, LT, LT },
-	/* , */ { xx, xx, GT, GT, GT, GT, LT },
+	/* B */ { xx, xx, LT, LT, LT, LT, EQ },
+	/* + */ { xx, xx, GT, LT, LT, LT, GT },
+	/* * */ { xx, xx, GT, GT, LT, LT, GT },
+	/* V */ { xx, xx, GT, GT, GT, LT, GT },
+	/* , */ { xx, xx, GT, GT, GT, GT, GT },
 };
 
 String Token::ToString() const
@@ -83,9 +83,8 @@ void TokenStack::Clear()
 String TokenStack::ToString() const
 {
 	String rtn;
-	for (const_reverse_iterator ppToken = rbegin(); ppToken != rend(); ppToken++) {
-		const Token *pToken = *ppToken;
-		if (ppToken != rbegin()) rtn.append(" ");
+	for (auto pToken : *this) {
+		if (!rtn.empty()) rtn.append(" ");
 		rtn.append(pToken->GetSymbol());
 	}
 	return rtn;
