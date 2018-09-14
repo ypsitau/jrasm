@@ -11,11 +11,11 @@ String ToLower(const char *str)
 	String rtn;
 	for (const char *p = str; *p != '\0'; ) {
 		char ch = *p;
-		if ('A' <= *p && *p <= 'Z') {
-			rtn += *p - 'A' + 'a';
+		if ('A' <= ch && ch <= 'Z') {
+			rtn += ch - 'A' + 'a';
 			p++;
 		} else {
-			rtn += *p;
+			rtn += ch;
 			p++;
 		}
 	}
