@@ -36,9 +36,9 @@ bool Parser::FeedToken(const Token &token)
 	}
 	case STAT_Instruction: {
 		if (token.IsType(Token::TYPE_Symbol)) {
-			Element *pElem = new Element_Inst(token.GetString());
-			_elemOwner.push_back(pElem);
-			_elemStack.push_back(pElem);
+			Expr *pExpr = new Expr_Inst(token.GetString());
+			_exprOwner.push_back(pExpr);
+			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;
 		} else {
 			_tokenizer.SetErrMsg("instruction or pseudo command is expected");
@@ -50,40 +50,40 @@ bool Parser::FeedToken(const Token &token)
 		if (token.IsType(Token::TYPE_White)) {
 			// nothing to do
 		} else if (token.IsType(Token::TYPE_EOL)) {
-			_elemStack.pop_back();
+			_exprStack.pop_back();
 			_stat = STAT_LineTop;
 		} else if (token.IsType(Token::TYPE_Comma)) {
 			
 		} else if (token.IsType(Token::TYPE_Symbol)) {
-			_elemStack.back()->AddChild(new Element_Symbol(token.GetString()));
+			_exprStack.back()->AddChild(new Expr_Symbol(token.GetString()));
 		} else if (token.IsType(Token::TYPE_Number)) {
-			_elemStack.back()->AddChild(new Element_Number(token.GetNumber()));
+			_exprStack.back()->AddChild(new Expr_Number(token.GetNumber()));
 		} else if (token.IsType(Token::TYPE_Plus)) {
-			new Element_BinOp_Add(nullptr, nullptr);
+			new Expr_BinOp_Add(nullptr, nullptr);
 		} else if (token.IsType(Token::TYPE_Minus)) {
-			new Element_BinOp_Sub(nullptr, nullptr);
+			new Expr_BinOp_Sub(nullptr, nullptr);
 		} else if (token.IsType(Token::TYPE_Asterisk)) {
-			new Element_BinOp_Mul(nullptr, nullptr);
+			new Expr_BinOp_Mul(nullptr, nullptr);
 		} else if (token.IsType(Token::TYPE_Slash)) {
-			new Element_BinOp_Div(nullptr, nullptr);
+			new Expr_BinOp_Div(nullptr, nullptr);
 		} else if (token.IsType(Token::TYPE_BracketL)) {
-			Element *pElem = new Element_Bracket();
-			_elemStack.back()->AddChild(pElem);
-			_elemStack.push_back(pElem);
+			Expr *pExpr = new Expr_Bracket();
+			_exprStack.back()->AddChild(pExpr);
+			_exprStack.push_back(pExpr);
 		} else if (token.IsType(Token::TYPE_BracketR)) {
-			if (!_elemStack.back()->IsType(Element::TYPE_Bracket)) {
+			if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
 				_tokenizer.SetErrMsg("no opening bracket matched");
 			}
-			_elemStack.pop_back();
+			_exprStack.pop_back();
 		} else if (token.IsType(Token::TYPE_ParenthesisL)) {
-			Element *pElem = new Element_Parenthesis();
-			_elemStack.back()->AddChild(pElem);
-			_elemStack.push_back(pElem);
+			Expr *pExpr = new Expr_Parenthesis();
+			_exprStack.back()->AddChild(pExpr);
+			_exprStack.push_back(pExpr);
 		} else if (token.IsType(Token::TYPE_ParenthesisR)) {
-			if (!_elemStack.back()->IsType(Element::TYPE_Parenthesis)) {
+			if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
 				_tokenizer.SetErrMsg("no opening parenthesis matched");
 			}
-			_elemStack.pop_back();
+			_exprStack.pop_back();
 		} else {
 			_tokenizer.SetErrMsg("invalid format of operands");
 			rtn = false;

@@ -1,48 +1,48 @@
 //=============================================================================
-// Element.cpp
+// Expr.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// Element
+// Expr
 //-----------------------------------------------------------------------------
-Element::Element(Type type) : _cntRef(1), _type(type), _pElemChildren(new ElementOwner())
+Expr::Expr(Type type) : _cntRef(1), _type(type), _pExprChildren(new ExprOwner())
 {
 }
 
-Element::~Element()
+Expr::~Expr()
 {
 }
 
-void Element::AddChild(Element *pElement)
+void Expr::AddChild(Expr *pExpr)
 {
-	_pElemChildren->push_back(pElement);
+	_pExprChildren->push_back(pExpr);
 }
 
 //-----------------------------------------------------------------------------
-// ElementList
+// ExprList
 //-----------------------------------------------------------------------------
-String ElementList::ToString() const
+String ExprList::ToString() const
 {
 	String rtn;
-	for (auto pElement : *this) {
+	for (auto pExpr : *this) {
 		if (!rtn.empty()) rtn += ",";
-		rtn += pElement->ToString();
+		rtn += pExpr->ToString();
 	}
 	return rtn;
 }
 
-void ElementList::Print() const
+void ExprList::Print() const
 {
-	for (auto pElement : *this) {
-		::printf("%s\n", pElement->ToString().c_str());
+	for (auto pExpr : *this) {
+		::printf("%s\n", pExpr->ToString().c_str());
 	}
 }
 
 //-----------------------------------------------------------------------------
-// Element_Inst
+// Expr_Inst
 //-----------------------------------------------------------------------------
-String Element_Inst::ToString() const
+String Expr_Inst::ToString() const
 {
 	String str = _symbol;
 	str += " ";
@@ -51,9 +51,9 @@ String Element_Inst::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// Element_Number
+// Expr_Number
 //-----------------------------------------------------------------------------
-String Element_Number::ToString() const
+String Expr_Number::ToString() const
 {
 	char buff[128];
 	::sprintf_s(buff, "0x%x", _num);
@@ -61,17 +61,17 @@ String Element_Number::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// Element_Symbol
+// Expr_Symbol
 //-----------------------------------------------------------------------------
-String Element_Symbol::ToString() const
+String Expr_Symbol::ToString() const
 {
 	return _str;
 }
 
 //-----------------------------------------------------------------------------
-// Element_String
+// Expr_String
 //-----------------------------------------------------------------------------
-String Element_String::ToString() const
+String Expr_String::ToString() const
 {
 	String str;
 	str = "\"";
@@ -81,9 +81,9 @@ String Element_String::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// Element_BinOp
+// Expr_BinOp
 //-----------------------------------------------------------------------------
-String Element_BinOp::ToString() const
+String Expr_BinOp::ToString() const
 {
 	String str;
 	str = GetLeft()->ToString();
@@ -93,9 +93,9 @@ String Element_BinOp::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// Element_Bracket
+// Expr_Bracket
 //-----------------------------------------------------------------------------
-String Element_Bracket::ToString() const
+String Expr_Bracket::ToString() const
 {
 	String str;
 	str = "[";
@@ -105,9 +105,9 @@ String Element_Bracket::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// Element_Parenthesis
+// Expr_Parenthesis
 //-----------------------------------------------------------------------------
-String Element_Parenthesis::ToString() const
+String Expr_Parenthesis::ToString() const
 {
 	String str;
 	str = "(";
@@ -117,17 +117,17 @@ String Element_Parenthesis::ToString() const
 }
 
 //-----------------------------------------------------------------------------
-// ElementOwner
+// ExprOwner
 //-----------------------------------------------------------------------------
-ElementOwner::~ElementOwner()
+ExprOwner::~ExprOwner()
 {
 	Clear();
 }
 
-void ElementOwner::Clear()
+void ExprOwner::Clear()
 {
-	for (auto pElement : *this) {
-		Element::Delete(pElement);
+	for (auto pExpr : *this) {
+		Expr::Delete(pExpr);
 	}
 	clear();
 }

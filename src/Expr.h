@@ -1,17 +1,17 @@
 //=============================================================================
-// Element.h
+// Expr.h
 //=============================================================================
-#ifndef __ELEMENT_H__
-#define __ELEMENT_H__
+#ifndef __EXPR_H__
+#define __EXPR_H__
 
 #include "Common.h"
 
-class ElementOwner;
+class ExprOwner;
 
 //-----------------------------------------------------------------------------
-// Element
+// Expr
 //-----------------------------------------------------------------------------
-class Element {
+class Expr {
 public:
 	enum Type {
 		TYPE_Inst,
@@ -25,82 +25,82 @@ public:
 private:
 	int _cntRef;
 	Type _type;
-	std::auto_ptr<ElementOwner> _pElemChildren;
+	std::auto_ptr<ExprOwner> _pExprChildren;
 public:
-	DeclareReferenceAccessor(Element);
+	DeclareReferenceAccessor(Expr);
 public:
-	Element(Type type);
+	Expr(Type type);
 protected:
-	virtual ~Element();
+	virtual ~Expr();
 public:
 	bool IsType(Type type) const { return _type == type; }
 	Type GetType() const { return _type; }
-	void AddChild(Element *pElement);
-	ElementOwner &GetChildren() { return *_pElemChildren; }
-	const ElementOwner &GetChildren() const { return *_pElemChildren; }
+	void AddChild(Expr *pExpr);
+	ExprOwner &GetChildren() { return *_pExprChildren; }
+	const ExprOwner &GetChildren() const { return *_pExprChildren; }
 	//virtual bool Reduce() = 0;
 	virtual String ToString() const = 0;
 };
 
 //-----------------------------------------------------------------------------
-// ElementList
+// ExprList
 //-----------------------------------------------------------------------------
-class ElementList : public std::vector<Element *> {
+class ExprList : public std::vector<Expr *> {
 public:
 	String ToString() const;
 	void Print() const;
 };
 
 //-----------------------------------------------------------------------------
-// ElementStack
+// ExprStack
 //-----------------------------------------------------------------------------
-typedef std::vector<Element *> ElementStack;
+typedef std::vector<Expr *> ExprStack;
 
 //-----------------------------------------------------------------------------
-// ElementOwner
+// ExprOwner
 //-----------------------------------------------------------------------------
-class ElementOwner : public ElementList {
+class ExprOwner : public ExprList {
 public:
-	~ElementOwner();
+	~ExprOwner();
 	void Clear();
 };
 
 //-----------------------------------------------------------------------------
-// Element_Inst
+// Expr_Inst
 //-----------------------------------------------------------------------------
-class Element_Inst : public Element {
+class Expr_Inst : public Expr {
 private:
 	String _symbol;
 public:
-	inline Element_Inst(const String &symbol) : Element(TYPE_Inst), _symbol(symbol) {}
+	inline Expr_Inst(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline const ElementOwner &GetOperands() const { return GetChildren(); }
+	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual String ToString() const;
 };
 
 //-----------------------------------------------------------------------------
-// Element_Number
+// Expr_Number
 //-----------------------------------------------------------------------------
-class Element_Number : public Element {
+class Expr_Number : public Expr {
 private:
 	UInt32 _num;
 public:
-	inline Element_Number(UInt32 num) : Element(TYPE_Number), _num(num) {}
+	inline Expr_Number(UInt32 num) : Expr(TYPE_Number), _num(num) {}
 	inline UInt32 GetNumber() const { return _num; }
 	virtual String ToString() const;
 };
 
 //-----------------------------------------------------------------------------
-// Element_Symbol
+// Expr_Symbol
 //-----------------------------------------------------------------------------
-class Element_Symbol : public Element {
+class Expr_Symbol : public Expr {
 private:
 	String _str;
 	UInt32 _num;
 	bool _validNumFlag;
 public:
-	inline Element_Symbol(const String &str) :
-		Element(TYPE_Symbol), _str(str), _num(0), _validNumFlag(false) {}
+	inline Expr_Symbol(const String &str) :
+		Expr(TYPE_Symbol), _str(str), _num(0), _validNumFlag(false) {}
 	inline void SetNumber(UInt32 num) { _num = num; _validNumFlag = true; }
 	inline void InvalidateNumber() { _validNumFlag = false; }
 	inline UInt32 GetNumber() const { return _num; }
@@ -111,63 +111,63 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Element_String
+// Expr_String
 //-----------------------------------------------------------------------------
-class Element_String : public Element {
+class Expr_String : public Expr {
 private:
 	String _str;
 public:
-	inline Element_String(const String &str) : Element(TYPE_String), _str(str) {}
+	inline Expr_String(const String &str) : Expr(TYPE_String), _str(str) {}
 	virtual String ToString() const;
 };
 
 //-----------------------------------------------------------------------------
-// Element_BinOp
+// Expr_BinOp
 //-----------------------------------------------------------------------------
-class Element_BinOp : public Element {
+class Expr_BinOp : public Expr {
 public:
-	inline Element_BinOp(Element *pElementL, Element *pElementR) : Element(TYPE_BinOp) {
-		GetChildren().push_back(pElementL);
-		GetChildren().push_back(pElementR);
+	inline Expr_BinOp(Expr *pExprL, Expr *pExprR) : Expr(TYPE_BinOp) {
+		GetChildren().push_back(pExprL);
+		GetChildren().push_back(pExprR);
 	}
-	const Element *GetLeft() const { return GetChildren()[0]; }
-	const Element *GetRight() const { return GetChildren()[1]; }
+	const Expr *GetLeft() const { return GetChildren()[0]; }
+	const Expr *GetRight() const { return GetChildren()[1]; }
 	virtual String ToString() const;
 };
 
-class Element_BinOp_Add : public Element_BinOp {
+class Expr_BinOp_Add : public Expr_BinOp {
 public:
-	inline Element_BinOp_Add(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
+	inline Expr_BinOp_Add(Expr *pExprL, Expr *pExprR) :
+		Expr_BinOp(pExprL, pExprR) {}
 };
 
-class Element_BinOp_Sub : public Element_BinOp {
+class Expr_BinOp_Sub : public Expr_BinOp {
 public:
-	inline Element_BinOp_Sub(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
+	inline Expr_BinOp_Sub(Expr *pExprL, Expr *pExprR) :
+		Expr_BinOp(pExprL, pExprR) {}
 };
 
-class Element_BinOp_Mul : public Element_BinOp {
+class Expr_BinOp_Mul : public Expr_BinOp {
 public:
-	inline Element_BinOp_Mul(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
+	inline Expr_BinOp_Mul(Expr *pExprL, Expr *pExprR) :
+		Expr_BinOp(pExprL, pExprR) {}
 };
 
-class Element_BinOp_Div : public Element_BinOp {
+class Expr_BinOp_Div : public Expr_BinOp {
 public:
-	inline Element_BinOp_Div(Element *pElementL, Element *pElementR) :
-		Element_BinOp(pElementL, pElementR) {}
+	inline Expr_BinOp_Div(Expr *pExprL, Expr *pExprR) :
+		Expr_BinOp(pExprL, pExprR) {}
 };
 
-class Element_Bracket : public Element {
+class Expr_Bracket : public Expr {
 public:
-	inline Element_Bracket() : Element(TYPE_Bracket) {}
+	inline Expr_Bracket() : Expr(TYPE_Bracket) {}
 	virtual String ToString() const;
 };
 
-class Element_Parenthesis : public Element {
+class Expr_Parenthesis : public Expr {
 public:
-	inline Element_Parenthesis() : Element(TYPE_Parenthesis) {}
+	inline Expr_Parenthesis() : Expr(TYPE_Parenthesis) {}
 	virtual String ToString() const;
 };
 

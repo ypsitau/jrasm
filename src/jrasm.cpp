@@ -20,19 +20,19 @@ bool Parse(const char *fileName)
 		if (ch == '\0') break;
 	}
 	::fclose(fp);
-	const ElementList &elemList = parser.GetInstructions();
-	//elemList.Print();
-	for (auto pElem : elemList) {
-		if (!pElem->IsType(Element::TYPE_Inst)) continue;
-		const Element_Inst *pElemEx = dynamic_cast<const Element_Inst *>(pElem);
-		const InstInfo *pInstInfo = InstInfo::Lookup(pElemEx->GetSymbol());
+	const ExprList &exprList = parser.GetInstructions();
+	//exprList.Print();
+	for (auto pExpr : exprList) {
+		if (!pExpr->IsType(Expr::TYPE_Inst)) continue;
+		const Expr_Inst *pExprEx = dynamic_cast<const Expr_Inst *>(pExpr);
+		const InstInfo *pInstInfo = InstInfo::Lookup(pExprEx->GetSymbol());
 		if (pInstInfo == nullptr) {
-			::printf("unknown instruction: %s\n", pElemEx->GetSymbol());
+			::printf("unknown instruction: %s\n", pExprEx->GetSymbol());
 		} else {
-			::printf("%s .. ", pElemEx->ToString().c_str());
+			::printf("%s .. ", pExprEx->ToString().c_str());
 		}
 		Context context;
-		pInstInfo->ApplyRule(context, pElemEx->GetOperands());
+		pInstInfo->ApplyRule(context, pExprEx->GetOperands());
 		for (auto data : context.GetBuffer()) {
 			::printf(" %02x", static_cast<UInt8>(data));
 		}

@@ -5,7 +5,7 @@
 #define __JRASM_H__
 
 #include "Context.h"
-#include "Element.h"
+#include "Expr.h"
 #include "InstInfo.h"
 #include "Tokenizer.h"
 #include "Parser.h"

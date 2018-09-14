@@ -20,11 +20,11 @@ private:
 private:
 	Tokenizer _tokenizer;
 	Stat _stat;
-	ElementOwner _elemOwner;
-	ElementStack _elemStack;
+	ExprOwner _exprOwner;
+	ExprStack _exprStack;
 public:
 	Parser(const String &fileNameSrc);
-	inline const ElementOwner &GetInstructions() const { return _elemOwner; }
+	inline const ExprOwner &GetInstructions() const { return _exprOwner; }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline const char *GetErrMsg() const { return _tokenizer.GetErrMsg(); }
 	virtual bool FeedToken(const Token &token);

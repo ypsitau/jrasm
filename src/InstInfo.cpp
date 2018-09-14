@@ -22,7 +22,7 @@ const InstInfo *InstInfo::Lookup(const char *symbol)
 	return _pInstInfoMap->Lookup(symbol);
 }
 
-bool InstInfo::ApplyRule(Context &context, const ElementList &operands) const
+bool InstInfo::ApplyRule(Context &context, const ExprList &operands) const
 {
 	for (auto pRule : _ruleOwner) {
 		size_t bytes = pRule->Apply(context, operands);
@@ -162,7 +162,7 @@ InstInfo::Rule::~Rule()
 {
 }
 
-size_t InstInfo::Rule_ACC::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_ACC::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP .. _accName is empty
@@ -171,15 +171,15 @@ size_t InstInfo::Rule_ACC::Apply(Context &context, const ElementList &operands)
 		// OP a ... _accName is "a"
 		// OP b ... _accName is "b"
 		if (operands.size() != 1) return 0;
-		const Element *pElem = operands.front();
-		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExpr = operands.front();
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
 	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_REL::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_REL::Apply(Context &context, const ExprList &operands)
 {
 	// OP disp
 	if (operands.size() != 1) return 0;
@@ -187,7 +187,7 @@ size_t InstInfo::Rule_REL::Apply(Context &context, const ElementList &operands)
 	return 0;
 }
 
-size_t InstInfo::Rule_INH::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_INH::Apply(Context &context, const ExprList &operands)
 {
 	// OP
 	if (operands.size() != 0) return 0;
@@ -195,7 +195,7 @@ size_t InstInfo::Rule_INH::Apply(Context &context, const ElementList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM8::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_IMM8::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
@@ -204,13 +204,13 @@ size_t InstInfo::Rule_IMM8::Apply(Context &context, const ElementList &operands)
 		// OP a,data8 ... _accName is "a"
 		// OP b,data8 ... _accName is "b"
 		if (operands.size() != 2) return 0;
-		const Element *pElem = operands.front();
-		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExpr = operands.front();
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Element *pElem = operands.back();
-	if (!pElem->IsType(Element::TYPE_Number)) return 0;
-	UInt32 num = dynamic_cast<const Element_Number *>(pElem)->GetNumber();
+	const Expr *pExpr = operands.back();
+	if (!pExpr->IsType(Expr::TYPE_Number)) return 0;
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExpr)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xff) {
 		// error
@@ -219,13 +219,13 @@ size_t InstInfo::Rule_IMM8::Apply(Context &context, const ElementList &operands)
 	return bytes;
 }
 
-size_t InstInfo::Rule_IMM16::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_IMM16::Apply(Context &context, const ExprList &operands)
 {
 	// OP data16
 	if (operands.size() != 1) return 0;
-	const Element *pElem = operands.back();
-	if (!pElem->IsType(Element::TYPE_Number)) return 0;
-	UInt32 num = dynamic_cast<const Element_Number *>(pElem)->GetNumber();
+	const Expr *pExpr = operands.back();
+	if (!pExpr->IsType(Expr::TYPE_Number)) return 0;
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExpr)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xffff) {
 		// error
@@ -235,7 +235,7 @@ size_t InstInfo::Rule_IMM16::Apply(Context &context, const ElementList &operands
 	return bytes;
 }
 
-size_t InstInfo::Rule_DIR::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_DIR::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
@@ -244,17 +244,17 @@ size_t InstInfo::Rule_DIR::Apply(Context &context, const ElementList &operands)
 		// OP a,(addr8) ... _accName is "a"
 		// OP b,(addr8) ... _accName is "b"
 		if (operands.size() != 2) return 0;
-		const Element *pElem = operands.front();
-		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExpr = operands.front();
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Element *pElem = operands.back();
-	if (!pElem->IsType(Element::TYPE_Parenthesis)) return 0;
+	const Expr *pExpr = operands.back();
+	if (!pExpr->IsType(Expr::TYPE_Parenthesis)) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_IDX::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_IDX::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
@@ -263,17 +263,17 @@ size_t InstInfo::Rule_IDX::Apply(Context &context, const ElementList &operands)
 		// OP a,[x+data8] ... _accName is "a"
 		// OP b,[x+data8] ... _accName is "b"
 		if (operands.size() != 2) return 0;
-		const Element *pElem = operands.front();
-		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExpr = operands.front();
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Element *pElem = operands.back();
-	if (!pElem->IsType(Element::TYPE_Bracket)) return 0;
+	const Expr *pExpr = operands.back();
+	if (!pExpr->IsType(Expr::TYPE_Bracket)) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
 
-size_t InstInfo::Rule_EXT::Apply(Context &context, const ElementList &operands)
+size_t InstInfo::Rule_EXT::Apply(Context &context, const ExprList &operands)
 {
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
@@ -282,12 +282,12 @@ size_t InstInfo::Rule_EXT::Apply(Context &context, const ElementList &operands)
 		// OP a,[addr16] ... _accName is "a"
 		// OP b,[addr16] ... _accName is "b"
 		if (operands.size() != 2) return 0;
-		const Element *pElem = operands.front();
-		if (!pElem->IsType(Element::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Element_Symbol *>(pElem)->MatchICase(_accName.c_str())) return 0;
+		const Expr *pExpr = operands.front();
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
 	}
-	const Element *pElem = operands.back();
-	if (!pElem->IsType(Element::TYPE_Bracket)) return 0;
+	const Expr *pExpr = operands.back();
+	if (!pExpr->IsType(Expr::TYPE_Bracket)) return 0;
 	context.PutByte(_code);
 	return bytes;
 }
