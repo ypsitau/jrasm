@@ -26,10 +26,6 @@ bool Parse(const char *fileName)
 	for (auto pExpr : exprList) {
 		Context context;
 		pGenerator->EvalExpr(context, pExpr);
-		for (auto data : context.GetBuffer()) {
-			::printf(" %02x", static_cast<UInt8>(data));
-		}
-		:: printf("\n");
 	}
 	return true;
 }

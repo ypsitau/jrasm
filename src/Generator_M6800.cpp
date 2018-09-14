@@ -141,7 +141,11 @@ bool Generator_M6800::EvalExpr(Context &context, const Expr *pExpr)
 		} else {
 			::printf("%s .. ", pExprEx->ToString().c_str());
 		}
-		return pEntry->ApplyRule(context, pExprEx->GetOperands());
+		if (!pEntry->ApplyRule(context, pExprEx->GetOperands())) return false;
+		for (auto data : context.GetBuffer()) {
+			::printf(" %02x", static_cast<UInt8>(data));
+		}
+		::printf("\n");
 	} else {
 		// this shouldn't happen
 		return false;
