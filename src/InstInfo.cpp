@@ -8,11 +8,6 @@
 //-----------------------------------------------------------------------------
 InstInfo::InstInfo()
 {
-	InitializeEntryMap();
-}
-
-void InstInfo::InitializeEntryMap()
-{
 	EntryMap &m = _entryMap;
 	m.Add(Entry_ACC					("aba", 0x1b));
 	m.Add(Entry_AxB_IMM8_DIR_IDX_EXT("adc", 0x89, 0x99, 0xa9, 0xb9, 0xc9, 0xd9, 0xe9, 0xf9));

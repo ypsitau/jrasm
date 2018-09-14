@@ -119,8 +119,7 @@ private:
 	EntryMap _entryMap;
 public:
 	InstInfo();
-	void InitializeEntryMap();
-	bool EvalExpr(Context &context, const Expr *pExpr);
+	virtual bool EvalExpr(Context &context, const Expr *pExpr);
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);
 	static Entry *Entry_REL(const String &symbol, UInt8 codeREL);

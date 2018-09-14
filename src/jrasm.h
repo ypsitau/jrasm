@@ -9,6 +9,7 @@
 #include "InstInfo.h"
 #include "Tokenizer.h"
 #include "Parser.h"
+#include "Generator.h"
 #include "CJRFormat.h"
 #include "MmlParser.h"
 
