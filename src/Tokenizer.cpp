@@ -72,9 +72,9 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_ParenthesisR);
 		} else {
 			if (::isprint(ch)) {
-				SetErrMsg("invalid character: %c", ch);
+				SetError("invalid character: %c", ch);
 			} else {
-				SetErrMsg("invalid character: 0x%02x", ch);
+				SetError("invalid character: 0x%02x", ch);
 			}
 			rtn = false;
 		}
@@ -111,7 +111,7 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_String: {
 		if (IsEOF(ch) || IsEOL(ch)) {
-			SetErrMsg("unclosed string literal");
+			SetError("unclosed string literal");
 			rtn = false;
 		} else if (ch == '"') {
 			rtn = FeedToken(TOKEN_String, _str);
@@ -131,7 +131,7 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == 'r') {
 			_str += '\r';
 		} else {
-			SetErrMsg("invalid escape character");
+			SetError("invalid escape character");
 			rtn = false;
 		}
 		break;
@@ -155,7 +155,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = _num * 8 + (ch - '0');
 		} else if ('8' <= ch && ch <= '9') {
-			SetErrMsg("decimal number must not start with zero");
+			SetError("decimal number must not start with zero");
 			rtn = false;
 		} else {
 			rtn = FeedToken(TOKEN_Number, _str, _num);
@@ -213,7 +213,7 @@ bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 
 	return _pListener->FeedToken(new Token(tokenInfo, str, num));
 }
 
-void Tokenizer::SetErrMsg(const char *format, ...)
+void Tokenizer::SetError(const char *format, ...)
 {
 	char buff[256];
 	va_list ap;

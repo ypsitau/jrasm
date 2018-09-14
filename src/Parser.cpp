@@ -97,7 +97,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else {
-			_tokenizer.SetErrMsg("invalid format of label");
+			_tokenizer.SetError("invalid format of label");
 			rtn = false;
 		}
 		break;
@@ -111,7 +111,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_stat = STAT_LineTop;
 		} else {
-			_tokenizer.SetErrMsg("instruction or pseudo command is expected");
+			_tokenizer.SetError("instruction or pseudo command is expected");
 			rtn = false;
 		}
 		break;
@@ -144,7 +144,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.push_back(pExpr);
 		} else if (pToken->IsType(TOKEN_BracketR)) {
 			if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
-				_tokenizer.SetErrMsg("no opening bracket matched");
+				_tokenizer.SetError("no opening bracket matched");
 			}
 			_exprStack.pop_back();
 		} else if (pToken->IsType(TOKEN_ParenthesisL)) {
@@ -153,11 +153,11 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.push_back(pExpr);
 		} else if (pToken->IsType(TOKEN_ParenthesisR)) {
 			if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
-				_tokenizer.SetErrMsg("no opening parenthesis matched");
+				_tokenizer.SetError("no opening parenthesis matched");
 			}
 			_exprStack.pop_back();
 		} else {
-			_tokenizer.SetErrMsg("invalid format of operands");
+			_tokenizer.SetError("invalid format of operands");
 			rtn = false;
 		}
 		break;

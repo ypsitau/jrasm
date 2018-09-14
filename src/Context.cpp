@@ -6,6 +6,23 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
+Context::Context(const String &fileNameSrc, Generator *pGenerator) :
+	_fileNameSrc(fileNameSrc), _pGenerator(pGenerator)
+{
+}
+
+void Context::SetError(int lineNo, const char *format, ...)
+{
+	char buff[256];
+	va_list ap;
+	_errMsg = _fileNameSrc;
+	::sprintf_s(buff, ":%d ", lineNo);
+	_errMsg += buff;
+	va_start(ap, format);
+	::vsprintf_s(buff, format, ap);
+	_errMsg += buff;
+}
+
 void Context::Dump()
 {
 	size_t col = 0;

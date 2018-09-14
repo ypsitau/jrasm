@@ -39,7 +39,7 @@ private:
 public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
 	bool FeedChar(char ch);
-	void SetErrMsg(const char *format, ...);
+	void SetError(const char *format, ...);
 	inline const char *GetErrMsg() const { return _errMsg.c_str(); }
 private:
 	bool FeedToken(const TokenInfo &tokenInfo);
