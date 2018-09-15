@@ -388,12 +388,12 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
-	context.PutByte(_code);
 	if (num > 0xffff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
-		num = 0x0000;
+		return RESULT_Error;
 	}
 	if (generateFlag) {
+		context.PutByte(_code);
 		context.PutByte(static_cast<UInt8>(num >> 8));
 		context.PutByte(static_cast<UInt8>(num));
 	} else {

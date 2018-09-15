@@ -126,7 +126,8 @@ Expr *Expr_Symbol::Reduce(Context &context) const
 	bool foundFlag = false;
 	UInt32 num = Lookup(GetSymbol(), &foundFlag);
 	if (!foundFlag) {
-		ErrorLog::AddError(this, "");
+		ErrorLog::AddError(this, "undefined symbol: ", GetSymbol());
+		return nullptr;
 	}
 	return new Expr_Number(num);
 }
@@ -162,6 +163,11 @@ String Expr_BinOp::ToString() const
 
 Expr *Expr_BinOp::Reduce(Context &context) const
 {
+	AutoPtr<Expr> pExprL(GetLeft()->Reduce(context));
+	if (pExprL.IsNull()) return nullptr;
+	AutoPtr<Expr> pExprR(GetRight()->Reduce(context));
+	if (pExprR.IsNull()) return nullptr;
+	
 	return Reference();
 }
 
@@ -179,7 +185,14 @@ String Expr_Bracket::ToString() const
 
 Expr *Expr_Bracket::Reduce(Context &context) const
 {
-	return Reference();
+	AutoPtr<Expr_Bracket> pExprRtn(new Expr_Bracket());
+	pExprRtn->DeriveSourceInfo(this);
+	for (auto pExprChild : GetChildren()) {
+		AutoPtr<Expr> pExprChildReduced(pExprChild->Reduce(context));
+		if (pExprChildReduced.IsNull()) return nullptr;
+		pExprRtn->AddChild(pExprChildReduced.release());
+	}
+	return pExprRtn.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +209,14 @@ String Expr_Parenthesis::ToString() const
 
 Expr *Expr_Parenthesis::Reduce(Context &context) const
 {
-	return Reference();
+	AutoPtr<Expr_Parenthesis> pExprRtn(new Expr_Parenthesis());
+	pExprRtn->DeriveSourceInfo(this);
+	for (auto pExprChild : GetChildren()) {
+		AutoPtr<Expr> pExprChildReduced(pExprChild->Reduce(context));
+		if (pExprChildReduced.IsNull()) return nullptr;
+		pExprRtn->AddChild(pExprChildReduced.release());
+	}
+	return pExprRtn.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -206,7 +226,6 @@ bool Expr_Label::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
 	if (_pExprAssigned.IsNull()) {
-		::printf("check\n");
 		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
 		return true;
 	}

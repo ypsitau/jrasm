@@ -27,7 +27,7 @@ public:
 private:
 	String _symbol;
 public:
-	inline Directive(const String &symbol) {}
+	inline Directive(const String &symbol) : _symbol(symbol) {}
 	static void Initialize();
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const = 0;

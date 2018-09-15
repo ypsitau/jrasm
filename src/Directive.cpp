@@ -152,11 +152,21 @@ bool Directive_ORG::PrepareLookupTable(Context &context, const Expr_Directive *p
 	const ExprList &operands = pExpr->GetOperands();
 	// .org data16
 	if (operands.size() != 1) {
-		ErrorLog::AddError(pExpr, "wrong number of operands");
+		ErrorLog::AddError(pExpr, "directive .org takes one operand");
 		return false;
 	}
-	
-	context.SetAddress(0);
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) {
+		ErrorLog::AddError(pExpr, "directive .org expects a number value for its operand");
+		return false;
+	}
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
+	if (num > 0xffff) {
+		ErrorLog::AddError(pExpr, "address value exceeds 16-bit range");
+		return false;
+	}
+	context.SetAddress(static_cast<UInt16>(num));
 	return true;
 }
 
