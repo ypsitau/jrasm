@@ -25,8 +25,15 @@ public:
 	private:
 		inline ~LookupTable() {}
 	public:
+		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
+		static inline bool IsGlobalLabel(const char *label) { return *label != '@'; }
 		void Set(const String &label, UInt32 value);
+		bool IsDefined(const char *label) const;
 		UInt32 Lookup(const char *label, bool *pFoundFlag) const;
+		LookupTable *GetRoot();
+		inline const LookupTable *GetRoot() const {
+			return const_cast<LookupTable *>(this)->GetRoot();
+		}
 	};
 	class LookupTableOwner : public std::vector<LookupTable *> {
 	public:

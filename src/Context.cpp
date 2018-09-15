@@ -51,7 +51,14 @@ void Context::Dump()
 //-----------------------------------------------------------------------------
 void Context::LookupTable::Set(const String &label, UInt32 value)
 {
-	insert(std::make_pair(label, value));
+	LookupTable *pLookupTable = IsGlobalLabel(label.c_str())? GetRoot() : this;
+	pLookupTable->insert(std::make_pair(label, value));
+}
+
+bool Context::LookupTable::IsDefined(const char *label) const
+{
+	const LookupTable *pLookupTable = IsGlobalLabel(label)? GetRoot() : this;
+	return pLookupTable->find(label) != end();
 }
 
 UInt32 Context::LookupTable::Lookup(const char *label, bool *pFoundFlag) const
@@ -66,6 +73,13 @@ UInt32 Context::LookupTable::Lookup(const char *label, bool *pFoundFlag) const
 	}
 	*pFoundFlag = false;
 	return 0;
+}
+
+Context::LookupTable *Context::LookupTable::GetRoot()
+{
+	LookupTable *pLookupTable = this;
+	for ( ; pLookupTable->GetParent() != nullptr; pLookupTable = pLookupTable->GetParent()) ;
+	return pLookupTable;
 }
 
 //-----------------------------------------------------------------------------

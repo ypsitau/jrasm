@@ -206,18 +206,24 @@ Expr *Expr_Parenthesis::Reduce(Context &context) const
 bool Expr_LabelDef::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
-	if (!IsAssigned()) {
-		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
-		return true;
+	UInt32 num = 0;
+	if (IsAssigned()) {
+		AutoPtr<Expr> pExprAssigned(GetAssigned()->Reduce(context));
+		if (pExprAssigned.IsNull()) return false;
+		if (!pExprAssigned->IsType(Expr::TYPE_Number)) {
+			ErrorLog::AddError(this, "number must be specified for label assignment");
+			return false;
+		}
+		num = dynamic_cast<Expr_Number *>(pExprAssigned.get())->GetNumber();
+	} else {
+		num = context.GetAddress();
 	}
-	AutoPtr<Expr> pExprAssigned(GetAssigned()->Reduce(context));
-	if (pExprAssigned.IsNull()) return false;
-	if (!pExprAssigned->IsType(Expr::TYPE_Number)) {
-		ErrorLog::AddError(this, "number must be specified for label assignment");
+	Context::LookupTable *pLookupTable = context.GetLookupTable();
+	if (pLookupTable->IsDefined(GetLabel())) {
+		ErrorLog::AddError(this, "already defined label: %s", GetLabel());
 		return false;
 	}
-	UInt32 num = dynamic_cast<Expr_Number *>(pExprAssigned.get())->GetNumber();
-	context.GetLookupTable()->Set(GetLabel(), num);
+	pLookupTable->Set(GetLabel(), num);
 	return true;
 }
 
@@ -270,7 +276,6 @@ bool Expr_Instruction::PrepareLookupTable(Context &context)
 	if (!Expr::PrepareLookupTable(context)) return false;
 	UInt32 bytes = 0;
 	context.GetGenerator()->CalcInstBytes(context, this, &bytes);
-	context.ForwardAddress(bytes);
 	return true;
 }
 
