@@ -176,6 +176,7 @@ private:
 public:
 	inline Expr_LabelDef(const String &label) : Expr(TYPE_LabelDef), _label(label) {}
 	inline void SetAssigned(Expr *pExprAssigned) { _pExprAssigned.reset(pExprAssigned); }
+	inline bool IsAssigned() const { return !_pExprAssigned.IsNull(); }
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }

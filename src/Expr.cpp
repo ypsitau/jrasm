@@ -210,6 +210,7 @@ bool Expr_LabelDef::PrepareLookupTable(Context &context)
 		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
 		return true;
 	}
+	
 	return true;
 }
 
@@ -240,7 +241,7 @@ Expr *Expr_LabelRef::Reduce(Context &context) const
 	bool foundFlag = false;
 	UInt32 num = Lookup(GetLabel(), &foundFlag);
 	if (!foundFlag) {
-		ErrorLog::AddError(this, "undefined symbol: ", GetLabel());
+		ErrorLog::AddError(this, "undefined label: ", GetLabel());
 		return nullptr;
 	}
 	return new Expr_Number(num);
@@ -297,7 +298,7 @@ bool Expr_Directive::Generate(Context &context)
 
 Expr *Expr_Directive::Reduce(Context &context) const
 {
-	return Reference();
+	return _pDirective->Reduce(context, this);
 }
 
 String Expr_Directive::ToString() const

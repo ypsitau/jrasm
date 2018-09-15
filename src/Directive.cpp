@@ -33,6 +33,11 @@ void Directive::Initialize()
 	PROC	= new Directive_PROC();
 }
 
+Expr *Directive::Reduce(Context &context, const Expr_Directive *pExpr) const
+{
+	return pExpr->Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------

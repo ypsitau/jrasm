@@ -32,6 +32,7 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const = 0;
+	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------

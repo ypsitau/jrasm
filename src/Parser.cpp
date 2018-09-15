@@ -38,7 +38,9 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		break;
 	}
 	case STAT_Instruction: {
-		if (pToken->IsType(TOKEN_Symbol)) {
+		if (pToken->IsType(TOKEN_White)) {
+			// nothing to do
+		} else if (pToken->IsType(TOKEN_Symbol)) {
 			bool equFlag = false;
 			const char *symbol = pToken->GetString();
 			Expr *pExpr = nullptr;
@@ -73,11 +75,18 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			}
 			SetExprSourceInfo(pExpr, pToken.get());
 			if (equFlag) {
-				// associate to the last label
+				// associate it to the last LabelDef
 				ExprList &exprList = _pExprRoot->GetChildren();
-				if (!exprList.empty() && exprList.back()->IsType(Expr::TYPE_LabelDef)) {
-					
+				if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
+					_tokenizer.AddError("no label definition to assign");
+					return false;
 				}
+				Expr_LabelDef *pExprEx = dynamic_cast<Expr_LabelDef *>(exprList.back());
+				if (pExprEx->IsAssigned()) {
+					_tokenizer.AddError("no label definition to assign");
+					return false;
+				}
+				pExprEx->SetAssigned(pExpr);
 			} else {
 				_pExprRoot->GetChildren().push_back(pExpr);
 			}
