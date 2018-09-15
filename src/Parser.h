@@ -13,7 +13,7 @@ class Parser : public Tokenizer::Listener {
 private:
 	enum Stat {
 		STAT_LineTop,
-		STAT_Label,
+		STAT_LabelDef,
 		STAT_Instruction,
 		STAT_Operand,
 	};

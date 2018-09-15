@@ -220,9 +220,9 @@ Expr *Expr_Parenthesis::Reduce(Context &context) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Label
+// Expr_LabelDef
 //-----------------------------------------------------------------------------
-bool Expr_Label::PrepareLookupTable(Context &context)
+bool Expr_LabelDef::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
 	if (_pExprAssigned.IsNull()) {
@@ -232,18 +232,18 @@ bool Expr_Label::PrepareLookupTable(Context &context)
 	return true;
 }
 
-bool Expr_Label::Generate(Context &context)
+bool Expr_LabelDef::Generate(Context &context)
 {
 	// nothing to do
 	return true;
 }
 
-Expr *Expr_Label::Reduce(Context &context) const
+Expr *Expr_LabelDef::Reduce(Context &context) const
 {
 	return Reference();
 }
 
-String Expr_Label::ToString() const
+String Expr_LabelDef::ToString() const
 {
 	String str;
 	str = _label;

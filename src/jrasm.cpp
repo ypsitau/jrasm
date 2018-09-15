@@ -30,7 +30,7 @@ bool Parse(const char *fileName)
 	for (auto pExpr : parser.GetRoot()->GetChildren()) {
 		context.ClearBuffer();
 		pExpr->Generate(context);
-		if (pExpr->IsType(Expr::TYPE_Label)) {
+		if (pExpr->IsType(Expr::TYPE_LabelDef)) {
 			// nothing to do
 		} else {
 			::printf("%-32s", pExpr->ToString().c_str());

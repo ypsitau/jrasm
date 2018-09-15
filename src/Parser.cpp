@@ -17,16 +17,16 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			Expr *pExpr = new Expr_Label(pToken->GetString());
+			Expr *pExpr = new Expr_LabelDef(pToken->GetString());
 			SetExprSourceInfo(pExpr, pToken.get());
 			_pExprRoot->GetChildren().push_back(pExpr);
-			_stat = STAT_Label;
+			_stat = STAT_LabelDef;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Instruction;
 		}
 		break;
 	}
-	case STAT_Label: {
+	case STAT_LabelDef: {
 		if (pToken->IsType(TOKEN_Colon)) {
 			_stat = STAT_Instruction;
 		} else if (pToken->IsType(TOKEN_White)) {
@@ -39,6 +39,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	}
 	case STAT_Instruction: {
 		if (pToken->IsType(TOKEN_Symbol)) {
+			bool equFlag = false;
 			const char *symbol = pToken->GetString();
 			Expr *pExpr = nullptr;
 			if (::strcasecmp(symbol, ".cseg") == 0) {
@@ -51,6 +52,11 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				pExpr = new Expr_Directive(Directive::DW);
 			} else if (::strcasecmp(symbol, ".end") == 0) {
 				pExpr = new Expr_Directive(Directive::END);
+			} else if (::strcasecmp(symbol, ".equ") == 0) {
+				pExpr = new Expr_Directive(Directive::EQU);
+				equFlag = true;
+			} else if (::strcasecmp(symbol, ".include") == 0) {
+				pExpr = new Expr_Directive(Directive::INCLUDE);
 			} else if (::strcasecmp(symbol, ".mml") == 0) {
 				pExpr = new Expr_Directive(Directive::MML);
 			} else if (::strcasecmp(symbol, ".org") == 0) {
@@ -66,7 +72,15 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				pExpr = new Expr_Instruction(pToken->GetString());
 			}
 			SetExprSourceInfo(pExpr, pToken.get());
-			_pExprRoot->GetChildren().push_back(pExpr);
+			if (equFlag) {
+				// associate to the last label
+				ExprList &exprList = _pExprRoot->GetChildren();
+				if (!exprList.empty() && exprList.back()->IsType(Expr::TYPE_LabelDef)) {
+					
+				}
+			} else {
+				_pExprRoot->GetChildren().push_back(pExpr);
+			}
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;
 		} else if (pToken->IsType(TOKEN_EOL)) {

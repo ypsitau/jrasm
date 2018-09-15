@@ -23,7 +23,7 @@ public:
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Parenthesis,
-		TYPE_Label,
+		TYPE_LabelDef,
 		TYPE_Instruction,
 		TYPE_Directive,
 	};
@@ -182,14 +182,14 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_Label
+// Expr_LabelDef
 //-----------------------------------------------------------------------------
-class Expr_Label : public Expr {
+class Expr_LabelDef : public Expr {
 private:
 	String _label;
 	AutoPtr<Expr> _pExprAssigned;
 public:
-	inline Expr_Label(const String &label) : Expr(TYPE_Label), _label(label) {}
+	inline Expr_LabelDef(const String &label) : Expr(TYPE_LabelDef), _label(label) {}
 	inline void SetExprAssigned(Expr *pExprAssigned) { _pExprAssigned.reset(pExprAssigned); }
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
