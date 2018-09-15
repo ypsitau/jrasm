@@ -191,7 +191,7 @@ bool Expr_Instruction::Generate(Context &context)
 //-----------------------------------------------------------------------------
 String Expr_Directive::ToString() const
 {
-	String str = _symbol;
+	String str = _pDirective->GetSymbol();
 	str += " ";
 	str += GetChildren().ToString();
 	return str;

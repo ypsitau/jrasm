@@ -12,7 +12,6 @@ Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
-	bool rtn = true;
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
 	case STAT_LineTop: {
@@ -32,7 +31,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			// nothing to do
 		} else {
 			_tokenizer.AddError("invalid format of label");
-			rtn = false;
+			return false;
 		}
 		break;
 	}
@@ -40,8 +39,27 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		if (pToken->IsType(TOKEN_Symbol)) {
 			const char *symbol = pToken->GetString();
 			Expr *pExpr = nullptr;
-			if (*symbol == '.') {
-				pExpr = new Expr_Directive(pToken->GetString());
+			if (::strcasecmp(symbol, ".cseg") == 0) {
+				pExpr = new Expr_Directive(Directive::CSEG);
+			} else if (::strcasecmp(symbol, ".db") == 0) {
+				pExpr = new Expr_Directive(Directive::DB);
+			} else if (::strcasecmp(symbol, ".dseg") == 0) {
+				pExpr = new Expr_Directive(Directive::DSEG);
+			} else if (::strcasecmp(symbol, ".dw") == 0) {
+				pExpr = new Expr_Directive(Directive::DW);
+			} else if (::strcasecmp(symbol, ".end") == 0) {
+				pExpr = new Expr_Directive(Directive::END);
+			} else if (::strcasecmp(symbol, ".mml") == 0) {
+				pExpr = new Expr_Directive(Directive::MML);
+			} else if (::strcasecmp(symbol, ".org") == 0) {
+				pExpr = new Expr_Directive(Directive::ORG);
+			} else if (::strcasecmp(symbol, ".pcg") == 0) {
+				pExpr = new Expr_Directive(Directive::PCG);
+			} else if (::strcasecmp(symbol, ".proc") == 0) {
+				pExpr = new Expr_Directive(Directive::PROC);
+			} else if (*symbol == '.') {
+				_tokenizer.AddError("unknown directive: %s", symbol);
+				return false;
 			} else {
 				pExpr = new Expr_Instruction(pToken->GetString());
 			}
@@ -51,8 +69,8 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_stat = STAT_LineTop;
 		} else {
-			_tokenizer.AddError("instruction or pseudo command is expected");
-			rtn = false;
+			_tokenizer.AddError("instruction or directive is expected");
+			return false;
 		}
 		break;
 	}
@@ -100,12 +118,12 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.pop_back();
 		} else {
 			_tokenizer.AddError("invalid format of operands");
-			rtn = false;
+			return false;
 		}
 		break;
 	}
 	}
-	return rtn;
+	return true;
 }
 
 bool Parser::ParseByPrec(AutoPtr<Token> pToken)

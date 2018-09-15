@@ -7,7 +7,8 @@ add_executable(jrasm
 	stdafx.cpp
 	CJRFormat.cpp
 	Common.cpp
-	Context.cpp	
+	Context.cpp
+	Directive.cpp
 	ErrorLog.cpp
 	Expr.cpp
 	Generator.cpp

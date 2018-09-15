@@ -6,6 +6,7 @@
 
 #include "CJRFormat.h"
 #include "Context.h"
+#include "Directive.h"
 #include "Expr.h"
 #include "ErrorLog.h"
 #include "Generator_M6800.h"

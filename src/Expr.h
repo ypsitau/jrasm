@@ -4,8 +4,9 @@
 #ifndef __EXPR_H__
 #define __EXPR_H__
 
-#include "Operator.h"
+#include "Directive.h"
 #include "Context.h"
+#include "Operator.h"
 
 class ExprOwner;
 
@@ -192,10 +193,10 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_Directive : public Expr {
 private:
-	String _symbol;
+	const Directive *_pDirective;
 public:
-	inline Expr_Directive(const String &symbol) : Expr(TYPE_Directive), _symbol(symbol) {}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE_Directive), _pDirective(pDirective) {}
+	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);

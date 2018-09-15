@@ -41,7 +41,8 @@ bool Parse(const char *fileName)
 
 int main(int argc, char *argv[])
 {
-
+	Operator::Initialize();
+	Directive::Initialize();
 #if 1
 	if (argc < 2) {
 		::fprintf(stderr, "usage: jasm file\n");
