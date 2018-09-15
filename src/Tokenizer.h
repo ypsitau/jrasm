@@ -31,18 +31,17 @@ public:
 private:
 	Stat _stat;
 	Listener *_pListener;
-	String _fileNameSrc;
+	AutoPtr<StringShared> _pFileNameSrc;
 	UInt16 _num;
 	String _str;
 	int _nLines;
 public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
+	inline const char *GetFileNameSrc() const { return _pFileNameSrc->GetString(); }
+	inline const StringShared *GetFileNameSrcShared() const { return _pFileNameSrc.get(); }
 	bool FeedChar(char ch);
 	void AddError(const char *format, ...);
 private:
-	bool FeedToken(const TokenInfo &tokenInfo);
-	bool FeedToken(const TokenInfo &tokenInfo, const String &str);
-	bool FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num);
 	inline static bool IsEOF(char ch) { return ch == '\0'; }
 	inline static bool IsEOL(char ch) { return ch == '\n'; }
 	inline static bool IsWhite(char ch) { return ch == ' ' || ch == '\t'; }
@@ -51,6 +50,9 @@ private:
 	}
 	inline static bool IsSymbolFollow(char ch) { return IsSymbolFirst(ch) || ::isdigit(ch); }
 	inline static bool IsDigit(char ch) { return ::isdigit(ch); }
+	bool FeedToken(const TokenInfo &tokenInfo);
+	bool FeedToken(const TokenInfo &tokenInfo, const String &str);
+	bool FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num);
 };
 
 #endif

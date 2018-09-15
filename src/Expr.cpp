@@ -88,7 +88,7 @@ bool Expr_Root::Generate(Context &context)
 	return true;
 }
 
-Expr *Expr_Root::Reduce() const
+Expr *Expr_Root::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -108,7 +108,7 @@ String Expr_Number::ToString() const
 	return buff;
 }
 
-Expr *Expr_Number::Reduce() const
+Expr *Expr_Number::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -118,12 +118,17 @@ Expr *Expr_Number::Reduce() const
 //-----------------------------------------------------------------------------
 String Expr_Symbol::ToString() const
 {
-	return _str;
+	return _symbol;
 }
 
-Expr *Expr_Symbol::Reduce() const
+Expr *Expr_Symbol::Reduce(Context &context) const
 {
-	return Reference();
+	bool foundFlag = false;
+	UInt32 num = Lookup(GetSymbol(), &foundFlag);
+	if (!foundFlag) {
+		ErrorLog::AddError(this, "");
+	}
+	return new Expr_Number(num);
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +143,7 @@ String Expr_String::ToString() const
 	return str;
 }
 
-Expr *Expr_String::Reduce() const
+Expr *Expr_String::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -155,7 +160,7 @@ String Expr_BinOp::ToString() const
 	return str;
 }
 
-Expr *Expr_BinOp::Reduce() const
+Expr *Expr_BinOp::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -172,7 +177,7 @@ String Expr_Bracket::ToString() const
 	return str;
 }
 
-Expr *Expr_Bracket::Reduce() const
+Expr *Expr_Bracket::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -189,7 +194,7 @@ String Expr_Parenthesis::ToString() const
 	return str;
 }
 
-Expr *Expr_Parenthesis::Reduce() const
+Expr *Expr_Parenthesis::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -214,7 +219,7 @@ bool Expr_Label::Generate(Context &context)
 	return true;
 }
 
-Expr *Expr_Label::Reduce() const
+Expr *Expr_Label::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -244,7 +249,7 @@ bool Expr_Instruction::Generate(Context &context)
 	return context.GetGenerator()->Generate(context, this);
 }
 
-Expr *Expr_Instruction::Reduce() const
+Expr *Expr_Instruction::Reduce(Context &context) const
 {
 	return Reference();
 }
@@ -271,7 +276,7 @@ bool Expr_Directive::Generate(Context &context)
 	return true;
 }
 
-Expr *Expr_Directive::Reduce() const
+Expr *Expr_Directive::Reduce(Context &context) const
 {
 	return Reference();
 }

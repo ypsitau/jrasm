@@ -59,7 +59,7 @@ String Token::ToString() const
 //-----------------------------------------------------------------------------
 TokenStack::TokenStack()
 {
-	push_back(new Token(TOKEN_Begin));
+	push_back(new Token(TOKEN_Begin, 0));
 }
 
 TokenStack::~TokenStack()

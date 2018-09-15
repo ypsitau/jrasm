@@ -7,7 +7,8 @@
 // Tokenizer
 //-----------------------------------------------------------------------------
 Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
-	_stat(STAT_LineTop), _pListener(pListener), _fileNameSrc(fileNameSrc), _num(0), _nLines(0)
+	_stat(STAT_LineTop), _pListener(pListener),
+	_pFileNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0)
 {
 }
 
@@ -200,22 +201,22 @@ bool Tokenizer::FeedChar(char ch)
 
 bool Tokenizer::FeedToken(const TokenInfo &tokenInfo)
 {
-	return _pListener->FeedToken(new Token(tokenInfo));
+	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1));
 }
 
 bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str)
 {
-	return _pListener->FeedToken(new Token(tokenInfo, str));
+	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str));
 }
 
 bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num)
 {
-	return _pListener->FeedToken(new Token(tokenInfo, str, num));
+	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str, num));
 }
 
 void Tokenizer::AddError(const char *format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	ErrorLog::AddErrorV(_fileNameSrc, _nLines + 1, format, ap);
+	ErrorLog::AddErrorV(GetFileNameSrc(), _nLines + 1, format, ap);
 }
