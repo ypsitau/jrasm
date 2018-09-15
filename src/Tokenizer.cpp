@@ -217,10 +217,10 @@ void Tokenizer::SetError(const char *format, ...)
 {
 	char buff[256];
 	va_list ap;
+	va_start(ap, format);
 	_errMsg = _fileNameSrc;
 	::sprintf_s(buff, ":%d ", _nLines + 1);
 	_errMsg += buff;
-	va_start(ap, format);
 	::vsprintf_s(buff, format, ap);
 	_errMsg += buff;
 }

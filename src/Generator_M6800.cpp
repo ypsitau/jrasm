@@ -282,142 +282,158 @@ Generator_M6800::Rule::~Rule()
 {
 }
 
-size_t Generator_M6800::Rule_ACC::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_ACC::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP .. _accName is empty
-		if (operands.size() != 0) return 0;
+		if (operands.size() != 0) return false;
 	} else {
 		// OP a ... _accName is "a"
 		// OP b ... _accName is "b"
-		if (operands.size() != 1) return 0;
+		if (operands.size() != 1) return false;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
 	context.PutByte(_code);
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_REL::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_REL::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
-	if (operands.size() != 1) return 0;
+	if (operands.size() != 1) return false;
 	context.PutByte(_code);
-	return 0;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_INH::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_INH::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
-	if (operands.size() != 0) return 0;
+	if (operands.size() != 0) return false;
 	context.PutByte(_code);
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_IMM8::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_IMM8::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
-		if (operands.size() != 1) return 0;
+		if (operands.size() != 1) return false;
 	} else {
 		// OP a,data8 ... _accName is "a"
 		// OP b,data8 ... _accName is "b"
-		if (operands.size() != 2) return 0;
+		if (operands.size() != 2) return false;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
 	const Expr *pExprLast = operands.back();
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return 0;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xff) {
-		// error
+		context.SetError(pExpr, "immediate value exceeds 8-bit range");
 	}
 	context.PutByte(static_cast<UInt8>(num));
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_IMM16::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_IMM16::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
-	if (operands.size() != 1) return 0;
+	if (operands.size() != 1) return false;
 	const Expr *pExprLast = operands.back();
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return 0;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xffff) {
-		// error
+		context.SetError(pExpr, "immediate value exceeds 16-bit range");
 	}
 	context.PutByte(static_cast<UInt8>(num >> 8));
 	context.PutByte(static_cast<UInt8>(num));
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_DIR::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_DIR::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
-		if (operands.size() != 1) return 0;
+		if (operands.size() != 1) return false;
 	} else {
 		// OP a,(addr8) ... _accName is "a"
 		// OP b,(addr8) ... _accName is "b"
-		if (operands.size() != 2) return 0;
+		if (operands.size() != 2) return false;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return 0;
+		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return false;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return false;
 	}
 	const Expr *pExprLast = operands.back();
-	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return 0;
+	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return false;
 	context.PutByte(_code);
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_IDX::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_IDX::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
-		if (operands.size() != 1) return 0;
+		if (operands.size() != 1) return false;
 	} else {
 		// OP a,[x+data8] ... _accName is "a"
 		// OP b,[x+data8] ... _accName is "b"
-		if (operands.size() != 2) return 0;
+		if (operands.size() != 2) return false;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return 0;
+		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return false;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return false;
 	}
 	const Expr *pExprLast = operands.back();
-	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return 0;
+	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
 	context.PutByte(_code);
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
-size_t Generator_M6800::Rule_EXT::Apply(Context &context, const Expr_Inst *pExpr)
+bool Generator_M6800::Rule_EXT::Apply(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
-		if (operands.size() != 1) return 0;
+		if (operands.size() != 1) return false;
 	} else {
 		// OP a,[addr16] ... _accName is "a"
 		// OP b,[addr16] ... _accName is "b"
-		if (operands.size() != 2) return 0;
+		if (operands.size() != 2) return false;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return 0;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return 0;
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
 	const Expr *pExprLast = operands.back();
-	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return 0;
+	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
 	context.PutByte(_code);
-	return bytes;
+	*pBytes = bytes;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -448,8 +464,7 @@ bool Generator_M6800::Entry::ApplyRule(
 	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes) const
 {
 	for (auto pRule : _ruleOwner) {
-		size_t bytes = pRule->Apply(context, pExpr);
-		if (bytes != 0) return true;
+		if (pRule->Apply(context, pExpr, generateFlag, pBytes)) return true;
 	}
 	// error
 	return false;
