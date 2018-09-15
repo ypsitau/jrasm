@@ -282,20 +282,20 @@ Generator_M6800::Rule::~Rule()
 {
 }
 
-bool Generator_M6800::Rule_ACC::Apply(
+Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP .. _accName is empty
-		if (operands.size() != 0) return false;
+		if (operands.size() != 0) return RESULT_Rejected;
 	} else {
 		// OP a ... _accName is "a"
 		// OP b ... _accName is "b"
-		if (operands.size() != 1) return false;
+		if (operands.size() != 1) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	// This rule was determined to be applied.
 	if (generateFlag) {
@@ -304,18 +304,18 @@ bool Generator_M6800::Rule_ACC::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_REL::Apply(
+Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
-	if (operands.size() != 1) return false;
+	if (operands.size() != 1) return RESULT_Rejected;
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
-	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	
 	if (generateFlag) {
@@ -324,15 +324,15 @@ bool Generator_M6800::Rule_REL::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_INH::Apply(
+Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
-	if (operands.size() != 0) return false;
+	if (operands.size() != 0) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -340,27 +340,27 @@ bool Generator_M6800::Rule_INH::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_IMM8::Apply(
+Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
-		if (operands.size() != 1) return false;
+		if (operands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,data8 ... _accName is "a"
 		// OP b,data8 ... _accName is "b"
-		if (operands.size() != 2) return false;
+		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
-	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xff) {
@@ -374,18 +374,18 @@ bool Generator_M6800::Rule_IMM8::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_IMM16::Apply(
+Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
-	if (operands.size() != 1) return false;
+	if (operands.size() != 1) return RESULT_Rejected;
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
-	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	context.PutByte(_code);
@@ -400,27 +400,27 @@ bool Generator_M6800::Rule_IMM16::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_DIR::Apply(
+Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
-		if (operands.size() != 1) return false;
+		if (operands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,(addr8) ... _accName is "a"
 		// OP b,(addr8) ... _accName is "b"
-		if (operands.size() != 2) return false;
+		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return false;
-		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return false;
+		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
-	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return false;
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -428,27 +428,27 @@ bool Generator_M6800::Rule_DIR::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_IDX::Apply(
+Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
-		if (operands.size() != 1) return false;
+		if (operands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,[x+data8] ... _accName is "a"
 		// OP b,[x+data8] ... _accName is "b"
-		if (operands.size() != 2) return false;
+		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return false;
-		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return false;
+		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
-	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -456,27 +456,27 @@ bool Generator_M6800::Rule_IDX::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
-bool Generator_M6800::Rule_EXT::Apply(
+Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
-		if (operands.size() != 1) return false;
+		if (operands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,[addr16] ... _accName is "a"
 		// OP b,[addr16] ... _accName is "b"
-		if (operands.size() != 2) return false;
+		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
+		if (!pExpr->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
-	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -484,7 +484,7 @@ bool Generator_M6800::Rule_EXT::Apply(
 		context.ForwardAddress(bytes);
 	}
 	*pBytes = bytes;
-	return true;
+	return RESULT_Accepted;
 }
 
 //-----------------------------------------------------------------------------
@@ -515,9 +515,16 @@ bool Generator_M6800::Entry::ApplyRule(
 	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes) const
 {
 	for (auto pRule : _ruleOwner) {
-		if (pRule->Apply(context, pExpr, generateFlag, pBytes)) return true;
+		Result result = pRule->Apply(context, pExpr, generateFlag, pBytes);
+		if (result == RESULT_Accepted) {
+			return true;
+		} else if (result == RESULT_Error) {
+			return false;
+		} else { // RESULT_Rejected
+			// nothing to do
+		}
 	}
-	// error
+	ErrorLog::AddError(pExpr, "invalid operands");
 	return false;
 }
 

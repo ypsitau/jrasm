@@ -14,13 +14,18 @@ class ExprOwner;
 //-----------------------------------------------------------------------------
 class Generator_M6800 : public Generator {
 public:
+	enum Result {
+		RESULT_Error,
+		RESULT_Rejected,
+		RESULT_Accepted,
+	};
 	class Rule {
 	protected:
 		UInt8 _code;
 	public:
 		inline Rule(UInt8 code) : _code(code) {}
 		virtual ~Rule();
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes) = 0;
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes) = 0;
 	};
 	class Rule_ACC : public Rule {
 	private:
@@ -29,21 +34,21 @@ public:
 		enum { bytes = 1 };
 	public:
 		inline Rule_ACC(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_REL : public Rule {
 	public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_REL(UInt8 code) : Rule(code) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_INH : public Rule {
 	public:
 		enum { bytes = 1 };
 	public:
 		inline Rule_INH(UInt8 code) : Rule(code) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_IMM8 : public Rule {
 	private:
@@ -52,14 +57,14 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IMM8(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_IMM16 : public Rule {
 	public:
 		enum { bytes = 3 };
 	public:
 		inline Rule_IMM16(UInt8 code) : Rule(code) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_DIR : public Rule {
 	private:
@@ -68,7 +73,7 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_DIR(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_IDX : public Rule {
 	private:
@@ -77,7 +82,7 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IDX(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	class Rule_EXT : public Rule {
 	private:
@@ -86,7 +91,7 @@ public:
 		enum { bytes = 3 };
 	public:
 		inline Rule_EXT(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual bool Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes);
 	};
 	typedef std::vector<Rule *> RuleList;
 	class RuleOwner : public RuleList {

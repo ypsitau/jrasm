@@ -149,8 +149,7 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 bool Directive_ORG::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
 {
-#if 0
-	//const ExprList &operands = pExpr->GetOperands();
+	const ExprList &operands = pExpr->GetOperands();
 	// .org data16
 	if (operands.size() != 1) {
 		ErrorLog::AddError(pExpr, "wrong number of operands");
@@ -158,7 +157,6 @@ bool Directive_ORG::PrepareLookupTable(Context &context, const Expr_Directive *p
 	}
 	
 	context.SetAddress(0);
-#endif
 	return true;
 }
 
