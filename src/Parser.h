@@ -20,12 +20,13 @@ private:
 private:
 	Tokenizer _tokenizer;
 	Stat _stat;
-	ExprOwner _exprOwner;
+	AutoPtr<Expr_Root> _pExprRoot;
 	ExprStack _exprStack;
 	TokenStack _tokenStack;
 public:
 	Parser(const String &fileNameSrc);
-	inline const ExprOwner &GetInstructions() const { return _exprOwner; }
+	inline Expr_Root *GetRoot() { return _pExprRoot.get(); }
+	inline const Expr_Root *GetRoot() const { return _pExprRoot.get(); }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	bool ParseByPrec(AutoPtr<Token> pToken);
 public:

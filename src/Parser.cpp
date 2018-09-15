@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------
 // Parser
 //-----------------------------------------------------------------------------
-Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
+Parser::Parser(const String &fileNameSrc) :
+	_tokenizer(this, fileNameSrc), _stat(STAT_LineTop), _pExprRoot(new Expr_Root())
 {
 }
 
@@ -17,7 +18,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
 			Expr *pExpr = new Expr_Label(pToken->GetString());
-			_exprOwner.push_back(pExpr);
+			_pExprRoot->GetChildren().push_back(pExpr);
 			_stat = STAT_Label;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Instruction;
@@ -63,7 +64,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			} else {
 				pExpr = new Expr_Instruction(pToken->GetString());
 			}
-			_exprOwner.push_back(pExpr);
+			_pExprRoot->GetChildren().push_back(pExpr);
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;
 		} else if (pToken->IsType(TOKEN_EOL)) {

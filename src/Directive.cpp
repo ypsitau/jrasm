@@ -11,6 +11,8 @@ const Directive *Directive::DB		= nullptr;
 const Directive *Directive::DSEG	= nullptr;
 const Directive *Directive::DW		= nullptr;
 const Directive *Directive::END		= nullptr;
+const Directive *Directive::EQU		= nullptr;
+const Directive *Directive::INCLUDE	= nullptr;
 const Directive *Directive::MML		= nullptr;
 const Directive *Directive::ORG		= nullptr;
 const Directive *Directive::PCG		= nullptr;
@@ -23,6 +25,8 @@ void Directive::Initialize()
 	DSEG	= new Directive_DSEG();
 	DW		= new Directive_DW();
 	END		= new Directive_END();
+	EQU		= new Directive_EQU();
+	INCLUDE	= new Directive_INCLUDE();
 	MML		= new Directive_MML();
 	ORG		= new Directive_ORG();
 	PCG		= new Directive_PCG();
@@ -47,6 +51,14 @@ void Directive::Initialize()
 
 //-----------------------------------------------------------------------------
 // Directive_END
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Directive_EQU
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Directive_INCLUDE
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------

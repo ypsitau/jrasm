@@ -28,8 +28,8 @@ bool Expr::PrepareLookupTable(Context &context)
 
 bool Expr::Generate(Context &context)
 {
-	ErrorLog::AddError(this, "invalid format");
-	return false;
+	// nothing to do
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +66,31 @@ void ExprOwner::Clear()
 		Expr::Delete(pExpr);
 	}
 	clear();
+}
+
+//-----------------------------------------------------------------------------
+// Expr_Root
+//-----------------------------------------------------------------------------
+String Expr_Root::ToString() const
+{
+	return "";
+}
+
+bool Expr_Root::PrepareLookupTable(Context &context)
+{
+	Expr::PrepareLookupTable(context);
+	for (auto pExpr : GetChildren()) {
+		pExpr->PrepareLookupTable(context);
+	}
+	return true;
+}
+
+bool Expr_Root::Generate(Context &context)
+{
+	for (auto pExpr : GetChildren()) {
+		pExpr->Generate(context);
+	}
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -149,6 +174,7 @@ bool Expr_Label::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
 	if (_pExprAssigned.IsNull()) {
+		::printf("check\n");
 		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
 		return true;
 	}

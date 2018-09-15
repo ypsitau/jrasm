@@ -16,6 +16,8 @@ public:
 	static const Directive *DSEG;
 	static const Directive *DW;
 	static const Directive *END;
+	static const Directive *EQU;
+	static const Directive *INCLUDE;
 	static const Directive *MML;
 	static const Directive *ORG;
 	static const Directive *PCG;
@@ -33,7 +35,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_CSEG : public Directive {
 public:
-	inline Directive_CSEG() : Directive("cseg") {}
+	inline Directive_CSEG() : Directive(".cseg") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -41,7 +43,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DB : public Directive {
 public:
-	inline Directive_DB() : Directive("db") {}
+	inline Directive_DB() : Directive(".db") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -49,7 +51,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DSEG : public Directive {
 public:
-	inline Directive_DSEG() : Directive("dseg") {}
+	inline Directive_DSEG() : Directive(".dseg") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -57,7 +59,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DW : public Directive {
 public:
-	inline Directive_DW() : Directive("dw") {}
+	inline Directive_DW() : Directive(".dw") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -65,7 +67,23 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_END : public Directive {
 public:
-	inline Directive_END() : Directive("end") {}
+	inline Directive_END() : Directive(".end") {}
+};
+
+//-----------------------------------------------------------------------------
+// Directive_EQU
+//-----------------------------------------------------------------------------
+class Directive_EQU : public Directive {
+public:
+	inline Directive_EQU() : Directive(".equ") {}
+};
+
+//-----------------------------------------------------------------------------
+// Directive_INCLUDE
+//-----------------------------------------------------------------------------
+class Directive_INCLUDE : public Directive {
+public:
+	inline Directive_INCLUDE() : Directive(".include") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -73,7 +91,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_MML : public Directive {
 public:
-	inline Directive_MML() : Directive("mml") {}
+	inline Directive_MML() : Directive(".mml") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -81,7 +99,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_ORG : public Directive {
 public:
-	inline Directive_ORG() : Directive("org") {}
+	inline Directive_ORG() : Directive(".org") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -89,7 +107,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_PCG : public Directive {
 public:
-	inline Directive_PCG() : Directive("pcg") {}
+	inline Directive_PCG() : Directive(".pcg") {}
 };
 
 //-----------------------------------------------------------------------------
@@ -97,7 +115,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_PROC : public Directive {
 public:
-	inline Directive_PROC() : Directive("proc") {}
+	inline Directive_PROC() : Directive(".proc") {}
 };
 
 #endif

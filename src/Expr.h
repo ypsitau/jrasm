@@ -16,6 +16,7 @@ class ExprOwner;
 class Expr {
 public:
 	enum Type {
+		TYPE_Root,
 		TYPE_Number,
 		TYPE_Symbol,
 		TYPE_String,
@@ -82,6 +83,17 @@ class ExprOwner : public ExprList {
 public:
 	~ExprOwner();
 	void Clear();
+};
+
+//-----------------------------------------------------------------------------
+// Expr_Root
+//-----------------------------------------------------------------------------
+class Expr_Root : public Expr {
+public:
+	inline Expr_Root() : Expr(TYPE_Root) {}
+	virtual bool PrepareLookupTable(Context &context);
+	virtual bool Generate(Context &context);
+	virtual String ToString() const;
 };
 
 //-----------------------------------------------------------------------------

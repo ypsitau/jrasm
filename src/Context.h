@@ -48,6 +48,7 @@ public:
 	inline UInt32 GetAddress() const { return _addr; }
 	inline void ForwardAddress(UInt32 bytes) { _addr += bytes; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
+	inline LookupTable *GetLookupTableRoot() { return _lookupTableStack.front(); }
 	LookupTable *AddLookupTable();
 	void RemoveLookupTable();
 	void PutByte(UInt8 data);

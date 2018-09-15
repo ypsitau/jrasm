@@ -23,10 +23,11 @@ bool Parse(const char *fileName)
 		ErrorLog::Print(stderr);
 		return false;
 	}
-	const ExprList &exprList = parser.GetInstructions();
 	//exprList.Print();
 	Context context(new Generator_M6800());
-	for (auto pExpr : exprList) {
+	parser.GetRoot()->PrepareLookupTable(context);
+#if 0
+	for (auto pExpr : parser.GetRoot()->GetChildren()) {
 		context.ClearBuffer();
 		pExpr->Generate(context);
 		::printf("%-32s", pExpr->ToString().c_str());
@@ -35,6 +36,11 @@ bool Parse(const char *fileName)
 		} else {
 			context.Dump();
 		}
+	}
+#endif
+	Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
+	for (auto iter : *pLookupTable) {
+		::printf("%04x  %s\n", iter.second, iter.first.c_str());
 	}
 	return true;
 }
