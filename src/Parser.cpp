@@ -38,7 +38,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	}
 	case STAT_Instruction: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			Expr *pExpr = new Expr_Inst(pToken->GetString());
+			Expr *pExpr = new Expr_Instruction(pToken->GetString());
 			_exprOwner.push_back(pExpr);
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;

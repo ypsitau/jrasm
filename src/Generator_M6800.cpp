@@ -131,7 +131,7 @@ Generator_M6800::Generator_M6800()
 	m.Add(Entry_INH					("wai", 0x3e));
 }
 
-bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Inst *pExpr, UInt32 *pBytes) const
+bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
@@ -141,7 +141,7 @@ bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Inst *pExpr, UI
 	return pEntry->ApplyRule(context, pExpr, false, pBytes);
 }
 
-bool Generator_M6800::Generate(Context &context, const Expr_Inst *pExpr) const
+bool Generator_M6800::Generate(Context &context, const Expr_Instruction *pExpr) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
@@ -283,7 +283,7 @@ Generator_M6800::Rule::~Rule()
 }
 
 bool Generator_M6800::Rule_ACC::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -307,7 +307,7 @@ bool Generator_M6800::Rule_ACC::Apply(
 }
 
 bool Generator_M6800::Rule_REL::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
@@ -322,7 +322,7 @@ bool Generator_M6800::Rule_REL::Apply(
 }
 
 bool Generator_M6800::Rule_INH::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
@@ -337,7 +337,7 @@ bool Generator_M6800::Rule_INH::Apply(
 }
 
 bool Generator_M6800::Rule_IMM8::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -368,7 +368,7 @@ bool Generator_M6800::Rule_IMM8::Apply(
 }
 
 bool Generator_M6800::Rule_IMM16::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
@@ -391,7 +391,7 @@ bool Generator_M6800::Rule_IMM16::Apply(
 }
 
 bool Generator_M6800::Rule_DIR::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -417,7 +417,7 @@ bool Generator_M6800::Rule_DIR::Apply(
 }
 
 bool Generator_M6800::Rule_IDX::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -443,7 +443,7 @@ bool Generator_M6800::Rule_IDX::Apply(
 }
 
 bool Generator_M6800::Rule_EXT::Apply(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -493,7 +493,7 @@ Generator_M6800::Entry::Entry(const String &symbol, const String &syntaxDesc) :
 }
 
 bool Generator_M6800::Entry::ApplyRule(
-	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes) const
+	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes) const
 {
 	for (auto pRule : _ruleOwner) {
 		if (pRule->Apply(context, pExpr, generateFlag, pBytes)) return true;

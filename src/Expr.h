@@ -172,13 +172,13 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_Inst
+// Expr_Instruction
 //-----------------------------------------------------------------------------
-class Expr_Inst : public Expr {
+class Expr_Instruction : public Expr {
 private:
 	String _symbol;
 public:
-	inline Expr_Inst(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
+	inline Expr_Instruction(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);

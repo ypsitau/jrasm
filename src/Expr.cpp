@@ -162,9 +162,9 @@ bool Expr_Label::Generate(Context &context)
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Inst
+// Expr_Instruction
 //-----------------------------------------------------------------------------
-String Expr_Inst::ToString() const
+String Expr_Instruction::ToString() const
 {
 	String str = _symbol;
 	str += " ";
@@ -172,7 +172,7 @@ String Expr_Inst::ToString() const
 	return str;
 }
 
-bool Expr_Inst::PrepareLookupTable(Context &context)
+bool Expr_Instruction::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
 	UInt32 bytes = 0;
@@ -181,7 +181,7 @@ bool Expr_Inst::PrepareLookupTable(Context &context)
 	return true;
 }
 
-bool Expr_Inst::Generate(Context &context)
+bool Expr_Instruction::Generate(Context &context)
 {
 	return context.GetGenerator()->Generate(context, this);
 }
