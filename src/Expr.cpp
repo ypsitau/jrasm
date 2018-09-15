@@ -220,7 +220,7 @@ bool Expr_LabelDef::PrepareLookupTable(Context &context)
 	}
 	Context::LookupTable *pLookupTable = context.GetLookupTable();
 	if (pLookupTable->IsDefined(GetLabel())) {
-		ErrorLog::AddError(this, "already defined label: %s", GetLabel());
+		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
 	}
 	pLookupTable->Set(GetLabel(), num);
