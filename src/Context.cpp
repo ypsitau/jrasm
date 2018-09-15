@@ -31,27 +31,6 @@ void Context::PutByte(UInt8 data)
 	ForwardAddress(1);
 }
 
-void Context::AddError(const char *format, ...)
-{
-	char buff[256];
-	va_list ap;
-	va_start(ap, format);
-	::vsprintf_s(buff, format, ap);
-	_errMsg = buff;
-}
-
-void Context::AddError(const Expr *pExpr, const char *format, ...)
-{
-	char buff[256];
-	va_list ap;
-	va_start(ap, format);
-	_errMsg = pExpr->GetFileNameSrc();
-	::sprintf_s(buff, ":%d ", pExpr->GetLineNo());
-	_errMsg += buff;
-	::vsprintf_s(buff, format, ap);
-	_errMsg += buff;
-}
-
 void Context::Dump()
 {
 	size_t col = 0;

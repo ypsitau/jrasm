@@ -8,25 +8,39 @@
 //-----------------------------------------------------------------------------
 ErrorLog ErrorLog::_instance;
 
+void ErrorLog::AddError(const Expr *pExpr, const char *format, ...)
+{
+	va_list ap;
+	va_start(ap, format);
+	_instance.AddErrorV(pExpr->GetFileNameSrc(), pExpr->GetLineNo(), format, ap);
+}
+
 void ErrorLog::AddError(const String &fileName, const char *format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	AddErrorV(fileName, 0, format, ap);
+	_instance.AddErrorV(fileName, 0, format, ap);
 }
 
 void ErrorLog::AddError(const String &fileName, int lineNo, const char *format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	AddErrorV(fileName, lineNo, format, ap);
+	_instance.AddErrorV(fileName, lineNo, format, ap);
 }
 
 void ErrorLog::AddErrorV(const String &fileName, int lineNo, const char *format, va_list ap)
 {
 	char message[512];
 	::vsprintf_s(message, format, ap);
-	_entryOwner.push_back(new Entry(fileName, lineNo, message));
+	_instance._entryOwner.push_back(new Entry(fileName, lineNo, message));
+}
+
+void ErrorLog::Print(FILE *fp)
+{
+	for (auto pEntry : _instance._entryOwner) {
+		::fprintf(fp, "%s\n", pEntry->GetString().c_str());
+	}
 }
 
 //-----------------------------------------------------------------------------

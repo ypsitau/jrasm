@@ -135,7 +135,7 @@ bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Inst *pExpr, UI
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
-		context.AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
+		ErrorLog::AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
 		return 0;
 	}
 	return pEntry->ApplyRule(context, pExpr, false, pBytes);
@@ -145,7 +145,7 @@ bool Generator_M6800::Generate(Context &context, const Expr_Inst *pExpr) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
-		context.AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
+		ErrorLog::AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
 		return false;
 	}
 	UInt32 bytes = 0;
@@ -344,7 +344,7 @@ bool Generator_M6800::Rule_IMM8::Apply(
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xff) {
-		context.AddError(pExpr, "immediate value exceeds 8-bit range");
+		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
 	}
 	context.PutByte(static_cast<UInt8>(num));
 	*pBytes = bytes;
@@ -362,7 +362,7 @@ bool Generator_M6800::Rule_IMM16::Apply(
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xffff) {
-		context.AddError(pExpr, "immediate value exceeds 16-bit range");
+		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 	}
 	context.PutByte(static_cast<UInt8>(num >> 8));
 	context.PutByte(static_cast<UInt8>(num));

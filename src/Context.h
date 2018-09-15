@@ -38,15 +38,12 @@ private:
 	std::unique_ptr<Generator> _pGenerator;
 	Binary _buff;
 	UInt32 _addr;
-	String _errMsg;
 	LookupTableStack _lookupTableStack;
 public:
 	Context(Generator *pGenerator);
 	inline const Generator *GetGenerator() const { return _pGenerator.get(); }
 	inline const Binary &GetBuffer() { return _buff; }
 	inline void ClearBuffer() { _buff.clear(); }
-	inline void ClearError() { _errMsg.clear(); }
-	inline bool IsError() const { return !_errMsg.empty(); }
 	inline void SetAddress(UInt32 addr) { _addr = addr; }
 	inline UInt32 GetAddress() const { return _addr; }
 	inline void ForwardAddress(UInt32 bytes) { _addr += bytes; }
@@ -54,8 +51,6 @@ public:
 	LookupTable *AddLookupTable();
 	void RemoveLookupTable();
 	void PutByte(UInt8 data);
-	void AddError(const char *format, ...);
-	void AddError(const Expr *pExpr, const char *format, ...);
 	void Dump();
 };
 

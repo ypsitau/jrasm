@@ -5,6 +5,7 @@
 
 bool Parse(const char *fileName)
 {
+	ErrorLog::Clear();
 	FILE *fp;
 	if (::fopen_s(&fp, fileName, "rt") != 0) {
 		::fprintf(stderr, "failed to open file\n");
@@ -14,12 +15,14 @@ bool Parse(const char *fileName)
 	for (;;) {
 		int chRaw = ::fgetc(fp);
 		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
-		if (!parser.FeedChar(ch)) {
-			::fprintf(stderr, "%s\n", parser.GetErrMsg());
-		}
+		if (!parser.FeedChar(ch)) break;
 		if (ch == '\0') break;
 	}
 	::fclose(fp);
+	if (ErrorLog::HasError()) {
+		ErrorLog::Print(stderr);
+		return false;
+	}
 	const ExprList &exprList = parser.GetInstructions();
 	//exprList.Print();
 	Context context(new Generator_M6800());

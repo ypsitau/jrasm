@@ -32,7 +32,6 @@ private:
 	Stat _stat;
 	Listener *_pListener;
 	String _fileNameSrc;
-	String _errMsg;
 	UInt16 _num;
 	String _str;
 	int _nLines;
@@ -40,7 +39,6 @@ public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
 	bool FeedChar(char ch);
 	void AddError(const char *format, ...);
-	inline const char *GetErrMsg() const { return _errMsg.c_str(); }
 private:
 	bool FeedToken(const TokenInfo &tokenInfo);
 	bool FeedToken(const TokenInfo &tokenInfo, const String &str);

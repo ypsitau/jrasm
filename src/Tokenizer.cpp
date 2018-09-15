@@ -215,12 +215,7 @@ bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 
 
 void Tokenizer::AddError(const char *format, ...)
 {
-	char buff[256];
 	va_list ap;
 	va_start(ap, format);
-	_errMsg = _fileNameSrc;
-	::sprintf_s(buff, ":%d ", _nLines + 1);
-	_errMsg += buff;
-	::vsprintf_s(buff, format, ap);
-	_errMsg += buff;
+	ErrorLog::AddErrorV(_fileNameSrc, _nLines + 1, format, ap);
 }

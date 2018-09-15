@@ -28,7 +28,7 @@ bool Expr::PrepareLookupTable(Context &context)
 
 bool Expr::Generate(Context &context)
 {
-	context.AddError(this, "invalid format");
+	ErrorLog::AddError(this, "invalid format");
 	return false;
 }
 
