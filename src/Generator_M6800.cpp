@@ -297,6 +297,7 @@ bool Generator_M6800::Rule_ACC::Apply(
 		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
 		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
+	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
 	} else {
@@ -312,6 +313,11 @@ bool Generator_M6800::Rule_REL::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
 	if (operands.size() != 1) return false;
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
+	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
+	// This rule was determined to be applied.
+	
 	if (generateFlag) {
 		context.PutByte(_code);
 	} else {
@@ -327,6 +333,7 @@ bool Generator_M6800::Rule_INH::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
 	if (operands.size() != 0) return false;
+	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
 	} else {
@@ -351,11 +358,14 @@ bool Generator_M6800::Rule_IMM8::Apply(
 		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
 		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
-	const Expr *pExprLast = operands.back();
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
+	// This rule was determined to be applied.
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
+		num = 0x00;
 	}
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -373,12 +383,15 @@ bool Generator_M6800::Rule_IMM16::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
 	if (operands.size() != 1) return false;
-	const Expr *pExprLast = operands.back();
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
+	// This rule was determined to be applied.
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	context.PutByte(_code);
 	if (num > 0xffff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
+		num = 0x0000;
 	}
 	if (generateFlag) {
 		context.PutByte(static_cast<UInt8>(num >> 8));
@@ -405,8 +418,10 @@ bool Generator_M6800::Rule_DIR::Apply(
 		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return false;
 		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return false;
 	}
-	const Expr *pExprLast = operands.back();
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return false;
+	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
 	} else {
@@ -431,8 +446,10 @@ bool Generator_M6800::Rule_IDX::Apply(
 		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return false;
 		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return false;
 	}
-	const Expr *pExprLast = operands.back();
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
+	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
 	} else {
@@ -457,8 +474,10 @@ bool Generator_M6800::Rule_EXT::Apply(
 		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
 		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
-	const Expr *pExprLast = operands.back();
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
+	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
 	} else {
