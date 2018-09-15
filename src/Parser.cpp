@@ -38,7 +38,13 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	}
 	case STAT_Instruction: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			Expr *pExpr = new Expr_Instruction(pToken->GetString());
+			const char *symbol = pToken->GetString();
+			Expr *pExpr = nullptr;
+			if (*symbol == '.') {
+				pExpr = new Expr_Directive(pToken->GetString());
+			} else {
+				pExpr = new Expr_Instruction(pToken->GetString());
+			}
 			_exprOwner.push_back(pExpr);
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;
