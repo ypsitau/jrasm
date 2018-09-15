@@ -33,7 +33,9 @@ void ErrorLog::AddErrorV(const String &fileName, int lineNo, const char *format,
 {
 	char message[512];
 	::vsprintf_s(message, format, ap);
-	_instance.GetEntryOwner().push_back(new Entry(fileName, lineNo, message));
+	if (!_instance.GetEntryOwner().DoesExist(fileName.c_str(), lineNo, message)) {
+		_instance.GetEntryOwner().push_back(new Entry(fileName, lineNo, message));
+	}
 }
 
 void ErrorLog::Print(FILE *fp)
@@ -59,6 +61,17 @@ String ErrorLog::Entry::GetString() const
 	}
 	rtn += _message;
 	return rtn;
+}
+
+//-----------------------------------------------------------------------------
+// ErrorLog::EntryList
+//-----------------------------------------------------------------------------
+bool ErrorLog::EntryList::DoesExist(const char *fileName, int lineNo, const char *message)
+{
+	for (auto pEntry : *this) {
+		if (pEntry->DoesMatch(fileName, lineNo, message)) return true;
+	}
+	return false;
 }
 
 //-----------------------------------------------------------------------------

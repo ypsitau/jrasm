@@ -23,9 +23,15 @@ public:
 			_fileName(fileName), _lineNo(0), _message(message) {}
 		inline Entry(const String &fileName, int lineNo, const String &message) :
 			_fileName(fileName), _lineNo(lineNo), _message(message) {}
+		inline bool DoesMatch(const char *fileName, int lineNo, const char *message) {
+			return _fileName == fileName && _lineNo == lineNo && _message == message;
+		}
 		String GetString() const;
 	};
-	typedef std::vector<Entry *> EntryList;
+	class EntryList : public std::vector<Entry *> {
+	public:
+		bool DoesExist(const char *fileName, int lineNo, const char *message);
+	};
 	class EntryOwner : public EntryList {
 	public:
 		~EntryOwner();
