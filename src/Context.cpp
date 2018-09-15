@@ -37,3 +37,32 @@ void Context::Dump()
 	if (col > 0) ::printf("\n");
 }
 
+//-----------------------------------------------------------------------------
+// Context::LookupTable
+//-----------------------------------------------------------------------------
+void Context::LookupTable::Set(const String &label, UInt32 value)
+{
+	insert(std::make_pair(label, value));
+}
+
+UInt32 Context::LookupTable::Lookup(const char *label, bool *pFoundFlag) const
+{
+	const_iterator iter = find(label);
+	return (*pFoundFlag = (iter != end()))? iter->second : 0;
+}
+
+//-----------------------------------------------------------------------------
+// Context::LookupTableOwner
+//-----------------------------------------------------------------------------
+Context::LookupTableOwner::~LookupTableOwner()
+{
+	Clear();
+}
+
+void Context::LookupTableOwner::Clear()
+{
+	for (auto pLookupTable : *this) {
+		LookupTable::Delete(pLookupTable);
+	}
+	clear();
+}

@@ -99,6 +99,25 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+// StringRef
+//-----------------------------------------------------------------------------
+class StringShared {
+private:
+	int _cntRef;
+	String _str;
+public:
+	DeclareReferenceAccessor(StringShared)
+public:
+	inline StringShared() : _cntRef(1) {}
+	inline StringShared(const String &str) : _cntRef(1), _str(str) {}
+private:
+	inline ~StringShared() {}
+public:
+	inline const char *GetString() const { return _str.c_str(); }
+	inline const String &GetStringSTL() const { return _str; }
+};
+
+//-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
 String ToLower(const char *str);

@@ -5,6 +5,7 @@
 #define __EXPR_H__
 
 #include "Operator.h"
+#include "Context.h"
 
 class ExprOwner;
 
@@ -27,6 +28,9 @@ private:
 	int _cntRef;
 	Type _type;
 	std::auto_ptr<ExprOwner> _pExprChildren;
+	AutoPtr<Context::LookupTable> _pLookupTable;
+	AutoPtr<StringShared> _pFileNameSrc;
+	int _lineNo;
 public:
 	DeclareReferenceAccessor(Expr);
 public:
@@ -38,8 +42,17 @@ public:
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetChildren() { return *_pExprChildren; }
 	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
-	inline const char *GetFileNameSrc() const { return ""; }
-	inline int GetLineNo() const { return 0; }
+	inline void SetSource(StringShared *pFileNameSrc, int lineNo) {
+		_pFileNameSrc.reset(pFileNameSrc), _lineNo = lineNo;
+	}
+	inline bool HasSource() const { return !_pFileNameSrc.IsNull(); }
+	inline const char *GetFileNameSrc() const {
+		return _pFileNameSrc.IsNull()? "" : _pFileNameSrc->GetString();
+	}
+	inline int GetLineNo() const { return _lineNo; }
+	inline UInt32 Lookup(const char *label, bool *pFoundFlag) {
+		return _pLookupTable.IsNull()? 0 : _pLookupTable->Lookup(label, pFoundFlag);
+	}
 	void AddChild(Expr *pExpr);
 	virtual bool Resolve(Context &context);
 	virtual bool Generate(Context &context);

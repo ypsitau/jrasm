@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------
 // Expr
 //-----------------------------------------------------------------------------
-Expr::Expr(Type type) : _cntRef(1), _type(type), _pExprChildren(new ExprOwner())
+Expr::Expr(Type type) :
+	_cntRef(1), _type(type), _pExprChildren(new ExprOwner()), _lineNo(0)
 {
 }
 
