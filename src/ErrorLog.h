@@ -36,7 +36,8 @@ private:
 	static ErrorLog _instance;
 public:
 	inline ErrorLog() {}
-	inline static bool HasError() { return !_instance._entryOwner.empty(); }
+	inline EntryOwner &GetEntryOwner() { return _entryOwner; }
+	inline static bool HasError() { return !_instance.GetEntryOwner().empty(); }
 	inline static void Clear() { _instance._entryOwner.Clear(); }
 	static void AddError(const Expr *pExpr, const char *format, ...);
 	static void AddError(const String &fileName, const char *format, ...);

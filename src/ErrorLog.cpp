@@ -33,12 +33,12 @@ void ErrorLog::AddErrorV(const String &fileName, int lineNo, const char *format,
 {
 	char message[512];
 	::vsprintf_s(message, format, ap);
-	_instance._entryOwner.push_back(new Entry(fileName, lineNo, message));
+	_instance.GetEntryOwner().push_back(new Entry(fileName, lineNo, message));
 }
 
 void ErrorLog::Print(FILE *fp)
 {
-	for (auto pEntry : _instance._entryOwner) {
+	for (auto pEntry : _instance.GetEntryOwner()) {
 		::fprintf(fp, "%s\n", pEntry->GetString().c_str());
 	}
 }
