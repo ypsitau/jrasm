@@ -20,10 +20,10 @@ void Expr::AddChild(Expr *pExpr)
 	_pExprChildren->push_back(pExpr);
 }
 
-bool Expr::Resolve(Context &context)
+bool Expr::PrepareLookupTable(Context &context)
 {
-	context.SetError(this, "invalid format");
-	return false;
+	_pLookupTable.reset(context.GetLookupTable()->Reference());
+	return true;
 }
 
 bool Expr::Generate(Context &context)
@@ -140,13 +140,17 @@ String Expr_Parenthesis::ToString() const
 String Expr_Label::ToString() const
 {
 	String str;
-	str = _str;
+	str = _label;
 	str += ":";
 	return str;
 }
 
-bool Expr_Label::Resolve(Context &context)
+bool Expr_Label::PrepareLookupTable(Context &context)
 {
+	if (_pExprAssigned.IsNull()) {
+		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
+		return true;
+	}
 	return true;
 }
 
@@ -167,8 +171,11 @@ String Expr_Inst::ToString() const
 	return str;
 }
 
-bool Expr_Inst::Resolve(Context &context)
+bool Expr_Inst::PrepareLookupTable(Context &context)
 {
+	UInt32 bytes = 0;
+	context.GetGenerator()->CalcInstBytes(context, this, &bytes);
+	context.ForwardAddress(bytes);
 	return true;
 }
 

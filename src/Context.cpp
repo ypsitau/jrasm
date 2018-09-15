@@ -6,8 +6,29 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context(Generator *pGenerator) : _pGenerator(pGenerator)
+Context::Context(Generator *pGenerator) : _pGenerator(pGenerator), _addr(0x0000)
 {
+	_lookupTableStack.push_back(new LookupTable());
+}
+
+Context::LookupTable *Context::AddLookupTable()
+{
+	LookupTable *pLookupTable = new LookupTable(_lookupTableStack.back()->Reference());
+	_lookupTableStack.push_back(pLookupTable);
+	return pLookupTable;
+}
+
+void Context::RemoveLookupTable()
+{
+	LookupTable *pLookupTable = _lookupTableStack.back();
+	_lookupTableStack.pop_back();
+	LookupTable::Delete(pLookupTable);
+}
+
+void Context::PutByte(UInt8 data)
+{
+	_buff += data;
+	ForwardAddress(1);
 }
 
 void Context::SetError(const Expr *pExpr, const char *format, ...)
@@ -48,7 +69,15 @@ void Context::LookupTable::Set(const String &label, UInt32 value)
 UInt32 Context::LookupTable::Lookup(const char *label, bool *pFoundFlag) const
 {
 	const_iterator iter = find(label);
-	return (*pFoundFlag = (iter != end()))? iter->second : 0;
+	if (iter != end()) {
+		*pFoundFlag = true;
+		return iter->second;
+	}
+	if (!_pLookupTableParent.IsNull()) {
+		return _pLookupTableParent->Lookup(label, pFoundFlag);
+	}
+	*pFoundFlag = false;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

@@ -131,14 +131,25 @@ Generator_M6800::Generator_M6800()
 	m.Add(Entry_INH					("wai", 0x3e));
 }
 
+bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Inst *pExpr, UInt32 *pBytes) const
+{
+	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
+	if (pEntry == nullptr) {
+		context.SetError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
+		return 0;
+	}
+	return pEntry->ApplyRule(context, pExpr, false, pBytes);
+}
+
 bool Generator_M6800::Generate(Context &context, const Expr_Inst *pExpr) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
 		context.SetError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
+		return false;
 	}
-	if (!pEntry->ApplyRule(context, pExpr)) return false;
-	return true;
+	UInt32 bytes = 0;
+	return pEntry->ApplyRule(context, pExpr, true, &bytes);
 }
 
 Generator_M6800::Entry *Generator_M6800::Entry_ACC(const String &symbol, UInt8 codeACC)
@@ -433,7 +444,8 @@ Generator_M6800::Entry::Entry(const String &symbol, const String &syntaxDesc) :
 {
 }
 
-bool Generator_M6800::Entry::ApplyRule(Context &context, const Expr_Inst *pExpr) const
+bool Generator_M6800::Entry::ApplyRule(
+	Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes) const
 {
 	for (auto pRule : _ruleOwner) {
 		size_t bytes = pRule->Apply(context, pExpr);

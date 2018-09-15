@@ -101,7 +101,7 @@ public:
 		RuleOwner _ruleOwner;
 	public:
 		Entry(const String &symbol, const String &syntaxDesc);
-		bool ApplyRule(Context &context, const Expr_Inst *pExpr) const;
+		bool ApplyRule(Context &context, const Expr_Inst *pExpr, bool generateFlag, UInt32 *pBytes) const;
 		inline const char *GetSymbol() const { return _symbol.c_str(); }
 		inline const char *GetSyntaxDesc() const { return _syntaxDesc.c_str(); }
 		inline void AddRule(Rule *pRule) { _ruleOwner.push_back(pRule); }
@@ -119,6 +119,7 @@ private:
 	EntryMap _entryMap;
 public:
 	Generator_M6800();
+	virtual bool CalcInstBytes(Context &context, const Expr_Inst *pExpr, UInt32 *pBytes) const;
 	virtual bool Generate(Context &context, const Expr_Inst *pExpr) const;
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);

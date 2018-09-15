@@ -54,7 +54,7 @@ public:
 		return _pLookupTable.IsNull()? 0 : _pLookupTable->Lookup(label, pFoundFlag);
 	}
 	void AddChild(Expr *pExpr);
-	virtual bool Resolve(Context &context);
+	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
 	virtual String ToString() const = 0;
 };
@@ -158,12 +158,15 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_Label : public Expr {
 private:
-	String _str;
+	String _label;
+	AutoPtr<Expr> _pExprAssigned;
 public:
-	inline Expr_Label(const String &str) : Expr(TYPE_Label), _str(str) {}
-	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
-	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
-	virtual bool Resolve(Context &context);
+	inline Expr_Label(const String &label) : Expr(TYPE_Label), _label(label) {}
+	inline void SetExprAssigned(Expr *pExprAssigned) { _pExprAssigned.reset(pExprAssigned); }
+	inline const char *GetLabel() const { return _label.c_str(); }
+	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
+	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
+	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
 	virtual String ToString() const;
 };
@@ -178,7 +181,7 @@ public:
 	inline Expr_Inst(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
-	virtual bool Resolve(Context &context);
+	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
 	virtual String ToString() const;
 };
