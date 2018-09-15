@@ -114,14 +114,14 @@ Expr *Expr_Number::Reduce(Context &context) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Symbol
+// Expr_LabelRef
 //-----------------------------------------------------------------------------
-String Expr_Symbol::ToString() const
+String Expr_LabelRef::ToString() const
 {
 	return _symbol;
 }
 
-Expr *Expr_Symbol::Reduce(Context &context) const
+Expr *Expr_LabelRef::Reduce(Context &context) const
 {
 	bool foundFlag = false;
 	UInt32 num = Lookup(GetSymbol(), &foundFlag);

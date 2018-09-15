@@ -103,7 +103,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_Comma)) {
 			
 		} else if (pToken->IsType(TOKEN_Symbol)) {
-			_exprStack.back()->AddChild(new Expr_Symbol(pToken->GetString()));
+			_exprStack.back()->AddChild(new Expr_LabelRef(pToken->GetString()));
 		} else if (pToken->IsType(TOKEN_Number)) {
 			_exprStack.back()->AddChild(new Expr_Number(pToken->GetNumber()));
 		} else if (pToken->IsType(TOKEN_Plus)) {
@@ -170,7 +170,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 		if (cntToken == 1) {
 			AutoPtr<Token> pToken(_tokenStack.Pop());
 			if (pToken->IsType(TOKEN_Symbol)) {
-				_tokenStack.Push(new Token(new Expr_Symbol(pToken->GetString())));
+				_tokenStack.Push(new Token(new Expr_LabelRef(pToken->GetString())));
 			} else if (pToken->IsType(TOKEN_Number)) {
 				_tokenStack.Push(new Token(new Expr_Number(pToken->GetNumber())));
 			} else if (pToken->IsType(TOKEN_String)) {

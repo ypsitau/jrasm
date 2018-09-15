@@ -294,8 +294,8 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 		// OP b ... _accName is "b"
 		if (operands.size() != 1) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExpr->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	// This rule was determined to be applied.
 	if (generateFlag) {
@@ -355,8 +355,8 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		// OP b,data8 ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExpr->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
@@ -415,8 +415,8 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		// OP b,(addr8) ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExprLast->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_LabelRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
@@ -443,8 +443,8 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		// OP b,[x+data8] ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExprLast->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_LabelRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
@@ -471,8 +471,8 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		// OP b,[addr16] ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_Symbol)) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExpr->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
