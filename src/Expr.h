@@ -27,7 +27,7 @@ public:
 		TYPE_Instruction,
 		TYPE_Directive,
 	};
-private:
+protected:
 	int _cntRef;
 	Type _type;
 	std::auto_ptr<ExprOwner> _pExprChildren;
@@ -57,6 +57,7 @@ public:
 		return _pFileNameSrc.IsNull()? "" : _pFileNameSrc->GetString();
 	}
 	inline int GetLineNo() const { return _lineNo; }
+	inline bool IsLookupTableReady() const { return !_pLookupTable.IsNull(); }
 	inline UInt32 Lookup(const char *label, bool *pFoundFlag) const {
 		*pFoundFlag = false;
 		return _pLookupTable.IsNull()? 0 : _pLookupTable->Lookup(label, pFoundFlag);
@@ -73,6 +74,7 @@ public:
 //-----------------------------------------------------------------------------
 class ExprList : public std::vector<Expr *> {
 public:
+	bool PrepareLookupTable(Context &context);
 	String ToString() const;
 	void Print() const;
 };
@@ -97,7 +99,6 @@ public:
 class Expr_Root : public Expr {
 public:
 	inline Expr_Root() : Expr(TYPE_Root) {}
-	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
@@ -172,11 +173,11 @@ public:
 class Expr_LabelDef : public Expr {
 private:
 	String _label;
-	AutoPtr<Expr> _pExprAssigned;
 public:
 	inline Expr_LabelDef(const String &label) : Expr(TYPE_LabelDef), _label(label) {}
-	inline void SetAssigned(Expr *pExprAssigned) { _pExprAssigned.reset(pExprAssigned); }
-	inline bool IsAssigned() const { return !_pExprAssigned.IsNull(); }
+	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
+	inline const Expr *GetAssigned() const { return GetChildren().back(); }
+	inline bool IsAssigned() const { return !GetChildren().empty(); }
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }

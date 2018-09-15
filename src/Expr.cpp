@@ -23,6 +23,7 @@ void Expr::AddChild(Expr *pExpr)
 bool Expr::PrepareLookupTable(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
+	_pExprChildren->PrepareLookupTable(context);
 	return true;
 }
 
@@ -35,6 +36,14 @@ bool Expr::Generate(Context &context)
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
+bool ExprList::PrepareLookupTable(Context &context)
+{
+	for (auto pExpr : *this) {
+		pExpr->PrepareLookupTable(context);
+	}
+	return true;
+}
+
 String ExprList::ToString() const
 {
 	String rtn;
@@ -71,15 +80,6 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 // Expr_Root
 //-----------------------------------------------------------------------------
-bool Expr_Root::PrepareLookupTable(Context &context)
-{
-	Expr::PrepareLookupTable(context);
-	for (auto pExpr : GetChildren()) {
-		pExpr->PrepareLookupTable(context);
-	}
-	return true;
-}
-
 bool Expr_Root::Generate(Context &context)
 {
 	for (auto pExpr : GetChildren()) {
@@ -206,11 +206,11 @@ Expr *Expr_Parenthesis::Reduce(Context &context) const
 bool Expr_LabelDef::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
-	if (_pExprAssigned.IsNull()) {
+	if (!IsAssigned()) {
 		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
 		return true;
 	}
-	AutoPtr<Expr> pExprAssigned(_pExprAssigned->Reduce(context));
+	AutoPtr<Expr> pExprAssigned(GetAssigned()->Reduce(context));
 	if (pExprAssigned.IsNull()) return false;
 	if (!pExprAssigned->IsType(Expr::TYPE_Number)) {
 		ErrorLog::AddError(this, "number must be specified for label assignment");
@@ -245,11 +245,14 @@ String Expr_LabelDef::ToString() const
 //-----------------------------------------------------------------------------
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
-	bool foundFlag = false;
-	UInt32 num = Lookup(GetLabel(), &foundFlag);
-	if (!foundFlag) {
-		ErrorLog::AddError(this, "undefined label: ", GetLabel());
-		return nullptr;
+	UInt32 num = 0;
+	if (IsLookupTableReady()) {
+		bool foundFlag = false;
+		num = Lookup(GetLabel(), &foundFlag);
+		if (!foundFlag) {
+			ErrorLog::AddError(this, "undefined label: %s", GetLabel());
+			return nullptr;
+		}
 	}
 	return new Expr_Number(num);
 }

@@ -78,12 +78,12 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				// associate it to the last LabelDef
 				ExprList &exprList = _pExprRoot->GetChildren();
 				if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
-					_tokenizer.AddError("no label definition to assign");
+					_tokenizer.AddError("no label to associate .equ directive");
 					return false;
 				}
 				Expr_LabelDef *pExprEx = dynamic_cast<Expr_LabelDef *>(exprList.back());
 				if (pExprEx->IsAssigned()) {
-					_tokenizer.AddError("no label definition to assign");
+					_tokenizer.AddError("no label to associate .equ directive");
 					return false;
 				}
 				pExprEx->SetAssigned(pExpr);
@@ -112,9 +112,13 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_Comma)) {
 			
 		} else if (pToken->IsType(TOKEN_Symbol)) {
-			_exprStack.back()->AddChild(new Expr_LabelRef(pToken->GetString()));
+			Expr *pExpr = new Expr_LabelRef(pToken->GetString());
+			SetExprSourceInfo(pExpr, pToken.get());
+			_exprStack.back()->AddChild(pExpr);
 		} else if (pToken->IsType(TOKEN_Number)) {
-			_exprStack.back()->AddChild(new Expr_Number(pToken->GetNumber()));
+			Expr *pExpr = new Expr_Number(pToken->GetNumber());
+			SetExprSourceInfo(pExpr, pToken.get());
+			_exprStack.back()->AddChild(pExpr);
 		} else if (pToken->IsType(TOKEN_Plus)) {
 
 		} else if (pToken->IsType(TOKEN_Minus)) {

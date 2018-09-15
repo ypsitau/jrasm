@@ -26,6 +26,10 @@ bool Parse(const char *fileName)
 	//exprList.Print();
 	Context context(new Generator_M6800());
 	parser.GetRoot()->PrepareLookupTable(context);
+	if (ErrorLog::HasError()) {
+		ErrorLog::Print(stderr);
+		return false;
+	}
 #if 0
 	for (auto pExpr : parser.GetRoot()->GetChildren()) {
 		context.ClearBuffer();
