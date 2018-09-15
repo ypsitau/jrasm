@@ -31,7 +31,7 @@ void Context::PutByte(UInt8 data)
 	ForwardAddress(1);
 }
 
-void Context::SetError(const char *format, ...)
+void Context::AddError(const char *format, ...)
 {
 	char buff[256];
 	va_list ap;
@@ -40,7 +40,7 @@ void Context::SetError(const char *format, ...)
 	_errMsg = buff;
 }
 
-void Context::SetError(const Expr *pExpr, const char *format, ...)
+void Context::AddError(const Expr *pExpr, const char *format, ...)
 {
 	char buff[256];
 	va_list ap;

@@ -31,7 +31,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else {
-			_tokenizer.SetError("invalid format of label");
+			_tokenizer.AddError("invalid format of label");
 			rtn = false;
 		}
 		break;
@@ -45,7 +45,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_stat = STAT_LineTop;
 		} else {
-			_tokenizer.SetError("instruction or pseudo command is expected");
+			_tokenizer.AddError("instruction or pseudo command is expected");
 			rtn = false;
 		}
 		break;
@@ -80,7 +80,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.push_back(pExpr);
 		} else if (pToken->IsType(TOKEN_BracketR)) {
 			if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
-				_tokenizer.SetError("no opening bracket matched");
+				_tokenizer.AddError("no opening bracket matched");
 			}
 			_exprStack.pop_back();
 		} else if (pToken->IsType(TOKEN_ParenthesisL)) {
@@ -89,11 +89,11 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.push_back(pExpr);
 		} else if (pToken->IsType(TOKEN_ParenthesisR)) {
 			if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
-				_tokenizer.SetError("no opening parenthesis matched");
+				_tokenizer.AddError("no opening parenthesis matched");
 			}
 			_exprStack.pop_back();
 		} else {
-			_tokenizer.SetError("invalid format of operands");
+			_tokenizer.AddError("invalid format of operands");
 			rtn = false;
 		}
 		break;
@@ -112,7 +112,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			_tokenStack.Push(pToken.release());
 			break;
 		} else if (prec != Token::PREC_GT) {
-			_tokenizer.SetError("syntax error");
+			_tokenizer.AddError("syntax error");
 			return false;
 		}
 		TokenStack::reverse_iterator ppTokenLeft;
@@ -135,7 +135,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			} else if (pToken->IsType(TOKEN_String)) {
 				_tokenStack.Push(new Token(new Expr_String(pToken->GetString())));
 			} else {
-				_tokenizer.SetError("invalid value type\n");
+				_tokenizer.AddError("invalid value type\n");
 				return false;
 			}
 		} else if (cntToken == 3) {
@@ -160,7 +160,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				}
 			}
 		} else {
-			_tokenizer.SetError("invalid number of token\n");
+			_tokenizer.AddError("invalid number of token\n");
 			return false;
 		}
 	}

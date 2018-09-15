@@ -54,8 +54,8 @@ public:
 	LookupTable *AddLookupTable();
 	void RemoveLookupTable();
 	void PutByte(UInt8 data);
-	void SetError(const char *format, ...);
-	void SetError(const Expr *pExpr, const char *format, ...);
+	void AddError(const char *format, ...);
+	void AddError(const Expr *pExpr, const char *format, ...);
 	void Dump();
 };
 
