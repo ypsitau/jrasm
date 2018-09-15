@@ -36,43 +36,151 @@ void Directive::Initialize()
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
+bool Directive_CSEG::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_CSEG::Generate(Context &context) const
+{
+	return true;
+}
 
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
+bool Directive_DB::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_DB::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
+bool Directive_DSEG::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_DSEG::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
+bool Directive_DW::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_DW::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_END
 //-----------------------------------------------------------------------------
+bool Directive_END::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_END::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
+bool Directive_EQU::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_EQU::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
+bool Directive_INCLUDE::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_INCLUDE::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
+bool Directive_MML::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_MML::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
+bool Directive_ORG::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_ORG::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
+bool Directive_PCG::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_PCG::Generate(Context &context) const
+{
+	return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Directive_PROC
 //-----------------------------------------------------------------------------
+bool Directive_PROC::PrepareLookupTable(Context &context) const
+{
+	return true;
+}
+
+bool Directive_PROC::Generate(Context &context) const
+{
+	return true;
+}

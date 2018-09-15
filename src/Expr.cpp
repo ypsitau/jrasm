@@ -268,12 +268,12 @@ String Expr_Instruction::ToString() const
 bool Expr_Directive::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
-	return true;
+	return _pDirective->PrepareLookupTable(context);
 }
 
 bool Expr_Directive::Generate(Context &context)
 {
-	return true;
+	return _pDirective->Generate(context);
 }
 
 Expr *Expr_Directive::Reduce(Context &context) const
