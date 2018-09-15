@@ -93,6 +93,7 @@ public:
 	inline Directive_EQU() : Directive(".equ") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------

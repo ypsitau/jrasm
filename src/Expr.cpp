@@ -210,7 +210,14 @@ bool Expr_LabelDef::PrepareLookupTable(Context &context)
 		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
 		return true;
 	}
-	
+	AutoPtr<Expr> pExprAssigned(_pExprAssigned->Reduce(context));
+	if (pExprAssigned.IsNull()) return false;
+	if (!pExprAssigned->IsType(Expr::TYPE_Number)) {
+		ErrorLog::AddError(this, "number must be specified for label assignment");
+		return false;
+	}
+	UInt32 num = dynamic_cast<Expr_Number *>(pExprAssigned.get())->GetNumber();
+	context.GetLookupTable()->Set(GetLabel(), num);
 	return true;
 }
 

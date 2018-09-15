@@ -120,6 +120,16 @@ bool Directive_EQU::Generate(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
+Expr *Directive_EQU::Reduce(Context &context, const Expr_Directive *pExpr) const
+{
+	const ExprList &operands = pExpr->GetOperands();
+	// .equ data
+	if (operands.size() != 1) {
+		ErrorLog::AddError(pExpr, "directive .equ takes one operand");
+		return nullptr;
+	}
+	return operands.back()->Reduce(context);
+}
 
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
