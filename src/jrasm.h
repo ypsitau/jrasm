@@ -7,7 +7,7 @@
 #include "CJRFormat.h"
 #include "Context.h"
 #include "Expr.h"
-#include "Error.h"
+#include "ErrorLog.h"
 #include "Generator_M6800.h"
 #include "MmlParser.h"
 #include "Parser.h"

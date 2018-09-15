@@ -8,7 +8,7 @@ add_executable(jrasm
 	CJRFormat.cpp
 	Common.cpp
 	Context.cpp	
-	Error.cpp
+	ErrorLog.cpp
 	Expr.cpp
 	Generator.cpp
 	Generator_M6800.cpp
