@@ -18,12 +18,12 @@ public:
 	enum Type {
 		TYPE_Root,
 		TYPE_Number,
-		TYPE_LabelRef,
 		TYPE_String,
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Parenthesis,
 		TYPE_LabelDef,
+		TYPE_LabelRef,
 		TYPE_Instruction,
 		TYPE_Directive,
 	};
@@ -117,21 +117,6 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_LabelRef
-//-----------------------------------------------------------------------------
-class Expr_LabelRef : public Expr {
-private:
-	String _symbol;
-public:
-	inline Expr_LabelRef(const String &symbol) : Expr(TYPE_LabelRef), _symbol(symbol) {}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
-	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
-	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
-};
-
-//-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
 class Expr_String : public Expr {
@@ -196,6 +181,21 @@ public:
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce(Context &context) const;
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_LabelRef
+//-----------------------------------------------------------------------------
+class Expr_LabelRef : public Expr {
+private:
+	String _symbol;
+public:
+	inline Expr_LabelRef(const String &symbol) : Expr(TYPE_LabelRef), _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
+	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };

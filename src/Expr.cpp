@@ -114,25 +114,6 @@ Expr *Expr_Number::Reduce(Context &context) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_LabelRef
-//-----------------------------------------------------------------------------
-String Expr_LabelRef::ToString() const
-{
-	return _symbol;
-}
-
-Expr *Expr_LabelRef::Reduce(Context &context) const
-{
-	bool foundFlag = false;
-	UInt32 num = Lookup(GetSymbol(), &foundFlag);
-	if (!foundFlag) {
-		ErrorLog::AddError(this, "undefined symbol: ", GetSymbol());
-		return nullptr;
-	}
-	return new Expr_Number(num);
-}
-
-//-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
 String Expr_String::ToString() const
@@ -249,6 +230,25 @@ String Expr_LabelDef::ToString() const
 	str = _label;
 	str += ":";
 	return str;
+}
+
+//-----------------------------------------------------------------------------
+// Expr_LabelRef
+//-----------------------------------------------------------------------------
+String Expr_LabelRef::ToString() const
+{
+	return _symbol;
+}
+
+Expr *Expr_LabelRef::Reduce(Context &context) const
+{
+	bool foundFlag = false;
+	UInt32 num = Lookup(GetSymbol(), &foundFlag);
+	if (!foundFlag) {
+		ErrorLog::AddError(this, "undefined symbol: ", GetSymbol());
+		return nullptr;
+	}
+	return new Expr_Number(num);
 }
 
 //-----------------------------------------------------------------------------
