@@ -185,3 +185,25 @@ bool Expr_Instruction::Generate(Context &context)
 {
 	return context.GetGenerator()->Generate(context, this);
 }
+
+//-----------------------------------------------------------------------------
+// Expr_Directive
+//-----------------------------------------------------------------------------
+String Expr_Directive::ToString() const
+{
+	String str = _symbol;
+	str += " ";
+	str += GetChildren().ToString();
+	return str;
+}
+
+bool Expr_Directive::PrepareLookupTable(Context &context)
+{
+	if (!Expr::PrepareLookupTable(context)) return false;
+	return true;
+}
+
+bool Expr_Directive::Generate(Context &context)
+{
+	return true;
+}

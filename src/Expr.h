@@ -22,7 +22,8 @@ public:
 		TYPE_Bracket,
 		TYPE_Parenthesis,
 		TYPE_Label,
-		TYPE_Inst,
+		TYPE_Instruction,
+		TYPE_Directive,
 	};
 private:
 	int _cntRef;
@@ -178,7 +179,22 @@ class Expr_Instruction : public Expr {
 private:
 	String _symbol;
 public:
-	inline Expr_Instruction(const String &symbol) : Expr(TYPE_Inst), _symbol(symbol) {}
+	inline Expr_Instruction(const String &symbol) : Expr(TYPE_Instruction), _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool PrepareLookupTable(Context &context);
+	virtual bool Generate(Context &context);
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_Directive
+//-----------------------------------------------------------------------------
+class Expr_Directive : public Expr {
+private:
+	String _symbol;
+public:
+	inline Expr_Directive(const String &symbol) : Expr(TYPE_Directive), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
