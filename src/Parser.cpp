@@ -18,6 +18,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
 			Expr *pExpr = new Expr_Label(pToken->GetString());
+			SetExprSourceInfo(pExpr, pToken.get());
 			_pExprRoot->GetChildren().push_back(pExpr);
 			_stat = STAT_Label;
 		} else if (pToken->IsType(TOKEN_White)) {
@@ -64,6 +65,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			} else {
 				pExpr = new Expr_Instruction(pToken->GetString());
 			}
+			SetExprSourceInfo(pExpr, pToken.get());
 			_pExprRoot->GetChildren().push_back(pExpr);
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;

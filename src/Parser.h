@@ -32,6 +32,10 @@ public:
 public:
 	// implementation for Tokenizer::Listener
 	virtual bool FeedToken(AutoPtr<Token> pToken);
+private:
+	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
+		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
+	}
 };
 
 #endif
