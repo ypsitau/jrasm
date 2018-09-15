@@ -147,6 +147,7 @@ String Expr_Label::ToString() const
 
 bool Expr_Label::PrepareLookupTable(Context &context)
 {
+	if (!Expr::PrepareLookupTable(context)) return false;
 	if (_pExprAssigned.IsNull()) {
 		context.GetLookupTable()->Set(GetLabel(), context.GetAddress());
 		return true;
@@ -173,6 +174,7 @@ String Expr_Inst::ToString() const
 
 bool Expr_Inst::PrepareLookupTable(Context &context)
 {
+	if (!Expr::PrepareLookupTable(context)) return false;
 	UInt32 bytes = 0;
 	context.GetGenerator()->CalcInstBytes(context, this, &bytes);
 	context.ForwardAddress(bytes);

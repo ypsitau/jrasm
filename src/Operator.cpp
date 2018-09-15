@@ -22,15 +22,32 @@ void Operator::Initialize()
 //-----------------------------------------------------------------------------
 // Operator_Add
 //-----------------------------------------------------------------------------
+Expr *Operator_Add::Eval(const Expr *pExprL, const Expr *pExprR)
+{
+	
+	return nullptr;
+}
 
 //-----------------------------------------------------------------------------
 // Operator_Sub
 //-----------------------------------------------------------------------------
+Expr *Operator_Sub::Eval(const Expr *pExprL, const Expr *pExprR)
+{
+	return nullptr;
+}
 
 //-----------------------------------------------------------------------------
 // Operator_Mul
 //-----------------------------------------------------------------------------
+Expr *Operator_Mul::Eval(const Expr *pExprL, const Expr *pExprR)
+{
+	return nullptr;
+}
 
 //-----------------------------------------------------------------------------
 // Operator_Div
 //-----------------------------------------------------------------------------
+Expr *Operator_Div::Eval(const Expr *pExprL, const Expr *pExprR)
+{
+	return nullptr;
+}
