@@ -235,20 +235,20 @@ String Expr_LabelDef::ToString() const
 //-----------------------------------------------------------------------------
 // Expr_LabelRef
 //-----------------------------------------------------------------------------
-String Expr_LabelRef::ToString() const
-{
-	return _symbol;
-}
-
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
 	bool foundFlag = false;
-	UInt32 num = Lookup(GetSymbol(), &foundFlag);
+	UInt32 num = Lookup(GetLabel(), &foundFlag);
 	if (!foundFlag) {
-		ErrorLog::AddError(this, "undefined symbol: ", GetSymbol());
+		ErrorLog::AddError(this, "undefined symbol: ", GetLabel());
 		return nullptr;
 	}
 	return new Expr_Number(num);
+}
+
+String Expr_LabelRef::ToString() const
+{
+	return _label;
 }
 
 //-----------------------------------------------------------------------------

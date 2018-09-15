@@ -175,7 +175,7 @@ private:
 	AutoPtr<Expr> _pExprAssigned;
 public:
 	inline Expr_LabelDef(const String &label) : Expr(TYPE_LabelDef), _label(label) {}
-	inline void SetExprAssigned(Expr *pExprAssigned) { _pExprAssigned.reset(pExprAssigned); }
+	inline void SetAssigned(Expr *pExprAssigned) { _pExprAssigned.reset(pExprAssigned); }
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
@@ -190,12 +190,12 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_LabelRef : public Expr {
 private:
-	String _symbol;
+	String _label;
 public:
-	inline Expr_LabelRef(const String &symbol) : Expr(TYPE_LabelRef), _symbol(symbol) {}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
-	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
+	inline Expr_LabelRef(const String &label) : Expr(TYPE_LabelRef), _label(label) {}
+	inline const char *GetLabel() const { return _label.c_str(); }
+	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
+	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
