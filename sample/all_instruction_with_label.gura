@@ -20,25 +20,25 @@ lines.each {|line|
 	} elsif (operand.match(r'^\(')) {
 		label += '_dir'
 	} elsif (operand.match(r'^a,\d')) {
-		label += 'a_imm'
+		label += '_a_imm'
 	} elsif (operand.match(r'^a,\[X')) {
-		label += 'a_idx'
+		label += '_a_idx'
 	} elsif (operand.match(r'^a,\[')) {
-		label += 'a_ext'
+		label += '_a_ext'
 	} elsif (operand.match(r'^a,\(')) {
-		label += 'a_dir'
+		label += '_a_dir'
 	} elsif (operand.match(r'^a')) {
-		label += 'a'
+		label += '_a'
 	} elsif (operand.match(r'^b,\d')) {
-		label += 'b_imm'
+		label += '_b_imm'
 	} elsif (operand.match(r'^b,\[X')) {
-		label += 'b_idx'
+		label += '_b_idx'
 	} elsif (operand.match(r'^b,\[')) {
-		label += 'b_ext'
+		label += '_b_ext'
 	} elsif (operand.match(r'^b,\(')) {
-		label += 'b_dir'
+		label += '_b_dir'
 	} elsif (operand.match(r'^b')) {
-		label += 'b'
+		label += '_b'
 	}
 	printf('%s:\n', label)
 }

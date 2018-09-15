@@ -30,7 +30,7 @@ bool Parse(const char *fileName)
 		ErrorLog::Print(stderr);
 		return false;
 	}
-#if 0
+#if 1
 	for (auto pExpr : parser.GetRoot()->GetChildren()) {
 		context.ClearBuffer();
 		pExpr->Generate(context);

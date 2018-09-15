@@ -365,7 +365,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
-		num = 0x00;
+		return RESULT_Error;
 	}
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -422,8 +422,23 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return RESULT_Rejected;
 	// This rule was determined to be applied.
+	ExprList &exprList = dynamic_cast<Expr_Parenthesis *>(pExprLast.get())->GetChildren();
+	if (exprList.size() != 1) {
+		ErrorLog::AddError(pExpr, "direct addressing expects one element");
+		return RESULT_Error;
+	}
+	if (!exprList.front()->IsType(Expr::TYPE_Number)) {
+		ErrorLog::AddError(pExpr, "direct addressing expects a number element");
+		return RESULT_Error;
+	}
+	UInt32 num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
+	if (num > 0xff) {
+		ErrorLog::AddError(pExpr, "direct address value exceeds 8-bit range");
+		return RESULT_Error;
+	}
 	if (generateFlag) {
 		context.PutByte(_code);
+		context.PutByte(static_cast<UInt8>(num));
 	} else {
 		context.ForwardAddress(bytes);
 	}
@@ -449,6 +464,9 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return RESULT_Rejected;
+
+	return RESULT_Rejected;
+	
 	// This rule was determined to be applied.
 	if (generateFlag) {
 		context.PutByte(_code);
@@ -478,8 +496,24 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return RESULT_Rejected;
 	// This rule was determined to be applied.
+	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
+	if (exprList.size() != 1) {
+		ErrorLog::AddError(pExpr, "external addressing expects one element");
+		return RESULT_Error;
+	}
+	if (!exprList.front()->IsType(Expr::TYPE_Number)) {
+		ErrorLog::AddError(pExpr, "external addressing expects a number value");
+		return RESULT_Error;
+	}
+	UInt32 num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
+	if (num > 0xffff) {
+		ErrorLog::AddError(pExpr, "external address value exceeds 16-bit range");
+		return RESULT_Error;
+	}
 	if (generateFlag) {
 		context.PutByte(_code);
+		context.PutByte(static_cast<UInt8>(num >> 8));
+		context.PutByte(static_cast<UInt8>(num));
 	} else {
 		context.ForwardAddress(bytes);
 	}
