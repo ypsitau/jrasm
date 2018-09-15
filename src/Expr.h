@@ -59,6 +59,7 @@ public:
 	void AddChild(Expr *pExpr);
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce() const = 0;
 	virtual String ToString() const = 0;
 };
 
@@ -93,6 +94,7 @@ public:
 	inline Expr_Root() : Expr(TYPE_Root) {}
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -105,6 +107,7 @@ private:
 public:
 	inline Expr_Number(UInt32 num) : Expr(TYPE_Number), _num(num) {}
 	inline UInt32 GetNumber() const { return _num; }
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -118,6 +121,7 @@ public:
 	inline Expr_Symbol(const String &str) : Expr(TYPE_Symbol), _str(str) {}
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
 	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -129,6 +133,7 @@ private:
 	String _str;
 public:
 	inline Expr_String(const String &str) : Expr(TYPE_String), _str(str) {}
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -146,6 +151,7 @@ public:
 	}
 	const Expr *GetLeft() const { return GetChildren()[0]; }
 	const Expr *GetRight() const { return GetChildren()[1]; }
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -155,6 +161,7 @@ public:
 class Expr_Bracket : public Expr {
 public:
 	inline Expr_Bracket() : Expr(TYPE_Bracket) {}
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -164,6 +171,7 @@ public:
 class Expr_Parenthesis : public Expr {
 public:
 	inline Expr_Parenthesis() : Expr(TYPE_Parenthesis) {}
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -182,6 +190,7 @@ public:
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -197,6 +206,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 
@@ -212,6 +222,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce() const;
 	virtual String ToString() const;
 };
 

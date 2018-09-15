@@ -26,22 +26,27 @@ bool Parse(const char *fileName)
 	//exprList.Print();
 	Context context(new Generator_M6800());
 	parser.GetRoot()->PrepareLookupTable(context);
-#if 0
+#if 1
 	for (auto pExpr : parser.GetRoot()->GetChildren()) {
 		context.ClearBuffer();
 		pExpr->Generate(context);
-		::printf("%-32s", pExpr->ToString().c_str());
-		if (context.GetBuffer().empty()) {
-			::printf("(none)\n");
+		if (pExpr->IsType(Expr::TYPE_Label)) {
+			// nothing to do
 		} else {
-			context.Dump();
+			::printf("%-32s", pExpr->ToString().c_str());
+			if (context.GetBuffer().empty()) {
+				::printf("(none)\n");
+			} else {
+				context.Dump();
+			}
 		}
 	}
-#endif
+#else
 	Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
 	for (auto iter : *pLookupTable) {
 		::printf("%04x  %s\n", iter.second, iter.first.c_str());
 	}
+#endif
 	return true;
 }
 

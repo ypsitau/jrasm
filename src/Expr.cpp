@@ -71,11 +71,6 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 // Expr_Root
 //-----------------------------------------------------------------------------
-String Expr_Root::ToString() const
-{
-	return "";
-}
-
 bool Expr_Root::PrepareLookupTable(Context &context)
 {
 	Expr::PrepareLookupTable(context);
@@ -93,6 +88,16 @@ bool Expr_Root::Generate(Context &context)
 	return true;
 }
 
+Expr *Expr_Root::Reduce() const
+{
+	return Reference();
+}
+
+String Expr_Root::ToString() const
+{
+	return "";
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Number
 //-----------------------------------------------------------------------------
@@ -103,12 +108,22 @@ String Expr_Number::ToString() const
 	return buff;
 }
 
+Expr *Expr_Number::Reduce() const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Symbol
 //-----------------------------------------------------------------------------
 String Expr_Symbol::ToString() const
 {
 	return _str;
+}
+
+Expr *Expr_Symbol::Reduce() const
+{
+	return Reference();
 }
 
 //-----------------------------------------------------------------------------
@@ -123,6 +138,11 @@ String Expr_String::ToString() const
 	return str;
 }
 
+Expr *Expr_String::Reduce() const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_BinOp
 //-----------------------------------------------------------------------------
@@ -133,6 +153,11 @@ String Expr_BinOp::ToString() const
 	str += " + ";
 	str += GetRight()->ToString();
 	return str;
+}
+
+Expr *Expr_BinOp::Reduce() const
+{
+	return Reference();
 }
 
 //-----------------------------------------------------------------------------
@@ -147,6 +172,11 @@ String Expr_Bracket::ToString() const
 	return str;
 }
 
+Expr *Expr_Bracket::Reduce() const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Parenthesis
 //-----------------------------------------------------------------------------
@@ -159,17 +189,14 @@ String Expr_Parenthesis::ToString() const
 	return str;
 }
 
+Expr *Expr_Parenthesis::Reduce() const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Label
 //-----------------------------------------------------------------------------
-String Expr_Label::ToString() const
-{
-	String str;
-	str = _label;
-	str += ":";
-	return str;
-}
-
 bool Expr_Label::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
@@ -187,17 +214,22 @@ bool Expr_Label::Generate(Context &context)
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-// Expr_Instruction
-//-----------------------------------------------------------------------------
-String Expr_Instruction::ToString() const
+Expr *Expr_Label::Reduce() const
 {
-	String str = _symbol;
-	str += " ";
-	str += GetChildren().ToString();
+	return Reference();
+}
+
+String Expr_Label::ToString() const
+{
+	String str;
+	str = _label;
+	str += ":";
 	return str;
 }
 
+//-----------------------------------------------------------------------------
+// Expr_Instruction
+//-----------------------------------------------------------------------------
 bool Expr_Instruction::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
@@ -212,17 +244,22 @@ bool Expr_Instruction::Generate(Context &context)
 	return context.GetGenerator()->Generate(context, this);
 }
 
-//-----------------------------------------------------------------------------
-// Expr_Directive
-//-----------------------------------------------------------------------------
-String Expr_Directive::ToString() const
+Expr *Expr_Instruction::Reduce() const
 {
-	String str = _pDirective->GetSymbol();
+	return Reference();
+}
+
+String Expr_Instruction::ToString() const
+{
+	String str = _symbol;
 	str += " ";
 	str += GetChildren().ToString();
 	return str;
 }
 
+//-----------------------------------------------------------------------------
+// Expr_Directive
+//-----------------------------------------------------------------------------
 bool Expr_Directive::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
@@ -232,4 +269,17 @@ bool Expr_Directive::PrepareLookupTable(Context &context)
 bool Expr_Directive::Generate(Context &context)
 {
 	return true;
+}
+
+Expr *Expr_Directive::Reduce() const
+{
+	return Reference();
+}
+
+String Expr_Directive::ToString() const
+{
+	String str = _pDirective->GetSymbol();
+	str += " ";
+	str += GetChildren().ToString();
+	return str;
 }
