@@ -297,7 +297,11 @@ bool Generator_M6800::Rule_ACC::Apply(
 		if (!pExpr->IsType(Expr::TYPE_Symbol)) return false;
 		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return false;
 	}
-	context.PutByte(_code);
+	if (generateFlag) {
+		context.PutByte(_code);
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -308,7 +312,11 @@ bool Generator_M6800::Rule_REL::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
 	if (operands.size() != 1) return false;
-	context.PutByte(_code);
+	if (generateFlag) {
+		context.PutByte(_code);
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -319,7 +327,11 @@ bool Generator_M6800::Rule_INH::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
 	if (operands.size() != 0) return false;
-	context.PutByte(_code);
+	if (generateFlag) {
+		context.PutByte(_code);
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -342,11 +354,15 @@ bool Generator_M6800::Rule_IMM8::Apply(
 	const Expr *pExprLast = operands.back();
 	if (!pExprLast->IsType(Expr::TYPE_Number)) return false;
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast)->GetNumber();
-	context.PutByte(_code);
 	if (num > 0xff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
 	}
-	context.PutByte(static_cast<UInt8>(num));
+	if (generateFlag) {
+		context.PutByte(_code);
+		context.PutByte(static_cast<UInt8>(num));
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -364,8 +380,12 @@ bool Generator_M6800::Rule_IMM16::Apply(
 	if (num > 0xffff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 	}
-	context.PutByte(static_cast<UInt8>(num >> 8));
-	context.PutByte(static_cast<UInt8>(num));
+	if (generateFlag) {
+		context.PutByte(static_cast<UInt8>(num >> 8));
+		context.PutByte(static_cast<UInt8>(num));
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -387,7 +407,11 @@ bool Generator_M6800::Rule_DIR::Apply(
 	}
 	const Expr *pExprLast = operands.back();
 	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return false;
-	context.PutByte(_code);
+	if (generateFlag) {
+		context.PutByte(_code);
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -409,7 +433,11 @@ bool Generator_M6800::Rule_IDX::Apply(
 	}
 	const Expr *pExprLast = operands.back();
 	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
-	context.PutByte(_code);
+	if (generateFlag) {
+		context.PutByte(_code);
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
@@ -431,7 +459,11 @@ bool Generator_M6800::Rule_EXT::Apply(
 	}
 	const Expr *pExprLast = operands.back();
 	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return false;
-	context.PutByte(_code);
+	if (generateFlag) {
+		context.PutByte(_code);
+	} else {
+		context.ForwardAddress(bytes);
+	}
 	*pBytes = bytes;
 	return true;
 }
