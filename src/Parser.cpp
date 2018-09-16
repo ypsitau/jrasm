@@ -13,6 +13,7 @@ Parser::Parser(const String &fileNameSrc) :
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
+	return ParseByPrec(pToken.release());
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
 	case STAT_LineTop: {
@@ -158,6 +159,8 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 
 bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 {
+	::printf("%d\n", __LINE__);
+	if (pToken->IsType(TOKEN_White)) return true;
 	for (;;) {
 		TokenStack::reverse_iterator ppTokenTop = _tokenStack.SeekTerminal(_tokenStack.rbegin());
 		::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
@@ -171,15 +174,21 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 		}
 		TokenStack::reverse_iterator ppTokenLeft;
 		TokenStack::reverse_iterator ppTokenRight = ppTokenTop;
+		::printf("%d\n", __LINE__);
 		while (1) {
+			::printf("check %d\n", __LINE__);
 			ppTokenLeft = _tokenStack.SeekTerminal(ppTokenRight + 1);
+			::printf("check %d\n", __LINE__);
 			if (Token::LookupPrec(**ppTokenLeft, **ppTokenRight) == Token::PREC_LT) {
 				ppTokenLeft--;
 				break;
 			}
+			::printf("check %d\n", __LINE__);
 			ppTokenRight = ppTokenLeft;
 		}
+		::printf("check %d\n", __LINE__);
 		size_t cntToken = std::distance(_tokenStack.rbegin(), ppTokenLeft) + 1;
+		::printf("cntToken = %d\n", cntToken);
 		if (cntToken == 1) {
 			AutoPtr<Token> pToken(_tokenStack.Pop());
 			if (pToken->IsType(TOKEN_Symbol)) {
@@ -192,6 +201,8 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				_tokenizer.AddError("invalid value type\n");
 				return false;
 			}
+		} else if (cntToken == 2) {
+			::printf("check\n");
 		} else if (cntToken == 3) {
 			AutoPtr<Token> pToken3(_tokenStack.Pop());
 			AutoPtr<Token> pToken2(_tokenStack.Pop());
@@ -214,9 +225,10 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				}
 			}
 		} else {
-			_tokenizer.AddError("invalid number of token\n");
+			_tokenizer.AddError("invalid syntax");
 			return false;
 		}
 	}
+	::printf("%d\n", __LINE__);
 	return true;
 }
