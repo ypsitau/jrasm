@@ -131,6 +131,15 @@ Generator_M6800::Generator_M6800()
 	m.Add(Entry_INH					("wai", 0x3e));
 }
 
+bool Generator_M6800::IsRegisterSymbol(const char *symbol) const
+{
+	const char *registerSymbolTbl[] = {"a", "b", "x", "s"};
+	for (auto registerSymbol : registerSymbolTbl) {
+		if (::strcasecmp(symbol, registerSymbol) == 0) return true;
+	}
+	return false;
+}
+
 bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());

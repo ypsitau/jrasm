@@ -94,6 +94,7 @@ public:
 class Directive_ENDM : public Directive {
 public:
 	inline Directive_ENDM() : Directive(".endm") {}
+	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
 };
@@ -136,6 +137,7 @@ public:
 class Directive_MACRO : public Directive {
 public:
 	inline Directive_MACRO() : Directive(".macro") {}
+	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
 };

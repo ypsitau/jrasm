@@ -274,6 +274,10 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
 	UInt32 num = 0;
+	if (context.GetGenerator()->IsRegisterSymbol(GetLabel())) {
+		ErrorLog::AddError(this, "register %s can't be specified here", GetLabel());
+		return nullptr;
+	}
 	if (IsLookupTableReady()) {
 		bool foundFlag = false;
 		num = Lookup(GetLabel(), &foundFlag);

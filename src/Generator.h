@@ -17,6 +17,7 @@ class Generator {
 public:
 	inline Generator() {}
 	virtual ~Generator();
+	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
 	virtual bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const = 0;
 	virtual bool Generate(Context &context, const Expr_Instruction *pExpr) const = 0;
 };

@@ -14,10 +14,10 @@ Directive::~Directive()
 
 bool Directive::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	Expr_Directive *pExpr = new Expr_Directive(this);
-	pParser->SetExprSourceInfo(pExpr, pToken);
-	exprStack.back()->GetChildren().push_back(pExpr);
-	exprStack.push_back(pExpr);
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr.release());
 	return true;
 }
 
@@ -130,6 +130,17 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr) const
 //-----------------------------------------------------------------------------
 // Directive_ENDM
 //-----------------------------------------------------------------------------
+bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+{
+	if (exprStack.back()->IsType(Expr::TYPE_MacroBody)) {
+		pParser->AddError("can't find corresponding directive .macro");
+		return false;
+	}
+	Expr::Delete(exprStack.back());
+	exprStack.pop_back();	// remove the EXPR_MacroBody instance from the stack
+	return Directive::HandleToken(pParser, exprStack, pToken);
+}
+
 bool Directive_ENDM::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
@@ -160,13 +171,13 @@ bool Directive_EQU::HandleToken(const Parser *pParser, ExprStack &exprStack, con
 {
 	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
 	if (pExprLabelDef == nullptr) {
-		pParser->AddError("label must be specified before .equ directive");
+		pParser->AddError("directive .equ must be preceded by a label");
 		return false;
 	}
-	Expr_Directive *pExpr = new Expr_Directive(this);
-	pParser->SetExprSourceInfo(pExpr, pToken);
-	pExprLabelDef->SetAssigned(pExpr);	// associate it to the preceeding label
-	exprStack.push_back(pExpr);
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	pExprLabelDef->SetAssigned(pExpr->Reference());	// associate it to the preceding label
+	exprStack.push_back(pExpr.release());
 	return true;
 }
 
@@ -207,6 +218,21 @@ bool Directive_INCLUDE::Generate(Context &context, const Expr_Directive *pExpr) 
 //-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
+bool Directive_MACRO::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+{
+	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
+	if (pExprLabelDef == nullptr) {
+		pParser->AddError("directive .macro must be preceded by a label");
+		return false;
+	}
+	AutoPtr<Expr_MacroEntry> pExpr(new Expr_MacroEntry(pExprLabelDef->GetLabel()));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	pExprLabelDef->SetAssigned(pExpr->Reference());	// associate it to the preceding label
+	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body
+	exprStack.push_back(pExpr.release());						// for operands
+	return true;
+}
+
 bool Directive_MACRO::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
