@@ -8,6 +8,10 @@
 //-----------------------------------------------------------------------------
 std::unique_ptr<DirectiveOwner> Directive::_pDirectivesBuiltIn;
 
+Directive::~Directive()
+{
+}
+
 bool Directive::IsAssocToLabel() const
 {
 	return false;

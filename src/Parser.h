@@ -14,19 +14,22 @@ private:
 	enum Stat {
 		STAT_LineTop,
 		STAT_LabelDef,
-		STAT_Instruction,
+		STAT_Directive,
 		STAT_Operand,
 	};
 private:
 	Tokenizer _tokenizer;
 	Stat _stat;
-	AutoPtr<Expr_Root> _pExprRoot;
 	ExprStack _exprStack;
 	TokenStack _tokenStack;
 public:
 	Parser(const String &fileNameSrc);
-	inline Expr_Root *GetRoot() { return _pExprRoot.get(); }
-	inline const Expr_Root *GetRoot() const { return _pExprRoot.get(); }
+	inline Expr_Root *GetRoot() {
+		return dynamic_cast<Expr_Root *>(_exprStack.front());
+	}
+	inline const Expr_Root *GetRoot() const {
+		return dynamic_cast<const Expr_Root *>(_exprStack.front());
+	}
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	bool ParseByPrec(AutoPtr<Token> pToken);
 public:

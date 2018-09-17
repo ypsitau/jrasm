@@ -18,6 +18,7 @@ private:
 	static std::unique_ptr<DirectiveOwner> _pDirectivesBuiltIn;
 public:
 	inline Directive(const String &symbol) : _symbol(symbol) {}
+	virtual ~Directive();
 	static void Initialize();
 	static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }

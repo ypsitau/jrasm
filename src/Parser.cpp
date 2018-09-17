@@ -7,8 +7,9 @@
 // Parser
 //-----------------------------------------------------------------------------
 Parser::Parser(const String &fileNameSrc) :
-	_tokenizer(this, fileNameSrc), _stat(STAT_LineTop), _pExprRoot(new Expr_Root())
+	_tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
 {
+	_exprStack.push_back(new Expr_Root());
 }
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
@@ -20,16 +21,16 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		if (pToken->IsType(TOKEN_Symbol)) {
 			Expr *pExpr = new Expr_LabelDef(pToken->GetString());
 			SetExprSourceInfo(pExpr, pToken.get());
-			_pExprRoot->GetChildren().push_back(pExpr);
+			_exprStack.back()->GetChildren().push_back(pExpr);
 			_stat = STAT_LabelDef;
 		} else if (pToken->IsType(TOKEN_White)) {
-			_stat = STAT_Instruction;
+			_stat = STAT_Directive;
 		}
 		break;
 	}
 	case STAT_LabelDef: {
 		if (pToken->IsType(TOKEN_Colon)) {
-			_stat = STAT_Instruction;
+			_stat = STAT_Directive;
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else {
@@ -38,7 +39,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		}
 		break;
 	}
-	case STAT_Instruction: {
+	case STAT_Directive: {
 		if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_Symbol)) {
@@ -52,13 +53,13 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				}
 				pExpr = new Expr_Instruction(pToken->GetString());
 				SetExprSourceInfo(pExpr, pToken.get());
-				_pExprRoot->GetChildren().push_back(pExpr);
+				_exprStack.back()->GetChildren().push_back(pExpr);
 			} else {
 				pExpr = new Expr_Directive(pDirective);
 				SetExprSourceInfo(pExpr, pToken.get());
 				if (pDirective->IsAssocToLabel()) {
 					// associate it to the last LabelDef
-					ExprList &exprList = _pExprRoot->GetChildren();
+					ExprList &exprList = _exprStack.back()->GetChildren();
 					if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
 						_tokenizer.AddError("labe must be specified before the directive %s",
 											pDirective->GetSymbol());
@@ -72,7 +73,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 					}
 					pExprEx->SetAssigned(pExpr);
 				} else {
-					_pExprRoot->GetChildren().push_back(pExpr);
+					_exprStack.back()->GetChildren().push_back(pExpr);
 				}
 			}
 			_exprStack.push_back(pExpr);
