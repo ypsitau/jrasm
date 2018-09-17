@@ -36,10 +36,10 @@ static const Token::Precedence
 const Token::Precedence Token::_precMatrix[][16] = {
 	/*         e   E   +   *   V  */
 	/* e */ { xx, xx, xx, xx, xx, },
-	/* E */ { xx, LT, GT, LT, LT, },
-	/* + */ { xx, LT, GT, GT, LT, },
-	/* * */ { xx, LT, GT, GT, LT, },
-	/* V */ { xx, LT, GT, GT, LT, },
+	/* E */ { xx, EQ, LT, LT, LT, },
+	/* + */ { xx, GT, GT, LT, LT, },
+	/* * */ { xx, GT, GT, GT, LT, },
+	/* V */ { xx, GT, GT, GT, xx, },
 };
 
 String Token::ToString() const

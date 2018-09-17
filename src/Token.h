@@ -64,6 +64,8 @@ public:
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(0), _validStrFlag(true) {}
 	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str, UInt32 num) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(num), _validStrFlag(true) {}
+	inline Token(const TokenInfo &tokenInfo) :
+		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(0), _num(0), _validStrFlag(false) {}
 	inline Token(Expr *pExpr) :
 		_cntRef(1), _pTokenInfo(&TOKEN_Expr), _lineNo(0), _num(0), _validStrFlag(false), _pExpr(pExpr) {}
 private:

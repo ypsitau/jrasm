@@ -14,7 +14,7 @@ Parser::Parser(const String &fileNameSrc) :
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
-	//return ParseByPrec(pToken.release());
+	return ParseByPrec(pToken.release());
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
 	case STAT_LineTop: {
@@ -124,77 +124,74 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 
 bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 {
-	::printf("%d\n", __LINE__);
 	if (pToken->IsType(TOKEN_White)) return true;
+	if (pToken->IsType(TOKEN_EOL)) pToken.reset(new Token(TOKEN_Empty));
 	for (;;) {
 		TokenStack::reverse_iterator ppTokenTop = _tokenStack.SeekTerminal(_tokenStack.rbegin());
 		::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
 		Token::Precedence prec = Token::LookupPrec(**ppTokenTop, *pToken);
 		if (prec == Token::PREC_LT || prec == Token::PREC_EQ) {
-			_tokenStack.Push(pToken.release());
+			_tokenStack.push_back(pToken.release());
 			break;
-		} else if (prec != Token::PREC_GT) {
+		} else if (prec == Token::PREC_GT) {
+			TokenStack::reverse_iterator ppTokenLeft;
+			TokenStack::reverse_iterator ppTokenRight = ppTokenTop;
+			while (1) {
+				ppTokenLeft = _tokenStack.SeekTerminal(ppTokenRight + 1);
+				if (Token::LookupPrec(**ppTokenLeft, **ppTokenRight) == Token::PREC_LT) {
+					ppTokenLeft--;
+					break;
+				}
+				ppTokenRight = ppTokenLeft;
+			}
+			size_t cntToken = std::distance(_tokenStack.rbegin(), ppTokenLeft) + 1;
+			if (cntToken == 1) {
+				AutoPtr<Token> pToken(_tokenStack.Pop());
+				AutoPtr<Expr> pExpr;
+				if (pToken->IsType(TOKEN_Symbol)) {
+					pExpr.reset(new Expr_LabelRef(pToken->GetString()));
+				} else if (pToken->IsType(TOKEN_Number)) {
+					pExpr.reset(new Expr_Number(pToken->GetNumber()));
+				} else if (pToken->IsType(TOKEN_String)) {
+					pExpr.reset(new Expr_String(pToken->GetString()));
+				} else {
+					AddError("invalid value type");
+					return false;
+				}
+				_tokenStack.Push(new Token(pExpr.release()));
+			} else if (cntToken == 3) {
+				AutoPtr<Token> pToken3(_tokenStack.Pop());
+				AutoPtr<Token> pToken2(_tokenStack.Pop());
+				AutoPtr<Token> pToken1(_tokenStack.Pop());
+				if (!pToken1->IsType(TOKEN_Expr) || !pToken3->IsType(TOKEN_Expr)) {
+					AddError("syntax error");
+					return false;
+				}
+				AutoPtr<Expr> pExprL(pToken1->GetExpr()->Reference());
+				AutoPtr<Expr> pExprR(pToken3->GetExpr()->Reference());
+				AutoPtr<Expr> pExpr;
+				if (pToken2->IsType(TOKEN_Plus)) {
+					pExpr.reset(new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Minus)) {
+					pExpr.reset(new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Asterisk)) {
+					pExpr.reset(new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Slash)) {
+					pExpr.reset(new Expr_BinOp(Operator::Div, pExprL.release(), pExprR.release()));
+				} else {
+					AddError("syntax error");
+					return false;
+				}
+				_tokenStack.Push(new Token(pExpr.release()));
+			} else {
+				AddError("syntax error");
+				return false;
+			}
+		} else {
 			AddError("syntax error");
 			return false;
 		}
-		TokenStack::reverse_iterator ppTokenLeft;
-		TokenStack::reverse_iterator ppTokenRight = ppTokenTop;
-		::printf("%d\n", __LINE__);
-		while (1) {
-			::printf("check %d\n", __LINE__);
-			ppTokenLeft = _tokenStack.SeekTerminal(ppTokenRight + 1);
-			::printf("check %d\n", __LINE__);
-			if (Token::LookupPrec(**ppTokenLeft, **ppTokenRight) == Token::PREC_LT) {
-				ppTokenLeft--;
-				break;
-			}
-			::printf("check %d\n", __LINE__);
-			ppTokenRight = ppTokenLeft;
-		}
-		::printf("check %d\n", __LINE__);
-		size_t cntToken = std::distance(_tokenStack.rbegin(), ppTokenLeft) + 1;
-		::printf("cntToken = %d\n", cntToken);
-		if (cntToken == 1) {
-			AutoPtr<Token> pToken(_tokenStack.Pop());
-			if (pToken->IsType(TOKEN_Symbol)) {
-				_tokenStack.Push(new Token(new Expr_LabelRef(pToken->GetString())));
-			} else if (pToken->IsType(TOKEN_Number)) {
-				_tokenStack.Push(new Token(new Expr_Number(pToken->GetNumber())));
-			} else if (pToken->IsType(TOKEN_String)) {
-				_tokenStack.Push(new Token(new Expr_String(pToken->GetString())));
-			} else {
-				AddError("invalid value type\n");
-				return false;
-			}
-		} else if (cntToken == 2) {
-			::printf("check\n");
-		} else if (cntToken == 3) {
-			AutoPtr<Token> pToken3(_tokenStack.Pop());
-			AutoPtr<Token> pToken2(_tokenStack.Pop());
-			AutoPtr<Token> pToken1(_tokenStack.Pop());
-			if (pToken1->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Expr)) {
-				const Expr *pExprL = pToken1->GetExpr();
-				const Expr *pExprR = pToken1->GetExpr();
-				if (pToken2->IsType(TOKEN_Plus)) {
-					_tokenStack.Push(
-						new Token(new Expr_BinOp(Operator::Add, pExprL->Reference(), pExprR->Reference())));
-				} else if (pToken2->IsType(TOKEN_Minus)) {
-					_tokenStack.Push(
-						new Token(new Expr_BinOp(Operator::Sub, pExprL->Reference(), pExprR->Reference())));
-				} else if (pToken2->IsType(TOKEN_Asterisk)) {
-					_tokenStack.Push(
-						new Token(new Expr_BinOp(Operator::Mul, pExprL->Reference(), pExprR->Reference())));
-				} else if (pToken2->IsType(TOKEN_Slash)) {
-					_tokenStack.Push(
-						new Token(new Expr_BinOp(Operator::Div, pExprL->Reference(), pExprR->Reference())));
-				}
-			}
-		} else {
-			AddError("invalid syntax");
-			return false;
-		}
 	}
-	::printf("%d\n", __LINE__);
 	return true;
 }
 
