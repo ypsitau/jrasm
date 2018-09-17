@@ -280,6 +280,7 @@ bool Expr_LabelDef::Generate(Context &context) const
 
 bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp) const
 {
+	::fprintf(fp, "%s:\n", _label.c_str());
 	return true;
 }
 
@@ -341,6 +342,7 @@ bool Expr_Instruction::Generate(Context &context) const
 
 bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp) const
 {
+	
 	return true;
 }
 

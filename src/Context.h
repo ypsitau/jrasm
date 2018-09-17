@@ -49,7 +49,8 @@ private:
 public:
 	Context(Generator *pGenerator);
 	inline const Generator *GetGenerator() const { return _pGenerator.get(); }
-	inline const Binary &GetBuffer() { return _buff; }
+	inline Binary &GetBuffer() { return _buff; }
+	inline const Binary &GetBuffer() const { return _buff; }
 	inline void ClearBuffer() { _buff.clear(); }
 	inline void SetAddress(UInt32 addr) { _addr = addr; }
 	inline UInt32 GetAddress() const { return _addr; }

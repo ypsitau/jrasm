@@ -147,10 +147,10 @@ bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Instruction *pE
 		ErrorLog::AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
 		return 0;
 	}
-	return pEntry->ApplyRule(context, pExpr, false, pBytes);
+	return pEntry->ApplyRule(context, pExpr, nullptr, pBytes);
 }
 
-bool Generator_M6800::Generate(Context &context, const Expr_Instruction *pExpr) const
+bool Generator_M6800::Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
@@ -158,7 +158,7 @@ bool Generator_M6800::Generate(Context &context, const Expr_Instruction *pExpr) 
 		return false;
 	}
 	UInt32 bytes = 0;
-	return pEntry->ApplyRule(context, pExpr, true, &bytes);
+	return pEntry->ApplyRule(context, pExpr, &buffDst, &bytes);
 }
 
 Generator_M6800::Entry *Generator_M6800::Entry_ACC(const String &symbol, UInt8 codeACC)
@@ -292,7 +292,7 @@ Generator_M6800::Rule::~Rule()
 }
 
 Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -307,17 +307,16 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	// This rule was determined to be applied.
-	if (generateFlag) {
-		context.PutByte(_code);
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
@@ -327,33 +326,31 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	
-	if (generateFlag) {
-		context.PutByte(_code);
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
 	if (operands.size() != 0) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	if (generateFlag) {
-		context.PutByte(_code);
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -376,18 +373,17 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
 		return RESULT_Error;
 	}
-	if (generateFlag) {
-		context.PutByte(_code);
-		context.PutByte(static_cast<UInt8>(num));
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num);
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
@@ -401,19 +397,18 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 		return RESULT_Error;
 	}
-	if (generateFlag) {
-		context.PutByte(_code);
-		context.PutByte(static_cast<UInt8>(num >> 8));
-		context.PutByte(static_cast<UInt8>(num));
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num >> 8);
+		*pBuffDst += static_cast<UInt8>(num);
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -446,18 +441,17 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		ErrorLog::AddError(pExpr, "direct address value exceeds 8-bit range");
 		return RESULT_Error;
 	}
-	if (generateFlag) {
-		context.PutByte(_code);
-		context.PutByte(static_cast<UInt8>(num));
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num);
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -489,18 +483,17 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		ErrorLog::AddError(pExpr, "external address value exceeds 8-bit range");
 		return RESULT_Error;
 	}
-	if (generateFlag) {
-		context.PutByte(_code);
-		context.PutByte(static_cast<UInt8>(num));
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num);
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -533,13 +526,12 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		ErrorLog::AddError(pExpr, "external address value exceeds 16-bit range");
 		return RESULT_Error;
 	}
-	if (generateFlag) {
-		context.PutByte(_code);
-		context.PutByte(static_cast<UInt8>(num >> 8));
-		context.PutByte(static_cast<UInt8>(num));
-	} else {
-		context.ForwardAddress(bytes);
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num >> 8);
+		*pBuffDst += static_cast<UInt8>(num);
 	}
+	context.ForwardAddress(bytes);
 	*pBytes = bytes;
 	return RESULT_Accepted;
 }
@@ -569,10 +561,10 @@ Generator_M6800::Entry::Entry(const String &symbol, const String &syntaxDesc) :
 }
 
 bool Generator_M6800::Entry::ApplyRule(
-	Context &context, const Expr_Instruction *pExpr, bool generateFlag, UInt32 *pBytes) const
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes) const
 {
 	for (auto pRule : _ruleOwner) {
-		Result result = pRule->Apply(context, pExpr, generateFlag, pBytes);
+		Result result = pRule->Apply(context, pExpr, pBuffDst, pBytes);
 		if (result == RESULT_Accepted) {
 			return true;
 		} else if (result == RESULT_Error) {
