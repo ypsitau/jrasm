@@ -39,13 +39,13 @@ bool Expr::PrepareLookupTable(Context &context)
 	return true;
 }
 
-bool Expr::Generate(Context &context)
+bool Expr::Generate(Context &context) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Expr::DumpDisasm(Context &context, FILE *fp)
+bool Expr::DumpDisasm(Context &context, FILE *fp) const
 {
 	// nothing to do
 	return true;
@@ -106,7 +106,7 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
-bool Expr_Root::Generate(Context &context)
+bool Expr_Root::Generate(Context &context) const
 {
 	for (auto pExpr : GetChildren()) {
 		pExpr->Generate(context);
@@ -114,7 +114,7 @@ bool Expr_Root::Generate(Context &context)
 	return true;
 }
 
-bool Expr_Root::DumpDisasm(Context &context, FILE *fp)
+bool Expr_Root::DumpDisasm(Context &context, FILE *fp) const
 {
 	for (auto pExpr : GetChildren()) {
 		pExpr->DumpDisasm(context, fp);
@@ -272,13 +272,13 @@ bool Expr_LabelDef::PrepareLookupTable(Context &context)
 	return true;
 }
 
-bool Expr_LabelDef::Generate(Context &context)
+bool Expr_LabelDef::Generate(Context &context) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp)
+bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp) const
 {
 	return true;
 }
@@ -334,12 +334,12 @@ bool Expr_Instruction::PrepareLookupTable(Context &context)
 	return true;
 }
 
-bool Expr_Instruction::Generate(Context &context)
+bool Expr_Instruction::Generate(Context &context) const
 {
 	return context.GetGenerator()->Generate(context, this);
 }
 
-bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp)
+bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp) const
 {
 	return true;
 }
@@ -368,12 +368,12 @@ bool Expr_Directive::PrepareLookupTable(Context &context)
 	return _pDirective->PrepareLookupTable(context, this);
 }
 
-bool Expr_Directive::Generate(Context &context)
+bool Expr_Directive::Generate(Context &context) const
 {
 	return _pDirective->Generate(context, this);
 }
 
-bool Expr_Directive::DumpDisasm(Context &context, FILE *fp)
+bool Expr_Directive::DumpDisasm(Context &context, FILE *fp) const
 {
 	return true;
 }
