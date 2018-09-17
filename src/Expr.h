@@ -27,6 +27,8 @@ public:
 		TYPE_LabelRef,
 		TYPE_Instruction,
 		TYPE_Directive,
+		TYPE_MacroBody,
+		TYPE_MacroEntry,
 	};
 protected:
 	int _cntRef;
@@ -77,7 +79,7 @@ class ExprList : public std::vector<Expr *> {
 public:
 	Expr_LabelDef *SeekLabelDefToAssoc();
 	bool PrepareLookupTable(Context &context);
-	String ToString() const;
+	String ToString(const char *sep) const;
 	void Print() const;
 	template<typename T_Expr> inline T_Expr *GetBack() {
 		if (empty() || !back()->IsType(T_Expr::TYPE)) return nullptr;
@@ -257,6 +259,34 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual Expr *Reduce(Context &context) const;
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_MacroBody
+//-----------------------------------------------------------------------------
+class Expr_MacroBody : public Expr {
+public:
+	static const Type TYPE;
+public:
+	inline Expr_MacroBody() : Expr(TYPE) {}
+	virtual Expr *Reduce(Context &context) const;
+	virtual String ToString() const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_MacroEntry
+//-----------------------------------------------------------------------------
+class Expr_MacroEntry : public Expr {
+private:
+	String _symbol;
+public:
+	static const Type TYPE;
+public:
+	inline Expr_MacroEntry(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };

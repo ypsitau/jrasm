@@ -50,11 +50,11 @@ bool ExprList::PrepareLookupTable(Context &context)
 	return true;
 }
 
-String ExprList::ToString() const
+String ExprList::ToString(const char *sep) const
 {
 	String rtn;
 	for (auto pExpr : *this) {
-		if (!rtn.empty()) rtn += ",";
+		if (!rtn.empty()) rtn += sep;
 		rtn += pExpr->ToString();
 	}
 	return rtn;
@@ -175,7 +175,7 @@ String Expr_Bracket::ToString() const
 {
 	String str;
 	str = "[";
-	str += GetChildren().ToString();
+	str += GetChildren().ToString(",");
 	str += "]";
 	return str;
 }
@@ -201,7 +201,7 @@ String Expr_Parenthesis::ToString() const
 {
 	String str;
 	str = "(";
-	str += GetChildren().ToString();
+	str += GetChildren().ToString(",");
 	str += ")";
 	return str;
 }
@@ -317,7 +317,7 @@ String Expr_Instruction::ToString() const
 {
 	String str = _symbol;
 	str += " ";
-	str += GetChildren().ToString();
+	str += GetChildren().ToString(",");
 	return str;
 }
 
@@ -346,6 +346,41 @@ String Expr_Directive::ToString() const
 {
 	String str = _pDirective->GetSymbol();
 	str += " ";
-	str += GetChildren().ToString();
+	str += GetChildren().ToString(",");
+	return str;
+}
+
+//-----------------------------------------------------------------------------
+// Expr_MacroBody
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_MacroBody::TYPE = Expr::TYPE_MacroBody;
+
+Expr *Expr_MacroBody::Reduce(Context &context) const
+{
+	return Reference();
+}
+
+String Expr_MacroBody::ToString() const
+{
+	String str = GetChildren().ToString("\n");
+	str += "\n";
+	return str;
+}
+
+//-----------------------------------------------------------------------------
+// Expr_MacroEntry
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
+
+Expr *Expr_MacroEntry::Reduce(Context &context) const
+{
+	return Reference();
+}
+
+String Expr_MacroEntry::ToString() const
+{
+	String str = _symbol;
+	str += " ";
+	str += GetChildren().ToString(",");
 	return str;
 }
