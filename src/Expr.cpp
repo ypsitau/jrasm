@@ -80,6 +80,8 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 // Expr_Root
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
+
 bool Expr_Root::Generate(Context &context)
 {
 	for (auto pExpr : GetChildren()) {
@@ -101,6 +103,8 @@ String Expr_Root::ToString() const
 //-----------------------------------------------------------------------------
 // Expr_Number
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
+
 String Expr_Number::ToString() const
 {
 	char buff[128];
@@ -116,6 +120,8 @@ Expr *Expr_Number::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_String::TYPE = Expr::TYPE_String;
+
 String Expr_String::ToString() const
 {
 	String str;
@@ -133,6 +139,8 @@ Expr *Expr_String::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 // Expr_BinOp
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
+
 String Expr_BinOp::ToString() const
 {
 	String str;
@@ -155,6 +163,8 @@ Expr *Expr_BinOp::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 // Expr_Bracket
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;
+
 String Expr_Bracket::ToString() const
 {
 	String str;
@@ -179,6 +189,8 @@ Expr *Expr_Bracket::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 // Expr_Parenthesis
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_Parenthesis::TYPE = Expr::TYPE_Parenthesis;
+
 String Expr_Parenthesis::ToString() const
 {
 	String str;
@@ -203,6 +215,8 @@ Expr *Expr_Parenthesis::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 // Expr_LabelDef
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
+
 bool Expr_LabelDef::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
@@ -249,6 +263,8 @@ String Expr_LabelDef::ToString() const
 //-----------------------------------------------------------------------------
 // Expr_LabelRef
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
+
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
 	UInt32 num = 0;
@@ -271,6 +287,8 @@ String Expr_LabelRef::ToString() const
 //-----------------------------------------------------------------------------
 // Expr_Instruction
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
+
 bool Expr_Instruction::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
@@ -300,6 +318,8 @@ String Expr_Instruction::ToString() const
 //-----------------------------------------------------------------------------
 // Expr_Directive
 //-----------------------------------------------------------------------------
+const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
+
 bool Expr_Directive::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;

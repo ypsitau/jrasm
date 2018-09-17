@@ -99,7 +99,9 @@ class ExprStack : public ExprOwner {
 //-----------------------------------------------------------------------------
 class Expr_Root : public Expr {
 public:
-	inline Expr_Root() : Expr(TYPE_Root) {}
+	static const Type TYPE;
+public:
+	inline Expr_Root() : Expr(TYPE) {}
 	virtual bool Generate(Context &context);
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
@@ -112,7 +114,9 @@ class Expr_Number : public Expr {
 private:
 	UInt32 _num;
 public:
-	inline Expr_Number(UInt32 num) : Expr(TYPE_Number), _num(num) {}
+	static const Type TYPE;
+public:
+	inline Expr_Number(UInt32 num) : Expr(TYPE), _num(num) {}
 	inline UInt32 GetNumber() const { return _num; }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
@@ -125,7 +129,9 @@ class Expr_String : public Expr {
 private:
 	String _str;
 public:
-	inline Expr_String(const String &str) : Expr(TYPE_String), _str(str) {}
+	static const Type TYPE;
+public:
+	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
@@ -137,8 +143,10 @@ class Expr_BinOp : public Expr {
 private:
 	const Operator *_pOperator;
 public:
+	static const Type TYPE;
+public:
 	inline Expr_BinOp(const Operator *pOperator, Expr *pExprL, Expr *pExprR) :
-			Expr(TYPE_BinOp), _pOperator(pOperator) {
+			Expr(TYPE), _pOperator(pOperator) {
 		GetChildren().push_back(pExprL);
 		GetChildren().push_back(pExprR);
 	}
@@ -153,7 +161,9 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_Bracket : public Expr {
 public:
-	inline Expr_Bracket() : Expr(TYPE_Bracket) {}
+	static const Type TYPE;
+public:
+	inline Expr_Bracket() : Expr(TYPE) {}
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
@@ -163,7 +173,9 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_Parenthesis : public Expr {
 public:
-	inline Expr_Parenthesis() : Expr(TYPE_Parenthesis) {}
+	static const Type TYPE;
+public:
+	inline Expr_Parenthesis() : Expr(TYPE) {}
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
@@ -175,7 +187,9 @@ class Expr_LabelDef : public Expr {
 private:
 	String _label;
 public:
-	inline Expr_LabelDef(const String &label) : Expr(TYPE_LabelDef), _label(label) {}
+	static const Type TYPE;
+public:
+	inline Expr_LabelDef(const String &label) : Expr(TYPE), _label(label) {}
 	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
 	inline const Expr *GetAssigned() const { return GetChildren().back(); }
 	inline bool IsAssigned() const { return !GetChildren().empty(); }
@@ -195,7 +209,9 @@ class Expr_LabelRef : public Expr {
 private:
 	String _label;
 public:
-	inline Expr_LabelRef(const String &label) : Expr(TYPE_LabelRef), _label(label) {}
+	static const Type TYPE;
+public:
+	inline Expr_LabelRef(const String &label) : Expr(TYPE), _label(label) {}
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
@@ -210,7 +226,9 @@ class Expr_Instruction : public Expr {
 private:
 	String _symbol;
 public:
-	inline Expr_Instruction(const String &symbol) : Expr(TYPE_Instruction), _symbol(symbol) {}
+	static const Type TYPE;
+public:
+	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
@@ -226,7 +244,9 @@ class Expr_Directive : public Expr {
 private:
 	const Directive *_pDirective;
 public:
-	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE_Directive), _pDirective(pDirective) {}
+	static const Type TYPE;
+public:
+	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE), _pDirective(pDirective) {}
 	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);

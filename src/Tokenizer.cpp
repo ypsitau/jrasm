@@ -214,9 +214,14 @@ bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str, num));
 }
 
-void Tokenizer::AddError(const char *format, ...)
+void Tokenizer::AddError(const char *format, ...) const
 {
 	va_list ap;
 	va_start(ap, format);
+	AddErrorV(format, ap);
+}
+
+void Tokenizer::AddErrorV(const char *format, va_list ap) const
+{
 	ErrorLog::AddErrorV(GetFileNameSrc(), _nLines + 1, format, ap);
 }

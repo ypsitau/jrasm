@@ -160,14 +160,12 @@ bool Directive_EQU::HandleToken(const Parser *pParser, ExprStack &exprStack, con
 {
 	ExprList &exprList = exprStack.back()->GetChildren();
 	if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
-		//_tokenizer.AddError("labe must be specified before the directive %s",
-		//					pDirective->GetSymbol());
+		pParser->AddError("labe must be specified before .equ directive");
 		return false;
 	}
 	Expr_LabelDef *pExprLabelDef = dynamic_cast<Expr_LabelDef *>(exprList.back());
 	if (pExprLabelDef->IsAssigned()) {
-		//_tokenizer.AddError("label must be specified before the directive %s",
-		//					pDirective->GetSymbol());
+		pParser->AddError("label must be specified before .equ directive");
 		return false;
 	}
 	Expr_Directive *pExpr = new Expr_Directive(this);

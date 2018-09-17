@@ -40,7 +40,8 @@ public:
 	inline const char *GetFileNameSrc() const { return _pFileNameSrc->GetString(); }
 	inline const StringShared *GetFileNameSrcShared() const { return _pFileNameSrc.get(); }
 	bool FeedChar(char ch);
-	void AddError(const char *format, ...);
+	void AddError(const char *format, ...) const;
+	void AddErrorV(const char *format, va_list ap) const;
 private:
 	inline static bool IsEOF(char ch) { return ch == '\0'; }
 	inline static bool IsEOL(char ch) { return ch == '\n'; }

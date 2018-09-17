@@ -34,7 +34,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else {
-			_tokenizer.AddError("invalid format of label");
+			AddError("invalid format of label");
 			return false;
 		}
 		break;
@@ -47,7 +47,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			const Directive *pDirective = Directive::FindBuiltIn(symbol);
 			if (pDirective == nullptr) {
 				if (*symbol == '.') {
-					_tokenizer.AddError("unknown directive: %s", symbol);
+					AddError("unknown directive: %s", symbol);
 					return false;
 				}
 				Expr *pExpr = new Expr_Instruction(pToken->GetString());
@@ -61,7 +61,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_stat = STAT_LineTop;
 		} else {
-			_tokenizer.AddError("instruction or directive is expected");
+			AddError("instruction or directive is expected");
 			return false;
 		}
 		break;
@@ -100,7 +100,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.push_back(pExpr);
 		} else if (pToken->IsType(TOKEN_BracketR)) {
 			if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
-				_tokenizer.AddError("no opening bracket matched");
+				AddError("no opening bracket matched");
 			}
 			_exprStack.pop_back();
 		} else if (pToken->IsType(TOKEN_ParenthesisL)) {
@@ -109,11 +109,11 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			_exprStack.push_back(pExpr);
 		} else if (pToken->IsType(TOKEN_ParenthesisR)) {
 			if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
-				_tokenizer.AddError("no opening parenthesis matched");
+				AddError("no opening parenthesis matched");
 			}
 			_exprStack.pop_back();
 		} else {
-			_tokenizer.AddError("invalid format of operands");
+			AddError("invalid format of operands");
 			return false;
 		}
 		break;
@@ -134,7 +134,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			_tokenStack.Push(pToken.release());
 			break;
 		} else if (prec != Token::PREC_GT) {
-			_tokenizer.AddError("syntax error");
+			AddError("syntax error");
 			return false;
 		}
 		TokenStack::reverse_iterator ppTokenLeft;
@@ -163,7 +163,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			} else if (pToken->IsType(TOKEN_String)) {
 				_tokenStack.Push(new Token(new Expr_String(pToken->GetString())));
 			} else {
-				_tokenizer.AddError("invalid value type\n");
+				AddError("invalid value type\n");
 				return false;
 			}
 		} else if (cntToken == 2) {
@@ -190,10 +190,22 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				}
 			}
 		} else {
-			_tokenizer.AddError("invalid syntax");
+			AddError("invalid syntax");
 			return false;
 		}
 	}
 	::printf("%d\n", __LINE__);
 	return true;
+}
+
+void Parser::AddError(const char *format, ...) const
+{
+	va_list ap;
+	va_start(ap, format);
+	AddErrorV(format, ap);
+}
+
+void Parser::AddErrorV(const char *format, va_list ap) const
+{
+	_tokenizer.AddErrorV(format, ap);
 }

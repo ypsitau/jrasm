@@ -35,6 +35,8 @@ public:
 		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
 	bool ParseByPrec(AutoPtr<Token> pToken);
+	void AddError(const char *format, ...) const;
+	void AddErrorV(const char *format, va_list ap) const;
 public:
 	// implementation for Tokenizer::Listener
 	virtual bool FeedToken(AutoPtr<Token> pToken);
