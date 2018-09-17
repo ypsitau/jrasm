@@ -84,7 +84,7 @@ public:
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const = 0;
-	virtual String ToString() const = 0;
+	virtual String ToString(bool upperCaseFlag) const = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -94,8 +94,8 @@ class ExprList : public std::vector<Expr *> {
 public:
 	Expr_LabelDef *SeekLabelDefToAssoc();
 	bool PrepareLookupTable(Context &context);
-	String ToString(const char *sep) const;
-	void Print() const;
+	String ToString(const char *sep, bool upperCaseFlag) const;
+	void Print(bool upperCaseFlag) const;
 	template<typename T_Expr> inline T_Expr *GetBack() {
 		if (empty() || !back()->IsType(T_Expr::TYPE)) return nullptr;
 		return dynamic_cast<T_Expr *>(back());
@@ -128,7 +128,7 @@ public:
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ public:
 	inline Expr_Number(UInt32 num) : Expr(TYPE), _num(num) {}
 	inline UInt32 GetNumber() const { return _num; }
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ public:
 public:
 	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ public:
 	const Expr *GetLeft() const { return GetChildren()[0]; }
 	const Expr *GetRight() const { return GetChildren()[1]; }
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -189,7 +189,7 @@ public:
 public:
 	inline Expr_Bracket() : Expr(TYPE) {}
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ public:
 public:
 	inline Expr_Brace() : Expr(TYPE) {}
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -224,7 +224,7 @@ public:
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ public:
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -260,7 +260,7 @@ public:
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -279,7 +279,7 @@ public:
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -291,7 +291,7 @@ public:
 public:
 	inline Expr_MacroBody() : Expr(TYPE) {}
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -311,7 +311,7 @@ public:
 	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual Expr *Reduce(Context &context) const;
-	virtual String ToString() const;
+	virtual String ToString(bool upperCaseFlag) const;
 };
 
 #endif

@@ -68,20 +68,20 @@ bool ExprList::PrepareLookupTable(Context &context)
 	return true;
 }
 
-String ExprList::ToString(const char *sep) const
+String ExprList::ToString(const char *sep, bool upperCaseFlag) const
 {
 	String rtn;
 	for (auto pExpr : *this) {
 		if (!rtn.empty()) rtn += sep;
-		rtn += pExpr->ToString();
+		rtn += pExpr->ToString(upperCaseFlag);
 	}
 	return rtn;
 }
 
-void ExprList::Print() const
+void ExprList::Print(bool upperCaseFlag) const
 {
 	for (auto pExpr : *this) {
-		::printf("%s\n", pExpr->ToString().c_str());
+		::printf("%s\n", pExpr->ToString(upperCaseFlag).c_str());
 	}
 }
 
@@ -127,7 +127,7 @@ Expr *Expr_Root::Reduce(Context &context) const
 	return Reference();
 }
 
-String Expr_Root::ToString() const
+String Expr_Root::ToString(bool upperCaseFlag) const
 {
 	return "";
 }
@@ -137,7 +137,7 @@ String Expr_Root::ToString() const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
 
-String Expr_Number::ToString() const
+String Expr_Number::ToString(bool upperCaseFlag) const
 {
 	char buff[128];
 	::sprintf_s(buff, "0x%x", _num);
@@ -154,7 +154,7 @@ Expr *Expr_Number::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_String::TYPE = Expr::TYPE_String;
 
-String Expr_String::ToString() const
+String Expr_String::ToString(bool upperCaseFlag) const
 {
 	String str;
 	str = "\"";
@@ -173,12 +173,12 @@ Expr *Expr_String::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
 
-String Expr_BinOp::ToString() const
+String Expr_BinOp::ToString(bool upperCaseFlag) const
 {
 	String str;
-	str = GetLeft()->ToString();
+	str = GetLeft()->ToString(upperCaseFlag);
 	str += _pOperator->GetSymbol();
-	str += GetRight()->ToString();
+	str += GetRight()->ToString(upperCaseFlag);
 	return str;
 }
 
@@ -196,11 +196,11 @@ Expr *Expr_BinOp::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;
 
-String Expr_Bracket::ToString() const
+String Expr_Bracket::ToString(bool upperCaseFlag) const
 {
 	String str;
 	str = "[";
-	str += GetChildren().ToString(",");
+	str += GetChildren().ToString(",", upperCaseFlag);
 	str += "]";
 	return str;
 }
@@ -222,11 +222,11 @@ Expr *Expr_Bracket::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Brace::TYPE = Expr::TYPE_Brace;
 
-String Expr_Brace::ToString() const
+String Expr_Brace::ToString(bool upperCaseFlag) const
 {
 	String str;
 	str = "{";
-	str += GetChildren().ToString(",");
+	str += GetChildren().ToString(",", upperCaseFlag);
 	str += "}";
 	return str;
 }
@@ -282,7 +282,8 @@ bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) c
 {
 	String str = _label;
 	str += ":";
-	::fprintf(fp, "%-*s%s\n", 19, str.c_str(), IsAssigned()? GetAssigned()->ToString().c_str() : "");
+	::fprintf(fp, "%-*s%s\n", 19, str.c_str(), IsAssigned()?
+			  GetAssigned()->ToString(upperCaseFlag).c_str() : "");
 	return true;
 }
 
@@ -291,7 +292,7 @@ Expr *Expr_LabelDef::Reduce(Context &context) const
 	return Reference();
 }
 
-String Expr_LabelDef::ToString() const
+String Expr_LabelDef::ToString(bool upperCaseFlag) const
 {
 	String str;
 	str = _label;
@@ -319,7 +320,7 @@ Expr *Expr_LabelRef::Reduce(Context &context) const
 	return new Expr_Number(num);
 }
 
-String Expr_LabelRef::ToString() const
+String Expr_LabelRef::ToString(bool upperCaseFlag) const
 {
 	return _label;
 }
@@ -355,7 +356,7 @@ bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag
 		::sprintf_s(buff, formatData, static_cast<UInt8>(dataDst));
 		str += buff;
 	}
-	::fprintf(fp, formatHead, addr, str.c_str(), ToString().c_str());
+	::fprintf(fp, formatHead, addr, str.c_str(), ToString(upperCaseFlag).c_str());
 	return true;
 }
 
@@ -364,11 +365,11 @@ Expr *Expr_Instruction::Reduce(Context &context) const
 	return Reference();
 }
 
-String Expr_Instruction::ToString() const
+String Expr_Instruction::ToString(bool upperCaseFlag) const
 {
 	String str = _symbol;
 	str += " ";
-	str += GetChildren().ToString(",");
+	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
 }
 
@@ -390,7 +391,7 @@ bool Expr_Directive::Generate(Context &context) const
 
 bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
-	::fprintf(fp, "%*s%s\n", 19, "", ToString().c_str());
+	::fprintf(fp, "%*s%s\n", 19, "", ToString(upperCaseFlag).c_str());
 	return true;
 }
 
@@ -399,11 +400,11 @@ Expr *Expr_Directive::Reduce(Context &context) const
 	return _pDirective->Reduce(context, this);
 }
 
-String Expr_Directive::ToString() const
+String Expr_Directive::ToString(bool upperCaseFlag) const
 {
 	String str = _pDirective->GetSymbol();
 	str += " ";
-	str += GetChildren().ToString(",");
+	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
 }
 
@@ -417,9 +418,9 @@ Expr *Expr_MacroBody::Reduce(Context &context) const
 	return Reference();
 }
 
-String Expr_MacroBody::ToString() const
+String Expr_MacroBody::ToString(bool upperCaseFlag) const
 {
-	String str = GetChildren().ToString("\n");
+	String str = GetChildren().ToString("\n", upperCaseFlag);
 	str += "\n";
 	return str;
 }
@@ -434,10 +435,10 @@ Expr *Expr_MacroEntry::Reduce(Context &context) const
 	return Reference();
 }
 
-String Expr_MacroEntry::ToString() const
+String Expr_MacroEntry::ToString(bool upperCaseFlag) const
 {
 	String str = _symbol;
 	str += " ";
-	str += GetChildren().ToString(",");
+	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
 }
