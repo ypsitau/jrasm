@@ -30,7 +30,9 @@ bool Parse(const char *fileName)
 		ErrorLog::Print(stderr);
 		return false;
 	}
+	parser.GetRoot()->DumpDisasm(context, stdout);
 #if 1
+#if 0
 	for (auto pExpr : parser.GetRoot()->GetChildren()) {
 		context.ClearBuffer();
 		pExpr->Generate(context);
@@ -45,6 +47,7 @@ bool Parse(const char *fileName)
 			}
 		}
 	}
+#endif
 #else
 	Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
 	for (auto iter : *pLookupTable) {

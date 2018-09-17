@@ -280,7 +280,9 @@ bool Expr_LabelDef::Generate(Context &context) const
 
 bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp) const
 {
-	::fprintf(fp, "%s:\n", _label.c_str());
+	String str = _label;
+	str += ":";
+	::fprintf(fp, "%-*s%s\n", 19, str.c_str(), IsAssigned()? GetAssigned()->ToString().c_str() : "");
 	return true;
 }
 
@@ -342,7 +344,16 @@ bool Expr_Instruction::Generate(Context &context) const
 
 bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp) const
 {
-	
+	Binary buffDst;
+	UInt32 addr = context.GetAddress();
+	if (!context.GetGenerator()->Generate(context, this, buffDst)) return false;
+	String str;
+	for (auto dataDst : buffDst) {
+		char buff[16];
+		::sprintf_s(buff, " %02x", static_cast<UInt8>(dataDst));
+		str += buff;
+	}
+	::fprintf(fp, "    %04x%-11s%s\n", addr, str.c_str(), ToString().c_str());
 	return true;
 }
 
@@ -377,6 +388,7 @@ bool Expr_Directive::Generate(Context &context) const
 
 bool Expr_Directive::DumpDisasm(Context &context, FILE *fp) const
 {
+	::fprintf(fp, "%*s%s\n", 19, "", ToString().c_str());
 	return true;
 }
 
