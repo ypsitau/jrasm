@@ -18,9 +18,9 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			Expr *pExpr = new Expr_LabelDef(pToken->GetString());
-			SetExprSourceInfo(pExpr, pToken.get());
-			_exprStack.back()->GetChildren().push_back(pExpr);
+			AutoPtr<Expr> pExpr(new Expr_LabelDef(pToken->GetString()));
+			SetExprSourceInfo(pExpr.get(), pToken.get());
+			_exprStack.back()->GetChildren().push_back(pExpr.release());
 			_stat = STAT_LabelDef;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Directive;
@@ -49,10 +49,10 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 					AddError("unknown directive: %s", symbol);
 					return false;
 				}
-				Expr *pExpr = new Expr_Instruction(pToken->GetString());
-				SetExprSourceInfo(pExpr, pToken.get());
-				_exprStack.back()->GetChildren().push_back(pExpr);
-				_exprStack.push_back(pExpr);
+				AutoPtr<Expr> pExpr(new Expr_Instruction(pToken->GetString()));
+				SetExprSourceInfo(pExpr.get(), pToken.get());
+				_exprStack.back()->GetChildren().push_back(pExpr->Reference());
+				_exprStack.push_back(pExpr.release());
 			} else if (!pDirective->HandleToken(this, _exprStack, pToken.get())) {
 				return false;
 			}
@@ -90,18 +90,18 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			} else if (pToken->IsType(TOKEN_Comma)) {
 				
 			} else if (pToken->IsType(TOKEN_BracketL)) {
-				Expr *pExpr = new Expr_Bracket();
-				_exprStack.back()->AddChild(pExpr);
-				_exprStack.push_back(pExpr);
+				AutoPtr<Expr> pExpr(new Expr_Bracket());
+				_exprStack.back()->AddChild(pExpr->Reference());
+				_exprStack.push_back(pExpr.release());
 			} else if (pToken->IsType(TOKEN_BracketR)) {
 				if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
 					AddError("no opening bracket matched");
 				}
 				_exprStack.pop_back();
 			} else if (pToken->IsType(TOKEN_ParenthesisL)) {
-				Expr *pExpr = new Expr_Parenthesis();
-				_exprStack.back()->AddChild(pExpr);
-				_exprStack.push_back(pExpr);
+				AutoPtr<Expr> pExpr(new Expr_Parenthesis());
+				_exprStack.back()->AddChild(pExpr->Reference());
+				_exprStack.push_back(pExpr.release());
 			} else if (pToken->IsType(TOKEN_ParenthesisR)) {
 				if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
 					AddError("no opening parenthesis matched");
