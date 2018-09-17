@@ -51,6 +51,32 @@ bool Expr::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 	return true;
 }
 
+void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff,
+							const char *strCode, FILE *fp, bool upperCaseFlag)
+{
+	const char *formatData = upperCaseFlag? " %02X" : " %02x";
+	const char *formatHead = upperCaseFlag? "    %04X%-11s%s\n" : "    %04x%-11s%s\n";
+	String str;
+	size_t iCol = 0;
+	size_t iRow = 0;
+	for (auto data : buff) {
+		char buff[16];
+		::sprintf_s(buff, formatData, static_cast<UInt8>(data));
+		str += buff;
+		iCol++;
+		if (iCol == 3) {
+			::fprintf(fp, formatHead, addr, str.c_str(), (iRow == 0)? strCode : "");
+			str.clear();
+			addr += iCol;
+			iCol = 0;
+			iRow++;
+		}
+	}
+	if (iCol > 0) {
+		::fprintf(fp, formatHead, addr, str.c_str(), (iRow == 0)? strCode : "");
+	}
+}
+
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
@@ -347,18 +373,10 @@ bool Expr_Instruction::Generate(Context &context) const
 
 bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
-	const char *formatData = upperCaseFlag? " %02X" : " %02x";
-	const char *formatHead = upperCaseFlag? "    %04X%-11s%s\n" : "    %04x%-11s%s\n";
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!context.GetGenerator()->Generate(context, this, buffDst)) return false;
-	String str;
-	for (auto dataDst : buffDst) {
-		char buff[16];
-		::sprintf_s(buff, formatData, static_cast<UInt8>(dataDst));
-		str += buff;
-	}
-	::fprintf(fp, formatHead, addr, str.c_str(), ToString(upperCaseFlag).c_str());
+	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag);
 	return true;
 }
 
@@ -393,7 +411,10 @@ bool Expr_Directive::Generate(Context &context) const
 
 bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
-	::fprintf(fp, "%*s%s\n", 19, "", ToString(upperCaseFlag).c_str());
+	Binary buffDst;
+	UInt32 addr = context.GetAddress();
+	if (!_pDirective->Generate(context, this, buffDst)) return false;
+	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag);
 	return true;
 }
 

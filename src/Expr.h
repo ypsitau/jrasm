@@ -80,6 +80,8 @@ public:
 	bool IsTypeLabelDef(const char *label) const;
 	bool IsTypeLabelRef(const char *label) const;
 	void AddChild(Expr *pExpr);
+	static void DumpDisasmHelper(UInt32 addr, const Binary &buff,
+								 const char *strCode, FILE *fp, bool upperCaseFlag);
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;

@@ -100,9 +100,20 @@ bool Directive_DB::PrepareLookupTable(Context &context, const Expr_Directive *pE
 bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	for (auto pExprData : pExpr->GetOperands()) {
-		AutoPtr<Expr> pExprDataReduced(pExprData->Reduce(context));
-		
+		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
+		if (!pExprReduced->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, "elements of directive .db must be number value");
+			return false;
+		}
+		UInt32 num = dynamic_cast<Expr_Number *>(pExprReduced.get())->GetNumber();
+		if (num > 0xff) {
+			ErrorLog::AddError(pExpr, "an element value of directive .db exceeds 8-bit range");
+			return false;
+		}
+		buffDst += static_cast<UInt8>(num);
 	}
+	size_t bytes = pExpr->GetOperands().size() * sizeof(UInt8);
+	context.ForwardAddress(bytes);
 	return true;
 }
 
@@ -130,6 +141,22 @@ bool Directive_DW::PrepareLookupTable(Context &context, const Expr_Directive *pE
 
 bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	for (auto pExprData : pExpr->GetOperands()) {
+		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
+		if (!pExprReduced->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, "elements of directive .db must be number value");
+			return false;
+		}
+		UInt32 num = dynamic_cast<Expr_Number *>(pExprReduced.get())->GetNumber();
+		if (num > 0xffff) {
+			ErrorLog::AddError(pExpr, "an element value of directive .db exceeds 16-bit range");
+			return false;
+		}
+		buffDst += static_cast<UInt8>(num >> 8);
+		buffDst += static_cast<UInt8>(num);
+	}
+	size_t bytes = pExpr->GetOperands().size() * sizeof(UInt16);
+	context.ForwardAddress(bytes);
 	return true;
 }
 
