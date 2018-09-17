@@ -30,24 +30,8 @@ bool Parse(const char *fileName)
 		ErrorLog::Print(stderr);
 		return false;
 	}
-	parser.GetRoot()->DumpDisasm(context, stdout);
 #if 1
-#if 0
-	for (auto pExpr : parser.GetRoot()->GetChildren()) {
-		context.ClearBuffer();
-		pExpr->Generate(context);
-		if (pExpr->IsTypeLabelDef()) {
-			// nothing to do
-		} else {
-			::printf("%-32s", pExpr->ToString().c_str());
-			if (context.GetBuffer().empty()) {
-				::printf("(none)\n");
-			} else {
-				context.Dump();
-			}
-		}
-	}
-#endif
+	parser.GetRoot()->DumpDisasm(context, stdout, true);
 #else
 	Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
 	for (auto iter : *pLookupTable) {

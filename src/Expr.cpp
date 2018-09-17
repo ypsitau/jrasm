@@ -45,7 +45,7 @@ bool Expr::Generate(Context &context) const
 	return true;
 }
 
-bool Expr::DumpDisasm(Context &context, FILE *fp) const
+bool Expr::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
 	// nothing to do
 	return true;
@@ -114,10 +114,10 @@ bool Expr_Root::Generate(Context &context) const
 	return true;
 }
 
-bool Expr_Root::DumpDisasm(Context &context, FILE *fp) const
+bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
 	for (auto pExpr : GetChildren()) {
-		pExpr->DumpDisasm(context, fp);
+		pExpr->DumpDisasm(context, fp, upperCaseFlag);
 	}
 	return true;
 }
@@ -278,7 +278,7 @@ bool Expr_LabelDef::Generate(Context &context) const
 	return true;
 }
 
-bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp) const
+bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
 	String str = _label;
 	str += ":";
@@ -342,18 +342,20 @@ bool Expr_Instruction::Generate(Context &context) const
 	return context.GetGenerator()->Generate(context, this);
 }
 
-bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp) const
+bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
+	const char *formatData = upperCaseFlag? " %02X" : " %02x";
+	const char *formatHead = upperCaseFlag? "    %04X%-11s%s\n" : "    %04x%-11s%s\n";
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!context.GetGenerator()->Generate(context, this, buffDst)) return false;
 	String str;
 	for (auto dataDst : buffDst) {
 		char buff[16];
-		::sprintf_s(buff, " %02x", static_cast<UInt8>(dataDst));
+		::sprintf_s(buff, formatData, static_cast<UInt8>(dataDst));
 		str += buff;
 	}
-	::fprintf(fp, "    %04x%-11s%s\n", addr, str.c_str(), ToString().c_str());
+	::fprintf(fp, formatHead, addr, str.c_str(), ToString().c_str());
 	return true;
 }
 
@@ -386,7 +388,7 @@ bool Expr_Directive::Generate(Context &context) const
 	return _pDirective->Generate(context, this);
 }
 
-bool Expr_Directive::DumpDisasm(Context &context, FILE *fp) const
+bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
 	::fprintf(fp, "%*s%s\n", 19, "", ToString().c_str());
 	return true;
