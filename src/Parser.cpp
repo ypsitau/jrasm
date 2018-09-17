@@ -152,6 +152,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 					AddError("invalid value type");
 					return false;
 				}
+				SetExprSourceInfo(pExpr.get(), pToken.get());
 				_tokenStack.Push(new Token(pExpr.release()));
 			} else if (cntToken == 3) {
 				AutoPtr<Token> pToken3(_tokenStack.Pop());
@@ -176,6 +177,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 					AddError("syntax error");
 					return false;
 				}
+				SetExprSourceInfo(pExpr.get(), pToken1.get());
 				_tokenStack.Push(new Token(pExpr.release()));
 			} else {
 				AddError("syntax error");
