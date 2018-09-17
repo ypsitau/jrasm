@@ -45,6 +45,18 @@ protected:
 	virtual ~Expr();
 public:
 	inline bool IsType(Type type) const { return _type == type; }
+	inline bool IsTypeRoot() const { return IsType(TYPE_Root); }
+	inline bool IsTypeNumber() const { return IsType(TYPE_Number); }
+	inline bool IsTypeString() const { return IsType(TYPE_String); }
+	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
+	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
+	inline bool IsTypeParenthesis() const { return IsType(TYPE_Parenthesis); }
+	inline bool IsTypeLabelDef() const { return IsType(TYPE_LabelDef); }
+	inline bool IsTypeLabelRef() const { return IsType(TYPE_LabelRef); }
+	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
+	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
+	inline bool IsTypeMacroBody() const { return IsType(TYPE_MacroBody); }
+	inline bool IsTypeMacroEntry() const { return IsType(TYPE_MacroEntry); }
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetChildren() { return *_pExprChildren; }
 	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }

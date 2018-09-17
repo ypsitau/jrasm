@@ -132,7 +132,7 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr) const
 //-----------------------------------------------------------------------------
 bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	if (exprStack.back()->IsType(Expr::TYPE_MacroBody)) {
+	if (exprStack.back()->IsTypeMacroBody()) {
 		pParser->AddError("can't find corresponding directive .macro");
 		return false;
 	}
@@ -269,7 +269,7 @@ bool Directive_ORG::PrepareLookupTable(Context &context, const Expr_Directive *p
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) {
+	if (!pExprLast->IsTypeNumber()) {
 		ErrorLog::AddError(pExpr, "directive .org expects a number value for its operand");
 		return false;
 	}

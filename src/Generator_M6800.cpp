@@ -303,7 +303,7 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 		// OP b ... _accName is "b"
 		if (operands.size() != 1) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!pExpr->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	// This rule was determined to be applied.
@@ -324,7 +324,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (operands.size() != 1) return RESULT_Rejected;
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
+	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	
 	if (generateFlag) {
@@ -364,12 +364,12 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		// OP b,data8 ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!pExpr->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
+	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xff) {
@@ -394,7 +394,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	if (operands.size() != 1) return RESULT_Rejected;
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsType(Expr::TYPE_Number)) return RESULT_Rejected;
+	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xffff) {
@@ -424,19 +424,19 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		// OP b,(addr8) ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!pExprLast->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsType(Expr::TYPE_Parenthesis)) return RESULT_Rejected;
+	if (!pExprLast->IsTypeParenthesis()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Parenthesis *>(pExprLast.get())->GetChildren();
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, "direct addressing expects one element");
 		return RESULT_Error;
 	}
-	if (!exprList.front()->IsType(Expr::TYPE_Number)) {
+	if (!exprList.front()->IsTypeNumber()) {
 		ErrorLog::AddError(pExpr, "direct addressing expects a number element");
 		return RESULT_Error;
 	}
@@ -467,12 +467,12 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		// OP b,[x+data8] ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = operands.front();
-		if (!pExprLast->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!pExprLast->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return RESULT_Rejected;
+	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 
 	return RESULT_Rejected;
 	
@@ -498,19 +498,19 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		// OP b,[addr16] ... _accName is "b"
 		if (operands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = operands.front();
-		if (!pExpr->IsType(Expr::TYPE_LabelRef)) return RESULT_Rejected;
+		if (!pExpr->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsType(Expr::TYPE_Bracket)) return RESULT_Rejected;
+	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, "external addressing expects one element");
 		return RESULT_Error;
 	}
-	if (!exprList.front()->IsType(Expr::TYPE_Number)) {
+	if (!exprList.front()->IsTypeNumber()) {
 		ErrorLog::AddError(pExpr, "external addressing expects a number value");
 		return RESULT_Error;
 	}

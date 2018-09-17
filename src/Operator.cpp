@@ -24,7 +24,6 @@ void Operator::Initialize()
 //-----------------------------------------------------------------------------
 Expr *Operator_Add::Eval(const Expr *pExprL, const Expr *pExprR)
 {
-	
 	return nullptr;
 }
 

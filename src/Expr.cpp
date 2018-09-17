@@ -230,7 +230,7 @@ bool Expr_LabelDef::PrepareLookupTable(Context &context)
 	if (IsAssigned()) {
 		AutoPtr<Expr> pExprAssigned(GetAssigned()->Reduce(context));
 		if (pExprAssigned.IsNull()) return false;
-		if (!pExprAssigned->IsType(Expr::TYPE_Number)) {
+		if (!pExprAssigned->IsTypeNumber()) {
 			ErrorLog::AddError(this, "number must be specified for label assignment");
 			return false;
 		}
