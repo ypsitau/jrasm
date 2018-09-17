@@ -4,7 +4,7 @@ start:
 after_aba:
 	adc		a,0x12
 after_adc_a_imm:
-	adc		a,(0x12)
+	adc		a,{0x12}
 after_adc_a_dir:
 	adc		a,[X+0x12]
 after_adc_a_idx:
@@ -12,7 +12,7 @@ after_adc_a_idx:
 after_adc_a_ext:
 	adc		b,0x12
 after_adc_b_imm:
-	adc		b,(0x12)
+	adc		b,{0x12}
 after_adc_b_dir:
 	adc		b,[X+0x12]
 after_adc_b_idx:
@@ -20,7 +20,7 @@ after_adc_b_idx:
 after_adc_b_ext:
 	adca	0x12
 after_adca_imm:
-	adca	(0x12)
+	adca	{0x12}
 after_adca_dir:
 	adca	[X+0x12]
 after_adca_idx:
@@ -28,7 +28,7 @@ after_adca_idx:
 after_adca_ext:
 	adcb	0x12
 after_adcb_imm:
-	adcb	(0x12)
+	adcb	{0x12}
 after_adcb_dir:
 	adcb	[X+0x12]
 after_adcb_idx:
@@ -36,7 +36,7 @@ after_adcb_idx:
 after_adcb_ext:
 	add		a,0x12
 after_add_a_imm:
-	add		a,(0x12)
+	add		a,{0x12}
 after_add_a_dir:
 	add		a,[X+0x12]
 after_add_a_idx:
@@ -44,7 +44,7 @@ after_add_a_idx:
 after_add_a_ext:
 	add		b,0x12
 after_add_b_imm:
-	add		b,(0x12)
+	add		b,{0x12}
 after_add_b_dir:
 	add		b,[X+0x12]
 after_add_b_idx:
@@ -52,7 +52,7 @@ after_add_b_idx:
 after_add_b_ext:
 	adda	0x12
 after_adda_imm:
-	adda	(0x12)
+	adda	{0x12}
 after_adda_dir:
 	adda	[X+0x12]
 after_adda_idx:
@@ -60,7 +60,7 @@ after_adda_idx:
 after_adda_ext:
 	addb	0x12
 after_addb_imm:
-	addb	(0x12)
+	addb	{0x12}
 after_addb_dir:
 	addb	[X+0x12]
 after_addb_idx:
@@ -68,7 +68,7 @@ after_addb_idx:
 after_addb_ext:
 	and		a,0x12
 after_and_a_imm:
-	and		a,(0x12)
+	and		a,{0x12}
 after_and_a_dir:
 	and		a,[X+0x12]
 after_and_a_idx:
@@ -76,7 +76,7 @@ after_and_a_idx:
 after_and_a_ext:
 	and		b,0x12
 after_and_b_imm:
-	and		b,(0x12)
+	and		b,{0x12}
 after_and_b_dir:
 	and		b,[X+0x12]
 after_and_b_idx:
@@ -84,7 +84,7 @@ after_and_b_idx:
 after_and_b_ext:
 	anda	0x12
 after_anda_imm:
-	anda	(0x12)
+	anda	{0x12}
 after_anda_dir:
 	anda	[X+0x12]
 after_anda_idx:
@@ -92,7 +92,7 @@ after_anda_idx:
 after_anda_ext:
 	andb	0x12
 after_andb_imm:
-	andb	(0x12)
+	andb	{0x12}
 after_andb_dir:
 	andb	[X+0x12]
 after_andb_idx:
@@ -136,7 +136,7 @@ after_bgt_imm:
 after_bhi_imm:
 	bit		a,0x12
 after_bit_a_imm:
-	bit		a,(0x12)
+	bit		a,{0x12}
 after_bit_a_dir:
 	bit		a,[X+0x12]
 after_bit_a_idx:
@@ -144,7 +144,7 @@ after_bit_a_idx:
 after_bit_a_ext:
 	bit		b,0x12
 after_bit_b_imm:
-	bit		b,(0x12)
+	bit		b,{0x12}
 after_bit_b_dir:
 	bit		b,[X+0x12]
 after_bit_b_idx:
@@ -152,7 +152,7 @@ after_bit_b_idx:
 after_bit_b_ext:
 	bita	0x12
 after_bita_imm:
-	bita	(0x12)
+	bita	{0x12}
 after_bita_dir:
 	bita	[X+0x12]
 after_bita_idx:
@@ -160,7 +160,7 @@ after_bita_idx:
 after_bita_ext:
 	bitb	0x12
 after_bitb_imm:
-	bitb	(0x12)
+	bitb	{0x12}
 after_bitb_dir:
 	bitb	[X+0x12]
 after_bitb_idx:
@@ -208,7 +208,7 @@ after_clrb:
 after_clv:
 	cmp		a,0x12
 after_cmp_a_imm:
-	cmp		a,(0x12)
+	cmp		a,{0x12}
 after_cmp_a_dir:
 	cmp		a,[X+0x12]
 after_cmp_a_idx:
@@ -216,7 +216,7 @@ after_cmp_a_idx:
 after_cmp_a_ext:
 	cmp		b,0x12
 after_cmp_b_imm:
-	cmp		b,(0x12)
+	cmp		b,{0x12}
 after_cmp_b_dir:
 	cmp		b,[X+0x12]
 after_cmp_b_idx:
@@ -224,7 +224,7 @@ after_cmp_b_idx:
 after_cmp_b_ext:
 	cmpa	0x12
 after_cmpa_imm:
-	cmpa	(0x12)
+	cmpa	{0x12}
 after_cmpa_dir:
 	cmpa	[X+0x12]
 after_cmpa_idx:
@@ -232,7 +232,7 @@ after_cmpa_idx:
 after_cmpa_ext:
 	cmpb	0x12
 after_cmpb_imm:
-	cmpb	(0x12)
+	cmpb	{0x12}
 after_cmpb_dir:
 	cmpb	[X+0x12]
 after_cmpb_idx:
@@ -250,7 +250,7 @@ after_com_ext:
 after_coma:
 	comb
 after_comb:
-	cpx		(0x12)
+	cpx		{0x12}
 after_cpx_dir:
 	cpx		[X+0x12]
 after_cpx_idx:
@@ -278,7 +278,7 @@ after_des:
 after_dex:
 	eor		a,0x12
 after_eor_a_imm:
-	eor		a,(0x12)
+	eor		a,{0x12}
 after_eor_a_dir:
 	eor		a,[X+0x12]
 after_eor_a_idx:
@@ -286,7 +286,7 @@ after_eor_a_idx:
 after_eor_a_ext:
 	eor		b,0x12
 after_eor_b_imm:
-	eor		b,(0x12)
+	eor		b,{0x12}
 after_eor_b_dir:
 	eor		b,[X+0x12]
 after_eor_b_idx:
@@ -294,7 +294,7 @@ after_eor_b_idx:
 after_eor_b_ext:
 	eora	0x12
 after_eora_imm:
-	eora	(0x12)
+	eora	{0x12}
 after_eora_dir:
 	eora	[X+0x12]
 after_eora_idx:
@@ -302,7 +302,7 @@ after_eora_idx:
 after_eora_ext:
 	eorb	0x12
 after_eorb_imm:
-	eorb	(0x12)
+	eorb	{0x12}
 after_eorb_dir:
 	eorb	[X+0x12]
 after_eorb_idx:
@@ -324,17 +324,17 @@ after_incb:
 after_ins:
 	inx
 after_inx:
-	jmp		X+0x12
-after_jmp:
-	jmp		0x1234
-after_jmp_imm:
-	jsr		X+0x12
-after_jsr:
-	jsr		0x1234
-after_jsr_imm:
+	jmp		[X+0x12]
+after_jmp_idx:
+	jmp		[0x1234]
+after_jmp_ext:
+	jsr		[X+0x12]
+after_jsr_idx:
+	jsr		[0x1234]
+after_jsr_ext:
 	lda		a,0x12
 after_lda_a_imm:
-	lda		a,(0x12)
+	lda		a,{0x12}
 after_lda_a_dir:
 	lda		a,[X+0x12]
 after_lda_a_idx:
@@ -342,7 +342,7 @@ after_lda_a_idx:
 after_lda_a_ext:
 	lda		b,0x12
 after_lda_b_imm:
-	lda		b,(0x12)
+	lda		b,{0x12}
 after_lda_b_dir:
 	lda		b,[X+0x12]
 after_lda_b_idx:
@@ -350,7 +350,7 @@ after_lda_b_idx:
 after_lda_b_ext:
 	ldaa	0x12
 after_ldaa_imm:
-	ldaa	(0x12)
+	ldaa	{0x12}
 after_ldaa_dir:
 	ldaa	[X+0x12]
 after_ldaa_idx:
@@ -358,13 +358,13 @@ after_ldaa_idx:
 after_ldaa_ext:
 	ldab	0x12
 after_ldab_imm:
-	ldab	(0x12)
+	ldab	{0x12}
 after_ldab_dir:
 	ldab	[X+0x12]
 after_ldab_idx:
 	ldab	[0x1234]
 after_ldab_ext:
-	lds		(0x12)
+	lds		{0x12}
 after_lds_dir:
 	lds		[X+0x12]
 after_lds_idx:
@@ -372,7 +372,7 @@ after_lds_idx:
 after_lds_imm:
 	lds		[0x1234]
 after_lds_ext:
-	ldx		(0x12)
+	ldx		{0x12}
 after_ldx_dir:
 	ldx		[X+0x12]
 after_ldx_idx:
@@ -408,7 +408,7 @@ after_negb:
 after_nop:
 	ora		a,0x12
 after_ora_a_imm:
-	ora		a,(0x12)
+	ora		a,{0x12}
 after_ora_a_dir:
 	ora		a,[X+0x12]
 after_ora_a_idx:
@@ -416,7 +416,7 @@ after_ora_a_idx:
 after_ora_a_ext:
 	ora		b,0x12
 after_ora_b_imm:
-	ora		b,(0x12)
+	ora		b,{0x12}
 after_ora_b_dir:
 	ora		b,[X+0x12]
 after_ora_b_idx:
@@ -424,7 +424,7 @@ after_ora_b_idx:
 after_ora_b_ext:
 	oraa	0x12
 after_oraa_imm:
-	oraa	(0x12)
+	oraa	{0x12}
 after_oraa_dir:
 	oraa	[X+0x12]
 after_oraa_idx:
@@ -432,7 +432,7 @@ after_oraa_idx:
 after_oraa_ext:
 	orab	0x12
 after_orab_imm:
-	orab	(0x12)
+	orab	{0x12}
 after_orab_dir:
 	orab	[X+0x12]
 after_orab_idx:
@@ -486,7 +486,7 @@ after_rts:
 after_sba:
 	sbc		a,0x12
 after_sbc_a_imm:
-	sbc		a,(0x12)
+	sbc		a,{0x12}
 after_sbc_a_dir:
 	sbc		a,[X+0x12]
 after_sbc_a_idx:
@@ -494,7 +494,7 @@ after_sbc_a_idx:
 after_sbc_a_ext:
 	sbc		b,0x12
 after_sbc_b_imm:
-	sbc		b,(0x12)
+	sbc		b,{0x12}
 after_sbc_b_dir:
 	sbc		b,[X+0x12]
 after_sbc_b_idx:
@@ -502,7 +502,7 @@ after_sbc_b_idx:
 after_sbc_b_ext:
 	sbca	0x12
 after_sbca_imm:
-	sbca	(0x12)
+	sbca	{0x12}
 after_sbca_dir:
 	sbca	[X+0x12]
 after_sbca_idx:
@@ -510,7 +510,7 @@ after_sbca_idx:
 after_sbca_ext:
 	sbcb	0x12
 after_sbcb_imm:
-	sbcb	(0x12)
+	sbcb	{0x12}
 after_sbcb_dir:
 	sbcb	[X+0x12]
 after_sbcb_idx:
@@ -522,37 +522,37 @@ after_sec:
 after_sei:
 	sev
 after_sev:
-	sta		a,(0x12)
+	sta		a,{0x12}
 after_sta_a_dir:
 	sta		a,[X+0x12]
 after_sta_a_idx:
 	sta		a,[0x1234]
 after_sta_a_ext:
-	sta		b,(0x12)
+	sta		b,{0x12}
 after_sta_b_dir:
 	sta		b,[X+0x12]
 after_sta_b_idx:
 	sta		b,[0x1234]
 after_sta_b_ext:
-	staa	(0x12)
+	staa	{0x12}
 after_staa_dir:
 	staa	[X+0x12]
 after_staa_idx:
 	staa	[0x1234]
 after_staa_ext:
-	stab	(0x12)
+	stab	{0x12}
 after_stab_dir:
 	stab	[X+0x12]
 after_stab_idx:
 	stab	[0x1234]
 after_stab_ext:
-	sts		(0x12)
+	sts		{0x12}
 after_sts_dir:
 	sts		[X+0x12]
 after_sts_idx:
 	sts		[0x1234]
 after_sts_ext:
-	stx		(0x12)
+	stx		{0x12}
 after_stx_dir:
 	stx		[X+0x12]
 after_stx_idx:
@@ -560,7 +560,7 @@ after_stx_idx:
 after_stx_ext:
 	sub		a,0x12
 after_sub_a_imm:
-	sub		a,(0x12)
+	sub		a,{0x12}
 after_sub_a_dir:
 	sub		a,[X+0x12]
 after_sub_a_idx:
@@ -568,7 +568,7 @@ after_sub_a_idx:
 after_sub_a_ext:
 	sub		b,0x12
 after_sub_b_imm:
-	sub		b,(0x12)
+	sub		b,{0x12}
 after_sub_b_dir:
 	sub		b,[X+0x12]
 after_sub_b_idx:
@@ -576,7 +576,7 @@ after_sub_b_idx:
 after_sub_b_ext:
 	suba	0x12
 after_suba_imm:
-	suba	(0x12)
+	suba	{0x12}
 after_suba_dir:
 	suba	[X+0x12]
 after_suba_idx:
@@ -584,7 +584,7 @@ after_suba_idx:
 after_suba_ext:
 	subb	0x12
 after_subb_imm:
-	subb	(0x12)
+	subb	{0x12}
 after_subb_dir:
 	subb	[X+0x12]
 after_subb_idx:

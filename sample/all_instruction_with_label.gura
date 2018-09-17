@@ -17,7 +17,7 @@ lines.each {|line|
 		label += '_idx'
 	} elsif (operand.match(r'^\[')) {
 		label += '_ext'
-	} elsif (operand.match(r'^\(')) {
+	} elsif (operand.match(r'^\{')) {
 		label += '_dir'
 	} elsif (operand.match(r'^a,\d')) {
 		label += '_a_imm'
@@ -25,7 +25,7 @@ lines.each {|line|
 		label += '_a_idx'
 	} elsif (operand.match(r'^a,\[')) {
 		label += '_a_ext'
-	} elsif (operand.match(r'^a,\(')) {
+	} elsif (operand.match(r'^a,\{')) {
 		label += '_a_dir'
 	} elsif (operand.match(r'^a')) {
 		label += '_a'
@@ -35,7 +35,7 @@ lines.each {|line|
 		label += '_b_idx'
 	} elsif (operand.match(r'^b,\[')) {
 		label += '_b_ext'
-	} elsif (operand.match(r'^b,\(')) {
+	} elsif (operand.match(r'^b,\{')) {
 		label += '_b_dir'
 	} elsif (operand.match(r'^b')) {
 		label += '_b'
