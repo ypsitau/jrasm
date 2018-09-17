@@ -121,5 +121,6 @@ public:
 // Utilities
 //-----------------------------------------------------------------------------
 String ToLower(const char *str);
+String ToUpper(const char *str);
 
 #endif

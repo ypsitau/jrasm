@@ -158,7 +158,7 @@ String Expr_String::ToString(bool upperCaseFlag) const
 {
 	String str;
 	str = "\"";
-	str += _str;
+	str += _str; // not affected by upperCaseFlag
 	str += "\"";
 	return str;
 }
@@ -295,7 +295,7 @@ Expr *Expr_LabelDef::Reduce(Context &context) const
 String Expr_LabelDef::ToString(bool upperCaseFlag) const
 {
 	String str;
-	str = _label;
+	str = _label; // not affected by upperCaseFlag
 	str += ":";
 	return str;
 }
@@ -322,7 +322,7 @@ Expr *Expr_LabelRef::Reduce(Context &context) const
 
 String Expr_LabelRef::ToString(bool upperCaseFlag) const
 {
-	return _label;
+	return _label; // not affected by upperCaseFlag
 }
 
 //-----------------------------------------------------------------------------
@@ -367,7 +367,7 @@ Expr *Expr_Instruction::Reduce(Context &context) const
 
 String Expr_Instruction::ToString(bool upperCaseFlag) const
 {
-	String str = _symbol;
+	String str = upperCaseFlag? ToUpper(_symbol.c_str()) : _symbol;
 	str += " ";
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
@@ -402,7 +402,8 @@ Expr *Expr_Directive::Reduce(Context &context) const
 
 String Expr_Directive::ToString(bool upperCaseFlag) const
 {
-	String str = _pDirective->GetSymbol();
+	const char *symbol = _pDirective->GetSymbol();
+	String str = upperCaseFlag? ToUpper(symbol).c_str() : symbol;
 	str += " ";
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
@@ -437,7 +438,7 @@ Expr *Expr_MacroEntry::Reduce(Context &context) const
 
 String Expr_MacroEntry::ToString(bool upperCaseFlag) const
 {
-	String str = _symbol;
+	String str = _symbol; // not affected by upperCaseFlag
 	str += " ";
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
