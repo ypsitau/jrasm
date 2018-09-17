@@ -116,6 +116,7 @@ bool Expr_Root::Generate(Context &context) const
 
 bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
+	context.SetAddress(0);
 	for (auto pExpr : GetChildren()) {
 		pExpr->DumpDisasm(context, fp, upperCaseFlag);
 	}
@@ -322,7 +323,8 @@ Expr *Expr_LabelRef::Reduce(Context &context) const
 
 String Expr_LabelRef::ToString(bool upperCaseFlag) const
 {
-	return _label; // not affected by upperCaseFlag
+	if (!Generator_M6800::_IsRegisterSymbol(_label.c_str())) return _label;
+	return upperCaseFlag? ToUpper(_label.c_str()) : _label;
 }
 
 //-----------------------------------------------------------------------------

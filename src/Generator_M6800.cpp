@@ -133,6 +133,11 @@ Generator_M6800::Generator_M6800()
 
 bool Generator_M6800::IsRegisterSymbol(const char *symbol) const
 {
+	return _IsRegisterSymbol(symbol);
+}
+
+bool Generator_M6800::_IsRegisterSymbol(const char *symbol)
+{
 	const char *registerSymbolTbl[] = {"a", "b", "x", "s"};
 	for (auto registerSymbol : registerSymbolTbl) {
 		if (::strcasecmp(symbol, registerSymbol) == 0) return true;

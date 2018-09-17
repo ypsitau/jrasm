@@ -125,6 +125,7 @@ private:
 public:
 	Generator_M6800();
 	virtual bool IsRegisterSymbol(const char *symbol) const;
+	static bool _IsRegisterSymbol(const char *symbol);
 	virtual bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
 	virtual bool Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
 private:
