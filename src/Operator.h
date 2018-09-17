@@ -21,6 +21,7 @@ public:
 	inline Operator(const String &symbol) : _symbol(symbol) {}
 	static void Initialize();
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline bool IsIdentical(const Operator *pOperator) const { return this == pOperator; }
 	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const = 0;
 };
 

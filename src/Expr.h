@@ -79,6 +79,7 @@ public:
 	}
 	bool IsTypeLabelDef(const char *label) const;
 	bool IsTypeLabelRef(const char *label) const;
+	bool IsTypeBinOp(const Operator *pOperator) const;
 	void AddChild(Expr *pExpr);
 	static void DumpDisasmHelper(UInt32 addr, const Binary &buff,
 								 const char *strCode, FILE *fp, bool upperCaseFlag);
@@ -176,8 +177,9 @@ public:
 		GetChildren().push_back(pExprL);
 		GetChildren().push_back(pExprR);
 	}
-	const Expr *GetLeft() const { return GetChildren()[0]; }
-	const Expr *GetRight() const { return GetChildren()[1]; }
+	inline const Expr *GetLeft() const { return GetChildren()[0]; }
+	inline const Expr *GetRight() const { return GetChildren()[1]; }
+	inline const Operator *GetOperator() const { return _pOperator; }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
 };

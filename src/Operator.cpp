@@ -28,6 +28,14 @@ Expr *Operator_Add::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
 		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL + numR);
+	} else if (pExprL->IsTypeBinOp(Operator::Add) && pExprR->IsTypeNumber()) {
+		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprL.get());
+		if (pExprBinOp->GetLeft()->IsTypeNumber()) {
+			UInt32 numL = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+			UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+			return new Expr_BinOp(
+				Operator::Add, new Expr_Number(numL + numR), pExprBinOp->GetRight()->Reference());
+		}
 	} else if (pExprL->IsTypeLabelRef() && pExprR->IsTypeNumber()) {
 		return new Expr_BinOp(Operator::Add, pExprR.release(), pExprL.release());
 	}

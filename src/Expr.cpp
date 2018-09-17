@@ -27,6 +27,12 @@ bool Expr::IsTypeLabelRef(const char *label) const
 		::strcasecmp(dynamic_cast<const Expr_LabelRef *>(this)->GetLabel(), label) == 0;
 }
 
+bool Expr::IsTypeBinOp(const Operator *pOperator) const
+{
+	return IsTypeBinOp() &&
+		dynamic_cast<const Expr_BinOp *>(this)->GetOperator()->IsIdentical(pOperator);
+}
+
 void Expr::AddChild(Expr *pExpr)
 {
 	_pExprChildren->push_back(pExpr);
