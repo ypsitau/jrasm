@@ -330,9 +330,32 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	
+	UInt32 num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
+	if (operands.back()->IsTypeNumber()) {
+		if (num > 0xff) {
+			ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
+			return RESULT_Error;
+		}
+	} else {
+		UInt32 addr = context.GetAddress() + bytes;
+		if (num < addr) {
+			num = addr - num;
+			if (num > 0x80) {
+				ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
+				return RESULT_Error;
+			}
+			num = -num;
+		} else {
+			num = num - addr;
+			if (num > 0x7f) {
+				ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
+				return RESULT_Error;
+			}
+		}
+	}
 	if (pBuffDst != nullptr) {
 		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
 	*pBytes = bytes;
