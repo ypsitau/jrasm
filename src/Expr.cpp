@@ -388,7 +388,7 @@ bool Expr_Directive::PrepareLookupTable(Context &context)
 
 bool Expr_Directive::Generate(Context &context) const
 {
-	return _pDirective->Generate(context, this);
+	return _pDirective->Generate(context, this, context.GetBuffer());
 }
 
 bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const

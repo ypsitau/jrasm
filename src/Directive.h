@@ -27,7 +27,7 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const = 0;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const = 0;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const = 0;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
 };
 
@@ -55,7 +55,7 @@ class Directive_CSEG : public Directive {
 public:
 	inline Directive_CSEG() : Directive(".cseg") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class Directive_DB : public Directive {
 public:
 	inline Directive_DB() : Directive(".db") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ class Directive_DSEG : public Directive {
 public:
 	inline Directive_DSEG() : Directive(".dseg") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ class Directive_DW : public Directive {
 public:
 	inline Directive_DW() : Directive(".dw") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ public:
 	inline Directive_ENDM() : Directive(".endm") {}
 	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ class Directive_ENDP : public Directive {
 public:
 	inline Directive_ENDP() : Directive(".endp") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ public:
 	inline Directive_EQU() : Directive(".equ") {}
 	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
 };
 
@@ -128,7 +128,7 @@ class Directive_INCLUDE : public Directive {
 public:
 	inline Directive_INCLUDE() : Directive(".include") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ public:
 	inline Directive_MACRO() : Directive(".macro") {}
 	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -149,7 +149,7 @@ class Directive_MML : public Directive {
 public:
 	inline Directive_MML() : Directive(".mml") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -159,7 +159,7 @@ class Directive_ORG : public Directive {
 public:
 	inline Directive_ORG() : Directive(".org") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -169,7 +169,7 @@ class Directive_PCG : public Directive {
 public:
 	inline Directive_PCG() : Directive(".pcg") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -179,7 +179,7 @@ class Directive_PROC : public Directive {
 public:
 	inline Directive_PROC() : Directive(".proc") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 
 #endif
