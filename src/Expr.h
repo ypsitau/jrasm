@@ -281,11 +281,15 @@ public:
 class Expr_MacroEntry : public Expr {
 private:
 	String _symbol;
+	AutoPtr<Expr_MacroBody> _pExprMacroBody;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroEntry(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
+	inline Expr_MacroEntry(const String &symbol) :
+		Expr(TYPE), _symbol(symbol), _pExprMacroBody(new Expr_MacroBody) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline Expr_MacroBody *GetMacroBody() { return _pExprMacroBody.get(); }
+	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
