@@ -166,8 +166,12 @@ const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
 
 String Expr_Number::ToString(bool upperCaseFlag) const
 {
+	const char *format =
+		(_num < 0x100)? (upperCaseFlag? "0x%02X" : "0x%02x") :
+		(_num < 0x10000)? (upperCaseFlag? "0x%04X" : "0x%04x") :
+		(upperCaseFlag? "0x%08X" : "0x%08x");
 	char buff[128];
-	::sprintf_s(buff, "0x%x", _num);
+	::sprintf_s(buff, format, _num);
 	return buff;
 }
 
