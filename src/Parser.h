@@ -31,14 +31,13 @@ public:
 		return dynamic_cast<const Expr_Root *>(_exprStack.front());
 	}
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
+	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
+		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
+	}
 	bool ParseByPrec(AutoPtr<Token> pToken);
 public:
 	// implementation for Tokenizer::Listener
 	virtual bool FeedToken(AutoPtr<Token> pToken);
-private:
-	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
-		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
-	}
 };
 
 #endif

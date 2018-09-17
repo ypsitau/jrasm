@@ -44,39 +44,19 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_Symbol)) {
 			const char *symbol = pToken->GetString();
-			Expr *pExpr = nullptr;
 			const Directive *pDirective = Directive::FindBuiltIn(symbol);
 			if (pDirective == nullptr) {
 				if (*symbol == '.') {
 					_tokenizer.AddError("unknown directive: %s", symbol);
 					return false;
 				}
-				pExpr = new Expr_Instruction(pToken->GetString());
+				Expr *pExpr = new Expr_Instruction(pToken->GetString());
 				SetExprSourceInfo(pExpr, pToken.get());
 				_exprStack.back()->GetChildren().push_back(pExpr);
-			} else {
-				pExpr = new Expr_Directive(pDirective);
-				SetExprSourceInfo(pExpr, pToken.get());
-				if (pDirective->IsAssocToLabel()) {
-					// associate it to the last LabelDef
-					ExprList &exprList = _exprStack.back()->GetChildren();
-					if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
-						_tokenizer.AddError("labe must be specified before the directive %s",
-											pDirective->GetSymbol());
-						return false;
-					}
-					Expr_LabelDef *pExprEx = dynamic_cast<Expr_LabelDef *>(exprList.back());
-					if (pExprEx->IsAssigned()) {
-						_tokenizer.AddError("label must be specified before the directive %s",
-											pDirective->GetSymbol());
-						return false;
-					}
-					pExprEx->SetAssigned(pExpr);
-				} else {
-					_exprStack.back()->GetChildren().push_back(pExpr);
-				}
+				_exprStack.push_back(pExpr);
+			} else if (!pDirective->HandleToken(this, _exprStack, pToken.get())) {
+				return false;
 			}
-			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_stat = STAT_LineTop;

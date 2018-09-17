@@ -6,6 +6,9 @@
 
 #include "Common.h"
 
+class Token;
+class Parser;
+class ExprStack;
 class Expr_Directive;
 class DirectiveOwner;
 
@@ -22,7 +25,7 @@ public:
 	static void Initialize();
 	static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	virtual bool IsAssocToLabel() const;
+	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
@@ -111,7 +114,7 @@ public:
 class Directive_EQU : public Directive {
 public:
 	inline Directive_EQU() : Directive(".equ") {}
-	virtual bool IsAssocToLabel() const;
+	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;

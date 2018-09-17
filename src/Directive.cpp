@@ -12,9 +12,13 @@ Directive::~Directive()
 {
 }
 
-bool Directive::IsAssocToLabel() const
+bool Directive::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	return false;
+	Expr_Directive *pExpr = new Expr_Directive(this);
+	pParser->SetExprSourceInfo(pExpr, pToken);
+	exprStack.back()->GetChildren().push_back(pExpr);
+	exprStack.push_back(pExpr);
+	return true;
 }
 
 void Directive::Initialize()
@@ -152,8 +156,24 @@ bool Directive_ENDP::Generate(Context &context, const Expr_Directive *pExpr) con
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
-bool Directive_EQU::IsAssocToLabel() const
+bool Directive_EQU::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
+	ExprList &exprList = exprStack.back()->GetChildren();
+	if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
+		//_tokenizer.AddError("labe must be specified before the directive %s",
+		//					pDirective->GetSymbol());
+		return false;
+	}
+	Expr_LabelDef *pExprLabelDef = dynamic_cast<Expr_LabelDef *>(exprList.back());
+	if (pExprLabelDef->IsAssigned()) {
+		//_tokenizer.AddError("label must be specified before the directive %s",
+		//					pDirective->GetSymbol());
+		return false;
+	}
+	Expr_Directive *pExpr = new Expr_Directive(this);
+	pParser->SetExprSourceInfo(pExpr, pToken);
+	pExprLabelDef->SetAssigned(pExpr);	// associate it to the preceeding label
+	exprStack.push_back(pExpr);
 	return true;
 }
 
