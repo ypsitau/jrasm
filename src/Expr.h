@@ -82,6 +82,7 @@ public:
 	void AddChild(Expr *pExpr);
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual bool DumpDisasm(Context &context, FILE *fp);
 	virtual Expr *Reduce(Context &context) const = 0;
 	virtual String ToString() const = 0;
 };
@@ -125,6 +126,7 @@ public:
 public:
 	inline Expr_Root() : Expr(TYPE) {}
 	virtual bool Generate(Context &context);
+	virtual bool DumpDisasm(Context &context, FILE *fp);
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
@@ -220,6 +222,7 @@ public:
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual bool DumpDisasm(Context &context, FILE *fp);
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
@@ -255,6 +258,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual bool DumpDisasm(Context &context, FILE *fp);
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };
@@ -273,6 +277,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
+	virtual bool DumpDisasm(Context &context, FILE *fp);
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };

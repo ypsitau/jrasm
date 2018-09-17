@@ -45,6 +45,12 @@ bool Expr::Generate(Context &context)
 	return true;
 }
 
+bool Expr::DumpDisasm(Context &context, FILE *fp)
+{
+	// nothing to do
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
@@ -104,6 +110,14 @@ bool Expr_Root::Generate(Context &context)
 {
 	for (auto pExpr : GetChildren()) {
 		pExpr->Generate(context);
+	}
+	return true;
+}
+
+bool Expr_Root::DumpDisasm(Context &context, FILE *fp)
+{
+	for (auto pExpr : GetChildren()) {
+		pExpr->DumpDisasm(context, fp);
 	}
 	return true;
 }
@@ -264,6 +278,11 @@ bool Expr_LabelDef::Generate(Context &context)
 	return true;
 }
 
+bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp)
+{
+	return true;
+}
+
 Expr *Expr_LabelDef::Reduce(Context &context) const
 {
 	return Reference();
@@ -320,6 +339,11 @@ bool Expr_Instruction::Generate(Context &context)
 	return context.GetGenerator()->Generate(context, this);
 }
 
+bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp)
+{
+	return true;
+}
+
 Expr *Expr_Instruction::Reduce(Context &context) const
 {
 	return Reference();
@@ -347,6 +371,11 @@ bool Expr_Directive::PrepareLookupTable(Context &context)
 bool Expr_Directive::Generate(Context &context)
 {
 	return _pDirective->Generate(context, this);
+}
+
+bool Expr_Directive::DumpDisasm(Context &context, FILE *fp)
+{
+	return true;
 }
 
 Expr *Expr_Directive::Reduce(Context &context) const

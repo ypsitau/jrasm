@@ -8,9 +8,9 @@ label16bit$3:	.equ	0x3456
 	adc		a,0x11
 	adc		a,0x11 + 0x22
 	adc		a,0x11 + 0x22 + 0x33
-	adc		a,(0x11)
-	adc		a,(0x11 + 0x22)
-	adc		a,(0x11 + 0x22 + 0x33)
+	adc		a,{0x11}
+	adc		a,{0x11 + 0x22}
+	adc		a,{0x11 + 0x22 + 0x33}
 	adc		a,[0x11 + x]
 	adc		a,[0x11 + 0x22 + x]
 	adc		a,[0x11 + 0x22 + 0x33 + x]
@@ -22,9 +22,9 @@ label16bit$3:	.equ	0x3456
 	adc		a,label8bit$1
 	adc		a,label8bit$1 + label8bit$2
 	adc		a,label8bit$1 + label8bit$2 + label8bit$3
-	adc		a,(label8bit$1)
-	adc		a,(label8bit$1 + label8bit$2)
-	adc		a,(label8bit$1 + label8bit$2 + label8bit$3)
+	adc		a,{label8bit$1}
+	adc		a,{label8bit$1 + label8bit$2}
+	adc		a,{label8bit$1 + label8bit$2 + label8bit$3}
 	adc		a,[label8bit$1 + x]
 	adc		a,[label8bit$1 + label8bit$2 + x]
 	adc		a,[label8bit$1 + label8bit$2 + label8bit$3 + x]
