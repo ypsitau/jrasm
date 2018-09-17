@@ -22,7 +22,7 @@ public:
 		TYPE_String,
 		TYPE_BinOp,
 		TYPE_Bracket,
-		TYPE_Parenthesis,
+		TYPE_Brace,
 		TYPE_LabelDef,
 		TYPE_LabelRef,
 		TYPE_Instruction,
@@ -50,7 +50,7 @@ public:
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
-	inline bool IsTypeParenthesis() const { return IsType(TYPE_Parenthesis); }
+	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
 	inline bool IsTypeLabelDef() const { return IsType(TYPE_LabelDef); }
 	inline bool IsTypeLabelRef() const { return IsType(TYPE_LabelRef); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
@@ -191,13 +191,13 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_Parenthesis
+// Expr_Brace
 //-----------------------------------------------------------------------------
-class Expr_Parenthesis : public Expr {
+class Expr_Brace : public Expr {
 public:
 	static const Type TYPE;
 public:
-	inline Expr_Parenthesis() : Expr(TYPE) {}
+	inline Expr_Brace() : Expr(TYPE) {}
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString() const;
 };

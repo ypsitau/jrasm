@@ -67,10 +67,10 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_BracketL);
 		} else if (ch == ']') {
 			rtn = FeedToken(TOKEN_BracketR);
-		} else if (ch == '(') {
-			rtn = FeedToken(TOKEN_ParenthesisL);
-		} else if (ch == ')') {
-			rtn = FeedToken(TOKEN_ParenthesisR);
+		} else if (ch == '{') {
+			rtn = FeedToken(TOKEN_BraceL);
+		} else if (ch == '}') {
+			rtn = FeedToken(TOKEN_BraceR);
 		} else {
 			if (::isprint(ch)) {
 				AddError("invalid character: %c", ch);

@@ -429,9 +429,9 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsTypeParenthesis()) return RESULT_Rejected;
+	if (!pExprLast->IsTypeBrace()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	ExprList &exprList = dynamic_cast<Expr_Parenthesis *>(pExprLast.get())->GetChildren();
+	ExprList &exprList = dynamic_cast<Expr_Brace *>(pExprLast.get())->GetChildren();
 	const char *errMsg = "the format of direct addressing operand is (addr8)";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);

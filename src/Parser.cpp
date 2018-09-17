@@ -98,12 +98,12 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 					AddError("no opening bracket matched");
 				}
 				_exprStack.pop_back();
-			} else if (pToken->IsType(TOKEN_ParenthesisL)) {
-				AutoPtr<Expr> pExpr(new Expr_Parenthesis());
+			} else if (pToken->IsType(TOKEN_BraceL)) {
+				AutoPtr<Expr> pExpr(new Expr_Brace());
 				_exprStack.back()->AddChild(pExpr->Reference());
 				_exprStack.push_back(pExpr.release());
-			} else if (pToken->IsType(TOKEN_ParenthesisR)) {
-				if (!_exprStack.back()->IsTypeParenthesis()) {
+			} else if (pToken->IsType(TOKEN_BraceR)) {
+				if (!_exprStack.back()->IsTypeBrace()) {
 					AddError("no opening parenthesis matched");
 				}
 				_exprStack.pop_back();

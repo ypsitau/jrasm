@@ -204,22 +204,22 @@ Expr *Expr_Bracket::Reduce(Context &context) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Parenthesis
+// Expr_Brace
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_Parenthesis::TYPE = Expr::TYPE_Parenthesis;
+const Expr::Type Expr_Brace::TYPE = Expr::TYPE_Brace;
 
-String Expr_Parenthesis::ToString() const
+String Expr_Brace::ToString() const
 {
 	String str;
-	str = "(";
+	str = "{";
 	str += GetChildren().ToString(",");
-	str += ")";
+	str += "}";
 	return str;
 }
 
-Expr *Expr_Parenthesis::Reduce(Context &context) const
+Expr *Expr_Brace::Reduce(Context &context) const
 {
-	AutoPtr<Expr_Parenthesis> pExprRtn(new Expr_Parenthesis());
+	AutoPtr<Expr_Brace> pExprRtn(new Expr_Brace());
 	pExprRtn->DeriveSourceInfo(this);
 	for (auto pExprChild : GetChildren()) {
 		AutoPtr<Expr> pExprChildReduced(pExprChild->Reduce(context));
