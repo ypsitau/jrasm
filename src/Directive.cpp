@@ -10,9 +10,11 @@ const Directive *Directive::CSEG	= nullptr;
 const Directive *Directive::DB		= nullptr;
 const Directive *Directive::DSEG	= nullptr;
 const Directive *Directive::DW		= nullptr;
-const Directive *Directive::END		= nullptr;
+const Directive *Directive::ENDM	= nullptr;
+const Directive *Directive::ENDP	= nullptr;
 const Directive *Directive::EQU		= nullptr;
 const Directive *Directive::INCLUDE	= nullptr;
+const Directive *Directive::MACRO	= nullptr;
 const Directive *Directive::MML		= nullptr;
 const Directive *Directive::ORG		= nullptr;
 const Directive *Directive::PCG		= nullptr;
@@ -24,9 +26,11 @@ void Directive::Initialize()
 	DB		= new Directive_DB();
 	DSEG	= new Directive_DSEG();
 	DW		= new Directive_DW();
-	END		= new Directive_END();
+	ENDM	= new Directive_ENDM();
+	ENDP	= new Directive_ENDP();
 	EQU		= new Directive_EQU();
 	INCLUDE	= new Directive_INCLUDE();
+	MACRO	= new Directive_MACRO();
 	MML		= new Directive_MML();
 	ORG		= new Directive_ORG();
 	PCG		= new Directive_PCG();
@@ -36,6 +40,21 @@ void Directive::Initialize()
 Expr *Directive::Reduce(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();
+}
+
+//-----------------------------------------------------------------------------
+// DirectiveOwner
+//-----------------------------------------------------------------------------
+DirectiveOwner::~DirectiveOwner()
+{
+}
+
+void DirectiveOwner::Clear()
+{
+	for (auto pDirective : *this) {
+		delete pDirective;
+	}
+	clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +83,6 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr) const
 	return true;
 }
 
-
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
@@ -77,7 +95,6 @@ bool Directive_DSEG::Generate(Context &context, const Expr_Directive *pExpr) con
 {
 	return true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Directive_DW
@@ -92,20 +109,31 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr) const
 	return true;
 }
 
-
 //-----------------------------------------------------------------------------
-// Directive_END
+// Directive_ENDM
 //-----------------------------------------------------------------------------
-bool Directive_END::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDM::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
 
-bool Directive_END::Generate(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDM::Generate(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Directive_ENDP
+//-----------------------------------------------------------------------------
+bool Directive_ENDP::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
+bool Directive_ENDP::Generate(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
 
 //-----------------------------------------------------------------------------
 // Directive_EQU
@@ -144,6 +172,18 @@ bool Directive_INCLUDE::Generate(Context &context, const Expr_Directive *pExpr) 
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Directive_MACRO
+//-----------------------------------------------------------------------------
+bool Directive_MACRO::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
+bool Directive_MACRO::Generate(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
 
 //-----------------------------------------------------------------------------
 // Directive_MML
@@ -157,7 +197,6 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr) cons
 {
 	return true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Directive_ORG
@@ -191,7 +230,6 @@ bool Directive_ORG::Generate(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
-
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
@@ -204,7 +242,6 @@ bool Directive_PCG::Generate(Context &context, const Expr_Directive *pExpr) cons
 {
 	return true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Directive_PROC

@@ -17,9 +17,11 @@ public:
 	static const Directive *DB;
 	static const Directive *DSEG;
 	static const Directive *DW;
-	static const Directive *END;
+	static const Directive *ENDM;
+	static const Directive *ENDP;
 	static const Directive *EQU;
 	static const Directive *INCLUDE;
+	static const Directive *MACRO;
 	static const Directive *MML;
 	static const Directive *ORG;
 	static const Directive *PCG;
@@ -33,6 +35,20 @@ public:
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
+};
+
+//-----------------------------------------------------------------------------
+// DirectiveList
+//-----------------------------------------------------------------------------
+typedef std::vector<Directive *> DirectiveList;
+
+//-----------------------------------------------------------------------------
+// DirectiveOwner
+//-----------------------------------------------------------------------------
+class DirectiveOwner : public DirectiveList {
+public:
+	~DirectiveOwner();
+	void Clear();
 };
 
 //-----------------------------------------------------------------------------
@@ -76,11 +92,21 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_END
+// Directive_ENDM
 //-----------------------------------------------------------------------------
-class Directive_END : public Directive {
+class Directive_ENDM : public Directive {
 public:
-	inline Directive_END() : Directive(".end") {}
+	inline Directive_ENDM() : Directive(".endm") {}
+	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_ENDP
+//-----------------------------------------------------------------------------
+class Directive_ENDP : public Directive {
+public:
+	inline Directive_ENDP() : Directive(".endp") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
 };
@@ -102,6 +128,16 @@ public:
 class Directive_INCLUDE : public Directive {
 public:
 	inline Directive_INCLUDE() : Directive(".include") {}
+	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_MACRO
+//-----------------------------------------------------------------------------
+class Directive_MACRO : public Directive {
+public:
+	inline Directive_MACRO() : Directive(".macro") {}
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
 };

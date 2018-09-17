@@ -13,7 +13,7 @@ Parser::Parser(const String &fileNameSrc) :
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
-	return ParseByPrec(pToken.release());
+	//return ParseByPrec(pToken.release());
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
 	case STAT_LineTop: {
@@ -53,13 +53,17 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				pExpr = new Expr_Directive(Directive::DSEG);
 			} else if (::strcasecmp(symbol, ".dw") == 0) {
 				pExpr = new Expr_Directive(Directive::DW);
-			} else if (::strcasecmp(symbol, ".end") == 0) {
-				pExpr = new Expr_Directive(Directive::END);
+			} else if (::strcasecmp(symbol, ".endm") == 0) {
+				pExpr = new Expr_Directive(Directive::ENDM);
+			} else if (::strcasecmp(symbol, ".endp") == 0) {
+				pExpr = new Expr_Directive(Directive::ENDP);
 			} else if (::strcasecmp(symbol, ".equ") == 0) {
 				pExpr = new Expr_Directive(Directive::EQU);
 				equFlag = true;
 			} else if (::strcasecmp(symbol, ".include") == 0) {
 				pExpr = new Expr_Directive(Directive::INCLUDE);
+			} else if (::strcasecmp(symbol, ".macro") == 0) {
+				pExpr = new Expr_Directive(Directive::MACRO);
 			} else if (::strcasecmp(symbol, ".mml") == 0) {
 				pExpr = new Expr_Directive(Directive::MML);
 			} else if (::strcasecmp(symbol, ".org") == 0) {
