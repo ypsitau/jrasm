@@ -15,6 +15,18 @@ Expr::~Expr()
 {
 }
 
+bool Expr::IsTypeLabelDef(const char *label) const
+{
+	return IsTypeLabelDef() &&
+		::strcasecmp(dynamic_cast<const Expr_LabelDef *>(this)->GetLabel(), label) == 0;
+}
+
+bool Expr::IsTypeLabelRef(const char *label) const
+{
+	return IsTypeLabelRef() &&
+		::strcasecmp(dynamic_cast<const Expr_LabelRef *>(this)->GetLabel(), label) == 0;
+}
+
 void Expr::AddChild(Expr *pExpr)
 {
 	_pExprChildren->push_back(pExpr);
@@ -151,7 +163,7 @@ String Expr_BinOp::ToString() const
 {
 	String str;
 	str = GetLeft()->ToString();
-	str += " + ";
+	str += _pOperator->GetSymbol();
 	str += GetRight()->ToString();
 	return str;
 }
@@ -162,8 +174,7 @@ Expr *Expr_BinOp::Reduce(Context &context) const
 	if (pExprL.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprR(GetRight()->Reduce(context));
 	if (pExprR.IsNull()) return nullptr;
-	
-	return Reference();
+	return _pOperator->Reduce(pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -274,10 +285,7 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
 	UInt32 num = 0;
-	if (context.GetGenerator()->IsRegisterSymbol(GetLabel())) {
-		ErrorLog::AddError(this, "register %s can't be specified here", GetLabel());
-		return nullptr;
-	}
+	if (context.GetGenerator()->IsRegisterSymbol(GetLabel())) return Reference();
 	if (IsLookupTableReady()) {
 		bool foundFlag = false;
 		num = Lookup(GetLabel(), &foundFlag);

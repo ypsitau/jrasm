@@ -432,12 +432,13 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	if (!pExprLast->IsTypeParenthesis()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Parenthesis *>(pExprLast.get())->GetChildren();
+	const char *errMsg = "the format of direct addressing operand is (addr8)";
 	if (exprList.size() != 1) {
-		ErrorLog::AddError(pExpr, "direct addressing expects one element");
+		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
 	if (!exprList.front()->IsTypeNumber()) {
-		ErrorLog::AddError(pExpr, "direct addressing expects a number element");
+		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
 	UInt32 num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
@@ -473,12 +474,24 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
-
-	return RESULT_Rejected;
-	
 	// This rule was determined to be applied.
+	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
+	if (exprList.size() != 1) return RESULT_Rejected;
+	if (!exprList.front()->IsTypeBinOp()) return RESULT_Rejected;
+	const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
+	// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
+	if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeLabelRef("x")) {
+		return RESULT_Rejected;
+	}
+	// This rule was determined to be applied.
+	UInt32 num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+	if (num > 0xff) {
+		ErrorLog::AddError(pExpr, "external address value exceeds 8-bit range");
+		return RESULT_Error;
+	}
 	if (generateFlag) {
 		context.PutByte(_code);
+		context.PutByte(static_cast<UInt8>(num));
 	} else {
 		context.ForwardAddress(bytes);
 	}
@@ -506,12 +519,13 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
+	const char *errMsg = "the format of external addressing operand is [addr16]";
 	if (exprList.size() != 1) {
-		ErrorLog::AddError(pExpr, "external addressing expects one element");
+		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
 	if (!exprList.front()->IsTypeNumber()) {
-		ErrorLog::AddError(pExpr, "external addressing expects a number value");
+		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
 	UInt32 num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();

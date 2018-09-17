@@ -15,10 +15,13 @@ public:
 	static const Operator *Sub;
 	static const Operator *Mul;
 	static const Operator *Div;
+private:
+	String _symbol;
 public:
-	inline Operator() {}
+	inline Operator(const String &symbol) : _symbol(symbol) {}
 	static void Initialize();
-	virtual Expr *Eval(const Expr *pExprL, const Expr *pExprR) = 0;
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -26,7 +29,8 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Add : public Operator {
 public:
-	virtual Expr *Eval(const Expr *pExprL, const Expr *pExprR);
+	inline Operator_Add() : Operator("+") {}
+	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -34,7 +38,8 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Sub : public Operator {
 public:
-	virtual Expr *Eval(const Expr *pExprL, const Expr *pExprR);
+	inline Operator_Sub() : Operator("-") {}
+	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -42,7 +47,8 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Mul : public Operator {
 public:
-	virtual Expr *Eval(const Expr *pExprL, const Expr *pExprR);
+	inline Operator_Mul() : Operator("*") {}
+	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -50,7 +56,8 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Div : public Operator {
 public:
-	virtual Expr *Eval(const Expr *pExprL, const Expr *pExprR);
+	inline Operator_Div() : Operator("/") {}
+	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 #endif

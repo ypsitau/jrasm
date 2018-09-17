@@ -77,6 +77,8 @@ public:
 		*pFoundFlag = false;
 		return _pLookupTable.IsNull()? 0 : _pLookupTable->Lookup(label, pFoundFlag);
 	}
+	bool IsTypeLabelDef(const char *label) const;
+	bool IsTypeLabelRef(const char *label) const;
 	void AddChild(Expr *pExpr);
 	virtual bool PrepareLookupTable(Context &context);
 	virtual bool Generate(Context &context);
