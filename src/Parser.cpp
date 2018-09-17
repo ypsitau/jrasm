@@ -14,7 +14,6 @@ Parser::Parser(const String &fileNameSrc) :
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
-	return ParseByPrec(pToken.release());
 	//::printf("%s\n", pToken->ToString().c_str());
 	switch (_stat) {
 	case STAT_LineTop: {
@@ -57,6 +56,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			} else if (!pDirective->HandleToken(this, _exprStack, pToken.get())) {
 				return false;
 			}
+			_tokenStack.Reset();
 			_stat = STAT_Operand;
 		} else if (pToken->IsType(TOKEN_EOL)) {
 			_stat = STAT_LineTop;
@@ -69,52 +69,48 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	case STAT_Operand: {
 		if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
-		//} else if (pToken->HasPrecedence()) {
-		//	rtn = ParseByPrec(pToken.release());
-		} else if (pToken->IsType(TOKEN_EOL)) {
-			_exprStack.pop_back();
-			_stat = STAT_LineTop;
-#if 1
-		} else if (pToken->IsType(TOKEN_Comma)) {
-			
-		} else if (pToken->IsType(TOKEN_Symbol)) {
-			Expr *pExpr = new Expr_LabelRef(pToken->GetString());
-			SetExprSourceInfo(pExpr, pToken.get());
-			_exprStack.back()->AddChild(pExpr);
-		} else if (pToken->IsType(TOKEN_Number)) {
-			Expr *pExpr = new Expr_Number(pToken->GetNumber());
-			SetExprSourceInfo(pExpr, pToken.get());
-			_exprStack.back()->AddChild(pExpr);
-		} else if (pToken->IsType(TOKEN_Plus)) {
-
-		} else if (pToken->IsType(TOKEN_Minus)) {
-
-		} else if (pToken->IsType(TOKEN_Asterisk)) {
-
-		} else if (pToken->IsType(TOKEN_Slash)) {
-
-#endif
-		} else if (pToken->IsType(TOKEN_BracketL)) {
-			Expr *pExpr = new Expr_Bracket();
-			_exprStack.back()->AddChild(pExpr);
-			_exprStack.push_back(pExpr);
-		} else if (pToken->IsType(TOKEN_BracketR)) {
-			if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
-				AddError("no opening bracket matched");
-			}
-			_exprStack.pop_back();
-		} else if (pToken->IsType(TOKEN_ParenthesisL)) {
-			Expr *pExpr = new Expr_Parenthesis();
-			_exprStack.back()->AddChild(pExpr);
-			_exprStack.push_back(pExpr);
-		} else if (pToken->IsType(TOKEN_ParenthesisR)) {
-			if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
-				AddError("no opening parenthesis matched");
-			}
-			_exprStack.pop_back();
+		} else if (pToken->HasPrecedence()) {
+			if (!ParseByPrec(pToken.release())) return false;
 		} else {
-			AddError("invalid format of operands");
-			return false;
+			if (!ParseByPrec(new Token(TOKEN_Empty))) return false;
+			//::printf("check\n");
+			//::printf("%s\n", _tokenStack.ToString().c_str());
+			if (_tokenStack.size() == 3 && _tokenStack[1]->IsType(TOKEN_Expr)) {
+				_exprStack.back()->AddChild(_tokenStack[1]->GetExpr()->Reference());
+			} else if (_tokenStack.size() == 2) {
+				// nothing to do as the stack has no tokens
+			} else {
+				AddError("syntax error\n");
+				return false;
+			}
+			_tokenStack.Reset();
+			if (pToken->IsType(TOKEN_EOL)) {
+				_exprStack.pop_back();
+				_stat = STAT_LineTop;
+			} else if (pToken->IsType(TOKEN_Comma)) {
+				
+			} else if (pToken->IsType(TOKEN_BracketL)) {
+				Expr *pExpr = new Expr_Bracket();
+				_exprStack.back()->AddChild(pExpr);
+				_exprStack.push_back(pExpr);
+			} else if (pToken->IsType(TOKEN_BracketR)) {
+				if (!_exprStack.back()->IsType(Expr::TYPE_Bracket)) {
+					AddError("no opening bracket matched");
+				}
+				_exprStack.pop_back();
+			} else if (pToken->IsType(TOKEN_ParenthesisL)) {
+				Expr *pExpr = new Expr_Parenthesis();
+				_exprStack.back()->AddChild(pExpr);
+				_exprStack.push_back(pExpr);
+			} else if (pToken->IsType(TOKEN_ParenthesisR)) {
+				if (!_exprStack.back()->IsType(Expr::TYPE_Parenthesis)) {
+					AddError("no opening parenthesis matched");
+				}
+				_exprStack.pop_back();
+			} else {
+				AddError("invalid format of operands");
+				return false;
+			}
 		}
 		break;
 	}
@@ -124,11 +120,9 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 
 bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 {
-	if (pToken->IsType(TOKEN_White)) return true;
-	if (pToken->IsType(TOKEN_EOL)) pToken.reset(new Token(TOKEN_Empty));
 	for (;;) {
 		TokenStack::reverse_iterator ppTokenTop = _tokenStack.SeekTerminal(_tokenStack.rbegin());
-		::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
+		//::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
 		Token::Precedence prec = Token::LookupPrec(**ppTokenTop, *pToken);
 		if (prec == Token::PREC_LT || prec == Token::PREC_EQ) {
 			_tokenStack.push_back(pToken.release());

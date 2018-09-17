@@ -58,17 +58,12 @@ String Token::ToString() const
 //-----------------------------------------------------------------------------
 TokenStack::TokenStack()
 {
-	push_back(new Token(TOKEN_Empty, 0));
+	push_back(new Token(TOKEN_Empty));
 }
 
 TokenStack::~TokenStack()
 {
-}
-
-TokenStack::reverse_iterator TokenStack::SeekTerminal(reverse_iterator ppToken)
-{
-	for ( ; (*ppToken)->IsType(TOKEN_Expr); ppToken++) ;
-	return ppToken;
+	Clear();
 }
 
 void TokenStack::Clear()
@@ -77,6 +72,18 @@ void TokenStack::Clear()
 		Token::Delete(pToken);
 	}
 	clear();
+}
+
+void TokenStack::Reset()
+{
+	Clear();
+	push_back(new Token(TOKEN_Empty));
+}
+
+TokenStack::reverse_iterator TokenStack::SeekTerminal(reverse_iterator ppToken)
+{
+	for ( ; (*ppToken)->IsType(TOKEN_Expr); ppToken++) ;
+	return ppToken;
 }
 
 String TokenStack::ToString() const

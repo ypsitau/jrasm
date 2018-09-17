@@ -16,8 +16,8 @@ struct TokenInfo {
 	bool IsIdentical(const TokenInfo &tokenInfo) const { return this == &tokenInfo; }
 };
 
-extern const TokenInfo TOKEN_Empty;
-extern const TokenInfo TOKEN_Expr;
+extern const TokenInfo TOKEN_Empty;		// for parser
+extern const TokenInfo TOKEN_Expr;		// for parser
 extern const TokenInfo TOKEN_Plus;
 extern const TokenInfo TOKEN_Minus;
 extern const TokenInfo TOKEN_Asterisk;
@@ -95,13 +95,14 @@ class TokenStack : public std::vector<Token *> {
 public:
 	TokenStack();
 	~TokenStack();
-	reverse_iterator SeekTerminal(reverse_iterator p);
-	void Clear();
-	String ToString() const;
 	inline Token *Peek(int offset) { return *(rbegin() + offset); }
 	inline void Push(Token *pToken) { push_back(pToken); }
 	inline Token *Pop() { Token *pToken = back(); pop_back(); return pToken; }
 	inline bool IsEmpty() const { return size() <= 1; }
+	void Clear();
+	void Reset();
+	reverse_iterator SeekTerminal(reverse_iterator p);
+	String ToString() const;
 };
 
 #endif
