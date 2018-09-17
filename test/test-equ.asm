@@ -4,13 +4,16 @@ label2:	.equ	label1
 
 label3:	.equ	0xabcd
 label4:
-	ldaa	0
+	ldx		label1
 label5:
-	ldaa	0
+	ldx		label2
 label6:
-	ldaa	0
+	ldx		label3
 label7:
-	ldaa	0
+	ldx		label4
 label8:
 	.equ	label6
 	nop
+	ldx		label5
+	ldx		label6
+	ldx		label7

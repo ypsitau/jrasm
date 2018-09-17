@@ -42,58 +42,38 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_Symbol)) {
-			bool equFlag = false;
 			const char *symbol = pToken->GetString();
 			Expr *pExpr = nullptr;
-			if (::strcasecmp(symbol, ".cseg") == 0) {
-				pExpr = new Expr_Directive(Directive::CSEG);
-			} else if (::strcasecmp(symbol, ".db") == 0) {
-				pExpr = new Expr_Directive(Directive::DB);
-			} else if (::strcasecmp(symbol, ".dseg") == 0) {
-				pExpr = new Expr_Directive(Directive::DSEG);
-			} else if (::strcasecmp(symbol, ".dw") == 0) {
-				pExpr = new Expr_Directive(Directive::DW);
-			} else if (::strcasecmp(symbol, ".endm") == 0) {
-				pExpr = new Expr_Directive(Directive::ENDM);
-			} else if (::strcasecmp(symbol, ".endp") == 0) {
-				pExpr = new Expr_Directive(Directive::ENDP);
-			} else if (::strcasecmp(symbol, ".equ") == 0) {
-				pExpr = new Expr_Directive(Directive::EQU);
-				equFlag = true;
-			} else if (::strcasecmp(symbol, ".include") == 0) {
-				pExpr = new Expr_Directive(Directive::INCLUDE);
-			} else if (::strcasecmp(symbol, ".macro") == 0) {
-				pExpr = new Expr_Directive(Directive::MACRO);
-			} else if (::strcasecmp(symbol, ".mml") == 0) {
-				pExpr = new Expr_Directive(Directive::MML);
-			} else if (::strcasecmp(symbol, ".org") == 0) {
-				pExpr = new Expr_Directive(Directive::ORG);
-			} else if (::strcasecmp(symbol, ".pcg") == 0) {
-				pExpr = new Expr_Directive(Directive::PCG);
-			} else if (::strcasecmp(symbol, ".proc") == 0) {
-				pExpr = new Expr_Directive(Directive::PROC);
-			} else if (*symbol == '.') {
-				_tokenizer.AddError("unknown directive: %s", symbol);
-				return false;
-			} else {
+			const Directive *pDirective = Directive::FindBuiltIn(symbol);
+			if (pDirective == nullptr) {
+				if (*symbol == '.') {
+					_tokenizer.AddError("unknown directive: %s", symbol);
+					return false;
+				}
 				pExpr = new Expr_Instruction(pToken->GetString());
-			}
-			SetExprSourceInfo(pExpr, pToken.get());
-			if (equFlag) {
-				// associate it to the last LabelDef
-				ExprList &exprList = _pExprRoot->GetChildren();
-				if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
-					_tokenizer.AddError("no label to associate .equ directive");
-					return false;
-				}
-				Expr_LabelDef *pExprEx = dynamic_cast<Expr_LabelDef *>(exprList.back());
-				if (pExprEx->IsAssigned()) {
-					_tokenizer.AddError("no label to associate .equ directive");
-					return false;
-				}
-				pExprEx->SetAssigned(pExpr);
-			} else {
+				SetExprSourceInfo(pExpr, pToken.get());
 				_pExprRoot->GetChildren().push_back(pExpr);
+			} else {
+				pExpr = new Expr_Directive(pDirective);
+				SetExprSourceInfo(pExpr, pToken.get());
+				if (pDirective->IsAssocToLabel()) {
+					// associate it to the last LabelDef
+					ExprList &exprList = _pExprRoot->GetChildren();
+					if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
+						_tokenizer.AddError("labe must be specified before the directive %s",
+											pDirective->GetSymbol());
+						return false;
+					}
+					Expr_LabelDef *pExprEx = dynamic_cast<Expr_LabelDef *>(exprList.back());
+					if (pExprEx->IsAssigned()) {
+						_tokenizer.AddError("label must be specified before the directive %s",
+											pDirective->GetSymbol());
+						return false;
+					}
+					pExprEx->SetAssigned(pExpr);
+				} else {
+					_pExprRoot->GetChildren().push_back(pExpr);
+				}
 			}
 			_exprStack.push_back(pExpr);
 			_stat = STAT_Operand;

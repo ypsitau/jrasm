@@ -7,31 +7,21 @@
 #include "Common.h"
 
 class Expr_Directive;
+class DirectiveOwner;
 
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
 class Directive {
-public:
-	static const Directive *CSEG;
-	static const Directive *DB;
-	static const Directive *DSEG;
-	static const Directive *DW;
-	static const Directive *ENDM;
-	static const Directive *ENDP;
-	static const Directive *EQU;
-	static const Directive *INCLUDE;
-	static const Directive *MACRO;
-	static const Directive *MML;
-	static const Directive *ORG;
-	static const Directive *PCG;
-	static const Directive *PROC;
 private:
 	String _symbol;
+	static std::unique_ptr<DirectiveOwner> _pDirectivesBuiltIn;
 public:
 	inline Directive(const String &symbol) : _symbol(symbol) {}
 	static void Initialize();
+	static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	virtual bool IsAssocToLabel() const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
@@ -40,7 +30,10 @@ public:
 //-----------------------------------------------------------------------------
 // DirectiveList
 //-----------------------------------------------------------------------------
-typedef std::vector<Directive *> DirectiveList;
+class DirectiveList : public std::vector<Directive *> {
+public:
+	const Directive *FindBySymbol(const char *symbol) const;
+};
 
 //-----------------------------------------------------------------------------
 // DirectiveOwner
@@ -117,6 +110,7 @@ public:
 class Directive_EQU : public Directive {
 public:
 	inline Directive_EQU() : Directive(".equ") {}
+	virtual bool IsAssocToLabel() const;
 	virtual bool PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr) const;
 	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;

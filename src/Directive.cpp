@@ -6,40 +6,50 @@
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
-const Directive *Directive::CSEG	= nullptr;
-const Directive *Directive::DB		= nullptr;
-const Directive *Directive::DSEG	= nullptr;
-const Directive *Directive::DW		= nullptr;
-const Directive *Directive::ENDM	= nullptr;
-const Directive *Directive::ENDP	= nullptr;
-const Directive *Directive::EQU		= nullptr;
-const Directive *Directive::INCLUDE	= nullptr;
-const Directive *Directive::MACRO	= nullptr;
-const Directive *Directive::MML		= nullptr;
-const Directive *Directive::ORG		= nullptr;
-const Directive *Directive::PCG		= nullptr;
-const Directive *Directive::PROC	= nullptr;
+std::unique_ptr<DirectiveOwner> Directive::_pDirectivesBuiltIn;
+
+bool Directive::IsAssocToLabel() const
+{
+	return false;
+}
 
 void Directive::Initialize()
 {
-	CSEG	= new Directive_CSEG();
-	DB		= new Directive_DB();
-	DSEG	= new Directive_DSEG();
-	DW		= new Directive_DW();
-	ENDM	= new Directive_ENDM();
-	ENDP	= new Directive_ENDP();
-	EQU		= new Directive_EQU();
-	INCLUDE	= new Directive_INCLUDE();
-	MACRO	= new Directive_MACRO();
-	MML		= new Directive_MML();
-	ORG		= new Directive_ORG();
-	PCG		= new Directive_PCG();
-	PROC	= new Directive_PROC();
+	_pDirectivesBuiltIn.reset(new DirectiveOwner());
+	_pDirectivesBuiltIn->push_back(new Directive_CSEG());
+	_pDirectivesBuiltIn->push_back(new Directive_DB());
+	_pDirectivesBuiltIn->push_back(new Directive_DSEG());
+	_pDirectivesBuiltIn->push_back(new Directive_DW());
+	_pDirectivesBuiltIn->push_back(new Directive_ENDM());
+	_pDirectivesBuiltIn->push_back(new Directive_ENDP());
+	_pDirectivesBuiltIn->push_back(new Directive_EQU());
+	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
+	_pDirectivesBuiltIn->push_back(new Directive_MACRO());
+	_pDirectivesBuiltIn->push_back(new Directive_MML());
+	_pDirectivesBuiltIn->push_back(new Directive_ORG());
+	_pDirectivesBuiltIn->push_back(new Directive_PCG());
+	_pDirectivesBuiltIn->push_back(new Directive_PROC());
+}
+
+const Directive *Directive::FindBuiltIn(const char *symbol)
+{
+	return _pDirectivesBuiltIn->FindBySymbol(symbol);
 }
 
 Expr *Directive::Reduce(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();
+}
+
+//-----------------------------------------------------------------------------
+// DirectiveList
+//-----------------------------------------------------------------------------
+const Directive *DirectiveList::FindBySymbol(const char *symbol) const
+{
+	for (auto pDirective : *this) {
+		if (strcasecmp(pDirective->GetSymbol(), symbol) == 0) return pDirective;
+	}
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -138,6 +148,11 @@ bool Directive_ENDP::Generate(Context &context, const Expr_Directive *pExpr) con
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
+bool Directive_EQU::IsAssocToLabel() const
+{
+	return true;
+}
+
 bool Directive_EQU::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
