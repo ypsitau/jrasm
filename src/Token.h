@@ -16,23 +16,23 @@ struct TokenInfo {
 	bool IsIdentical(const TokenInfo &tokenInfo) const { return this == &tokenInfo; }
 };
 
-extern const TokenInfo TOKEN_Begin;
-extern const TokenInfo TOKEN_EOL;
+extern const TokenInfo TOKEN_Empty;
 extern const TokenInfo TOKEN_Expr;
-extern const TokenInfo TOKEN_White;
-extern const TokenInfo TOKEN_Number;
-extern const TokenInfo TOKEN_Symbol;
-extern const TokenInfo TOKEN_String;
-extern const TokenInfo TOKEN_Colon;
-extern const TokenInfo TOKEN_Comma;
 extern const TokenInfo TOKEN_Plus;
 extern const TokenInfo TOKEN_Minus;
 extern const TokenInfo TOKEN_Asterisk;
 extern const TokenInfo TOKEN_Slash;
+extern const TokenInfo TOKEN_Number;
+extern const TokenInfo TOKEN_Symbol;
+extern const TokenInfo TOKEN_String;
+extern const TokenInfo TOKEN_Comma;
+extern const TokenInfo TOKEN_Colon;
 extern const TokenInfo TOKEN_BracketL;
 extern const TokenInfo TOKEN_BracketR;
 extern const TokenInfo TOKEN_ParenthesisL;
 extern const TokenInfo TOKEN_ParenthesisR;
+extern const TokenInfo TOKEN_EOL;
+extern const TokenInfo TOKEN_White;
 
 //-----------------------------------------------------------------------------
 // Token
