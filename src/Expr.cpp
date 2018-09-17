@@ -36,6 +36,12 @@ bool Expr::Generate(Context &context)
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
+Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
+{
+	Expr_LabelDef *pExprLabelDef = GetBack<Expr_LabelDef>();
+	return (pExprLabelDef == nullptr || pExprLabelDef->IsAssigned())? nullptr : pExprLabelDef;
+}
+
 bool ExprList::PrepareLookupTable(Context &context)
 {
 	for (auto pExpr : *this) {

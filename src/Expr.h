@@ -9,6 +9,7 @@
 #include "Operator.h"
 
 class ExprOwner;
+class Expr_LabelDef;
 
 //-----------------------------------------------------------------------------
 // Expr
@@ -74,9 +75,14 @@ public:
 //-----------------------------------------------------------------------------
 class ExprList : public std::vector<Expr *> {
 public:
+	Expr_LabelDef *SeekLabelDefToAssoc();
 	bool PrepareLookupTable(Context &context);
 	String ToString() const;
 	void Print() const;
+	template<typename T_Expr> inline T_Expr *GetBack() {
+		if (empty() || !back()->IsType(T_Expr::TYPE)) return nullptr;
+		return dynamic_cast<T_Expr *>(back());
+	}
 };
 
 //-----------------------------------------------------------------------------

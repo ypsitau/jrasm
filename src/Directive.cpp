@@ -158,13 +158,8 @@ bool Directive_ENDP::Generate(Context &context, const Expr_Directive *pExpr) con
 //-----------------------------------------------------------------------------
 bool Directive_EQU::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	ExprList &exprList = exprStack.back()->GetChildren();
-	if (exprList.empty() || !exprList.back()->IsType(Expr::TYPE_LabelDef)) {
-		pParser->AddError("labe must be specified before .equ directive");
-		return false;
-	}
-	Expr_LabelDef *pExprLabelDef = dynamic_cast<Expr_LabelDef *>(exprList.back());
-	if (pExprLabelDef->IsAssigned()) {
+	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
+	if (pExprLabelDef == nullptr) {
 		pParser->AddError("label must be specified before .equ directive");
 		return false;
 	}
