@@ -493,17 +493,22 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
-	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
 	if (exprList.size() != 1) return RESULT_Rejected;
-	if (!exprList.front()->IsTypeBinOp()) return RESULT_Rejected;
-	const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
-	// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
-	if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeLabelRef("x")) {
+	UInt32 num = 0;
+	if (exprList.front()->IsTypeBinOp()) {
+		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
+		// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
+		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeLabelRef("x")) {
+			return RESULT_Rejected;
+		}
+		// This rule was determined to be applied.
+		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+	} else if (exprList.front()->IsTypeLabelRef("x")) {
+		num = 0;
+	} else {
 		return RESULT_Rejected;
 	}
-	// This rule was determined to be applied.
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
 	if (num > 0xff) {
 		ErrorLog::AddError(pExpr, "external address value exceeds 8-bit range");
 		return RESULT_Error;

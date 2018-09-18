@@ -433,7 +433,7 @@ bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, 
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!_pDirective->Generate(context, this, buffDst)) return false;
-	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag, nColsPerLine);
+	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag, nColsPerLine / 2 * 2);
 	return true;
 }
 
