@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Chunk.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Directive.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Tokenizer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="Directive.cpp" />

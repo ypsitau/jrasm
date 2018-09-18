@@ -6,4 +6,39 @@
 
 #include "Common.h"
 
+//-----------------------------------------------------------------------------
+// Chunk
+//-----------------------------------------------------------------------------
+class Chunk {
+private:
+	int _cntRef;
+	UInt16 _addrTop;
+	Binary _buff;
+public:
+	DeclareReferenceAccessor(Chunk);
+public:
+	inline Chunk(UInt16 addrTop) : _cntRef(1), _addrTop(addrTop) {}
+private:
+	inline ~Chunk() {}
+public:
+	inline UInt16 GetAddrTop() const { return _addrTop; }
+	inline Binary &GetBuffer() { return _buff; }
+	inline const Binary &GetBuffer() const { return _buff; }
+};
+
+//-----------------------------------------------------------------------------
+// ChunkList
+//-----------------------------------------------------------------------------
+class ChunkList : public std::vector<Chunk *> {
+};
+
+//-----------------------------------------------------------------------------
+// ChunkOwner
+//-----------------------------------------------------------------------------
+class ChunkOwner : public ChunkList {
+public:
+	~ChunkOwner();
+	void Clear();
+};
+
 #endif
