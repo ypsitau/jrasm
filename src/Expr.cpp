@@ -359,7 +359,7 @@ Expr *Expr_LabelRef::Reduce(Context &context) const
 
 String Expr_LabelRef::ToString(bool upperCaseFlag) const
 {
-	if (!Generator_M6800::_IsRegisterSymbol(_label.c_str())) return _label;
+	if (!Generator::GetInstance().IsRegisterSymbol(_label.c_str())) return _label;
 	return upperCaseFlag? ToUpper(_label.c_str()) : _label;
 }
 
