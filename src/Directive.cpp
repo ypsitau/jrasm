@@ -281,12 +281,38 @@ bool Directive_MACRO::Generate(Context &context, const Expr_Directive *pExpr, Bi
 //-----------------------------------------------------------------------------
 bool Directive_MML::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	Handler handler(nullptr);
 	return true;
 }
 
 bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	Handler handler(&buffDst);
+	MmlParser parser(handler);
+	
+	parser.Reset();
+	
 	return true;
+}
+
+void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int length)
+{
+	char data = 0x00;
+	if (_pBuffDst != nullptr) {
+		*_pBuffDst += data;
+		*_pBuffDst += data;
+	}
+	_bytes += 2;
+}
+
+void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
+{
+	char data = 0x00;
+	if (_pBuffDst != nullptr) {
+		*_pBuffDst += data;
+		*_pBuffDst += data;
+	}
+	_bytes += 2;
 }
 
 //-----------------------------------------------------------------------------

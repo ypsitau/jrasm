@@ -5,6 +5,7 @@
 #define __DIRECTIVE_H__
 
 #include "Common.h"
+#include "MmlParser.h"
 
 class Token;
 class Parser;
@@ -146,6 +147,16 @@ public:
 // Directive_MML
 //-----------------------------------------------------------------------------
 class Directive_MML : public Directive {
+public:
+	class Handler : public MmlParser::Handler {
+	private:
+		Binary *_pBuffDst;
+		UInt32 _bytes;
+	public:
+		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytes(0) {}
+		virtual void MmlNote(MmlParser &parser, unsigned char note, int length);
+		virtual void MmlRest(MmlParser &parser, int length);
+	};
 public:
 	inline Directive_MML() : Directive(".mml") {}
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
