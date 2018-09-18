@@ -4,14 +4,18 @@
 #ifndef __JRASM_H__
 #define __JRASM_H__
 
+#include "Chunk.h"
+#include "Common.h"
 #include "Context.h"
 #include "Directive.h"
+#include "ErrorLog.h"
 #include "Expr.h"
 #include "FormatCJR.h"
-#include "ErrorLog.h"
+#include "Generator.h"
 #include "Generator_M6800.h"
 #include "MmlParser.h"
 #include "Parser.h"
+#include "Token.h"
 #include "Tokenizer.h"
 
 #endif

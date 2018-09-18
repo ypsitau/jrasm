@@ -5,6 +5,7 @@ add_definitions("-Wall -std=c++11")
 add_executable(jrasm
 	jrasm.cpp
 	stdafx.cpp
+	Chunk.cpp
 	Common.cpp
 	Context.cpp
 	Directive.cpp
