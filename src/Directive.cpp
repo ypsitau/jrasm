@@ -290,12 +290,11 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 {
 	Handler handler(&buffDst);
 	MmlParser parser(handler);
-	
 	parser.Reset();
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
 		if (!pExprReduced->IsTypeString()) {
-			ErrorLog::AddError(pExpr, "elements of directive .mmlb must be string value");
+			ErrorLog::AddError(pExpr, "elements of directive .mml must be string value");
 			return false;
 		}
 		const char *str = dynamic_cast<Expr_String *>(pExprReduced.get())->GetString();
@@ -312,7 +311,6 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 
 void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int length)
 {
-	::printf("%d %d\n", note, length);
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
 	UInt8 noteDev = note + 0x0d - 0x30;
 	if (_pBuffDst != nullptr) {

@@ -1,9 +1,10 @@
 	.org	0x1000
 label1:	
 	.equ	0x1234
-label2:	.equ	label1
-
-label3:	.equ	0xabcd
+label2:
+	.equ	label1
+label3:
+	.equ	0xabcd
 label4:
 	ldx		label1
 label5:

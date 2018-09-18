@@ -140,8 +140,11 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
 bool Expr_Root::Prepare(Context &context)
 {
+	bool rtn = true;
 	context.SetPreparationFlag(true);
-	bool rtn = Expr::Prepare(context);
+	for (int i = 0; i < 2; i++) {
+		if (!(rtn = Expr::Prepare(context))) break;
+	}
 	context.SetPreparationFlag(false);
 	return rtn;
 }
@@ -311,8 +314,8 @@ bool Expr_LabelDef::Prepare(Context &context)
 	}
 	Context::LookupTable *pLookupTable = context.GetLookupTable();
 	if (pLookupTable->IsDefined(GetLabel())) {
-		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
-		return false;
+		//ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
+		//return false;
 	}
 	pLookupTable->Set(GetLabel(), num);
 	return true;
@@ -353,15 +356,12 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
-	UInt32 num = 0;
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
-	if (!context.GetPreparationFlag()) {
-		bool foundFlag = false;
-		num = Lookup(GetLabel(), &foundFlag);
-		if (!foundFlag) {
-			ErrorLog::AddError(this, "undefined label: %s", GetLabel());
-			return nullptr;
-		}
+	bool foundFlag = false;
+	UInt32 num = Lookup(GetLabel(), &foundFlag);
+	if (!context.GetPreparationFlag() && !foundFlag) {
+		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
+		return nullptr;
 	}
 	return new Expr_Number(num);
 }
