@@ -1,3 +1,4 @@
+	.org	0x1000
 label8bit$1:	.equ	0x11
 label8bit$2:	.equ	0x22
 label8bit$3:	.equ	0x33

@@ -1,3 +1,4 @@
+	.org	0x1000
 	;; decimal number
 	ldx		0
 	ldx		1

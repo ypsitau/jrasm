@@ -1,3 +1,4 @@
+	.org	0x1000
 	bra		label1
 	nop
 	bra		label1
