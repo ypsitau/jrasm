@@ -4,7 +4,7 @@
 #ifndef __CONTEXT_H__
 #define __CONTEXT_H__
 
-#include "Generator.h"
+#include "Common.h"
 
 class Expr;
 
@@ -42,13 +42,11 @@ public:
 	};
 	typedef LookupTableOwner LookupTableStack;
 private:
-	std::unique_ptr<Generator> _pGenerator;
 	Binary _buff;
 	UInt32 _addr;
 	LookupTableStack _lookupTableStack;
 public:
-	Context(Generator *pGenerator);
-	inline const Generator *GetGenerator() const { return _pGenerator.get(); }
+	Context();
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline void ClearBuffer() { _buff.clear(); }

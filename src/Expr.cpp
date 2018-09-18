@@ -345,7 +345,7 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 Expr *Expr_LabelRef::Reduce(Context &context) const
 {
 	UInt32 num = 0;
-	if (context.GetGenerator()->IsRegisterSymbol(GetLabel())) return Reference();
+	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
 	if (IsLookupTableReady()) {
 		bool foundFlag = false;
 		num = Lookup(GetLabel(), &foundFlag);
@@ -372,20 +372,20 @@ bool Expr_Instruction::PrepareLookupTable(Context &context)
 {
 	if (!Expr::PrepareLookupTable(context)) return false;
 	UInt32 bytes = 0;
-	context.GetGenerator()->CalcInstBytes(context, this, &bytes);
+	Generator::GetInstance().CalcInstBytes(context, this, &bytes);
 	return true;
 }
 
 bool Expr_Instruction::Generate(Context &context) const
 {
-	return context.GetGenerator()->Generate(context, this);
+	return Generator::GetInstance().Generate(context, this);
 }
 
 bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
-	if (!context.GetGenerator()->Generate(context, this, buffDst)) return false;
+	if (!Generator::GetInstance().Generate(context, this, buffDst)) return false;
 	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag);
 	return true;
 }

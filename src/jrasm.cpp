@@ -24,7 +24,7 @@ bool Parse(const char *fileName)
 		return false;
 	}
 	//exprList.Print();
-	Context context(new Generator_M6800());
+	Context context;
 	parser.GetRoot()->PrepareLookupTable(context);
 	if (ErrorLog::HasError()) {
 		ErrorLog::Print(stderr);
@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 {
 	Operator::Initialize();
 	Directive::Initialize();
+	Generator::Initialize(new Generator_M6800());
 #if 1
 	if (argc < 2) {
 		::fprintf(stderr, "usage: jasm file\n");

@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context(Generator *pGenerator) : _pGenerator(pGenerator), _addr(0x0000)
+Context::Context() : _addr(0x0000)
 {
 	_lookupTableStack.push_back(new LookupTable());
 }
