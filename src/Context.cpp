@@ -25,25 +25,9 @@ void Context::RemoveLookupTable()
 	LookupTable::Delete(pLookupTable);
 }
 
-void Context::PutByte(UInt8 data)
+bool Context::CheckChunkReady() const
 {
-	_buff += data;
-	ForwardAddress(1);
-}
-
-void Context::Dump()
-{
-	size_t col = 0;
-	for (auto data : _buff) {
-		if (col > 0) ::printf(" ");
-		::printf("%02x", static_cast<UInt8>(data));
-		col++;
-		if (col == 32) {
-			::printf("\n");
-			col = 0;
-		}
-	}
-	if (col > 0) ::printf("\n");
+	return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -24,6 +24,7 @@ public:
 	inline UInt16 GetAddrTop() const { return _addrTop; }
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
+	void Dump() const;
 };
 
 //-----------------------------------------------------------------------------

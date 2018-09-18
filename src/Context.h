@@ -42,27 +42,26 @@ public:
 	};
 	typedef LookupTableOwner LookupTableStack;
 private:
-	Binary _buff;
 	UInt32 _addr;
+	ChunkOwner _chunkOwner;
 	bool _preparationFlag;
 	LookupTableStack _lookupTableStack;
 public:
 	Context();
-	inline Binary &GetBuffer() { return _buff; }
-	inline const Binary &GetBuffer() const { return _buff; }
-	inline void ClearBuffer() { _buff.clear(); }
-	inline void ClearChunk() { _addr = 0; }
-	inline void StartChunk(UInt32 addr) { _addr = addr; }
+	inline bool IsChunkAvailable() const { return !_chunkOwner.empty(); }
+	inline Binary &GetBuffer() { return _chunkOwner.back()->GetBuffer(); }
+	inline const Binary &GetBuffer() const { return _chunkOwner.back()->GetBuffer(); }
+	inline void ClearChunk() { _chunkOwner.Clear(); }
+	inline void StartChunk(UInt32 addr) { _chunkOwner.push_back(new Chunk(addr)), _addr = addr; }
 	inline UInt32 GetAddress() const { return _addr; }
 	inline void ForwardAddress(UInt32 bytes) { _addr += bytes; }
 	inline void SetPreparationFlag(bool preparationFlag) { _preparationFlag = preparationFlag; }
 	inline bool GetPreparationFlag() const { return _preparationFlag; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
 	inline LookupTable *GetLookupTableRoot() { return _lookupTableStack.front(); }
+	bool CheckChunkReady() const;
 	LookupTable *AddLookupTable();
 	void RemoveLookupTable();
-	void PutByte(UInt8 data);
-	void Dump();
 };
 
 #endif

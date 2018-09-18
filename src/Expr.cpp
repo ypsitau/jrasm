@@ -425,6 +425,7 @@ bool Expr_Directive::Prepare(Context &context)
 
 bool Expr_Directive::Generate(Context &context) const
 {
+	if (!context.CheckChunkReady()) return false;
 	return _pDirective->Generate(context, this, context.GetBuffer());
 }
 
