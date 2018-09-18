@@ -240,6 +240,7 @@ Expr *Directive_EQU::Reduce(Context &context, const Expr_Directive *pExpr) const
 //-----------------------------------------------------------------------------
 bool Directive_INCLUDE::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	
 	return true;
 }
 
@@ -291,26 +292,43 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 	MmlParser parser(handler);
 	
 	parser.Reset();
-	
+	for (auto pExprData : pExpr->GetOperands()) {
+		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
+		if (!pExprReduced->IsTypeString()) {
+			ErrorLog::AddError(pExpr, "elements of directive .mmlb must be string value");
+			return false;
+		}
+		const char *str = dynamic_cast<Expr_String *>(pExprReduced.get())->GetString();
+		for (const char *p = str; ; p++) {
+			if (!parser.FeedChar(*p)) {
+				ErrorLog::AddError(pExpr, "invalid MML format");
+				return false;
+			}
+			if (*p == '\0') break;
+		}
+	}
 	return true;
 }
 
 void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int length)
 {
-	char data = 0x00;
+	::printf("%d %d\n", note, length);
+	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
+	UInt8 noteDev = note + 0x0d - 0x30;
 	if (_pBuffDst != nullptr) {
-		*_pBuffDst += data;
-		*_pBuffDst += data;
+		*_pBuffDst += lengthDev;
+		*_pBuffDst += noteDev;
 	}
 	_bytes += 2;
 }
 
 void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 {
-	char data = 0x00;
+	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
+	UInt8 noteDev = 0x00;
 	if (_pBuffDst != nullptr) {
-		*_pBuffDst += data;
-		*_pBuffDst += data;
+		*_pBuffDst += lengthDev;
+		*_pBuffDst += noteDev;
 	}
 	_bytes += 2;
 }

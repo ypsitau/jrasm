@@ -160,6 +160,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
+	inline const char *GetString() const { return _str.c_str(); }
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
 };
