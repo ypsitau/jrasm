@@ -337,7 +337,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 		UInt32 addrCur = context.GetAddress() + bytes;
 		if (num < addrCur) {
 			num = addrCur - num;
-			if (num > 0x82) {
+			if (num > 0x80) {
 				ErrorLog::AddError(pExpr, "displacement value exeeds the range between -128 and 127");
 				return RESULT_Error;
 			}
