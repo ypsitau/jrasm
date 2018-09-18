@@ -81,8 +81,8 @@ public:
 	bool IsTypeLabelRef(const char *label) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	void AddChild(Expr *pExpr);
-	static void DumpDisasmHelper(UInt32 addr, const Binary &buff,
-								 const char *strCode, FILE *fp, bool upperCaseFlag);
+	static void DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode,
+								 size_t nColsPerLine, FILE *fp, bool upperCaseFlag);
 	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
@@ -128,6 +128,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Root() : Expr(TYPE) {}
+	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
