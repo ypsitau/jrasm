@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasm", "jrasm.vcxproj", "{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasm", "..\src\jrasm.vcxproj", "{0F385A17-50AE-4801-9B2F-0FF174AF55BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Debug|x64.ActiveCfg = Debug|x64
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Debug|x64.Build.0 = Debug|x64
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Debug|x86.ActiveCfg = Debug|Win32
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Debug|x86.Build.0 = Debug|Win32
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Release|x64.ActiveCfg = Release|x64
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Release|x64.Build.0 = Release|x64
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Release|x86.ActiveCfg = Release|Win32
-		{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}.Release|x86.Build.0 = Release|Win32
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Debug|x64.ActiveCfg = Debug|x64
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Debug|x64.Build.0 = Debug|x64
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Debug|x86.ActiveCfg = Debug|Win32
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Debug|x86.Build.0 = Debug|Win32
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x64.ActiveCfg = Release|x64
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x64.Build.0 = Release|x64
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x86.ActiveCfg = Release|Win32
+		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

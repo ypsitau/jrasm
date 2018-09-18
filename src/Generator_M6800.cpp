@@ -341,7 +341,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 				ErrorLog::AddError(pExpr, "displacement value exeeds the range between -128 and 127");
 				return RESULT_Error;
 			}
-			num = -num;
+			num = -static_cast<Int32>(num);
 		} else {
 			num = num - addrCur;
 			if (num > 0x7f) {

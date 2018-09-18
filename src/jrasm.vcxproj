@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{C7B80FC9-EA7C-49FD-888C-4EDE3F831627}</ProjectGuid>
+    <ProjectGuid>{0F385A17-50AE-4801-9B2F-0FF174AF55BE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>jrasm</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
@@ -147,27 +147,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\CJRFormat.h" />
-    <ClInclude Include="..\src\Common.h" />
-    <ClInclude Include="..\src\jrasm.h" />
-    <ClInclude Include="..\src\MmlParser.h" />
-    <ClInclude Include="..\src\stdafx.h" />
-    <ClInclude Include="..\src\Token.h" />
-    <ClInclude Include="..\src\Tokenizer.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="Directive.h" />
+    <ClInclude Include="ErrorLog.h" />
+    <ClInclude Include="Expr.h" />
+    <ClInclude Include="FormatCJR.h" />
+    <ClInclude Include="Generator.h" />
+    <ClInclude Include="Generator_M6800.h" />
+    <ClInclude Include="MmlParser.h" />
+    <ClInclude Include="Operator.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Token.h" />
+    <ClInclude Include="Tokenizer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\CJRFormat.cpp" />
-    <ClCompile Include="..\src\jrasm.cpp" />
-    <ClCompile Include="..\src\MmlParser.cpp" />
-    <ClCompile Include="..\src\Token.cpp" />
-    <ClCompile Include="..\src\Tokenizer.cpp" />
+    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Directive.cpp" />
+    <ClCompile Include="ErrorLog.cpp" />
+    <ClCompile Include="Expr.cpp" />
+    <ClCompile Include="FormatCJR.cpp" />
+    <ClCompile Include="Generator.cpp" />
+    <ClCompile Include="Generator_M6800.cpp" />
+    <ClCompile Include="jrasm.cpp" />
+    <ClCompile Include="MmlParser.cpp" />
+    <ClCompile Include="Operator.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Token.cpp" />
+    <ClCompile Include="Tokenizer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
