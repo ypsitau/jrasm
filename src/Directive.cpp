@@ -93,7 +93,7 @@ bool Directive_CSEG::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
-	context.ForwardAddress(pExpr->GetOperands().size() * sizeof(UInt8));
+	context.ForwardAddress(static_cast<UInt32>(pExpr->GetOperands().size() * sizeof(UInt8)));
 	return true;
 }
 
@@ -113,7 +113,7 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 		buffDst += static_cast<UInt8>(num);
 	}
 	size_t bytes = pExpr->GetOperands().size() * sizeof(UInt8);
-	context.ForwardAddress(bytes);
+	context.ForwardAddress(static_cast<UInt32>(bytes));
 	return true;
 }
 
@@ -135,7 +135,7 @@ bool Directive_DSEG::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 bool Directive_DW::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
-	context.ForwardAddress(pExpr->GetOperands().size() * sizeof(UInt16));
+	context.ForwardAddress(static_cast<UInt32>(pExpr->GetOperands().size() * sizeof(UInt16)));
 	return true;
 }
 
@@ -156,7 +156,7 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binar
 		buffDst += static_cast<UInt8>(num);
 	}
 	size_t bytes = pExpr->GetOperands().size() * sizeof(UInt16);
-	context.ForwardAddress(bytes);
+	context.ForwardAddress(static_cast<UInt32>(bytes));
 	return true;
 }
 
