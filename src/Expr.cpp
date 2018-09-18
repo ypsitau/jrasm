@@ -38,10 +38,10 @@ void Expr::AddChild(Expr *pExpr)
 	_pExprChildren->push_back(pExpr);
 }
 
-bool Expr::PrepareLookupTable(Context &context)
+bool Expr::Prepare(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
-	_pExprChildren->PrepareLookupTable(context);
+	_pExprChildren->Prepare(context);
 	return true;
 }
 
@@ -92,10 +92,10 @@ Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
 	return (pExprLabelDef == nullptr || pExprLabelDef->IsAssigned())? nullptr : pExprLabelDef;
 }
 
-bool ExprList::PrepareLookupTable(Context &context)
+bool ExprList::Prepare(Context &context)
 {
 	for (auto pExpr : *this) {
-		pExpr->PrepareLookupTable(context);
+		pExpr->Prepare(context);
 	}
 	return true;
 }
@@ -285,9 +285,9 @@ Expr *Expr_Brace::Reduce(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
-bool Expr_LabelDef::PrepareLookupTable(Context &context)
+bool Expr_LabelDef::Prepare(Context &context)
 {
-	if (!Expr::PrepareLookupTable(context)) return false;
+	if (!Expr::Prepare(context)) return false;
 	UInt32 num = 0;
 	if (IsAssigned()) {
 		AutoPtr<Expr> pExprAssigned(GetAssigned()->Reduce(context));
@@ -368,9 +368,9 @@ String Expr_LabelRef::ToString(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 
-bool Expr_Instruction::PrepareLookupTable(Context &context)
+bool Expr_Instruction::Prepare(Context &context)
 {
-	if (!Expr::PrepareLookupTable(context)) return false;
+	if (!Expr::Prepare(context)) return false;
 	UInt32 bytes = 0;
 	Generator::GetInstance().CalcInstBytes(context, this, &bytes);
 	return true;
@@ -408,10 +408,10 @@ String Expr_Instruction::ToString(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
-bool Expr_Directive::PrepareLookupTable(Context &context)
+bool Expr_Directive::Prepare(Context &context)
 {
-	if (!Expr::PrepareLookupTable(context)) return false;
-	return _pDirective->PrepareLookupTable(context, this);
+	if (!Expr::Prepare(context)) return false;
+	return _pDirective->Prepare(context, this);
 }
 
 bool Expr_Directive::Generate(Context &context) const

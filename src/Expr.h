@@ -83,7 +83,7 @@ public:
 	void AddChild(Expr *pExpr);
 	static void DumpDisasmHelper(UInt32 addr, const Binary &buff,
 								 const char *strCode, FILE *fp, bool upperCaseFlag);
-	virtual bool PrepareLookupTable(Context &context);
+	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const = 0;
@@ -96,7 +96,7 @@ public:
 class ExprList : public std::vector<Expr *> {
 public:
 	Expr_LabelDef *SeekLabelDefToAssoc();
-	bool PrepareLookupTable(Context &context);
+	bool Prepare(Context &context);
 	String ToString(const char *sep, bool upperCaseFlag) const;
 	void Print(bool upperCaseFlag) const;
 	template<typename T_Expr> inline T_Expr *GetBack() {
@@ -224,7 +224,7 @@ public:
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
-	virtual bool PrepareLookupTable(Context &context);
+	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
@@ -260,7 +260,7 @@ public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
-	virtual bool PrepareLookupTable(Context &context);
+	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;
@@ -279,7 +279,7 @@ public:
 	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE), _pDirective(pDirective) {}
 	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
-	virtual bool PrepareLookupTable(Context &context);
+	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
 	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
 	virtual Expr *Reduce(Context &context) const;

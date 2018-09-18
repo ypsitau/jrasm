@@ -78,7 +78,7 @@ void DirectiveOwner::Clear()
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
-bool Directive_CSEG::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_CSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -91,7 +91,7 @@ bool Directive_CSEG::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
-bool Directive_DB::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	context.ForwardAddress(pExpr->GetOperands().size() * sizeof(UInt8));
 	return true;
@@ -120,7 +120,7 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
-bool Directive_DSEG::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -133,7 +133,7 @@ bool Directive_DSEG::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
-bool Directive_DW::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DW::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	context.ForwardAddress(pExpr->GetOperands().size() * sizeof(UInt16));
 	return true;
@@ -174,7 +174,7 @@ bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, co
 	return Directive::HandleToken(pParser, exprStack, pToken);
 }
 
-bool Directive_ENDM::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDM::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -187,7 +187,7 @@ bool Directive_ENDM::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_ENDP
 //-----------------------------------------------------------------------------
-bool Directive_ENDP::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -214,7 +214,7 @@ bool Directive_EQU::HandleToken(const Parser *pParser, ExprStack &exprStack, con
 	return true;
 }
 
-bool Directive_EQU::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_EQU::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -238,7 +238,7 @@ Expr *Directive_EQU::Reduce(Context &context, const Expr_Directive *pExpr) const
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
-bool Directive_INCLUDE::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -266,7 +266,7 @@ bool Directive_MACRO::HandleToken(const Parser *pParser, ExprStack &exprStack, c
 	return true;
 }
 
-bool Directive_MACRO::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MACRO::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -279,7 +279,7 @@ bool Directive_MACRO::Generate(Context &context, const Expr_Directive *pExpr, Bi
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
-bool Directive_MML::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MML::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -292,7 +292,7 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
-bool Directive_ORG::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// .org data16
@@ -324,7 +324,7 @@ bool Directive_ORG::Generate(Context &context, const Expr_Directive *pExpr, Bina
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
-bool Directive_PCG::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PCG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -337,7 +337,7 @@ bool Directive_PCG::Generate(Context &context, const Expr_Directive *pExpr, Bina
 //-----------------------------------------------------------------------------
 // Directive_PROC
 //-----------------------------------------------------------------------------
-bool Directive_PROC::PrepareLookupTable(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PROC::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }

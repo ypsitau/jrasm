@@ -44,6 +44,7 @@ public:
 private:
 	Binary _buff;
 	UInt32 _addr;
+	bool _preparationFlag;
 	LookupTableStack _lookupTableStack;
 public:
 	Context();
@@ -53,6 +54,8 @@ public:
 	inline void SetAddress(UInt32 addr) { _addr = addr; }
 	inline UInt32 GetAddress() const { return _addr; }
 	inline void ForwardAddress(UInt32 bytes) { _addr += bytes; }
+	inline void SetPreparationFlag(bool preparationFlag) { _preparationFlag = preparationFlag; }
+	inline bool GetPreparationFlag() const { return _preparationFlag; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
 	inline LookupTable *GetLookupTableRoot() { return _lookupTableStack.front(); }
 	LookupTable *AddLookupTable();

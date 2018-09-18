@@ -25,7 +25,7 @@ bool Parse(const char *fileName)
 	}
 	//exprList.Print();
 	Context context;
-	parser.GetRoot()->PrepareLookupTable(context);
+	parser.GetRoot()->Prepare(context);
 	if (ErrorLog::HasError()) {
 		ErrorLog::Print(stderr);
 		return false;
