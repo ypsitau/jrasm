@@ -5,12 +5,12 @@ add_definitions("-Wall -std=c++11")
 add_executable(jrasm
 	jrasm.cpp
 	stdafx.cpp
-	CJRFormat.cpp
 	Common.cpp
 	Context.cpp
 	Directive.cpp
 	ErrorLog.cpp
 	Expr.cpp
+	FormatCJR.cpp
 	Generator.cpp
 	Generator_M6800.cpp
 	MmlParser.cpp

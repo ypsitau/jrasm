@@ -1,15 +1,15 @@
 //=============================================================================
-// CJRFormat.h
+// FormatCJR.h
 //=============================================================================
-#ifndef __CJRFORMAT_H__
-#define __CJRFORMAT_H__
+#ifndef __FORMATCJR_H__
+#define __FORMATCJR_H__
 
 #include "Common.h"
 
 //-----------------------------------------------------------------------------
-// CJRFormat
+// FormatCJR
 //-----------------------------------------------------------------------------
-class CJRFormat {
+class FormatCJR {
 public:
 	struct HeaderBlock {
 		UInt8 preamble[2];		// {0x02, 0x2a}

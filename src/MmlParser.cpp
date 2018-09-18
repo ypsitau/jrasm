@@ -265,8 +265,7 @@ int MmlParser::CalcLength(int numDisp, int cntDot, int lengthDefault)
 {
 	if (numDisp <= 0) return lengthDefault;
 	int length = LENGTH_MAX / numDisp;
-	for (int lengthDiv = length / 2; lengthDiv > 0 && cntDot > 0;
-											lengthDiv /= 2, cntDot--) {
+	for (int lengthDiv = length / 2; lengthDiv > 0 && cntDot > 0; lengthDiv /= 2, cntDot--) {
 		length += lengthDiv;
 	}
 	return length;

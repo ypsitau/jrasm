@@ -1,12 +1,12 @@
 //=============================================================================
-// CJRFormat.cpp
+// FormatCJR.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// CJRFormat
+// FormatCJR
 //-----------------------------------------------------------------------------
-bool CJRFormat::Write(FILE *fp, const char *fileName, UInt16 address, const UInt8 *data, size_t bytes)
+bool FormatCJR::Write(FILE *fp, const char *fileName, UInt16 address, const UInt8 *data, size_t bytes)
 {
 	const size_t bytesBlockMax = 256;
 	UInt8 blockCount = 0;
@@ -54,7 +54,7 @@ bool CJRFormat::Write(FILE *fp, const char *fileName, UInt16 address, const UInt
 	return true;
 }
 
-UInt8 CJRFormat::CalcCheckSum(const void *pStart, const void *pEnd)
+UInt8 FormatCJR::CalcCheckSum(const void *pStart, const void *pEnd)
 {
 	UInt8 rtn = 0;
 	const UInt8 *pbStart = reinterpret_cast<const UInt8 *>(pStart);
