@@ -38,5 +38,6 @@ void ChunkOwner::Clear()
 	for (auto pChunk : *this) {
 		Chunk::Delete(pChunk);
 	}
+	clear();
 }
 
