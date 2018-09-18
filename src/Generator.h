@@ -15,11 +15,13 @@ class Expr_Instruction;
 //-----------------------------------------------------------------------------
 class Generator {
 public:
+	size_t _bytesInstMax;
 	static std::unique_ptr<Generator> _pGenerator;
 public:
-	inline Generator() {}
+	inline Generator(size_t bytesInstMax) {}
 	virtual ~Generator();
 	inline static Generator &GetInstance() { return *_pGenerator; }
+	inline size_t GetBytesInstMax() const { return _bytesInstMax; }
 	static void Initialize(Generator *pGenerator);
 	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
 	virtual bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const = 0;

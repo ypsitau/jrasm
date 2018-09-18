@@ -82,10 +82,10 @@ public:
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	void AddChild(Expr *pExpr);
 	static void DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode,
-								 size_t nColsPerLine, FILE *fp, bool upperCaseFlag);
+								 FILE *fp, bool upperCaseFlag, int nColsPerLine);
 	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
+	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
 	virtual Expr *Reduce(Context &context) const = 0;
 	virtual String ToString(bool upperCaseFlag) const = 0;
 };
@@ -130,7 +130,7 @@ public:
 	inline Expr_Root() : Expr(TYPE) {}
 	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
+	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
 };
@@ -227,7 +227,7 @@ public:
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
+	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
 };
@@ -263,7 +263,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
+	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
 };
@@ -282,7 +282,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool Prepare(Context &context);
 	virtual bool Generate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag) const;
+	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
 	virtual Expr *Reduce(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
 };

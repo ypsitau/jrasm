@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 // Generator_M6800
 //-----------------------------------------------------------------------------
-Generator_M6800::Generator_M6800()
+Generator_M6800::Generator_M6800() : Generator(3)	// max instruction size is 3
 {
 	EntryMap &m = _entryMap;
 	m.Add(Entry_ACC					("aba", 0x1b));
@@ -326,24 +326,26 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
-	if (operands.back()->IsTypeNumber()) {
+	if (context.GetPreparationFlag()) {
+		num = 0;
+	} else if (operands.back()->IsTypeNumber()) {
 		if (num > 0xff) {
 			ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
 			return RESULT_Error;
 		}
 	} else {
-		UInt32 addr = context.GetAddress() + bytes;
-		if (num < addr) {
-			num = addr - num;
-			if (num > 0x80) {
-				ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
+		UInt32 addrCur = context.GetAddress() + bytes;
+		if (num < addrCur) {
+			num = addrCur - num;
+			if (num > 0x82) {
+				ErrorLog::AddError(pExpr, "displacement value exeeds the range between -128 and 127");
 				return RESULT_Error;
 			}
 			num = -num;
 		} else {
-			num = num - addr;
+			num = num - addrCur;
 			if (num > 0x7f) {
-				ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
+				ErrorLog::AddError(pExpr, "displacement value exceeds the range between -128 and 127");
 				return RESULT_Error;
 			}
 		}
