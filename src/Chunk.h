@@ -6,6 +6,8 @@
 
 #include "Common.h"
 
+class ChunkOwner;
+
 //-----------------------------------------------------------------------------
 // Chunk
 //-----------------------------------------------------------------------------
@@ -31,6 +33,8 @@ public:
 // ChunkList
 //-----------------------------------------------------------------------------
 class ChunkList : public std::vector<Chunk *> {
+public:
+	void SortByAddrTop();
 };
 
 //-----------------------------------------------------------------------------
@@ -40,6 +44,7 @@ class ChunkOwner : public ChunkList {
 public:
 	~ChunkOwner();
 	void Clear();
+	ChunkOwner *Join();
 };
 
 #endif
