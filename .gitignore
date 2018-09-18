@@ -38,6 +38,9 @@
 *.user
 
 /build
-/msc/x86
-/msc/x64
-/msc/.vs
+/x86
+/x64
+/src/x86
+/src/x64
+/.vs
+/
