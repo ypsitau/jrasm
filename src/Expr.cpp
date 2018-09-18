@@ -148,6 +148,7 @@ bool Expr_Root::Prepare(Context &context)
 
 bool Expr_Root::Generate(Context &context) const
 {
+	context.ClearChunk();
 	for (auto pExpr : GetChildren()) {
 		pExpr->Generate(context);
 	}
@@ -156,7 +157,7 @@ bool Expr_Root::Generate(Context &context) const
 
 bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
 {
-	context.SetAddress(0);
+	context.ClearChunk();
 	for (auto pExpr : GetChildren()) {
 		pExpr->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
 	}

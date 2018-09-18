@@ -51,7 +51,8 @@ public:
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline void ClearBuffer() { _buff.clear(); }
-	inline void SetAddress(UInt32 addr) { _addr = addr; }
+	inline void ClearChunk() { _addr = 0; }
+	inline void StartChunk(UInt32 addr) { _addr = addr; }
 	inline UInt32 GetAddress() const { return _addr; }
 	inline void ForwardAddress(UInt32 bytes) { _addr += bytes; }
 	inline void SetPreparationFlag(bool preparationFlag) { _preparationFlag = preparationFlag; }

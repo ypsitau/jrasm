@@ -311,14 +311,13 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 		ErrorLog::AddError(pExpr, "address value exceeds 16-bit range");
 		return false;
 	}
-	context.SetAddress(static_cast<UInt16>(num));
+	context.StartChunk(static_cast<UInt16>(num));
 	return true;
 }
 
 bool Directive_ORG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	context.SetAddress(0);
-	return true;
+	return Prepare(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
