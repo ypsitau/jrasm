@@ -40,8 +40,11 @@ public:
 		UInt8 startAddressH;
 		UInt8 startAddressL;
 	};
+private:
+	String _fileNameJR;
 public:
-	static bool Write(FILE *fp, const char *fileNameJR, const RegionList &regionList);
+	FormatCJR(const String &fileNameJR);
+	bool Write(const char *fileNameOut, const RegionList &regionList);
 	static UInt8 CalcCheckSum(const void *pStart, const void *pEnd);
 };
 

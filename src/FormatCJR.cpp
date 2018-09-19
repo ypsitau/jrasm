@@ -6,10 +6,23 @@
 //-----------------------------------------------------------------------------
 // FormatCJR
 //-----------------------------------------------------------------------------
-bool FormatCJR::Write(FILE *fp, const char *fileNameJR, const RegionList &regionList)
+FormatCJR::FormatCJR(const String &fileNameJR) : _fileNameJR(fileNameJR)
+{
+}
+
+bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 {
 	const size_t bytesBlockMax = 256;
 	UInt8 blockCount = 0;
+	UInt16 addr = 0;
+	FILE *fp = stdout;
+	if (*fileNameOut != '\0') {
+		fp = ::fopen(fileNameOut, "w");
+		if (fp == nullptr) {
+			ErrorLog::AddError("failed to open output file: %s", fileNameOut);
+			return false;
+		}
+	}
 	do {
 		HeaderBlock headerBlock;
 		::memcpy(headerBlock.preamble,	"\x02\x2a", 2);
@@ -17,14 +30,13 @@ bool FormatCJR::Write(FILE *fp, const char *fileNameJR, const RegionList &region
 		headerBlock.blockSize 			= 0x1a;
 		headerBlock.startAddressH		= 0xff;
 		headerBlock.startAddressL		= 0xff;
-		::strncpy_s(headerBlock.fileNameJR, fileNameJR, sizeof(headerBlock.fileNameJR));
+		::strncpy_s(headerBlock.fileNameJR, _fileNameJR.c_str(), sizeof(headerBlock.fileNameJR));
 		headerBlock.binaryFlag 			= 0x01;
 		headerBlock.baudrate			= 0x00;
 		::memcpy(headerBlock.dummy,		"\xff\xff\xff\xff\xff\xff\xff\xff", 8);
 		headerBlock.checkSum			= CalcCheckSum(headerBlock.fileNameJR, &headerBlock.checkSum);
-		if (::fwrite(&headerBlock, 1, sizeof(headerBlock), fp) < sizeof(headerBlock)) return false;
+		if (::fwrite(&headerBlock, 1, sizeof(headerBlock), fp) < sizeof(headerBlock)) goto errorDone;
 	} while (0);
-	UInt16 addr = 0;
 	for (auto pRegion : regionList) {
 		addr = pRegion->GetAddrTop();
 		const char *data = pRegion->GetBuffer().data();
@@ -40,9 +52,9 @@ bool FormatCJR::Write(FILE *fp, const char *fileNameJR, const RegionList &region
 			dataBlockTop.startAddressH		= static_cast<UInt8>(addr >> 8);
 			dataBlockTop.startAddressL		= static_cast<UInt8>(addr >> 0);
 			dataBlockBtm.checkSum			= CalcCheckSum(data, data + bytesBlock);
-			if (::fwrite(&dataBlockTop, 1, sizeof(dataBlockTop), fp) < sizeof(dataBlockTop)) return false;
-			if (::fwrite(data, 1, bytesBlock, fp) < bytesBlock) return false;
-			if (::fwrite(&dataBlockBtm, 1, sizeof(dataBlockBtm), fp) < sizeof(dataBlockBtm)) return false;
+			if (::fwrite(&dataBlockTop, 1, sizeof(dataBlockTop), fp) < sizeof(dataBlockTop)) goto errorDone;
+			if (::fwrite(data, 1, bytesBlock, fp) < bytesBlock) goto errorDone;
+			if (::fwrite(&dataBlockBtm, 1, sizeof(dataBlockBtm), fp) < sizeof(dataBlockBtm)) goto errorDone;
 			bytesDone += bytesBlock;
 			addr += static_cast<UInt16>(bytesBlock);
 			data += bytesBlock;
@@ -55,9 +67,14 @@ bool FormatCJR::Write(FILE *fp, const char *fileNameJR, const RegionList &region
 		footerBlock.blockSize 			= 0xff;
 		footerBlock.startAddressH		= static_cast<UInt8>(addr >> 8);
 		footerBlock.startAddressL		= static_cast<UInt8>(addr >> 0);
-		if (::fwrite(&footerBlock, 1, sizeof(footerBlock), fp) < sizeof(footerBlock)) return false;
+		if (::fwrite(&footerBlock, 1, sizeof(footerBlock), fp) < sizeof(footerBlock)) goto errorDone;
 	} while (0);
+	if (fp != stdout) ::fclose(fp);
 	return true;
+errorDone:
+	ErrorLog::AddError("error while writing data");
+	if (fp != stdout) ::fclose(fp);
+	return false;
 }
 
 UInt8 FormatCJR::CalcCheckSum(const void *pStart, const void *pEnd)
