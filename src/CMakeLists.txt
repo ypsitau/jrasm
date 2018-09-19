@@ -17,6 +17,7 @@ add_executable(jrasm
 	MmlParser.cpp
 	Operator.cpp
 	Parser.cpp
+	Segment.cpp
 	Token.cpp
 	Tokenizer.cpp
 )
