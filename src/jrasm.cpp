@@ -67,7 +67,7 @@ int main(int argc, const char *argv[])
 		}
 	}
 	if (cmdLine.IsSet("print_memory")) {
-		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, 0));
+		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, 128));
 		for (auto pRegion : *pRegionOwner) {
 			::printf("%04X-%04X\n", pRegion->GetAddrTop(), pRegion->GetAddrBtm());
 			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
