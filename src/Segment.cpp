@@ -25,7 +25,7 @@ void SegmentList::ClearRegion()
 	}
 }
 
-RegionOwner *SegmentList::JoinRegion(size_t bytesGapToJoin) const
+RegionOwner *SegmentList::JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) const
 {
 	RegionList regionList;
 	for (auto pSegment : *this) {
@@ -33,7 +33,7 @@ RegionOwner *SegmentList::JoinRegion(size_t bytesGapToJoin) const
 		regionList.insert(regionList.end(), regionOwnerOrg.begin(), regionOwnerOrg.end());
 	}
 	regionList.Sort();
-	return regionList.Join(bytesGapToJoin);
+	return regionList.Join(bytesGapToJoin, dataFiller);
 }
 
 //-----------------------------------------------------------------------------

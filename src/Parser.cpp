@@ -33,10 +33,10 @@ bool Parser::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nCol
 	return GetRoot()->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
 }
 
-RegionOwner *Parser::Generate(Context &context, size_t bytesGapToJoin)
+RegionOwner *Parser::Generate(Context &context, size_t bytesGapToJoin, UInt8 dataFiller)
 {
 	if (!GetRoot()->Generate(context)) return nullptr;
-	return context.GetSegmentOwner().JoinRegion(bytesGapToJoin);
+	return context.GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
 }
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)

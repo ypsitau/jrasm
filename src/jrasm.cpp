@@ -9,8 +9,9 @@
 const char *strBanner = "JR-200 Assembler " JRASM_VERSION " Copyright (C) " \
 	JRASM_COPYRIGHT_YEAR " ypsitau\n";
 
-const char *strUsage = R"**(usage: jrasm [option] source
-available options:
+const char *strUsage = "usage: jrasm [option] source\n";
+
+const char *strOption = R"**(available options:
 --output=file   -o file  specifies filename to output
 --print_disasm  -d       prints dump in disassembler format
 --print_list    -l       prints label list
@@ -38,17 +39,16 @@ int main(int argc, const char *argv[])
 		::fprintf(stderr, "%s\n", strErr.c_str());
 		return 1;
 	}
-	if (cmdLine.IsSet("help")) {
-		fprintf(stderr, "%s", strBanner);
-		fprintf(stderr, "%s", strUsage);
-		return 1;
-	}
 	ErrorLog::Clear();
 	Operator::Initialize();
 	Directive::Initialize();
 	Generator::Initialize(new Generator_M6800());
+	if (cmdLine.IsSet("help")) {
+		fprintf(stderr, "%s%s%s", strBanner, strUsage, strOption);
+		return 1;
+	}
 	if (argc < 2) {
-		::fprintf(stderr, "usage: jrasm file\n");
+		fprintf(stderr, "%s%s", strBanner, strUsage);
 		return 1;
 	}
 	const char *fileNameSrc = argv[1];
@@ -60,11 +60,11 @@ int main(int argc, const char *argv[])
 		if (!parser.GetRoot()->DumpDisasm(context, stdout, true, 3)) goto errorDone;
 	}
 	if (cmdLine.IsSet("print_list")) {
-		const char *format = " %04X  %s\n";
+		const char *format = "%04X  %s\n";
 		std::unique_ptr<Context::LabelInfoOwner> pLabelInfoOwner(context.MakeLabelInfoOwner());
 		::printf("[Label List]\n");
 		if (pLabelInfoOwner->empty()) {
-			::printf(" (no label)\n");
+			::printf("(no label)\n");
 		} else {
 			for (auto pLabelInfo : *pLabelInfoOwner) {
 				::printf(format, pLabelInfo->GetAddr(), pLabelInfo->GetLabel());
@@ -72,13 +72,15 @@ int main(int argc, const char *argv[])
 		}
 	}
 	if (cmdLine.IsSet("print_memory")) {
-		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, 128));
+		size_t bytesGapToJoin = 128;
+		UInt8 dataFiller = 0x00;
+		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
 		::printf("[Memory Image]\n");
 		for (auto pRegion : *pRegionOwner) {
-			::printf(" %04X-%04X   %dbytes\n",
+			::printf("%04X-%04X   %dbytes\n",
 					 pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
 			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
-				::printf("  %04X-%04X  %dbytes\n",
+				::printf(" %04X-%04X  %dbytes\n",
 						 pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm() - 1,
 						 pRegionIngredient->GetBytes());
 			}

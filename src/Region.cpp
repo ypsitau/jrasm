@@ -22,9 +22,9 @@ void Region::AddRegionIngredient(Region *pRegion)
 	_pRegionsIngredient->push_back(pRegion);
 }
 
-void Region::AppendZeros(size_t bytes)
+void Region::AppendFiller(UInt8 dataFiller, size_t bytes)
 {
-	while (bytes-- > 0) _buff += '\0';
+	while (bytes-- > 0) _buff += dataFiller;
 }
 
 void Region::Dump() const
@@ -45,7 +45,7 @@ void Region::Dump() const
 //-----------------------------------------------------------------------------
 // RegionList
 //-----------------------------------------------------------------------------
-RegionOwner *RegionList::Join(size_t bytesGapToJoin) const
+RegionOwner *RegionList::Join(size_t bytesGapToJoin, UInt8 dataFiller) const
 {
 	std::unique_ptr<RegionOwner> pRegionOwner(new RegionOwner());
 	const_iterator ppRegion = begin();
@@ -60,7 +60,7 @@ RegionOwner *RegionList::Join(size_t bytesGapToJoin) const
 			ErrorLog::AddError("memory regions are overwrapped at 0x%04x", pRegion->GetAddrTop());
 			return nullptr;
 		} else if (pRegion->GetAddrTop() - pRegionPrev->GetAddrBtm() < bytesGapToJoin) {
-			pRegionPrev->AppendZeros(pRegion->GetAddrTop() - pRegionPrev->GetAddrBtm());
+			pRegionPrev->AppendFiller(dataFiller, pRegion->GetAddrTop() - pRegionPrev->GetAddrBtm());
 			pRegionPrev->AppendBuffer(pRegion->GetBuffer());
 			pRegionPrev->AddRegionIngredient(pRegion->Reference());
 		} else {
@@ -86,9 +86,4 @@ void RegionOwner::Clear()
 		Region::Delete(pRegion);
 	}
 	clear();
-}
-
-RegionOwner *RegionOwner::Join()
-{
-	return nullptr;
 }

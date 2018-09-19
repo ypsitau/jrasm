@@ -41,7 +41,7 @@ public:
 class SegmentList : public std::vector<Segment *> {
 public:
 	void ClearRegion();
-	RegionOwner *JoinRegion(size_t bytesGapToJoin) const;
+	RegionOwner *JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) const;
 };
 
 //-----------------------------------------------------------------------------

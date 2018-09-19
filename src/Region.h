@@ -40,7 +40,7 @@ public:
 	inline void AppendBuffer(const Binary &buff) { _buff += buff; }
 	inline const RegionOwner &GetRegionsIngredient() const { return *_pRegionsIngredient; }
 	void AddRegionIngredient(Region *pRegion);
-	void AppendZeros(size_t bytes);
+	void AppendFiller(UInt8 dataFiller, size_t bytes);
 	void Dump() const;
 };
 
@@ -50,7 +50,7 @@ public:
 class RegionList : public std::vector<Region *> {
 public:
 	inline void Sort() { std::sort(begin(), end(), Region::LessThan()); }
-	RegionOwner *Join(size_t bytesGapToJoin) const;
+	RegionOwner *Join(size_t bytesGapToJoin, UInt8 dataFiller) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -60,7 +60,6 @@ class RegionOwner : public RegionList {
 public:
 	~RegionOwner();
 	void Clear();
-	RegionOwner *Join();
 };
 
 #endif
