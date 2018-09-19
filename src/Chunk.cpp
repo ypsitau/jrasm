@@ -6,6 +6,11 @@
 //-----------------------------------------------------------------------------
 // Chunk
 //-----------------------------------------------------------------------------
+void Chunk::AppendZeros(size_t bytes)
+{
+	while (bytes-- > 0) _buff += '\0';
+}
+
 void Chunk::Dump() const
 {
 	size_t col = 0;
@@ -24,9 +29,27 @@ void Chunk::Dump() const
 //-----------------------------------------------------------------------------
 // ChunkList
 //-----------------------------------------------------------------------------
-void ChunkList::SortByAddrTop()
+ChunkOwner *ChunkList::Join(size_t bytesGapToJoin) const
 {
-	
+	std::unique_ptr<ChunkOwner> pChunkOwner(new ChunkOwner());
+	if (empty()) return pChunkOwner.release();
+	const_iterator ppChunk = begin();
+	pChunkOwner->push_back((*ppChunk)->Clone());
+	ppChunk++;
+	for ( ; ppChunk != end(); ppChunk++) {
+		const Chunk *pChunk = *ppChunk;
+		Chunk *pChunkPrev = pChunkOwner->back();
+		if (pChunk->GetAddrTop() < pChunkPrev->GetAddrBtm()) {
+			ErrorLog::AddError("memory regions are overwrapped at 0x%04x", pChunk->GetAddrTop());
+			return nullptr;
+		} else if (pChunk->GetAddrTop() - pChunkPrev->GetAddrBtm() < bytesGapToJoin) {
+			pChunkPrev->AppendZeros(pChunk->GetAddrTop() - pChunkPrev->GetAddrBtm());
+			pChunkPrev->AppendBuffer(pChunk->GetBuffer());
+		} else {
+			pChunkOwner->push_back(pChunk->Clone());
+		}
+	}
+	return pChunkOwner.release();
 }
 
 //-----------------------------------------------------------------------------

@@ -15,6 +15,7 @@
 #include "Generator_M6800.h"
 #include "MmlParser.h"
 #include "Parser.h"
+#include "Segment.h"
 #include "Token.h"
 #include "Tokenizer.h"
 
