@@ -77,10 +77,10 @@ int main(int argc, const char *argv[])
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
 		::printf("[Memory Image]\n");
 		for (auto pRegion : *pRegionOwner) {
-			::printf("%04X-%04X   %dbytes\n",
+			::printf("%04X-%04X   %5dbytes\n",
 					 pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
 			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
-				::printf(" %04X-%04X  %dbytes\n",
+				::printf(" %04X-%04X  %5dbytes\n",
 						 pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm() - 1,
 						 pRegionIngredient->GetBytes());
 			}
