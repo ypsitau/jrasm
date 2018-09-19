@@ -33,6 +33,7 @@ private:
 public:
 	inline UInt16 GetAddrTop() const { return _addrTop; }
 	inline UInt16 GetAddrBtm() const { return static_cast<UInt16>(_addrTop + _buff.size()); }
+	inline UInt16 GetBytes() const { return _buff.size(); }
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline Region *Clone() const { return new Region(*this); }

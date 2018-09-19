@@ -60,29 +60,30 @@ int main(int argc, const char *argv[])
 		if (!parser.GetRoot()->DumpDisasm(context, stdout, true, 3)) goto errorDone;
 	}
 	if (cmdLine.IsSet("print_list")) {
-		const char *format = "%04X  %s\n";
+		const char *format = " %04X  %s\n";
 		std::unique_ptr<Context::LabelInfoOwner> pLabelInfoOwner(context.MakeLabelInfoOwner());
-		for (auto pLabelInfo : *pLabelInfoOwner) {
-			::printf(format, pLabelInfo->GetAddr(), pLabelInfo->GetLabel());
+		::printf("[Label List]\n");
+		if (pLabelInfoOwner->empty()) {
+			::printf(" (no label)\n");
+		} else {
+			for (auto pLabelInfo : *pLabelInfoOwner) {
+				::printf(format, pLabelInfo->GetAddr(), pLabelInfo->GetLabel());
+			}
 		}
 	}
 	if (cmdLine.IsSet("print_memory")) {
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, 128));
+		::printf("[Memory Image]\n");
 		for (auto pRegion : *pRegionOwner) {
-			::printf("%04X-%04X\n", pRegion->GetAddrTop(), pRegion->GetAddrBtm());
+			::printf(" %04X-%04X   %dbytes\n",
+					 pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
 			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
-				::printf("  %04X-%04X\n", pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm());
+				::printf("  %04X-%04X  %dbytes\n",
+						 pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm() - 1,
+						 pRegionIngredient->GetBytes());
 			}
 		}
 	}
-#if 0
-	do {
-		Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
-		for (auto iter : *pLookupTable) {
-			::printf("%04x  %s\n", iter.second, iter.first.c_str());
-		}
-	} while (0);
-#endif
 	return 0;
 errorDone:
 	ErrorLog::Print(stderr);
