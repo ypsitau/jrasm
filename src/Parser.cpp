@@ -6,10 +6,37 @@
 //-----------------------------------------------------------------------------
 // Parser
 //-----------------------------------------------------------------------------
-Parser::Parser(const String &fileNameSrc) :
-	_tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
+Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
 {
 	_exprStack.push_back(new Expr_Root());
+}
+
+bool Parser::ParseFile()
+{
+	FILE *fp;
+	if (::fopen_s(&fp, GetFileNameSrc(), "rt") != 0) {
+		ErrorLog::AddError("failed to open file: %s\n", GetFileNameSrc());
+		return false;
+	}
+	for (;;) {
+		int chRaw = ::fgetc(fp);
+		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
+		if (!FeedChar(ch)) break;
+		if (ch == '\0') break;
+	}
+	::fclose(fp);
+	return !ErrorLog::HasError();
+}
+
+bool Parser::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+{
+	return GetRoot()->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
+}
+
+RegionOwner *Parser::Generate(Context &context, size_t bytesGapToJoin)
+{
+	if (!GetRoot()->Generate(context)) return nullptr;
+	return context.GetSegmentOwner().JoinRegion(bytesGapToJoin);
 }
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)

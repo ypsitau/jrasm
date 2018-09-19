@@ -22,11 +22,12 @@ private:
 	int _cntRef;
 	UInt16 _addrTop;
 	Binary _buff;
+	std::unique_ptr<RegionOwner> _pRegionsIngredient;
 public:
 	DeclareReferenceAccessor(Region);
 public:
-	inline Region(UInt16 addrTop) : _cntRef(1), _addrTop(addrTop) {}
-	inline Region(const Region &region) : _cntRef(1), _addrTop(region._addrTop), _buff(region._buff) {}
+	Region(UInt16 addrTop);
+	Region(const Region &region);
 private:
 	inline ~Region() {}
 public:
@@ -36,6 +37,8 @@ public:
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline Region *Clone() const { return new Region(*this); }
 	inline void AppendBuffer(const Binary &buff) { _buff += buff; }
+	inline const RegionOwner &GetRegionsIngredient() const { return *_pRegionsIngredient; }
+	void AddRegionIngredient(Region *pRegion);
 	void AppendZeros(size_t bytes);
 	void Dump() const;
 };

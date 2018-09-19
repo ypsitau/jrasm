@@ -3,63 +3,88 @@
 //=============================================================================
 #include "stdafx.h"
 
-bool Parse(const char *fileName)
-{
-	ErrorLog::Clear();
-	FILE *fp;
-	if (::fopen_s(&fp, fileName, "rt") != 0) {
-		::fprintf(stderr, "failed to open file\n");
-		::exit(1);
-	}
-	Parser parser(fileName);
-	for (;;) {
-		int chRaw = ::fgetc(fp);
-		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
-		if (!parser.FeedChar(ch)) break;
-		if (ch == '\0') break;
-	}
-	::fclose(fp);
-	if (ErrorLog::HasError()) {
-		ErrorLog::Print(stderr);
-		return false;
-	}
-	//exprList.Print();
-	Context context;
-	parser.GetRoot()->Prepare(context);
-	if (ErrorLog::HasError()) {
-		ErrorLog::Print(stderr);
-		return false;
-	}
-#if 1
-	if (!parser.GetRoot()->DumpDisasm(context, stdout, true, 3)) {
-		ErrorLog::Print(stderr);
-		return false;
-	}
-#else
-	Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
-	for (auto iter : *pLookupTable) {
-		::printf("%04x  %s\n", iter.second, iter.first.c_str());
-	}
-#endif
-	return true;
-}
+#define JRASM_VERSION 			"0.0.1"
+#define JRASM_COPYRIGHT_YEAR	"2018"
 
-int main(int argc, char *argv[])
+const char *strBanner = "JR-200 Assembler " JRASM_VERSION " Copyright (C) " \
+	JRASM_COPYRIGHT_YEAR " ypsitau\n";
+
+const char *strUsage = R"**(usage: jrasm [option] source
+available options:
+--output=file   -o file  specifies filename to output
+--print_disasm  -d       prints dump in disassembler format
+--print_list    -l       prints label list
+--print_memory  -m       prints memory image
+--verbose       -v       verbose mode
+--help          -h       prints this help
+)**";
+
+//-----------------------------------------------------------------------------
+// main
+//-----------------------------------------------------------------------------
+int main(int argc, const char *argv[])
 {
+	static const CommandLine::Info infoTbl[] = {
+		{ "output",			'o',	CommandLine::TYPE_Value	},
+		{ "print_disasm",	'd',	CommandLine::TYPE_Flag	},
+		{ "print_list",		'l',	CommandLine::TYPE_Flag	},
+		{ "print_memory",	'm',	CommandLine::TYPE_Flag	},
+		{ "verbose",		'v',	CommandLine::TYPE_Flag	},
+		{ "help",			'h',	CommandLine::TYPE_Flag	},
+	};
+	String strErr;
+	CommandLine cmdLine;
+	if (!cmdLine.AddInfo(infoTbl, ArraySizeOf(infoTbl)).Parse(argc, argv, strErr)) {
+		::fprintf(stderr, "%s\n", strErr.c_str());
+		return 1;
+	}
+	if (cmdLine.IsSet("help")) {
+		fprintf(stderr, "%s", strBanner);
+		fprintf(stderr, "%s", strUsage);
+		return 1;
+	}
+	ErrorLog::Clear();
 	Operator::Initialize();
 	Directive::Initialize();
 	Generator::Initialize(new Generator_M6800());
-#if 1
 	if (argc < 2) {
 		::fprintf(stderr, "usage: jrasm file\n");
-		::exit(1);
+		return 1;
 	}
-	::Parse(argv[1]);
-#else
-	FILE *fp = ::fopen("test.cjr", "wb");
-	CJRFormat::Write(fp, "hello", 0x2000,
-					 (const UInt8 *)"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f", 16);
-	::fclose(fp);
+	const char *fileNameSrc = argv[1];
+	Parser parser(fileNameSrc);
+	Context context;
+	if (!parser.ParseFile()) goto errorDone;
+	if (!parser.GetRoot()->Prepare(context)) goto errorDone;
+	if (cmdLine.IsSet("disasm")) {
+		if (!parser.GetRoot()->DumpDisasm(context, stdout, true, 3)) goto errorDone;
+	}
+	if (cmdLine.IsSet("print_list")) {
+		const char *format = "%04X  %s\n";
+		std::unique_ptr<Context::LabelInfoOwner> pLabelInfoOwner(context.MakeLabelInfoOwner());
+		for (auto pLabelInfo : *pLabelInfoOwner) {
+			::printf(format, pLabelInfo->GetAddr(), pLabelInfo->GetLabel());
+		}
+	}
+	if (cmdLine.IsSet("print_memory")) {
+		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, 0));
+		for (auto pRegion : *pRegionOwner) {
+			::printf("%04X-%04X\n", pRegion->GetAddrTop(), pRegion->GetAddrBtm());
+			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
+				::printf("  %04X-%04X\n", pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm());
+			}
+		}
+	}
+#if 0
+	do {
+		Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
+		for (auto iter : *pLookupTable) {
+			::printf("%04x  %s\n", iter.second, iter.first.c_str());
+		}
+	} while (0);
 #endif
 	return 0;
+errorDone:
+	ErrorLog::Print(stderr);
+	return 1;
 }

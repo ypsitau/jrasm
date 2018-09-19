@@ -14,6 +14,12 @@ Context::Context() : _preparationFlag(false)
 	SelectCodeSegment();
 }
 
+void Context::StartRegion(UInt32 addr)
+{
+	_pSegmentCur->AddRegion(new Region(addr));
+	_pSegmentCur->SetAddress(addr);
+}
+
 Context::LookupTable *Context::AddLookupTable()
 {
 	LookupTable *pLookupTable = new LookupTable(_lookupTableStack.back()->Reference());
@@ -26,6 +32,16 @@ void Context::RemoveLookupTable()
 	LookupTable *pLookupTable = _lookupTableStack.back();
 	_lookupTableStack.pop_back();
 	LookupTable::Delete(pLookupTable);
+}
+
+Context::LabelInfoOwner *Context::MakeLabelInfoOwner() const
+{
+	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
+	for (auto iter : *GetLookupTableRoot()) {
+		pLabelInfoOwner->push_back(new LabelInfo(iter.second, iter.first.c_str()));
+	}
+	pLabelInfoOwner->SortByAddr();
+	return pLabelInfoOwner.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -76,6 +92,36 @@ void Context::LookupTableOwner::Clear()
 {
 	for (auto pLookupTable : *this) {
 		LookupTable::Delete(pLookupTable);
+	}
+	clear();
+}
+
+//-----------------------------------------------------------------------------
+// Context::LabelInfoList
+//-----------------------------------------------------------------------------
+size_t Context::LabelInfoList::GetLabelLenMax(const_iterator ppLabelInfo, const_iterator ppLabelInfoEnd)
+{
+	size_t labelLenMax = 0;
+	for ( ; ppLabelInfo != ppLabelInfoEnd; ppLabelInfo++) {
+		const LabelInfo *pLabelInfo = *ppLabelInfo;
+		size_t labelLen = ::strlen(pLabelInfo->GetLabel());
+		if (labelLenMax < labelLen) labelLenMax = labelLen;
+	}
+	return labelLenMax;
+}
+
+//-----------------------------------------------------------------------------
+// Context::LabelInfoOwner
+//-----------------------------------------------------------------------------
+Context::LabelInfoOwner::~LabelInfoOwner()
+{
+	Clear();
+}
+
+void Context::LabelInfoOwner::Clear()
+{
+	for (auto pLabelInfo : *this) {
+		delete pLabelInfo;
 	}
 	clear();
 }
