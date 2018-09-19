@@ -153,7 +153,7 @@ bool Expr_Root::Generate(Context &context) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		pExpr->Generate(context);
+		if (!pExpr->Generate(context)) return false;
 	}
 	return true;
 }
@@ -162,7 +162,7 @@ bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int n
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		pExpr->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
+		if (!pExpr->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
 	}
 	return true;
 }
@@ -425,7 +425,6 @@ bool Expr_Directive::Prepare(Context &context)
 
 bool Expr_Directive::Generate(Context &context) const
 {
-	if (!context.CheckRegionReady()) return false;
 	return _pDirective->Generate(context, this, context.GetBuffer());
 }
 

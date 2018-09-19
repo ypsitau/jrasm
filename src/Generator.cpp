@@ -19,6 +19,11 @@ void Generator::Initialize(Generator *pGenerator)
 
 bool Generator::Generate(Context &context, const Expr_Instruction *pExpr) const
 {
-	if (!context.CheckRegionReady()) return false;
 	return Generate(context, pExpr, context.GetBuffer());
+}
+
+bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const
+{
+	if (!context.CheckRegionReady()) return false;
+	return DoGenerate(context, pExpr, buffDst);
 }

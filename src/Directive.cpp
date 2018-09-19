@@ -99,6 +99,7 @@ bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
 		if (!pExprReduced->IsTypeNumber()) {
@@ -141,6 +142,7 @@ bool Directive_DW::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
 		if (!pExprReduced->IsTypeNumber()) {
@@ -288,6 +290,7 @@ bool Directive_MML::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	Handler handler(&buffDst);
 	MmlParser parser(handler);
 	parser.Reset();
@@ -372,6 +375,7 @@ bool Directive_PCG::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_PCG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	return true;
 }
 

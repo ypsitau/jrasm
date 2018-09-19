@@ -150,7 +150,7 @@ bool Generator_M6800::CalcInstBytes(Context &context, const Expr_Instruction *pE
 	return pEntry->ApplyRule(context, pExpr, nullptr, pBytes);
 }
 
-bool Generator_M6800::Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const
+bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {

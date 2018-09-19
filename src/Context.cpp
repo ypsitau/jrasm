@@ -9,6 +9,9 @@
 Context::Context() : _addr(0x0000), _preparationFlag(false)
 {
 	_lookupTableStack.push_back(new LookupTable());
+	_segmentOwner.push_back(new Segment("code"));	// code segment
+	_segmentOwner.push_back(new Segment("data"));	// data segment
+	SelectCodeSegment();
 }
 
 Context::LookupTable *Context::AddLookupTable()
@@ -23,11 +26,6 @@ void Context::RemoveLookupTable()
 	LookupTable *pLookupTable = _lookupTableStack.back();
 	_lookupTableStack.pop_back();
 	LookupTable::Delete(pLookupTable);
-}
-
-bool Context::CheckRegionReady() const
-{
-	return true;
 }
 
 //-----------------------------------------------------------------------------

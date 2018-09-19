@@ -31,7 +31,10 @@ bool Parse(const char *fileName)
 		return false;
 	}
 #if 1
-	parser.GetRoot()->DumpDisasm(context, stdout, true, 3);
+	if (!parser.GetRoot()->DumpDisasm(context, stdout, true, 3)) {
+		ErrorLog::Print(stderr);
+		return false;
+	}
 #else
 	Context::LookupTable *pLookupTable = context.GetLookupTableRoot();
 	for (auto iter : *pLookupTable) {
