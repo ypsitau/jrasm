@@ -42,7 +42,7 @@ public:
 	};
 	typedef LookupTableOwner LookupTableStack;
 private:
-	UInt32 _addr;
+	//UInt32 _addr;
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	bool _preparationFlag;
@@ -54,9 +54,12 @@ public:
 	inline Binary &GetBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
-	inline void StartRegion(UInt32 addr) { _pSegmentCur->AddRegion(new Region(addr)), _addr = addr; }
-	inline UInt32 GetAddress() const { return _addr; }
-	inline void ForwardAddress(UInt32 bytes) { _addr += bytes; }
+	inline void StartRegion(UInt32 addr) {
+		_pSegmentCur->AddRegion(new Region(addr));
+		_pSegmentCur->SetAddress(addr);
+	}
+	inline UInt32 GetAddress() const { return _pSegmentCur->GetAddress(); }
+	inline void ForwardAddress(UInt32 bytes) { _pSegmentCur->ForwardAddress(bytes); }
 	inline void SetPreparationFlag(bool preparationFlag) { _preparationFlag = preparationFlag; }
 	inline bool GetPreparationFlag() const { return _preparationFlag; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }

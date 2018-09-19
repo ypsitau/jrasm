@@ -80,11 +80,13 @@ void DirectiveOwner::Clear()
 //-----------------------------------------------------------------------------
 bool Directive_CSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	context.SelectCodeSegment();
 	return true;
 }
 
 bool Directive_CSEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	context.SelectCodeSegment();
 	return true;
 }
 
@@ -123,11 +125,13 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 bool Directive_DSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	context.SelectDataSegment();
 	return true;
 }
 
 bool Directive_DSEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	context.SelectDataSegment();
 	return true;
 }
 

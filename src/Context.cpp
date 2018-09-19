@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context() : _addr(0x0000), _preparationFlag(false)
+Context::Context() : _preparationFlag(false)
 {
 	_lookupTableStack.push_back(new LookupTable());
 	_segmentOwner.push_back(new Segment("code"));	// code segment
