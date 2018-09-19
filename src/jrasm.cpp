@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	Generator::Initialize(new Generator_M6800());
 #if 1
 	if (argc < 2) {
-		::fprintf(stderr, "usage: jasm file\n");
+		::fprintf(stderr, "usage: jrasm file\n");
 		::exit(1);
 	}
 	::Parse(argv[1]);
