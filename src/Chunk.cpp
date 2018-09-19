@@ -32,8 +32,8 @@ void Chunk::Dump() const
 ChunkOwner *ChunkList::Join(size_t bytesGapToJoin) const
 {
 	std::unique_ptr<ChunkOwner> pChunkOwner(new ChunkOwner());
-	if (empty()) return pChunkOwner.release();
 	const_iterator ppChunk = begin();
+	if (ppChunk == end()) return pChunkOwner.release();
 	pChunkOwner->push_back((*ppChunk)->Clone());
 	ppChunk++;
 	for ( ; ppChunk != end(); ppChunk++) {
