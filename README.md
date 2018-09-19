@@ -6,7 +6,8 @@ programs for JR-200, a micro computer made by Panasonic in 1983.
 ## Build for Windows
 
 Open the solution file `jrasm.sln` with Visual Studio 2017 and build it.
-The executable `jrasm.exe` will be produced in the following directories according to the configuration:
+The executable `jrasm.exe` will be produced in the following directories
+according to the selected configuration:
 
 - `x64\Release` .. 64-bit executable for release.
 - `x64\Debug` .. 64-bit executable for debug purpose.
