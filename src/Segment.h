@@ -4,7 +4,7 @@
 #ifndef __SEGMENT_H__
 #define __SEGMENT_H__
 
-#include "Chunk.h"
+#include "Region.h"
 
 //-----------------------------------------------------------------------------
 // Segment
@@ -12,7 +12,7 @@
 class Segment {
 private:
 	int _cntRef;
-	ChunkOwner _chunkOwner;
+	RegionOwner _regionOwner;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
@@ -20,8 +20,8 @@ public:
 private:
 	inline ~Segment() {}
 public:
-	inline ChunkOwner &GetChunkOwner() { return _chunkOwner; }
-	inline const ChunkOwner &GetChunkOwner() const { return _chunkOwner; }
+	inline RegionOwner &GetRegionOwner() { return _regionOwner; }
+	inline const RegionOwner &GetRegionOwner() const { return _regionOwner; }
 };
 
 //-----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ public:
 //-----------------------------------------------------------------------------
 class SegmentList : public std::vector<Segment *> {
 public:
-	ChunkOwner *JoinChunk(size_t bytesGapToJoin) const;
+	RegionOwner *JoinRegion(size_t bytesGapToJoin) const;
 };
 
 //-----------------------------------------------------------------------------

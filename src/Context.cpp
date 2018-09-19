@@ -25,7 +25,7 @@ void Context::RemoveLookupTable()
 	LookupTable::Delete(pLookupTable);
 }
 
-bool Context::CheckChunkReady() const
+bool Context::CheckRegionReady() const
 {
 	return true;
 }

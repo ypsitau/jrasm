@@ -1,21 +1,21 @@
 //=============================================================================
-// Chunk.h
+// Region.h
 //=============================================================================
-#ifndef __CHUNK_H__
-#define __CHUNK_H__
+#ifndef __REGION_H__
+#define __REGION_H__
 
 #include "Common.h"
 
-class ChunkOwner;
+class RegionOwner;
 
 //-----------------------------------------------------------------------------
-// Chunk
+// Region
 //-----------------------------------------------------------------------------
-class Chunk {
+class Region {
 public:
 	struct LessThan {
-		inline bool operator()(const Chunk *pChunk1, const Chunk *pChunk2) const {
-			return pChunk1->GetAddrTop() < pChunk2->GetAddrTop();
+		inline bool operator()(const Region *pRegion1, const Region *pRegion2) const {
+			return pRegion1->GetAddrTop() < pRegion2->GetAddrTop();
 		}
 	};
 private:
@@ -23,40 +23,40 @@ private:
 	UInt16 _addrTop;
 	Binary _buff;
 public:
-	DeclareReferenceAccessor(Chunk);
+	DeclareReferenceAccessor(Region);
 public:
-	inline Chunk(UInt16 addrTop) : _cntRef(1), _addrTop(addrTop) {}
-	inline Chunk(const Chunk &chunk) : _cntRef(1), _addrTop(chunk._addrTop), _buff(chunk._buff) {}
+	inline Region(UInt16 addrTop) : _cntRef(1), _addrTop(addrTop) {}
+	inline Region(const Region &region) : _cntRef(1), _addrTop(region._addrTop), _buff(region._buff) {}
 private:
-	inline ~Chunk() {}
+	inline ~Region() {}
 public:
 	inline UInt16 GetAddrTop() const { return _addrTop; }
 	inline UInt16 GetAddrBtm() const { return static_cast<UInt16>(_addrTop + _buff.size()); }
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
-	inline Chunk *Clone() const { return new Chunk(*this); }
+	inline Region *Clone() const { return new Region(*this); }
 	inline void AppendBuffer(const Binary &buff) { _buff += buff; }
 	void AppendZeros(size_t bytes);
 	void Dump() const;
 };
 
 //-----------------------------------------------------------------------------
-// ChunkList
+// RegionList
 //-----------------------------------------------------------------------------
-class ChunkList : public std::vector<Chunk *> {
+class RegionList : public std::vector<Region *> {
 public:
-	inline void Sort() { std::sort(begin(), end(), Chunk::LessThan()); }
-	ChunkOwner *Join(size_t bytesGapToJoin) const;
+	inline void Sort() { std::sort(begin(), end(), Region::LessThan()); }
+	RegionOwner *Join(size_t bytesGapToJoin) const;
 };
 
 //-----------------------------------------------------------------------------
-// ChunkOwner
+// RegionOwner
 //-----------------------------------------------------------------------------
-class ChunkOwner : public ChunkList {
+class RegionOwner : public RegionList {
 public:
-	~ChunkOwner();
+	~RegionOwner();
 	void Clear();
-	ChunkOwner *Join();
+	RegionOwner *Join();
 };
 
 #endif

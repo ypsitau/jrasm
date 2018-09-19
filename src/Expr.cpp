@@ -151,7 +151,7 @@ bool Expr_Root::Prepare(Context &context)
 
 bool Expr_Root::Generate(Context &context) const
 {
-	context.ClearChunk();
+	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		pExpr->Generate(context);
 	}
@@ -160,7 +160,7 @@ bool Expr_Root::Generate(Context &context) const
 
 bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
 {
-	context.ClearChunk();
+	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		pExpr->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
 	}
@@ -425,7 +425,7 @@ bool Expr_Directive::Prepare(Context &context)
 
 bool Expr_Directive::Generate(Context &context) const
 {
-	if (!context.CheckChunkReady()) return false;
+	if (!context.CheckRegionReady()) return false;
 	return _pDirective->Generate(context, this, context.GetBuffer());
 }
 

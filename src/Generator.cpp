@@ -19,6 +19,6 @@ void Generator::Initialize(Generator *pGenerator)
 
 bool Generator::Generate(Context &context, const Expr_Instruction *pExpr) const
 {
-	if (!context.CheckChunkReady()) return false;
+	if (!context.CheckRegionReady()) return false;
 	return Generate(context, pExpr, context.GetBuffer());
 }

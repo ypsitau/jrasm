@@ -10,15 +10,15 @@
 //-----------------------------------------------------------------------------
 // SegmentList
 //-----------------------------------------------------------------------------
-ChunkOwner *SegmentList::JoinChunk(size_t bytesGapToJoin) const
+RegionOwner *SegmentList::JoinRegion(size_t bytesGapToJoin) const
 {
-	ChunkList chunkList;
+	RegionList regionList;
 	for (auto pSegment : *this) {
-		const ChunkOwner &chunkOwnerOrg = pSegment->GetChunkOwner();
-		chunkList.insert(chunkList.end(), chunkOwnerOrg.begin(), chunkOwnerOrg.end());
+		const RegionOwner &regionOwnerOrg = pSegment->GetRegionOwner();
+		regionList.insert(regionList.end(), regionOwnerOrg.begin(), regionOwnerOrg.end());
 	}
-	chunkList.Sort();
-	return chunkList.Join(bytesGapToJoin);
+	regionList.Sort();
+	return regionList.Join(bytesGapToJoin);
 }
 
 //-----------------------------------------------------------------------------
