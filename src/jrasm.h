@@ -5,6 +5,7 @@
 #define __JRASM_H__
 
 #include "Common.h"
+#include "CommandLine.h"
 #include "Context.h"
 #include "Directive.h"
 #include "ErrorLog.h"
