@@ -33,6 +33,9 @@
 *.out
 *.app
 
+# JR-200 files
+*.cjr
+
 # Visual Studio Project Files
 *.filters
 *.user
