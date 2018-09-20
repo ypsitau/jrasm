@@ -33,7 +33,7 @@ bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 		headerBlock.binaryFlag 			= 0x01;
 		headerBlock.baudrate			= 0x00;
 		::memcpy(headerBlock.dummy,		"\xff\xff\xff\xff\xff\xff\xff\xff", 8);
-		headerBlock.checkSum			= CalcCheckSum(headerBlock.fileNameJR, &headerBlock.checkSum);
+		headerBlock.checkSum			= CalcCheckSum(headerBlock.preamble, &headerBlock.checkSum);
 		if (::fwrite(&headerBlock, 1, sizeof(headerBlock), fp) < sizeof(headerBlock)) goto errorDone;
 	} while (0);
 	for (auto pRegion : regionList) {
@@ -50,7 +50,8 @@ bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 			dataBlockTop.blockSize 			= static_cast<UInt8>(bytesBlock);
 			dataBlockTop.startAddressH		= static_cast<UInt8>(addr >> 8);
 			dataBlockTop.startAddressL		= static_cast<UInt8>(addr >> 0);
-			dataBlockBtm.checkSum			= CalcCheckSum(data, data + bytesBlock);
+			dataBlockBtm.checkSum			= CalcCheckSum(&dataBlockTop, sizeof(dataBlockTop)) +
+											  CalcCheckSum(data, bytesBlock);
 			if (::fwrite(&dataBlockTop, 1, sizeof(dataBlockTop), fp) < sizeof(dataBlockTop)) goto errorDone;
 			if (::fwrite(data, 1, bytesBlock, fp) < bytesBlock) goto errorDone;
 			if (::fwrite(&dataBlockBtm, 1, sizeof(dataBlockBtm), fp) < sizeof(dataBlockBtm)) goto errorDone;
@@ -74,6 +75,11 @@ errorDone:
 	ErrorLog::AddError("error while writing data");
 	if (fp != stdout) ::fclose(fp);
 	return false;
+}
+
+UInt8 FormatCJR::CalcCheckSum(const void *pStart, size_t bytes)
+{
+	return CalcCheckSum(pStart, reinterpret_cast<const char *>(pStart) + bytes);
 }
 
 UInt8 FormatCJR::CalcCheckSum(const void *pStart, const void *pEnd)

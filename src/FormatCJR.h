@@ -45,6 +45,7 @@ private:
 public:
 	FormatCJR(const String &fileNameJR);
 	bool Write(const char *fileNameOut, const RegionList &regionList);
+	static UInt8 CalcCheckSum(const void *pStart, size_t bytes);
 	static UInt8 CalcCheckSum(const void *pStart, const void *pEnd);
 };
 
