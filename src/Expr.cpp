@@ -95,7 +95,7 @@ Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
 bool ExprList::Prepare(Context &context)
 {
 	for (auto pExpr : *this) {
-		pExpr->Prepare(context);
+		if (!pExpr->Prepare(context)) return false;
 	}
 	return true;
 }

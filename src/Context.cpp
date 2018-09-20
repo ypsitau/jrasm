@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------------
 Context::Context() : _preparationFlag(false)
 {
+	_fileNameJR = "JRASM";
 	_lookupTableStack.push_back(new LookupTable());
 	_segmentOwner.push_back(new Segment("code"));	// code segment
 	_segmentOwner.push_back(new Segment("data"));	// data segment

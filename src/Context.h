@@ -76,12 +76,15 @@ public:
 		void Clear();
 	};
 private:
+	String _fileNameJR;
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	bool _preparationFlag;
 	LookupTableStack _lookupTableStack;
 public:
 	Context();
+	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
+	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
 	inline Binary &GetBuffer() { return _pSegmentCur->GetBuffer(); }

@@ -31,6 +31,7 @@ void Directive::Initialize()
 	_pDirectivesBuiltIn->push_back(new Directive_ENDM());
 	_pDirectivesBuiltIn->push_back(new Directive_ENDP());
 	_pDirectivesBuiltIn->push_back(new Directive_EQU());
+	_pDirectivesBuiltIn->push_back(new Directive_FILENAMEJR());
 	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
 	_pDirectivesBuiltIn->push_back(new Directive_MACRO());
 	_pDirectivesBuiltIn->push_back(new Directive_MML());
@@ -80,6 +81,11 @@ void DirectiveOwner::Clear()
 //-----------------------------------------------------------------------------
 bool Directive_CSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .cseg takes no operands");
+		return false;
+	}
 	context.SelectCodeSegment();
 	return true;
 }
@@ -125,6 +131,11 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 bool Directive_DSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .dseg takes no operands");
+		return false;
+	}
 	context.SelectDataSegment();
 	return true;
 }
@@ -182,6 +193,11 @@ bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, co
 
 bool Directive_ENDM::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .endm takes no operands");
+		return false;
+	}
 	return true;
 }
 
@@ -195,6 +211,11 @@ bool Directive_ENDM::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .endp takes no operands");
+		return false;
+	}
 	return true;
 }
 
@@ -233,12 +254,41 @@ bool Directive_EQU::Generate(Context &context, const Expr_Directive *pExpr, Bina
 Expr *Directive_EQU::Reduce(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
-	// .equ data
 	if (operands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .equ takes one operand");
 		return nullptr;
 	}
 	return operands.back()->Reduce(context);
+}
+
+//-----------------------------------------------------------------------------
+// Directive_FILENAMEJR
+//-----------------------------------------------------------------------------
+bool Directive_FILENAMEJR::Prepare(Context &context, const Expr_Directive *pExpr) const
+{
+	const ExprList &operands = pExpr->GetOperands();
+	if (operands.size() != 1) {
+		ErrorLog::AddError(pExpr, "directive .filenamejr takes one operand");
+		return false;
+	}
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
+	if (!pExprLast->IsTypeString()) {
+		ErrorLog::AddError(pExpr, "directive .filenamejr takes a string value as its operand");
+		return false;
+	}
+	const char *fileNameJR = dynamic_cast<const Expr_String *>(pExprLast.get())->GetString();
+	if (::strlen(fileNameJR) > 16) {
+		ErrorLog::AddError(pExpr, "the length of JR filename must be up to 16 characters");
+		return false;
+	}
+	context.SetFileNameJR(fileNameJR);
+	return true;
+}
+
+bool Directive_FILENAMEJR::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+{
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -344,7 +394,6 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
-	// .org data16
 	if (operands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .org takes one operand");
 		return false;
@@ -352,7 +401,7 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeNumber()) {
-		ErrorLog::AddError(pExpr, "directive .org expects a number value for its operand");
+		ErrorLog::AddError(pExpr, "directive .org takes a number value as its operand");
 		return false;
 	}
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();

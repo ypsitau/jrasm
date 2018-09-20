@@ -15,8 +15,10 @@ const char *strOption = R"**(available options:
 --output=file     -o file  specifies filename to output
 --print-disasm-l  -d       prints disassembler dump in lower case
 --print-disasm-u  -D       prints disassembler dump in upper case
---print-list      -l       prints label list
---print-memory    -m       prints memory image
+--print-list-l    -l       prints label list in lower case
+--print-list-u    -L       prints label list in upper case
+--print-memory-l  -m       prints memory image in lower case
+--print-memory-u  -M       prints memory image in upper case
 --verbose         -v       verbose mode
 --help            -h       prints this help
 )**";
@@ -30,11 +32,14 @@ int main(int argc, const char *argv[])
 		{ "output",				'o',	CommandLine::TYPE_Value	},
 		{ "print-disasm-l",		'd',	CommandLine::TYPE_Flag	},
 		{ "print-disasm-u",		'D',	CommandLine::TYPE_Flag	},
-		{ "print-list",			'l',	CommandLine::TYPE_Flag	},
-		{ "print-memory",		'm',	CommandLine::TYPE_Flag	},
+		{ "print-list-l",		'l',	CommandLine::TYPE_Flag	},
+		{ "print-list-u",		'L',	CommandLine::TYPE_Flag	},
+		{ "print-memory-l",		'm',	CommandLine::TYPE_Flag	},
+		{ "print-memory-u",		'M',	CommandLine::TYPE_Flag	},
 		{ "verbose",			'v',	CommandLine::TYPE_Flag	},
 		{ "help",				'h',	CommandLine::TYPE_Flag	},
 	};
+	bool upperCaseFlag = false;
 	String strErr;
 	CommandLine cmdLine;
 	if (!cmdLine.AddInfo(infoTbl, ArraySizeOf(infoTbl)).Parse(argc, argv, strErr)) {
@@ -57,24 +62,24 @@ int main(int argc, const char *argv[])
 	Parser parser(pathNameSrc);
 	Context context;
 	if (!parser.ParseFile()) goto errorDone;
-	if (!parser.GetRoot()->Prepare(context)) goto errorDone;
-	if (cmdLine.IsSet("print-disasm-l")) {
-		if (!parser.DumpDisasm(context, stdout, false, 3)) goto errorDone;
-	} else if (cmdLine.IsSet("print-disasm-u")) {
-		if (!parser.DumpDisasm(context, stdout, true, 3)) goto errorDone;
+	if (!parser.Prepare(context)) goto errorDone;
+	upperCaseFlag = false;
+	if (cmdLine.IsSet("print-disasm-l") || (upperCaseFlag = cmdLine.IsSet("print-disasm-u"))) {
+		if (!parser.DumpDisasm(context, stdout, upperCaseFlag, 3)) goto errorDone;
 	} else {
 		const char *fileNameSrc = ExtractFileName(pathNameSrc);
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
 		if (pRegionOwner.get() == nullptr) goto errorDone;
-		String fileNameCJR = ::RemoveExtName(fileNameSrc) + ".cjr";
-		FormatCJR format("JRASM");
-		if (!format.Write(fileNameCJR.c_str(), *pRegionOwner)) goto errorDone;
-		::printf("%s was generated\n", fileNameCJR.c_str());
+		String fileNameOut = ::RemoveExtName(fileNameSrc) + ".cjr";
+		FormatCJR format(context.GetFileNameJR());
+		if (!format.Write(fileNameOut.c_str(), *pRegionOwner)) goto errorDone;
+		::printf("%s was created\n", fileNameOut.c_str());
 	}
-	if (cmdLine.IsSet("print-list")) {
-		const char *format = "%04X  %s\n";
+	upperCaseFlag = false;
+	if (cmdLine.IsSet("print-list-l") || (upperCaseFlag = cmdLine.IsSet("print-list-u"))) {
+		const char *format = upperCaseFlag? "%04X  %s\n" : "%04x  %s\n";
 		std::unique_ptr<Context::LabelInfoOwner> pLabelInfoOwner(context.MakeLabelInfoOwner());
 		::printf("[Label List]\n");
 		if (pLabelInfoOwner->empty()) {
@@ -85,16 +90,22 @@ int main(int argc, const char *argv[])
 			}
 		}
 	}
-	if (cmdLine.IsSet("print-memory")) {
+	upperCaseFlag = false;
+	if (cmdLine.IsSet("print-memory-l") || (upperCaseFlag = cmdLine.IsSet("print-memory-u"))) {
+		const char *formatRoot	= "%04x-%04x   %5dbytes\n";
+		const char *formatChild	= " %04x-%04x  %5dbytes\n";
+		if (upperCaseFlag) {
+			formatRoot	= "%04X-%04X   %5dbytes\n";
+			formatChild	= " %04X-%04X  %5dbytes\n";
+		}
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
 		::printf("[Memory Image]\n");
 		for (auto pRegion : *pRegionOwner) {
-			::printf("%04X-%04X   %5dbytes\n",
-					 pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
+			::printf(formatRoot, pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
 			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
-				::printf(" %04X-%04X  %5dbytes\n",
+				::printf(formatChild,
 						 pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm() - 1,
 						 pRegionIngredient->GetBytes());
 			}

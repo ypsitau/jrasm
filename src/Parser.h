@@ -36,6 +36,7 @@ public:
 		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
 	bool ParseFile();
+	bool Prepare(Context &context);
 	bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
 	RegionOwner *Generate(Context &context, size_t bytesGapToJoin, UInt8 dataFiller);
 	void AddError(const char *format, ...) const;

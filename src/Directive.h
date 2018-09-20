@@ -123,6 +123,16 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Directive_FILENAMEJR
+//-----------------------------------------------------------------------------
+class Directive_FILENAMEJR : public Directive {
+public:
+	inline Directive_FILENAMEJR() : Directive(".filenamejr") {}
+	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+};
+
+//-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
 class Directive_INCLUDE : public Directive {
