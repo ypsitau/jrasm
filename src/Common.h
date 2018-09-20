@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <deque>

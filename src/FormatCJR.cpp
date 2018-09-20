@@ -17,8 +17,7 @@ bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 	UInt16 addr = 0;
 	FILE *fp = stdout;
 	if (*fileNameOut != '\0') {
-		fp = ::fopen(fileNameOut, "w");
-		if (fp == nullptr) {
+		if (::fopen_s(&fp, fileNameOut, "w") != 0) {
 			ErrorLog::AddError("failed to open output file: %s", fileNameOut);
 			return false;
 		}
