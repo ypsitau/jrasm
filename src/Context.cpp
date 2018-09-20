@@ -10,8 +10,9 @@ Context::Context() : _preparationFlag(false)
 {
 	_fileNameJR = "JRASM_PRODUCT";
 	_lookupTableStack.push_back(new LookupTable());
-	_segmentOwner.push_back(new Segment("code"));	// code segment
-	_segmentOwner.push_back(new Segment("data"));	// data segment
+	_segmentOwner.push_back(new Segment("code"));		// code segment
+	_segmentOwner.push_back(new Segment("data"));		// data segment
+	_segmentOwner.push_back(new Segment("internal"));	// internal segment
 	SelectCodeSegment();
 }
 

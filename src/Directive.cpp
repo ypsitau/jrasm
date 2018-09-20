@@ -33,6 +33,7 @@ void Directive::Initialize()
 	_pDirectivesBuiltIn->push_back(new Directive_EQU());
 	_pDirectivesBuiltIn->push_back(new Directive_FILENAMEJR());
 	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
+	_pDirectivesBuiltIn->push_back(new Directive_ISEG());
 	_pDirectivesBuiltIn->push_back(new Directive_MACRO());
 	_pDirectivesBuiltIn->push_back(new Directive_MML());
 	_pDirectivesBuiltIn->push_back(new Directive_ORG());
@@ -302,6 +303,26 @@ bool Directive_INCLUDE::Prepare(Context &context, const Expr_Directive *pExpr) c
 
 bool Directive_INCLUDE::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_ISEG
+//-----------------------------------------------------------------------------
+bool Directive_ISEG::Prepare(Context &context, const Expr_Directive *pExpr) const
+{
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .iseg takes no operands");
+		return false;
+	}
+	context.SelectInternalSegment();
+	return true;
+}
+
+bool Directive_ISEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+{
+	context.SelectInternalSegment();
 	return true;
 }
 

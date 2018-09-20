@@ -143,6 +143,16 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Directive_ISEG
+//-----------------------------------------------------------------------------
+class Directive_ISEG : public Directive {
+public:
+	inline Directive_ISEG() : Directive(".iseg") {}
+	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+};
+
+//-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
 class Directive_MACRO : public Directive {
