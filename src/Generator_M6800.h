@@ -125,7 +125,7 @@ private:
 public:
 	Generator_M6800();
 	virtual bool IsRegisterSymbol(const char *symbol) const;
-	virtual bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
+	virtual bool DoCalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
 	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);

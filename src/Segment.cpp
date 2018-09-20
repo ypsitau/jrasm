@@ -9,7 +9,7 @@
 bool Segment::CheckRegionReady() const
 {
 	if (_regionOwner.empty()) {
-		ErrorLog::AddError("the %s segment must contain .org directive", GetName());
+		ErrorLog::AddError("missing .org directive in %s segment", GetName());
 		return false;
 	}
 	return true;

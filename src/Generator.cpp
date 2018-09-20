@@ -17,9 +17,16 @@ void Generator::Initialize(Generator *pGenerator)
 	_pGenerator.reset(pGenerator);
 }
 
+bool Generator::CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
+{
+	if (!context.CheckRegionReady()) return false;
+	return DoCalcInstBytes(context, pExpr, pBytes);
+}
+
 bool Generator::Generate(Context &context, const Expr_Instruction *pExpr) const
 {
-	return Generate(context, pExpr, context.GetBuffer());
+	if (!context.CheckRegionReady()) return false;
+	return DoGenerate(context, pExpr, context.GetBuffer());
 }
 
 bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const

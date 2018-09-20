@@ -23,11 +23,12 @@ public:
 	inline static Generator &GetInstance() { return *_pGenerator; }
 	inline size_t GetBytesInstMax() const { return _bytesInstMax; }
 	static void Initialize(Generator *pGenerator);
-	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
-	virtual bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const = 0;
-	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const = 0;
+	bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
+	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
+	virtual bool DoCalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const = 0;
+	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const = 0;
 };
 
 #endif
