@@ -161,11 +161,12 @@ public:
 	class Handler : public MmlParser::Handler {
 	private:
 		Binary *_pBuffDst;
-		UInt32 _bytes;
+		UInt32 _bytesSum;
 	public:
-		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytes(0) {}
+		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytesSum(0) {}
 		virtual void MmlNote(MmlParser &parser, unsigned char note, int length);
 		virtual void MmlRest(MmlParser &parser, int length);
+		inline UInt32 GetBytesSum() const { return _bytesSum; }
 	};
 public:
 	inline Directive_MML() : Directive(".mml") {}

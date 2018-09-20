@@ -363,6 +363,7 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 			if (*p == '\0') break;
 		}
 	}
+	context.ForwardAddress(handler.GetBytesSum());
 	return true;
 }
 
@@ -374,7 +375,7 @@ void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int 
 		*_pBuffDst += lengthDev;
 		*_pBuffDst += noteDev;
 	}
-	_bytes += 2;
+	_bytesSum += 2;
 }
 
 void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
@@ -385,7 +386,7 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 		*_pBuffDst += lengthDev;
 		*_pBuffDst += noteDev;
 	}
-	_bytes += 2;
+	_bytesSum += 2;
 }
 
 //-----------------------------------------------------------------------------
