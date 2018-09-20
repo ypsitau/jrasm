@@ -129,7 +129,12 @@ public:
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
+inline bool IsFileSeparator(char ch) { return ch == '\\' || ch == '/'; }
+
 String ToLower(const char *str);
 String ToUpper(const char *str);
+const char *ExtractFileName(const char *pathName);
+const char *SeekExtName(const char *pathName);
+String RemoveExtName(const char *pathName);
 
 #endif
