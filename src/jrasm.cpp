@@ -12,12 +12,13 @@ const char *strBanner = "JR-200 Assembler " JRASM_VERSION " Copyright (C) " \
 const char *strUsage = "usage: jrasm [option] source\n";
 
 const char *strOption = R"**(available options:
---output=file   -o file  specifies filename to output
---print_disasm  -d       prints dump in disassembler format
---print_list    -l       prints label list
---print_memory  -m       prints memory image
---verbose       -v       verbose mode
---help          -h       prints this help
+--output=file     -o file  specifies filename to output
+--print-disasm-l  -d       prints disassembler dump in lower case
+--print-disasm-u  -D       prints disassembler dump in upper case
+--print-list      -l       prints label list
+--print-memory    -m       prints memory image
+--verbose         -v       verbose mode
+--help            -h       prints this help
 )**";
 
 //-----------------------------------------------------------------------------
@@ -26,12 +27,13 @@ const char *strOption = R"**(available options:
 int main(int argc, const char *argv[])
 {
 	static const CommandLine::Info infoTbl[] = {
-		{ "output",			'o',	CommandLine::TYPE_Value	},
-		{ "print_disasm",	'd',	CommandLine::TYPE_Flag	},
-		{ "print_list",		'l',	CommandLine::TYPE_Flag	},
-		{ "print_memory",	'm',	CommandLine::TYPE_Flag	},
-		{ "verbose",		'v',	CommandLine::TYPE_Flag	},
-		{ "help",			'h',	CommandLine::TYPE_Flag	},
+		{ "output",				'o',	CommandLine::TYPE_Value	},
+		{ "print-disasm-l",		'd',	CommandLine::TYPE_Flag	},
+		{ "print-disasm-u",		'D',	CommandLine::TYPE_Flag	},
+		{ "print-list",			'l',	CommandLine::TYPE_Flag	},
+		{ "print-memory",		'm',	CommandLine::TYPE_Flag	},
+		{ "verbose",			'v',	CommandLine::TYPE_Flag	},
+		{ "help",				'h',	CommandLine::TYPE_Flag	},
 	};
 	String strErr;
 	CommandLine cmdLine;
@@ -51,15 +53,27 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "%s%s", strBanner, strUsage);
 		return 1;
 	}
-	const char *fileNameSrc = argv[1];
-	Parser parser(fileNameSrc);
+	const char *pathNameSrc = argv[1];
+	Parser parser(pathNameSrc);
 	Context context;
 	if (!parser.ParseFile()) goto errorDone;
 	if (!parser.GetRoot()->Prepare(context)) goto errorDone;
-	if (cmdLine.IsSet("disasm")) {
-		if (!parser.GetRoot()->DumpDisasm(context, stdout, true, 3)) goto errorDone;
+	if (cmdLine.IsSet("print-disasm-l")) {
+		if (!parser.DumpDisasm(context, stdout, false, 3)) goto errorDone;
+	} else if (cmdLine.IsSet("print-disasm-u")) {
+		if (!parser.DumpDisasm(context, stdout, true, 3)) goto errorDone;
+	} else {
+		const char *fileNameSrc = ExtractFileName(pathNameSrc);
+		size_t bytesGapToJoin = 128;
+		UInt8 dataFiller = 0x00;
+		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
+		if (pRegionOwner.get() == nullptr) goto errorDone;
+		String fileNameCJR = ::RemoveExtName(fileNameSrc) + ".cjr";
+		FormatCJR format("JRASM");
+		if (!format.Write(fileNameCJR.c_str(), *pRegionOwner)) goto errorDone;
+		::printf("%s was generated\n", fileNameCJR.c_str());
 	}
-	if (cmdLine.IsSet("print_list")) {
+	if (cmdLine.IsSet("print-list")) {
 		const char *format = "%04X  %s\n";
 		std::unique_ptr<Context::LabelInfoOwner> pLabelInfoOwner(context.MakeLabelInfoOwner());
 		::printf("[Label List]\n");
@@ -71,7 +85,7 @@ int main(int argc, const char *argv[])
 			}
 		}
 	}
-	if (cmdLine.IsSet("print_memory")) {
+	if (cmdLine.IsSet("print-memory")) {
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
