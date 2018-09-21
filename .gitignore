@@ -36,6 +36,7 @@
 # Product files
 *.zip
 *.cjr
+*.result.txt
 
 # Visual Studio Project Files
 *.filters
