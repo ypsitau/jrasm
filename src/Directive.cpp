@@ -31,7 +31,9 @@ void Directive::Initialize()
 	_pDirectivesBuiltIn->push_back(new Directive_ENDM());
 	_pDirectivesBuiltIn->push_back(new Directive_ENDP());
 	_pDirectivesBuiltIn->push_back(new Directive_EQU());
+	_pDirectivesBuiltIn->push_back(new Directive_FILENAMEJR());
 	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
+	_pDirectivesBuiltIn->push_back(new Directive_ISEG());
 	_pDirectivesBuiltIn->push_back(new Directive_MACRO());
 	_pDirectivesBuiltIn->push_back(new Directive_MML());
 	_pDirectivesBuiltIn->push_back(new Directive_ORG());
@@ -80,11 +82,18 @@ void DirectiveOwner::Clear()
 //-----------------------------------------------------------------------------
 bool Directive_CSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .cseg takes no operands");
+		return false;
+	}
+	context.SelectCodeSegment();
 	return true;
 }
 
 bool Directive_CSEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	context.SelectCodeSegment();
 	return true;
 }
 
@@ -99,6 +108,7 @@ bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
 		if (!pExprReduced->IsTypeNumber()) {
@@ -122,11 +132,18 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 bool Directive_DSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .dseg takes no operands");
+		return false;
+	}
+	context.SelectDataSegment();
 	return true;
 }
 
 bool Directive_DSEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	context.SelectDataSegment();
 	return true;
 }
 
@@ -141,6 +158,7 @@ bool Directive_DW::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
 		if (!pExprReduced->IsTypeNumber()) {
@@ -176,6 +194,11 @@ bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, co
 
 bool Directive_ENDM::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .endm takes no operands");
+		return false;
+	}
 	return true;
 }
 
@@ -189,6 +212,11 @@ bool Directive_ENDM::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .endp takes no operands");
+		return false;
+	}
 	return true;
 }
 
@@ -227,12 +255,41 @@ bool Directive_EQU::Generate(Context &context, const Expr_Directive *pExpr, Bina
 Expr *Directive_EQU::Reduce(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
-	// .equ data
 	if (operands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .equ takes one operand");
 		return nullptr;
 	}
 	return operands.back()->Reduce(context);
+}
+
+//-----------------------------------------------------------------------------
+// Directive_FILENAMEJR
+//-----------------------------------------------------------------------------
+bool Directive_FILENAMEJR::Prepare(Context &context, const Expr_Directive *pExpr) const
+{
+	const ExprList &operands = pExpr->GetOperands();
+	if (operands.size() != 1) {
+		ErrorLog::AddError(pExpr, "directive .filenamejr takes one operand");
+		return false;
+	}
+	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	if (pExprLast.IsNull()) return false;
+	if (!pExprLast->IsTypeString()) {
+		ErrorLog::AddError(pExpr, "directive .filenamejr takes a string value as its operand");
+		return false;
+	}
+	const char *fileNameJR = dynamic_cast<const Expr_String *>(pExprLast.get())->GetString();
+	if (::strlen(fileNameJR) > 16) {
+		ErrorLog::AddError(pExpr, "the length of JR filename must be up to 16 characters");
+		return false;
+	}
+	context.SetFileNameJR(fileNameJR);
+	return true;
+}
+
+bool Directive_FILENAMEJR::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+{
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -246,6 +303,26 @@ bool Directive_INCLUDE::Prepare(Context &context, const Expr_Directive *pExpr) c
 
 bool Directive_INCLUDE::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_ISEG
+//-----------------------------------------------------------------------------
+bool Directive_ISEG::Prepare(Context &context, const Expr_Directive *pExpr) const
+{
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .iseg takes no operands");
+		return false;
+	}
+	context.SelectInternalSegment();
+	return true;
+}
+
+bool Directive_ISEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+{
+	context.SelectInternalSegment();
 	return true;
 }
 
@@ -288,6 +365,7 @@ bool Directive_MML::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	Handler handler(&buffDst);
 	MmlParser parser(handler);
 	parser.Reset();
@@ -306,6 +384,7 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 			if (*p == '\0') break;
 		}
 	}
+	context.ForwardAddress(handler.GetBytesSum());
 	return true;
 }
 
@@ -317,7 +396,7 @@ void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int 
 		*_pBuffDst += lengthDev;
 		*_pBuffDst += noteDev;
 	}
-	_bytes += 2;
+	_bytesSum += 2;
 }
 
 void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
@@ -328,7 +407,7 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 		*_pBuffDst += lengthDev;
 		*_pBuffDst += noteDev;
 	}
-	_bytes += 2;
+	_bytesSum += 2;
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +416,6 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
-	// .org data16
 	if (operands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .org takes one operand");
 		return false;
@@ -345,7 +423,7 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeNumber()) {
-		ErrorLog::AddError(pExpr, "directive .org expects a number value for its operand");
+		ErrorLog::AddError(pExpr, "directive .org takes a number value as its operand");
 		return false;
 	}
 	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
@@ -353,7 +431,7 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 		ErrorLog::AddError(pExpr, "address value exceeds 16-bit range");
 		return false;
 	}
-	context.StartChunk(static_cast<UInt16>(num));
+	context.StartRegion(static_cast<UInt16>(num));
 	return true;
 }
 
@@ -372,6 +450,7 @@ bool Directive_PCG::Prepare(Context &context, const Expr_Directive *pExpr) const
 
 bool Directive_PCG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	if (!context.CheckRegionReady()) return false;
 	return true;
 }
 

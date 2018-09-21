@@ -1,3 +1,4 @@
+	.org	0x1000
 	aba
 	adc		a,0x12
 	adc		a,{0x12}

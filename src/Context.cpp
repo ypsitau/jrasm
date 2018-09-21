@@ -6,9 +6,20 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context() : _addr(0x0000), _preparationFlag(false)
+Context::Context() : _preparationFlag(false)
 {
+	_fileNameJR = "JRASM_PRODUCT";
 	_lookupTableStack.push_back(new LookupTable());
+	_segmentOwner.push_back(new Segment("code"));		// code segment
+	_segmentOwner.push_back(new Segment("data"));		// data segment
+	_segmentOwner.push_back(new Segment("internal"));	// internal segment
+	SelectCodeSegment();
+}
+
+void Context::StartRegion(UInt32 addr)
+{
+	_pSegmentCur->AddRegion(new Region(addr));
+	_pSegmentCur->SetAddress(addr);
 }
 
 Context::LookupTable *Context::AddLookupTable()
@@ -25,9 +36,14 @@ void Context::RemoveLookupTable()
 	LookupTable::Delete(pLookupTable);
 }
 
-bool Context::CheckChunkReady() const
+Context::LabelInfoOwner *Context::MakeLabelInfoOwner() const
 {
-	return true;
+	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
+	for (auto iter : *GetLookupTableRoot()) {
+		pLabelInfoOwner->push_back(new LabelInfo(iter.second, iter.first.c_str()));
+	}
+	pLabelInfoOwner->SortByAddr();
+	return pLabelInfoOwner.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -78,6 +94,36 @@ void Context::LookupTableOwner::Clear()
 {
 	for (auto pLookupTable : *this) {
 		LookupTable::Delete(pLookupTable);
+	}
+	clear();
+}
+
+//-----------------------------------------------------------------------------
+// Context::LabelInfoList
+//-----------------------------------------------------------------------------
+size_t Context::LabelInfoList::GetLabelLenMax(const_iterator ppLabelInfo, const_iterator ppLabelInfoEnd)
+{
+	size_t labelLenMax = 0;
+	for ( ; ppLabelInfo != ppLabelInfoEnd; ppLabelInfo++) {
+		const LabelInfo *pLabelInfo = *ppLabelInfo;
+		size_t labelLen = ::strlen(pLabelInfo->GetLabel());
+		if (labelLenMax < labelLen) labelLenMax = labelLen;
+	}
+	return labelLenMax;
+}
+
+//-----------------------------------------------------------------------------
+// Context::LabelInfoOwner
+//-----------------------------------------------------------------------------
+Context::LabelInfoOwner::~LabelInfoOwner()
+{
+	Clear();
+}
+
+void Context::LabelInfoOwner::Clear()
+{
+	for (auto pLabelInfo : *this) {
+		delete pLabelInfo;
 	}
 	clear();
 }

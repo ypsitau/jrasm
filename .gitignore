@@ -33,6 +33,10 @@
 *.out
 *.app
 
+# Product files
+*.zip
+*.cjr
+
 # Visual Studio Project Files
 *.filters
 *.user

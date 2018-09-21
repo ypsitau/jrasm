@@ -5,7 +5,7 @@ add_definitions("-Wall -std=c++11")
 add_executable(jrasm
 	jrasm.cpp
 	stdafx.cpp
-	Chunk.cpp
+	CommandLine.cpp
 	Common.cpp
 	Context.cpp
 	Directive.cpp
@@ -17,6 +17,7 @@ add_executable(jrasm
 	MmlParser.cpp
 	Operator.cpp
 	Parser.cpp
+	Region.cpp
 	Segment.cpp
 	Token.cpp
 	Tokenizer.cpp
