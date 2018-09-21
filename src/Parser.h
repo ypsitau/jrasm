@@ -24,6 +24,7 @@ private:
 	TokenStack _tokenStack;
 public:
 	Parser(const String &fileNameSrc);
+	inline const char *GetFileNameSrc() const { return _tokenizer.GetFileNameSrc(); }
 	inline Expr_Root *GetRoot() {
 		return dynamic_cast<Expr_Root *>(_exprStack.front());
 	}
@@ -34,12 +35,17 @@ public:
 	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
 		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
-	bool ParseByPrec(AutoPtr<Token> pToken);
+	bool ParseFile();
+	bool Prepare(Context &context);
+	bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const;
+	RegionOwner *Generate(Context &context, size_t bytesGapToJoin, UInt8 dataFiller);
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;
 public:
 	// implementation for Tokenizer::Listener
 	virtual bool FeedToken(AutoPtr<Token> pToken);
+private:
+	bool ParseByPrec(AutoPtr<Token> pToken);
 };
 
 #endif

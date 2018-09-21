@@ -149,7 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Chunk.h" />
+    <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Directive.h" />
@@ -161,13 +161,14 @@
     <ClInclude Include="MmlParser.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Region.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Tokenizer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="Directive.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="MmlParser.cpp" />
     <ClCompile Include="Operator.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Region.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

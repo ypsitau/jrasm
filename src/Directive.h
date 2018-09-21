@@ -123,11 +123,31 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Directive_FILENAMEJR
+//-----------------------------------------------------------------------------
+class Directive_FILENAMEJR : public Directive {
+public:
+	inline Directive_FILENAMEJR() : Directive(".filenamejr") {}
+	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+};
+
+//-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
 class Directive_INCLUDE : public Directive {
 public:
 	inline Directive_INCLUDE() : Directive(".include") {}
+	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_ISEG
+//-----------------------------------------------------------------------------
+class Directive_ISEG : public Directive {
+public:
+	inline Directive_ISEG() : Directive(".iseg") {}
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
@@ -151,11 +171,12 @@ public:
 	class Handler : public MmlParser::Handler {
 	private:
 		Binary *_pBuffDst;
-		UInt32 _bytes;
+		UInt32 _bytesSum;
 	public:
-		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytes(0) {}
+		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytesSum(0) {}
 		virtual void MmlNote(MmlParser &parser, unsigned char note, int length);
 		virtual void MmlRest(MmlParser &parser, int length);
+		inline UInt32 GetBytesSum() const { return _bytesSum; }
 	};
 public:
 	inline Directive_MML() : Directive(".mml") {}

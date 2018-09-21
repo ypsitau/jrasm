@@ -15,11 +15,11 @@ void ErrorLog::AddError(const Expr *pExpr, const char *format, ...)
 	_instance.AddErrorV(pExpr->GetFileNameSrc(), pExpr->GetLineNo(), format, ap);
 }
 
-void ErrorLog::AddError(const String &fileName, const char *format, ...)
+void ErrorLog::AddError(const char *format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	_instance.AddErrorV(fileName, 0, format, ap);
+	_instance.AddErrorV("", 0, format, ap);
 }
 
 void ErrorLog::AddError(const String &fileName, int lineNo, const char *format, ...)
@@ -51,13 +51,15 @@ void ErrorLog::Print(FILE *fp)
 String ErrorLog::Entry::GetString() const
 {
 	String rtn;
-	char buff[128];
-	rtn += _fileName;
-	if (_lineNo == 0) {
-		rtn += ": ";
-	} else {
-		::sprintf_s(buff, ":%d: ", _lineNo);
-		rtn += buff;
+	if (!_fileName.empty()) {
+		rtn += _fileName;
+		if (_lineNo == 0) {
+			rtn += ": ";
+		} else {
+			char buff[64];
+			::sprintf_s(buff, ":%d: ", _lineNo);
+			rtn += buff;
+		}
 	}
 	rtn += _message;
 	return rtn;
