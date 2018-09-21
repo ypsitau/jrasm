@@ -131,6 +131,8 @@ public:
 //-----------------------------------------------------------------------------
 inline bool IsFileSeparator(char ch) { return ch == '\\' || ch == '/'; }
 
+String JustifyLeft(const char *str, size_t width, char padding = ' ');
+String JustifyRight(const char *str, size_t width, char padding = ' ');
 String ToLower(const char *str);
 String ToUpper(const char *str);
 const char *ExtractFileName(const char *pathName);

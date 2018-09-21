@@ -65,7 +65,8 @@ int main(int argc, const char *argv[])
 	if (!parser.Prepare(context)) goto errorDone;
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-disasm-l") || (upperCaseFlag = cmdLine.IsSet("print-disasm-u"))) {
-		if (!parser.DumpDisasm(context, stdout, upperCaseFlag, 3)) goto errorDone;
+		if (!parser.DumpDisasm(context, stdout, upperCaseFlag,
+							   Generator::GetInstance().GetBytesInstMax())) goto errorDone;
 	} else {
 		const char *fileNameSrc = ExtractFileName(pathNameSrc);
 		size_t bytesGapToJoin = 128;

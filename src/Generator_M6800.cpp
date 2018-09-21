@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------
 // Generator_M6800
 //-----------------------------------------------------------------------------
-Generator_M6800::Generator_M6800() : Generator(3)	// max instruction size is 3
+Generator_M6800::Generator_M6800() :
+	Generator(3, 4)	// max instruction size is 3, max length of instruction name  is 4
 {
 	EntryMap &m = _entryMap;
 	m.Add(Entry_ACC					("aba", 0x1b));

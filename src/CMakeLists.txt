@@ -22,3 +22,5 @@ add_executable(jrasm
 	Token.cpp
 	Tokenizer.cpp
 )
+
+install(TARGETS jrasm DESTINATION bin)

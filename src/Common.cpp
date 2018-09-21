@@ -11,6 +11,28 @@ const StringList StringList::Empty;
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
+String JustifyLeft(const char *str, size_t width, char padding)
+{
+	size_t widthBody = ::strlen(str);
+	if (width <= widthBody) return String(str);
+	String rtn;
+	size_t widthRight = width - widthBody;
+	rtn += str;
+	while (widthRight-- > 0) rtn += padding;
+	return rtn;
+}
+
+String JustifyRight(const char *str, size_t width, char padding)
+{
+	size_t widthBody = ::strlen(str);
+	if (width <= widthBody) return String(str);
+	String rtn;
+	size_t widthLeft = width - widthBody;
+	while (widthLeft-- > 0) rtn += padding;
+	rtn += str;
+	return rtn;
+}
+
 String ToLower(const char *str)
 {
 	String rtn;

@@ -14,6 +14,7 @@ Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
 
 bool Tokenizer::FeedChar(char ch)
 {
+	if (ch == '\r') return true;	// skip CR code
 	bool rtn = true;
 	BeginPushbackRegion();
 	switch (_stat) {

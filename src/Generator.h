@@ -16,12 +16,15 @@ class Expr_Instruction;
 class Generator {
 public:
 	size_t _bytesInstMax;
+	size_t _instNameLenMax;
 	static std::unique_ptr<Generator> _pGenerator;
 public:
-	inline Generator(size_t bytesInstMax) {}
+	inline Generator(size_t bytesInstMax, size_t instNameLenMax) :
+		_bytesInstMax(bytesInstMax), _instNameLenMax(instNameLenMax) {}
 	virtual ~Generator();
 	inline static Generator &GetInstance() { return *_pGenerator; }
 	inline size_t GetBytesInstMax() const { return _bytesInstMax; }
+	inline size_t GetInstNameLenMax() const { return _instNameLenMax; }
 	static void Initialize(Generator *pGenerator);
 	bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr) const;

@@ -51,20 +51,20 @@ bool Expr::Generate(Context &context) const
 	return true;
 }
 
-bool Expr::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+bool Expr::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	// nothing to do
 	return true;
 }
 
 void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode,
-							FILE *fp, bool upperCaseFlag, int nColsPerLine)
+							FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax)
 {
 	const char *formatData = upperCaseFlag? " %02X" : " %02x";
-	const char *formatHead = upperCaseFlag? "    %04X%-9s  %s\n" : "    %04x%-9s  %s\n";
+	const char *formatHead = upperCaseFlag? "    %04X%s  %s\n" : "    %04x%s  %s\n";
 	String str;
-	int iCol = 0;
-	int iLine = 0;
+	size_t iCol = 0;
+	size_t iLine = 0;
 	for (auto data : buff) {
 		char buff[16];
 		::sprintf_s(buff, formatData, static_cast<UInt8>(data));
@@ -79,7 +79,8 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 		}
 	}
 	if (iCol > 0) {
-		::fprintf(fp, formatHead, addr, str.c_str(), (iLine == 0)? strCode : "");
+		::fprintf(fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * nColsPerLineMax).c_str(),
+				  (iLine == 0)? strCode : "");
 	}
 }
 
@@ -158,7 +159,7 @@ bool Expr_Root::Generate(Context &context) const
 	return true;
 }
 
-bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
@@ -327,12 +328,15 @@ bool Expr_LabelDef::Generate(Context &context) const
 	return true;
 }
 
-bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	String str = _label;
 	str += ":";
-	::fprintf(fp, "%-*s%s\n", 10 + 3 * 3, str.c_str(), IsAssigned()?
-			  GetAssigned()->ToString(upperCaseFlag).c_str() : "");
+	if (IsAssigned()) {
+		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
+		str += GetAssigned()->ToString(upperCaseFlag);
+	}
+	::fprintf(fp, "%s\n", str.c_str());
 	return true;
 }
 
@@ -368,8 +372,10 @@ Expr *Expr_LabelRef::Reduce(Context &context) const
 
 String Expr_LabelRef::ToString(bool upperCaseFlag) const
 {
-	if (!Generator::GetInstance().IsRegisterSymbol(_label.c_str())) return _label;
-	return upperCaseFlag? ToUpper(_label.c_str()) : _label;
+	if (Generator::GetInstance().IsRegisterSymbol(_label.c_str())) {
+		return upperCaseFlag? ToUpper(_label.c_str()) : ToLower(_label.c_str());
+	}
+	return _label;
 }
 
 //-----------------------------------------------------------------------------
@@ -390,12 +396,13 @@ bool Expr_Instruction::Generate(Context &context) const
 	return Generator::GetInstance().Generate(context, this);
 }
 
-bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!Generator::GetInstance().Generate(context, this, buffDst)) return false;
-	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag, nColsPerLine);
+	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(),
+					 fp, upperCaseFlag, nColsPerLine, nColsPerLine);
 	return true;
 }
 
@@ -406,8 +413,9 @@ Expr *Expr_Instruction::Reduce(Context &context) const
 
 String Expr_Instruction::ToString(bool upperCaseFlag) const
 {
-	String str = upperCaseFlag? ToUpper(_symbol.c_str()) : _symbol;
-	str += " ";
+	String str = JustifyLeft(
+		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
+		Generator::GetInstance().GetInstNameLenMax() + 1);
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
 }
@@ -428,12 +436,13 @@ bool Expr_Directive::Generate(Context &context) const
 	return _pDirective->Generate(context, this, context.GetBuffer());
 }
 
-bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!_pDirective->Generate(context, this, buffDst)) return false;
-	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp, upperCaseFlag, nColsPerLine / 2 * 2);
+	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp,
+					 upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
 	return true;
 }
 
@@ -445,7 +454,7 @@ Expr *Expr_Directive::Reduce(Context &context) const
 String Expr_Directive::ToString(bool upperCaseFlag) const
 {
 	const char *symbol = _pDirective->GetSymbol();
-	String str = upperCaseFlag? ToUpper(symbol).c_str() : symbol;
+	String str = upperCaseFlag? ToUpper(symbol) : ToLower(symbol);
 	str += " ";
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;

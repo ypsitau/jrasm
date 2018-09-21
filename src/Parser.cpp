@@ -33,7 +33,7 @@ bool Parser::Prepare(Context &context)
 	return GetRoot()->Prepare(context);
 }
 
-bool Parser::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, int nColsPerLine) const
+bool Parser::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	return GetRoot()->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
 }
