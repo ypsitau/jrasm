@@ -33,7 +33,8 @@
 *.out
 *.app
 
-# JR-200 files
+# Product files
+*.zip
 *.cjr
 
 # Visual Studio Project Files

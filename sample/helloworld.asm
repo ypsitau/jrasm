@@ -1,0 +1,21 @@
+	.org	0x2000
+loop:
+	ldx		[ptr_src]
+	lda		a,[x]
+	inx
+	stx		[ptr_src]
+	cmp		a,0x00
+	beq		done
+	ldx		[ptr_dst]
+	sta		a,[x]
+	inx
+	stx		[ptr_dst]
+	bra		loop
+done:
+	rts
+ptr_src:
+	.dw		hello_world
+ptr_dst:
+	.dw		0xc100
+hello_world:
+	.db		0x48,0x65,0x6c,0x6c,0x6f,0x20,0x57,0x6f,0x72,0x6c,0x64,0x21,0x00
