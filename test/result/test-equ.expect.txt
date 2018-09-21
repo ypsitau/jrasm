@@ -14,3 +14,12 @@ label8:            .equ label6
     100d ce 10 03  ldx  label5
     1010 ce 10 06  ldx  label6
     1013 ce 10 09  ldx  label7
+[Label List]
+1000  label4
+1003  label5
+1006  label6
+1006  label8
+1009  label7
+1234  label1
+1234  label2
+abcd  label3

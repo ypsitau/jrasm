@@ -1,0 +1,927 @@
+start:
+    1000 1b        aba  
+after_aba:
+    1001 89 12     adc  a,0x12
+after_adc_a_imm:
+    1003 99 12     adc  a,{0x12}
+after_adc_a_dir:
+    1005 a9 12     adc  a,[x+0x12]
+after_adc_a_idx:
+    1007 b9 12 34  adc  a,[0x1234]
+after_adc_a_ext:
+    100a c9 12     adc  b,0x12
+after_adc_b_imm:
+    100c d9 12     adc  b,{0x12}
+after_adc_b_dir:
+    100e e9 12     adc  b,[x+0x12]
+after_adc_b_idx:
+    1010 f9 12 34  adc  b,[0x1234]
+after_adc_b_ext:
+    1013 89 12     adca 0x12
+after_adca_imm:
+    1015 99 12     adca {0x12}
+after_adca_dir:
+    1017 a9 12     adca [x+0x12]
+after_adca_idx:
+    1019 b9 12 34  adca [0x1234]
+after_adca_ext:
+    101c c9 12     adcb 0x12
+after_adcb_imm:
+    101e d9 12     adcb {0x12}
+after_adcb_dir:
+    1020 e9 12     adcb [x+0x12]
+after_adcb_idx:
+    1022 f9 12 34  adcb [0x1234]
+after_adcb_ext:
+    1025 8b 12     add  a,0x12
+after_add_a_imm:
+    1027 9b 12     add  a,{0x12}
+after_add_a_dir:
+    1029 ab 12     add  a,[x+0x12]
+after_add_a_idx:
+    102b bb 12 34  add  a,[0x1234]
+after_add_a_ext:
+    102e cb 12     add  b,0x12
+after_add_b_imm:
+    1030 db 12     add  b,{0x12}
+after_add_b_dir:
+    1032 eb 12     add  b,[x+0x12]
+after_add_b_idx:
+    1034 fb 12 34  add  b,[0x1234]
+after_add_b_ext:
+    1037 8b 12     adda 0x12
+after_adda_imm:
+    1039 9b 12     adda {0x12}
+after_adda_dir:
+    103b ab 12     adda [x+0x12]
+after_adda_idx:
+    103d bb 12 34  adda [0x1234]
+after_adda_ext:
+    1040 cb 12     addb 0x12
+after_addb_imm:
+    1042 db 12     addb {0x12}
+after_addb_dir:
+    1044 eb 12     addb [x+0x12]
+after_addb_idx:
+    1046 fb 12 34  addb [0x1234]
+after_addb_ext:
+    1049 84 12     and  a,0x12
+after_and_a_imm:
+    104b 94 12     and  a,{0x12}
+after_and_a_dir:
+    104d a4 12     and  a,[x+0x12]
+after_and_a_idx:
+    104f b4 12 34  and  a,[0x1234]
+after_and_a_ext:
+    1052 c4 12     and  b,0x12
+after_and_b_imm:
+    1054 d4 12     and  b,{0x12}
+after_and_b_dir:
+    1056 e4 12     and  b,[x+0x12]
+after_and_b_idx:
+    1058 f4 12 34  and  b,[0x1234]
+after_and_b_ext:
+    105b 84 12     anda 0x12
+after_anda_imm:
+    105d 94 12     anda {0x12}
+after_anda_dir:
+    105f a4 12     anda [x+0x12]
+after_anda_idx:
+    1061 b4 12 34  anda [0x1234]
+after_anda_ext:
+    1064 c4 12     andb 0x12
+after_andb_imm:
+    1066 d4 12     andb {0x12}
+after_andb_dir:
+    1068 e4 12     andb [x+0x12]
+after_andb_idx:
+    106a f4 12 34  andb [0x1234]
+after_andb_ext:
+    106d 48        asl  a
+after_asl_a:
+    106e 58        asl  b
+after_asl_b:
+    106f 68 12     asl  [x+0x12]
+after_asl_idx:
+    1071 78 12 34  asl  [0x1234]
+after_asl_ext:
+    1074 48        asla 
+after_asla:
+    1075 58        aslb 
+after_aslb:
+    1076 47        asr  a
+after_asr_a:
+    1077 57        asr  b
+after_asr_b:
+    1078 67 12     asr  [x+0x12]
+after_asr_idx:
+    107a 77 12 34  asr  [0x1234]
+after_asr_ext:
+    107d 47        asra 
+after_asra:
+    107e 57        asrb 
+after_asrb:
+    107f 24 12     bcc  0x12
+after_bcc_imm:
+    1081 25 12     bcs  0x12
+after_bcs_imm:
+    1083 27 12     beq  0x12
+after_beq_imm:
+    1085 2c 12     bge  0x12
+after_bge_imm:
+    1087 2e 12     bgt  0x12
+after_bgt_imm:
+    1089 22 12     bhi  0x12
+after_bhi_imm:
+    108b 85 12     bit  a,0x12
+after_bit_a_imm:
+    108d 95 12     bit  a,{0x12}
+after_bit_a_dir:
+    108f a5 12     bit  a,[x+0x12]
+after_bit_a_idx:
+    1091 b5 12 34  bit  a,[0x1234]
+after_bit_a_ext:
+    1094 c5 12     bit  b,0x12
+after_bit_b_imm:
+    1096 d5 12     bit  b,{0x12}
+after_bit_b_dir:
+    1098 e5 12     bit  b,[x+0x12]
+after_bit_b_idx:
+    109a f5 12 34  bit  b,[0x1234]
+after_bit_b_ext:
+    109d 85 12     bita 0x12
+after_bita_imm:
+    109f 95 12     bita {0x12}
+after_bita_dir:
+    10a1 a5 12     bita [x+0x12]
+after_bita_idx:
+    10a3 b5 12 34  bita [0x1234]
+after_bita_ext:
+    10a6 c5 12     bitb 0x12
+after_bitb_imm:
+    10a8 d5 12     bitb {0x12}
+after_bitb_dir:
+    10aa e5 12     bitb [x+0x12]
+after_bitb_idx:
+    10ac f5 12 34  bitb [0x1234]
+after_bitb_ext:
+    10af 2f 12     ble  0x12
+after_ble_imm:
+    10b1 23 12     bls  0x12
+after_bls_imm:
+    10b3 2d 12     blt  0x12
+after_blt_imm:
+    10b5 2b 12     bmi  0x12
+after_bmi_imm:
+    10b7 26 12     bne  0x12
+after_bne_imm:
+    10b9 2a 12     bpl  0x12
+after_bpl_imm:
+    10bb 20 12     bra  0x12
+after_bra_imm:
+    10bd 8d 12     bsr  0x12
+after_bsr_imm:
+    10bf 28 12     bvc  0x12
+after_bvc_imm:
+    10c1 29 12     bvs  0x12
+after_bvs_imm:
+    10c3 11        cba  
+after_cba:
+    10c4 0c        clc  
+after_clc:
+    10c5 0e        cli  
+after_cli:
+    10c6 4f        clr  a
+after_clr_a:
+    10c7 5f        clr  b
+after_clr_b:
+    10c8 6f 12     clr  [x+0x12]
+after_clr_idx:
+    10ca 7f 12 34  clr  [0x1234]
+after_clr_ext:
+    10cd 4f        clra 
+after_clra:
+    10ce 5f        clrb 
+after_clrb:
+    10cf 0a        clv  
+after_clv:
+    10d0 81 12     cmp  a,0x12
+after_cmp_a_imm:
+    10d2 91 12     cmp  a,{0x12}
+after_cmp_a_dir:
+    10d4 a1 12     cmp  a,[x+0x12]
+after_cmp_a_idx:
+    10d6 b1 12 34  cmp  a,[0x1234]
+after_cmp_a_ext:
+    10d9 c1 12     cmp  b,0x12
+after_cmp_b_imm:
+    10db d1 12     cmp  b,{0x12}
+after_cmp_b_dir:
+    10dd e1 12     cmp  b,[x+0x12]
+after_cmp_b_idx:
+    10df f1 12 34  cmp  b,[0x1234]
+after_cmp_b_ext:
+    10e2 81 12     cmpa 0x12
+after_cmpa_imm:
+    10e4 91 12     cmpa {0x12}
+after_cmpa_dir:
+    10e6 a1 12     cmpa [x+0x12]
+after_cmpa_idx:
+    10e8 b1 12 34  cmpa [0x1234]
+after_cmpa_ext:
+    10eb c1 12     cmpb 0x12
+after_cmpb_imm:
+    10ed d1 12     cmpb {0x12}
+after_cmpb_dir:
+    10ef e1 12     cmpb [x+0x12]
+after_cmpb_idx:
+    10f1 f1 12 34  cmpb [0x1234]
+after_cmpb_ext:
+    10f4 43        com  a
+after_com_a:
+    10f5 53        com  b
+after_com_b:
+    10f6 63 12     com  [x+0x12]
+after_com_idx:
+    10f8 73 12 34  com  [0x1234]
+after_com_ext:
+    10fb 43        coma 
+after_coma:
+    10fc 53        comb 
+after_comb:
+    10fd 9c 12     cpx  {0x12}
+after_cpx_dir:
+    10ff ac 12     cpx  [x+0x12]
+after_cpx_idx:
+    1101 8c 12 34  cpx  0x1234
+after_cpx_imm:
+    1104 bc 12 34  cpx  [0x1234]
+after_cpx_ext:
+    1107 19        daa  
+after_daa:
+    1108 4a        dec  a
+after_dec_a:
+    1109 5a        dec  b
+after_dec_b:
+    110a 6a 12     dec  [x+0x12]
+after_dec_idx:
+    110c 7a 12 34  dec  [0x1234]
+after_dec_ext:
+    110f 4a        deca 
+after_deca:
+    1110 5a        decb 
+after_decb:
+    1111 34        des  
+after_des:
+    1112 09        dex  
+after_dex:
+    1113 88 12     eor  a,0x12
+after_eor_a_imm:
+    1115 98 12     eor  a,{0x12}
+after_eor_a_dir:
+    1117 a8 12     eor  a,[x+0x12]
+after_eor_a_idx:
+    1119 b8 12 34  eor  a,[0x1234]
+after_eor_a_ext:
+    111c c8 12     eor  b,0x12
+after_eor_b_imm:
+    111e d8 12     eor  b,{0x12}
+after_eor_b_dir:
+    1120 e8 12     eor  b,[x+0x12]
+after_eor_b_idx:
+    1122 f8 12 34  eor  b,[0x1234]
+after_eor_b_ext:
+    1125 88 12     eora 0x12
+after_eora_imm:
+    1127 98 12     eora {0x12}
+after_eora_dir:
+    1129 a8 12     eora [x+0x12]
+after_eora_idx:
+    112b b8 12 34  eora [0x1234]
+after_eora_ext:
+    112e c8 12     eorb 0x12
+after_eorb_imm:
+    1130 d8 12     eorb {0x12}
+after_eorb_dir:
+    1132 e8 12     eorb [x+0x12]
+after_eorb_idx:
+    1134 f8 12 34  eorb [0x1234]
+after_eorb_ext:
+    1137 4c        inc  a
+after_inc_a:
+    1138 5c        inc  b
+after_inc_b:
+    1139 6c 12     inc  [x+0x12]
+after_inc_idx:
+    113b 7c 12 34  inc  [0x1234]
+after_inc_ext:
+    113e 4c        inca 
+after_inca:
+    113f 5c        incb 
+after_incb:
+    1140 31        ins  
+after_ins:
+    1141 08        inx  
+after_inx:
+    1142 6e 12     jmp  [x+0x12]
+after_jmp_idx:
+    1144 7e 12 34  jmp  [0x1234]
+after_jmp_ext:
+    1147 ad 12     jsr  [x+0x12]
+after_jsr_idx:
+    1149 bd 12 34  jsr  [0x1234]
+after_jsr_ext:
+    114c 86 12     lda  a,0x12
+after_lda_a_imm:
+    114e 96 12     lda  a,{0x12}
+after_lda_a_dir:
+    1150 a6 12     lda  a,[x+0x12]
+after_lda_a_idx:
+    1152 b6 12 34  lda  a,[0x1234]
+after_lda_a_ext:
+    1155 c6 12     lda  b,0x12
+after_lda_b_imm:
+    1157 d6 12     lda  b,{0x12}
+after_lda_b_dir:
+    1159 e6 12     lda  b,[x+0x12]
+after_lda_b_idx:
+    115b f6 12 34  lda  b,[0x1234]
+after_lda_b_ext:
+    115e 86 12     ldaa 0x12
+after_ldaa_imm:
+    1160 96 12     ldaa {0x12}
+after_ldaa_dir:
+    1162 a6 12     ldaa [x+0x12]
+after_ldaa_idx:
+    1164 b6 12 34  ldaa [0x1234]
+after_ldaa_ext:
+    1167 c6 12     ldab 0x12
+after_ldab_imm:
+    1169 d6 12     ldab {0x12}
+after_ldab_dir:
+    116b e6 12     ldab [x+0x12]
+after_ldab_idx:
+    116d f6 12 34  ldab [0x1234]
+after_ldab_ext:
+    1170 9e 12     lds  {0x12}
+after_lds_dir:
+    1172 ae 12     lds  [x+0x12]
+after_lds_idx:
+    1174 8e 12 34  lds  0x1234
+after_lds_imm:
+    1177 be 12 34  lds  [0x1234]
+after_lds_ext:
+    117a de 12     ldx  {0x12}
+after_ldx_dir:
+    117c ee 12     ldx  [x+0x12]
+after_ldx_idx:
+    117e ce 12 34  ldx  0x1234
+after_ldx_imm:
+    1181 fe 12 34  ldx  [0x1234]
+after_ldx_ext:
+    1184 44        lsr  a
+after_lsr_a:
+    1185 54        lsr  b
+after_lsr_b:
+    1186 64 12     lsr  [x+0x12]
+after_lsr_idx:
+    1188 74 12 34  lsr  [0x1234]
+after_lsr_ext:
+    118b 44        lsra 
+after_lsra:
+    118c 54        lsrb 
+after_lsrb:
+    118d 40        neg  a
+after_neg_a:
+    118e 50        neg  b
+after_neg_b:
+    118f 60 12     neg  [x+0x12]
+after_neg_idx:
+    1191 70 12 34  neg  [0x1234]
+after_neg_ext:
+    1194 40        nega 
+after_nega:
+    1195 50        negb 
+after_negb:
+    1196 01        nop  
+after_nop:
+    1197 8a 12     ora  a,0x12
+after_ora_a_imm:
+    1199 9a 12     ora  a,{0x12}
+after_ora_a_dir:
+    119b aa 12     ora  a,[x+0x12]
+after_ora_a_idx:
+    119d ba 12 34  ora  a,[0x1234]
+after_ora_a_ext:
+    11a0 ca 12     ora  b,0x12
+after_ora_b_imm:
+    11a2 da 12     ora  b,{0x12}
+after_ora_b_dir:
+    11a4 ea 12     ora  b,[x+0x12]
+after_ora_b_idx:
+    11a6 fa 12 34  ora  b,[0x1234]
+after_ora_b_ext:
+    11a9 8a 12     oraa 0x12
+after_oraa_imm:
+    11ab 9a 12     oraa {0x12}
+after_oraa_dir:
+    11ad aa 12     oraa [x+0x12]
+after_oraa_idx:
+    11af ba 12 34  oraa [0x1234]
+after_oraa_ext:
+    11b2 ca 12     orab 0x12
+after_orab_imm:
+    11b4 da 12     orab {0x12}
+after_orab_dir:
+    11b6 ea 12     orab [x+0x12]
+after_orab_idx:
+    11b8 fa 12 34  orab [0x1234]
+after_orab_ext:
+    11bb 36        psh  a
+after_psh_a:
+    11bc 37        psh  b
+after_psh_b:
+    11bd 36        psha 
+after_psha:
+    11be 37        pshb 
+after_pshb:
+    11bf 32        pul  a
+after_pul_a:
+    11c0 33        pul  b
+after_pul_b:
+    11c1 32        pula 
+after_pula:
+    11c2 33        pulb 
+after_pulb:
+    11c3 49        rol  a
+after_rol_a:
+    11c4 59        rol  b
+after_rol_b:
+    11c5 69 12     rol  [x+0x12]
+after_rol_idx:
+    11c7 79 12 34  rol  [0x1234]
+after_rol_ext:
+    11ca 49        rola 
+after_rola:
+    11cb 59        rolb 
+after_rolb:
+    11cc 46        ror  a
+after_ror_a:
+    11cd 56        ror  b
+after_ror_b:
+    11ce 66 12     ror  [x+0x12]
+after_ror_idx:
+    11d0 76 12 34  ror  [0x1234]
+after_ror_ext:
+    11d3 46        rora 
+after_rora:
+    11d4 56        rorb 
+after_rorb:
+    11d5 3b        rti  
+after_rti:
+    11d6 39        rts  
+after_rts:
+    11d7 10        sba  
+after_sba:
+    11d8 82 12     sbc  a,0x12
+after_sbc_a_imm:
+    11da 92 12     sbc  a,{0x12}
+after_sbc_a_dir:
+    11dc a2 12     sbc  a,[x+0x12]
+after_sbc_a_idx:
+    11de b2 12 34  sbc  a,[0x1234]
+after_sbc_a_ext:
+    11e1 c2 12     sbc  b,0x12
+after_sbc_b_imm:
+    11e3 d2 12     sbc  b,{0x12}
+after_sbc_b_dir:
+    11e5 e2 12     sbc  b,[x+0x12]
+after_sbc_b_idx:
+    11e7 f2 12 34  sbc  b,[0x1234]
+after_sbc_b_ext:
+    11ea 82 12     sbca 0x12
+after_sbca_imm:
+    11ec 92 12     sbca {0x12}
+after_sbca_dir:
+    11ee a2 12     sbca [x+0x12]
+after_sbca_idx:
+    11f0 b2 12 34  sbca [0x1234]
+after_sbca_ext:
+    11f3 c2 12     sbcb 0x12
+after_sbcb_imm:
+    11f5 d2 12     sbcb {0x12}
+after_sbcb_dir:
+    11f7 e2 12     sbcb [x+0x12]
+after_sbcb_idx:
+    11f9 f2 12 34  sbcb [0x1234]
+after_sbcb_ext:
+    11fc 0d        sec  
+after_sec:
+    11fd 0f        sei  
+after_sei:
+    11fe 0b        sev  
+after_sev:
+    11ff 97 12     sta  a,{0x12}
+after_sta_a_dir:
+    1201 a7 12     sta  a,[x+0x12]
+after_sta_a_idx:
+    1203 b7 12 34  sta  a,[0x1234]
+after_sta_a_ext:
+    1206 d7 12     sta  b,{0x12}
+after_sta_b_dir:
+    1208 e7 12     sta  b,[x+0x12]
+after_sta_b_idx:
+    120a f7 12 34  sta  b,[0x1234]
+after_sta_b_ext:
+    120d 97 12     staa {0x12}
+after_staa_dir:
+    120f a7 12     staa [x+0x12]
+after_staa_idx:
+    1211 b7 12 34  staa [0x1234]
+after_staa_ext:
+    1214 d7 12     stab {0x12}
+after_stab_dir:
+    1216 e7 12     stab [x+0x12]
+after_stab_idx:
+    1218 f7 12 34  stab [0x1234]
+after_stab_ext:
+    121b 9f 12     sts  {0x12}
+after_sts_dir:
+    121d af 12     sts  [x+0x12]
+after_sts_idx:
+    121f bf 12 34  sts  [0x1234]
+after_sts_ext:
+    1222 df 12     stx  {0x12}
+after_stx_dir:
+    1224 ef 12     stx  [x+0x12]
+after_stx_idx:
+    1226 ff 12 34  stx  [0x1234]
+after_stx_ext:
+    1229 80 12     sub  a,0x12
+after_sub_a_imm:
+    122b 90 12     sub  a,{0x12}
+after_sub_a_dir:
+    122d a0 12     sub  a,[x+0x12]
+after_sub_a_idx:
+    122f b0 12 34  sub  a,[0x1234]
+after_sub_a_ext:
+    1232 c0 12     sub  b,0x12
+after_sub_b_imm:
+    1234 d0 12     sub  b,{0x12}
+after_sub_b_dir:
+    1236 e0 12     sub  b,[x+0x12]
+after_sub_b_idx:
+    1238 f0 12 34  sub  b,[0x1234]
+after_sub_b_ext:
+    123b 80 12     suba 0x12
+after_suba_imm:
+    123d 90 12     suba {0x12}
+after_suba_dir:
+    123f a0 12     suba [x+0x12]
+after_suba_idx:
+    1241 b0 12 34  suba [0x1234]
+after_suba_ext:
+    1244 c0 12     subb 0x12
+after_subb_imm:
+    1246 d0 12     subb {0x12}
+after_subb_dir:
+    1248 e0 12     subb [x+0x12]
+after_subb_idx:
+    124a f0 12 34  subb [0x1234]
+after_subb_ext:
+    124d 3f        swi  
+after_swi:
+    124e 16        tab  
+after_tab:
+    124f 06        tap  
+after_tap:
+    1250 07        tpa  
+after_tpa:
+    1251 4d        tst  a
+after_tst_a:
+    1252 5d        tst  b
+after_tst_b:
+    1253 6d 12     tst  [x+0x12]
+after_tst_idx:
+    1255 7d 12 34  tst  [0x1234]
+after_tst_ext:
+    1258 4d        tsta 
+after_tsta:
+    1259 5d        tstb 
+after_tstb:
+    125a 30        tsx  
+after_tsx:
+    125b 35        txs  
+after_txs:
+    125c 3e        wai  
+after_wai:
+[Label List]
+1000  start
+1001  after_aba
+1003  after_adc_a_imm
+1005  after_adc_a_dir
+1007  after_adc_a_idx
+100a  after_adc_a_ext
+100c  after_adc_b_imm
+100e  after_adc_b_dir
+1010  after_adc_b_idx
+1013  after_adc_b_ext
+1015  after_adca_imm
+1017  after_adca_dir
+1019  after_adca_idx
+101c  after_adca_ext
+101e  after_adcb_imm
+1020  after_adcb_dir
+1022  after_adcb_idx
+1025  after_adcb_ext
+1027  after_add_a_imm
+1029  after_add_a_dir
+102b  after_add_a_idx
+102e  after_add_a_ext
+1030  after_add_b_imm
+1032  after_add_b_dir
+1034  after_add_b_idx
+1037  after_add_b_ext
+1039  after_adda_imm
+103b  after_adda_dir
+103d  after_adda_idx
+1040  after_adda_ext
+1042  after_addb_imm
+1044  after_addb_dir
+1046  after_addb_idx
+1049  after_addb_ext
+104b  after_and_a_imm
+104d  after_and_a_dir
+104f  after_and_a_idx
+1052  after_and_a_ext
+1054  after_and_b_imm
+1056  after_and_b_dir
+1058  after_and_b_idx
+105b  after_and_b_ext
+105d  after_anda_imm
+105f  after_anda_dir
+1061  after_anda_idx
+1064  after_anda_ext
+1066  after_andb_imm
+1068  after_andb_dir
+106a  after_andb_idx
+106d  after_andb_ext
+106e  after_asl_a
+106f  after_asl_b
+1071  after_asl_idx
+1074  after_asl_ext
+1075  after_asla
+1076  after_aslb
+1077  after_asr_a
+1078  after_asr_b
+107a  after_asr_idx
+107d  after_asr_ext
+107e  after_asra
+107f  after_asrb
+1081  after_bcc_imm
+1083  after_bcs_imm
+1085  after_beq_imm
+1087  after_bge_imm
+1089  after_bgt_imm
+108b  after_bhi_imm
+108d  after_bit_a_imm
+108f  after_bit_a_dir
+1091  after_bit_a_idx
+1094  after_bit_a_ext
+1096  after_bit_b_imm
+1098  after_bit_b_dir
+109a  after_bit_b_idx
+109d  after_bit_b_ext
+109f  after_bita_imm
+10a1  after_bita_dir
+10a3  after_bita_idx
+10a6  after_bita_ext
+10a8  after_bitb_imm
+10aa  after_bitb_dir
+10ac  after_bitb_idx
+10af  after_bitb_ext
+10b1  after_ble_imm
+10b3  after_bls_imm
+10b5  after_blt_imm
+10b7  after_bmi_imm
+10b9  after_bne_imm
+10bb  after_bpl_imm
+10bd  after_bra_imm
+10bf  after_bsr_imm
+10c1  after_bvc_imm
+10c3  after_bvs_imm
+10c4  after_cba
+10c5  after_clc
+10c6  after_cli
+10c7  after_clr_a
+10c8  after_clr_b
+10ca  after_clr_idx
+10cd  after_clr_ext
+10ce  after_clra
+10cf  after_clrb
+10d0  after_clv
+10d2  after_cmp_a_imm
+10d4  after_cmp_a_dir
+10d6  after_cmp_a_idx
+10d9  after_cmp_a_ext
+10db  after_cmp_b_imm
+10dd  after_cmp_b_dir
+10df  after_cmp_b_idx
+10e2  after_cmp_b_ext
+10e4  after_cmpa_imm
+10e6  after_cmpa_dir
+10e8  after_cmpa_idx
+10eb  after_cmpa_ext
+10ed  after_cmpb_imm
+10ef  after_cmpb_dir
+10f1  after_cmpb_idx
+10f4  after_cmpb_ext
+10f5  after_com_a
+10f6  after_com_b
+10f8  after_com_idx
+10fb  after_com_ext
+10fc  after_coma
+10fd  after_comb
+10ff  after_cpx_dir
+1101  after_cpx_idx
+1104  after_cpx_imm
+1107  after_cpx_ext
+1108  after_daa
+1109  after_dec_a
+110a  after_dec_b
+110c  after_dec_idx
+110f  after_dec_ext
+1110  after_deca
+1111  after_decb
+1112  after_des
+1113  after_dex
+1115  after_eor_a_imm
+1117  after_eor_a_dir
+1119  after_eor_a_idx
+111c  after_eor_a_ext
+111e  after_eor_b_imm
+1120  after_eor_b_dir
+1122  after_eor_b_idx
+1125  after_eor_b_ext
+1127  after_eora_imm
+1129  after_eora_dir
+112b  after_eora_idx
+112e  after_eora_ext
+1130  after_eorb_imm
+1132  after_eorb_dir
+1134  after_eorb_idx
+1137  after_eorb_ext
+1138  after_inc_a
+1139  after_inc_b
+113b  after_inc_idx
+113e  after_inc_ext
+113f  after_inca
+1140  after_incb
+1141  after_ins
+1142  after_inx
+1144  after_jmp_idx
+1147  after_jmp_ext
+1149  after_jsr_idx
+114c  after_jsr_ext
+114e  after_lda_a_imm
+1150  after_lda_a_dir
+1152  after_lda_a_idx
+1155  after_lda_a_ext
+1157  after_lda_b_imm
+1159  after_lda_b_dir
+115b  after_lda_b_idx
+115e  after_lda_b_ext
+1160  after_ldaa_imm
+1162  after_ldaa_dir
+1164  after_ldaa_idx
+1167  after_ldaa_ext
+1169  after_ldab_imm
+116b  after_ldab_dir
+116d  after_ldab_idx
+1170  after_ldab_ext
+1172  after_lds_dir
+1174  after_lds_idx
+1177  after_lds_imm
+117a  after_lds_ext
+117c  after_ldx_dir
+117e  after_ldx_idx
+1181  after_ldx_imm
+1184  after_ldx_ext
+1185  after_lsr_a
+1186  after_lsr_b
+1188  after_lsr_idx
+118b  after_lsr_ext
+118c  after_lsra
+118d  after_lsrb
+118e  after_neg_a
+118f  after_neg_b
+1191  after_neg_idx
+1194  after_neg_ext
+1195  after_nega
+1196  after_negb
+1197  after_nop
+1199  after_ora_a_imm
+119b  after_ora_a_dir
+119d  after_ora_a_idx
+11a0  after_ora_a_ext
+11a2  after_ora_b_imm
+11a4  after_ora_b_dir
+11a6  after_ora_b_idx
+11a9  after_ora_b_ext
+11ab  after_oraa_imm
+11ad  after_oraa_dir
+11af  after_oraa_idx
+11b2  after_oraa_ext
+11b4  after_orab_imm
+11b6  after_orab_dir
+11b8  after_orab_idx
+11bb  after_orab_ext
+11bc  after_psh_a
+11bd  after_psh_b
+11be  after_psha
+11bf  after_pshb
+11c0  after_pul_a
+11c1  after_pul_b
+11c2  after_pula
+11c3  after_pulb
+11c4  after_rol_a
+11c5  after_rol_b
+11c7  after_rol_idx
+11ca  after_rol_ext
+11cb  after_rola
+11cc  after_rolb
+11cd  after_ror_a
+11ce  after_ror_b
+11d0  after_ror_idx
+11d3  after_ror_ext
+11d4  after_rora
+11d5  after_rorb
+11d6  after_rti
+11d7  after_rts
+11d8  after_sba
+11da  after_sbc_a_imm
+11dc  after_sbc_a_dir
+11de  after_sbc_a_idx
+11e1  after_sbc_a_ext
+11e3  after_sbc_b_imm
+11e5  after_sbc_b_dir
+11e7  after_sbc_b_idx
+11ea  after_sbc_b_ext
+11ec  after_sbca_imm
+11ee  after_sbca_dir
+11f0  after_sbca_idx
+11f3  after_sbca_ext
+11f5  after_sbcb_imm
+11f7  after_sbcb_dir
+11f9  after_sbcb_idx
+11fc  after_sbcb_ext
+11fd  after_sec
+11fe  after_sei
+11ff  after_sev
+1201  after_sta_a_dir
+1203  after_sta_a_idx
+1206  after_sta_a_ext
+1208  after_sta_b_dir
+120a  after_sta_b_idx
+120d  after_sta_b_ext
+120f  after_staa_dir
+1211  after_staa_idx
+1214  after_staa_ext
+1216  after_stab_dir
+1218  after_stab_idx
+121b  after_stab_ext
+121d  after_sts_dir
+121f  after_sts_idx
+1222  after_sts_ext
+1224  after_stx_dir
+1226  after_stx_idx
+1229  after_stx_ext
+122b  after_sub_a_imm
+122d  after_sub_a_dir
+122f  after_sub_a_idx
+1232  after_sub_a_ext
+1234  after_sub_b_imm
+1236  after_sub_b_dir
+1238  after_sub_b_idx
+123b  after_sub_b_ext
+123d  after_suba_imm
+123f  after_suba_dir
+1241  after_suba_idx
+1244  after_suba_ext
+1246  after_subb_imm
+1248  after_subb_dir
+124a  after_subb_idx
+124d  after_subb_ext
+124e  after_swi
+124f  after_tab
+1250  after_tap
+1251  after_tpa
+1252  after_tst_a
+1253  after_tst_b
+1255  after_tst_idx
+1258  after_tst_ext
+1259  after_tsta
+125a  after_tstb
+125b  after_tsx
+125c  after_txs
+125d  after_wai

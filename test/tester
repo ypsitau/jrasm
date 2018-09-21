@@ -1,27 +1,37 @@
 #!/bin/sh
-testCases=""
-testCases="$testCases addressing"
-testCases="$testCases binary2"
-testCases="$testCases binary256"
-testCases="$testCases binary300"
-testCases="$testCases binary512"
-testCases="$testCases binary600"
-testCases="$testCases binary8000"
-testCases="$testCases data"
-testCases="$testCases equ"
-testCases="$testCases mml"
-testCases="$testCases numparse"
-testCases="$testCases rel"
-testCases="$testCases segment"
+caseNames=""
+caseNames="$caseNames addressing"
+caseNames="$caseNames all-instruction"
+caseNames="$caseNames binary2"
+caseNames="$caseNames binary256"
+caseNames="$caseNames binary300"
+caseNames="$caseNames binary512"
+caseNames="$caseNames binary600"
+caseNames="$caseNames binary8000"
+caseNames="$caseNames data"
+caseNames="$caseNames equ"
+caseNames="$caseNames mml"
+caseNames="$caseNames numparse"
+caseNames="$caseNames rel"
+caseNames="$caseNames segment"
 
+#if [ $# = 1 ] ; then
+#	caseName=$1
+#	cmd=""
+#elif [ $# = 2 ] ; then
+#	caseName=$1
+#	cmd=$2
+#else
+#	echo usage: tester [all|casename] update?
+#fi
 cmd=$1
-for testCase in $testCases; do
-	jrasm -d test-$testCase.asm > result/test-$testCase.result.txt
-	if [ "$cmd" == "update" ] ; then
-		echo "update: $testCase"
-		cp result/test-$testCase.result.txt result/test-$testCase.expect.txt
+for caseName in $caseNames; do
+	jrasm -d -l test-$caseName.asm > result/test-$caseName.result.txt
+	if [ "$cmd" = "update" ] ; then
+		echo "update: $caseName"
+		cp result/test-$caseName.result.txt result/test-$caseName.expect.txt
 	else
-		echo "$testCase"
-		diff -u result/test-$testCase.expect.txt result/test-$testCase.result.txt
+		echo "$caseName"
+		diff -u result/test-$caseName.expect.txt result/test-$caseName.result.txt
 	fi
 done

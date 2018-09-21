@@ -16,3 +16,5 @@
     200e f0 07     .dw 0xf007
     1010 10 08     .dw 0x1008
     2010 f0 08     .dw 0xf008
+[Label List]
+(no label)

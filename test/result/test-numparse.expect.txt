@@ -14,3 +14,5 @@
     1027 ce 00 09  ldx  0x09
     102a ce 00 ff  ldx  0xff
     102d ce ff ff  ldx  0xffff
+[Label List]
+(no label)
