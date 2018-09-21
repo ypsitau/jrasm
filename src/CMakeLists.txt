@@ -12,6 +12,7 @@ add_executable(jrasm
 	ErrorLog.cpp
 	Expr.cpp
 	FormatCJR.cpp
+	FormatDump.cpp
 	Generator.cpp
 	Generator_M6800.cpp
 	MmlParser.cpp

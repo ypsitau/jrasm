@@ -156,6 +156,7 @@
     <ClInclude Include="ErrorLog.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="FormatCJR.h" />
+    <ClInclude Include="FormatDump.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Generator_M6800.h" />
     <ClInclude Include="MmlParser.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="ErrorLog.cpp" />
     <ClCompile Include="Expr.cpp" />
     <ClCompile Include="FormatCJR.cpp" />
+    <ClCompile Include="FormatDump.cpp" />
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Generator_M6800.cpp" />
     <ClCompile Include="jrasm.cpp" />

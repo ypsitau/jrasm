@@ -14,6 +14,7 @@
 #include "ErrorLog.h"
 #include "Expr.h"
 #include "FormatCJR.h"
+#include "FormatDump.h"
 #include "Generator.h"
 #include "Generator_M6800.h"
 #include "MmlParser.h"
