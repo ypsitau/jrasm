@@ -169,7 +169,7 @@ bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_
 	return true;
 }
 
-Expr *Expr_Root::Reduce(Context &context) const
+Expr *Expr_Root::Resolve(Context &context) const
 {
 	return Reference();
 }
@@ -195,7 +195,7 @@ String Expr_Number::ToString(bool upperCaseFlag) const
 	return buff;
 }
 
-Expr *Expr_Number::Reduce(Context &context) const
+Expr *Expr_Number::Resolve(Context &context) const
 {
 	return Reference();
 }
@@ -214,7 +214,7 @@ String Expr_String::ToString(bool upperCaseFlag) const
 	return str;
 }
 
-Expr *Expr_String::Reduce(Context &context) const
+Expr *Expr_String::Resolve(Context &context) const
 {
 	return Reference();
 }
@@ -233,13 +233,13 @@ String Expr_BinOp::ToString(bool upperCaseFlag) const
 	return str;
 }
 
-Expr *Expr_BinOp::Reduce(Context &context) const
+Expr *Expr_BinOp::Resolve(Context &context) const
 {
-	AutoPtr<Expr> pExprL(GetLeft()->Reduce(context));
+	AutoPtr<Expr> pExprL(GetLeft()->Resolve(context));
 	if (pExprL.IsNull()) return nullptr;
-	AutoPtr<Expr> pExprR(GetRight()->Reduce(context));
+	AutoPtr<Expr> pExprR(GetRight()->Resolve(context));
 	if (pExprR.IsNull()) return nullptr;
-	return _pOperator->Reduce(pExprL.release(), pExprR.release());
+	return _pOperator->Resolve(pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -256,14 +256,14 @@ String Expr_Bracket::ToString(bool upperCaseFlag) const
 	return str;
 }
 
-Expr *Expr_Bracket::Reduce(Context &context) const
+Expr *Expr_Bracket::Resolve(Context &context) const
 {
 	AutoPtr<Expr_Bracket> pExprRtn(new Expr_Bracket());
 	pExprRtn->DeriveSourceInfo(this);
 	for (auto pExprChild : GetChildren()) {
-		AutoPtr<Expr> pExprChildReduced(pExprChild->Reduce(context));
-		if (pExprChildReduced.IsNull()) return nullptr;
-		pExprRtn->AddChild(pExprChildReduced.release());
+		AutoPtr<Expr> pExprChildResolved(pExprChild->Resolve(context));
+		if (pExprChildResolved.IsNull()) return nullptr;
+		pExprRtn->AddChild(pExprChildResolved.release());
 	}
 	return pExprRtn.release();
 }
@@ -282,14 +282,14 @@ String Expr_Brace::ToString(bool upperCaseFlag) const
 	return str;
 }
 
-Expr *Expr_Brace::Reduce(Context &context) const
+Expr *Expr_Brace::Resolve(Context &context) const
 {
 	AutoPtr<Expr_Brace> pExprRtn(new Expr_Brace());
 	pExprRtn->DeriveSourceInfo(this);
 	for (auto pExprChild : GetChildren()) {
-		AutoPtr<Expr> pExprChildReduced(pExprChild->Reduce(context));
-		if (pExprChildReduced.IsNull()) return nullptr;
-		pExprRtn->AddChild(pExprChildReduced.release());
+		AutoPtr<Expr> pExprChildResolved(pExprChild->Resolve(context));
+		if (pExprChildResolved.IsNull()) return nullptr;
+		pExprRtn->AddChild(pExprChildResolved.release());
 	}
 	return pExprRtn.release();
 }
@@ -304,7 +304,7 @@ bool Expr_LabelDef::Prepare(Context &context)
 	if (!Expr::Prepare(context)) return false;
 	UInt32 num = 0;
 	if (IsAssigned()) {
-		AutoPtr<Expr> pExprAssigned(GetAssigned()->Reduce(context));
+		AutoPtr<Expr> pExprAssigned(GetAssigned()->Resolve(context));
 		if (pExprAssigned.IsNull()) return false;
 		if (!pExprAssigned->IsTypeNumber()) {
 			ErrorLog::AddError(this, "number must be specified for label assignment");
@@ -341,7 +341,7 @@ bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, s
 	return true;
 }
 
-Expr *Expr_LabelDef::Reduce(Context &context) const
+Expr *Expr_LabelDef::Resolve(Context &context) const
 {
 	return Reference();
 }
@@ -359,7 +359,7 @@ String Expr_LabelDef::ToString(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 
-Expr *Expr_LabelRef::Reduce(Context &context) const
+Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
 	bool foundFlag = false;
@@ -407,7 +407,7 @@ bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag
 	return true;
 }
 
-Expr *Expr_Instruction::Reduce(Context &context) const
+Expr *Expr_Instruction::Resolve(Context &context) const
 {
 	return Reference();
 }
@@ -447,9 +447,9 @@ bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, 
 	return true;
 }
 
-Expr *Expr_Directive::Reduce(Context &context) const
+Expr *Expr_Directive::Resolve(Context &context) const
 {
-	return _pDirective->Reduce(context, this);
+	return _pDirective->Resolve(context, this);
 }
 
 String Expr_Directive::ToString(bool upperCaseFlag) const
@@ -466,7 +466,7 @@ String Expr_Directive::ToString(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_MacroBody::TYPE = Expr::TYPE_MacroBody;
 
-Expr *Expr_MacroBody::Reduce(Context &context) const
+Expr *Expr_MacroBody::Resolve(Context &context) const
 {
 	return Reference();
 }
@@ -483,7 +483,7 @@ String Expr_MacroBody::ToString(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
 
-Expr *Expr_MacroEntry::Reduce(Context &context) const
+Expr *Expr_MacroEntry::Resolve(Context &context) const
 {
 	return Reference();
 }

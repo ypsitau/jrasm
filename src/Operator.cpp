@@ -22,7 +22,7 @@ void Operator::Initialize()
 //-----------------------------------------------------------------------------
 // Operator_Add
 //-----------------------------------------------------------------------------
-Expr *Operator_Add::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Add::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
@@ -45,7 +45,7 @@ Expr *Operator_Add::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 //-----------------------------------------------------------------------------
 // Operator_Sub
 //-----------------------------------------------------------------------------
-Expr *Operator_Sub::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Sub::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
@@ -58,7 +58,7 @@ Expr *Operator_Sub::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 //-----------------------------------------------------------------------------
 // Operator_Mul
 //-----------------------------------------------------------------------------
-Expr *Operator_Mul::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Mul::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
@@ -71,7 +71,7 @@ Expr *Operator_Mul::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 //-----------------------------------------------------------------------------
 // Operator_Div
 //-----------------------------------------------------------------------------
-Expr *Operator_Div::Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Div::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();

@@ -22,7 +22,7 @@ public:
 	static void Initialize();
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline bool IsIdentical(const Operator *pOperator) const { return this == pOperator; }
-	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const = 0;
+	virtual Expr *Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ public:
 class Operator_Add : public Operator {
 public:
 	inline Operator_Add() : Operator("+") {}
-	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+	virtual Expr *Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public:
 class Operator_Sub : public Operator {
 public:
 	inline Operator_Sub() : Operator("-") {}
-	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+	virtual Expr *Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ public:
 class Operator_Mul : public Operator {
 public:
 	inline Operator_Mul() : Operator("*") {}
-	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+	virtual Expr *Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public:
 class Operator_Div : public Operator {
 public:
 	inline Operator_Div() : Operator("/") {}
-	virtual Expr *Reduce(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+	virtual Expr *Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 #endif

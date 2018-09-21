@@ -46,7 +46,7 @@ const Directive *Directive::FindBuiltIn(const char *symbol)
 	return _pDirectivesBuiltIn->FindBySymbol(symbol);
 }
 
-Expr *Directive::Reduce(Context &context, const Expr_Directive *pExpr) const
+Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();
 }
@@ -111,17 +111,17 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 	if (!context.CheckRegionReady()) return false;
 	size_t bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
-		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
-		if (pExprReduced->IsTypeNumber()) {
-			UInt32 num = dynamic_cast<Expr_Number *>(pExprReduced.get())->GetNumber();
+		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		if (pExprResolved->IsTypeNumber()) {
+			UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
 			if (num > 0xff) {
 				ErrorLog::AddError(pExpr, "an element value of directive .db exceeds 8-bit range");
 				return false;
 			}
 			buffDst += static_cast<UInt8>(num);
 			bytes++;
-		} else if (pExprReduced->IsTypeString()) {
-			const char *str = dynamic_cast<Expr_String *>(pExprReduced.get())->GetString();
+		} else if (pExprResolved->IsTypeString()) {
+			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
 			for (const char *p = str; *p != '\0'; p++) {
 				buffDst += static_cast<UInt8>(*p);
 				bytes++;
@@ -168,12 +168,12 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binar
 {
 	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
-		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
-		if (!pExprReduced->IsTypeNumber()) {
+		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		if (!pExprResolved->IsTypeNumber()) {
 			ErrorLog::AddError(pExpr, "elements of directive .db must be number value");
 			return false;
 		}
-		UInt32 num = dynamic_cast<Expr_Number *>(pExprReduced.get())->GetNumber();
+		UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
 		if (num > 0xffff) {
 			ErrorLog::AddError(pExpr, "an element value of directive .db exceeds 16-bit range");
 			return false;
@@ -260,14 +260,14 @@ bool Directive_EQU::Generate(Context &context, const Expr_Directive *pExpr, Bina
 	return true;
 }
 
-Expr *Directive_EQU::Reduce(Context &context, const Expr_Directive *pExpr) const
+Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (operands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .equ takes one operand");
 		return nullptr;
 	}
-	return operands.back()->Reduce(context);
+	return operands.back()->Resolve(context);
 }
 
 //-----------------------------------------------------------------------------
@@ -280,7 +280,7 @@ bool Directive_FILENAMEJR::Prepare(Context &context, const Expr_Directive *pExpr
 		ErrorLog::AddError(pExpr, "directive .filenamejr takes one operand");
 		return false;
 	}
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeString()) {
 		ErrorLog::AddError(pExpr, "directive .filenamejr takes a string value as its operand");
@@ -378,12 +378,12 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 	MmlParser parser(handler);
 	parser.Reset();
 	for (auto pExprData : pExpr->GetOperands()) {
-		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
-		if (!pExprReduced->IsTypeString()) {
+		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		if (!pExprResolved->IsTypeString()) {
 			ErrorLog::AddError(pExpr, "elements of directive .mml must be string value");
 			return false;
 		}
-		const char *str = dynamic_cast<Expr_String *>(pExprReduced.get())->GetString();
+		const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
 		for (const char *p = str; ; p++) {
 			if (!parser.FeedChar(*p)) {
 				ErrorLog::AddError(pExpr, "invalid MML format");
@@ -428,7 +428,7 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 		ErrorLog::AddError(pExpr, "directive .org takes one operand");
 		return false;
 	}
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeNumber()) {
 		ErrorLog::AddError(pExpr, "directive .org takes a number value as its operand");

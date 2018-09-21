@@ -1,0 +1,16 @@
+    1000 ce 00 00  ldx  0x00
+    1003 ce 00 01  ldx  0x01
+    1006 ce 00 0b  ldx  0x0b
+    1009 ce 00 ff  ldx  0xff
+    100c ce ff ff  ldx  0xffff
+    100f ce 00 00  ldx  0x00
+    1012 ce 00 01  ldx  0x01
+    1015 ce 00 0b  ldx  0x0b
+    1018 ce 00 ff  ldx  0xff
+    101b ce ff ff  ldx  0xffff
+    101e ce 00 00  ldx  0x00
+    1021 ce 00 01  ldx  0x01
+    1024 ce 00 07  ldx  0x07
+    1027 ce 00 09  ldx  0x09
+    102a ce 00 ff  ldx  0xff
+    102d ce ff ff  ldx  0xffff

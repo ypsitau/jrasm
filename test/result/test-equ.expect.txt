@@ -1,0 +1,16 @@
+label1:            .equ 0x1234
+label2:            .equ label1
+label3:            .equ 0xabcd
+label4:
+    1000 ce 12 34  ldx  label1
+label5:
+    1003 ce 12 34  ldx  label2
+label6:
+    1006 ce ab cd  ldx  label3
+label7:
+    1009 ce 10 00  ldx  label4
+label8:            .equ label6
+    100c 01        nop  
+    100d ce 10 03  ldx  label5
+    1010 ce 10 06  ldx  label6
+    1013 ce 10 09  ldx  label7

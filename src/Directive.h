@@ -29,7 +29,7 @@ public:
 	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const = 0;
-	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
+	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ public:
 	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
-	virtual Expr *Reduce(Context &context, const Expr_Directive *pExpr) const;
+	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------

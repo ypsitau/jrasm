@@ -322,7 +322,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
 	if (operands.size() != 1) return RESULT_Rejected;
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
@@ -390,7 +390,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		if (!pExpr->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
@@ -414,7 +414,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
 	if (operands.size() != 1) return RESULT_Rejected;
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
@@ -448,7 +448,7 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		if (!pExprLast->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBrace()) return RESULT_Rejected;
 	// This rule was determined to be applied.
@@ -491,7 +491,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		if (!pExprLast->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
@@ -538,7 +538,7 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		if (!pExpr->IsTypeLabelRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_LabelRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
-	AutoPtr<Expr> pExprLast(operands.back()->Reduce(context));
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	// This rule was determined to be applied.
