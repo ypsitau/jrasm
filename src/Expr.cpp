@@ -71,7 +71,8 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 		str += buff;
 		iCol++;
 		if (iCol == nColsPerLine) {
-			::fprintf(fp, formatHead, addr, str.c_str(), (iLine == 0)? strCode : "");
+			::fprintf(fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * nColsPerLineMax).c_str(),
+					  (iLine == 0)? strCode : "");
 			str.clear();
 			addr += iCol;
 			iCol = 0;

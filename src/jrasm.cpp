@@ -3,9 +3,6 @@
 //=============================================================================
 #include "stdafx.h"
 
-#define JRASM_VERSION 			"0.0.1"
-#define JRASM_COPYRIGHT_YEAR	"2018"
-
 const char *strBanner = "JR-200 Assembler " JRASM_VERSION " Copyright (C) " \
 	JRASM_COPYRIGHT_YEAR " ypsitau\n";
 
