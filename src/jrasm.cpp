@@ -9,15 +9,17 @@ const char *strBanner = "JR-200 Assembler " JRASM_VERSION " Copyright (C) " \
 const char *strUsage = "usage: jrasm [option] source\n";
 
 const char *strOption = R"**(available options:
---output=file     -o file  specifies filename to output
---print-disasm-l  -d       prints disassembler dump in lower case
---print-disasm-u  -D       prints disassembler dump in upper case
---print-list-l    -l       prints label list in lower case
---print-list-u    -L       prints label list in upper case
---print-memory-l  -m       prints memory image in lower case
---print-memory-u  -M       prints memory image in upper case
---verbose         -v       verbose mode
---help            -h       prints this help
+--output=file      -o file  specifies filename to output
+--print-disasm-l   -d       prints disassembler dump in lower case
+--print-disasm-u   -D       prints disassembler dump in upper case
+--print-hexdump-l  -x       prints hex dump in lower case
+--print-hexdump-u  -X       prints hex dump in upper case
+--print-list-l     -l       prints label list in lower case
+--print-list-u     -L       prints label list in upper case
+--print-memory-l   -m       prints memory image in lower case
+--print-memory-u   -M       prints memory image in upper case
+--verbose          -v       verbose mode
+--help             -h       prints this help
 )**";
 
 //-----------------------------------------------------------------------------
@@ -29,6 +31,8 @@ int main(int argc, const char *argv[])
 		{ "output",				'o',	CommandLine::TYPE_Value	},
 		{ "print-disasm-l",		'd',	CommandLine::TYPE_Flag	},
 		{ "print-disasm-u",		'D',	CommandLine::TYPE_Flag	},
+		{ "print-hexdump-l",	'x',	CommandLine::TYPE_Flag	},
+		{ "print-hexdump-u",	'X',	CommandLine::TYPE_Flag	},
 		{ "print-list-l",		'l',	CommandLine::TYPE_Flag	},
 		{ "print-list-u",		'L',	CommandLine::TYPE_Flag	},
 		{ "print-memory-l",		'm',	CommandLine::TYPE_Flag	},
@@ -58,6 +62,7 @@ int main(int argc, const char *argv[])
 	const char *pathNameSrc = argv[1];
 	Parser parser(pathNameSrc);
 	Context context;
+	String fileNameOut;
 	if (!parser.ParseFile()) goto errorDone;
 	if (!parser.Prepare(context)) goto errorDone;
 	upperCaseFlag = false;
@@ -70,11 +75,17 @@ int main(int argc, const char *argv[])
 		UInt8 dataFiller = 0x00;
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
 		if (pRegionOwner.get() == nullptr) goto errorDone;
-		String fileNameOut = ::RemoveExtName(fileNameSrc) + ".cjr";
-		FormatCJR format(context.GetFileNameJR());
-		if (!format.Write(fileNameOut.c_str(), *pRegionOwner)) goto errorDone;
-		::printf("%s was created\n", fileNameOut.c_str());
+		upperCaseFlag = false;
+		if (cmdLine.IsSet("print-hexdump-l") || (upperCaseFlag = cmdLine.IsSet("print-hexdump-u"))) {
+			fileNameOut = cmdLine.GetString("output", "");
+			FormatDump().Write(fileNameOut.c_str(), *pRegionOwner);
+		} else {
+			fileNameOut = cmdLine.GetString("output", (::RemoveExtName(fileNameSrc) + ".cjr").c_str());
+			FormatCJR format(context.GetFileNameJR());
+			if (!format.Write(fileNameOut.c_str(), *pRegionOwner)) goto errorDone;
+		}
 	}
+	if (!fileNameOut.empty()) ::printf("%s was created\n", fileNameOut.c_str());
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-list-l") || (upperCaseFlag = cmdLine.IsSet("print-list-u"))) {
 		const char *format = upperCaseFlag? "%04X  %s\n" : "%04x  %s\n";
