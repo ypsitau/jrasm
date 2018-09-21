@@ -109,20 +109,28 @@ bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
 bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
+	size_t bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprReduced(pExprData->Reduce(context));
-		if (!pExprReduced->IsTypeNumber()) {
-			ErrorLog::AddError(pExpr, "elements of directive .db must be number value");
+		if (pExprReduced->IsTypeNumber()) {
+			UInt32 num = dynamic_cast<Expr_Number *>(pExprReduced.get())->GetNumber();
+			if (num > 0xff) {
+				ErrorLog::AddError(pExpr, "an element value of directive .db exceeds 8-bit range");
+				return false;
+			}
+			buffDst += static_cast<UInt8>(num);
+			bytes++;
+		} else if (pExprReduced->IsTypeString()) {
+			const char *str = dynamic_cast<Expr_String *>(pExprReduced.get())->GetString();
+			for (const char *p = str; *p != '\0'; p++) {
+				buffDst += static_cast<UInt8>(*p);
+				bytes++;
+			}
+		} else {
+			ErrorLog::AddError(pExpr, "elements of directive .db must be number or string value");
 			return false;
 		}
-		UInt32 num = dynamic_cast<Expr_Number *>(pExprReduced.get())->GetNumber();
-		if (num > 0xff) {
-			ErrorLog::AddError(pExpr, "an element value of directive .db exceeds 8-bit range");
-			return false;
-		}
-		buffDst += static_cast<UInt8>(num);
 	}
-	size_t bytes = pExpr->GetOperands().size() * sizeof(UInt8);
 	context.ForwardAddress(static_cast<UInt32>(bytes));
 	return true;
 }
