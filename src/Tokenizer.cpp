@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
 	_stat(STAT_LineTop), _pListener(pListener),
-	_pFileNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0)
+	_pFileNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0), _chBorder('\0')
 {
 }
 
@@ -38,6 +38,11 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_stat = STAT_Symbol;
 		} else if (ch == '"') {
+			_chBorder = ch;
+			_str.clear();
+			_stat = STAT_String;
+		} else if (ch == '\'') {
+			_chBorder = ch;
 			_str.clear();
 			_stat = STAT_String;
 		} else if (ch == '0') {
@@ -115,8 +120,15 @@ bool Tokenizer::FeedChar(char ch)
 		if (IsEOF(ch) || IsEOL(ch)) {
 			AddError("unclosed string literal");
 			rtn = false;
-		} else if (ch == '"') {
-			rtn = FeedToken(TOKEN_String, _str);
+		} else if (ch == _chBorder) {
+			if (ch == '"') {
+				rtn = FeedToken(TOKEN_String, _str);
+			} else if (_str.size() > 1) { // ch == '\''
+				AddError("character literal must contain just one character");
+				rtn = false;
+			} else {
+				rtn = FeedToken(TOKEN_Number, _str, _str[0]);
+			}
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {
 			_stat = STAT_StringEsc;
@@ -127,6 +139,8 @@ bool Tokenizer::FeedChar(char ch)
 	}
 	case STAT_StringEsc: {
 		if (ch == '"') {
+			_str += ch;
+		} else if (ch == '\'') {
 			_str += ch;
 		} else if (ch == 'n') {
 			_str += '\n';

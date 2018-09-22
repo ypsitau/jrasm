@@ -35,6 +35,7 @@ private:
 	UInt16 _num;
 	String _str;
 	int _nLines;
+	char _chBorder;
 public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
 	inline const char *GetFileNameSrc() const { return _pFileNameSrc->GetString(); }

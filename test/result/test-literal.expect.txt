@@ -14,5 +14,10 @@
     1027 ce 00 09  ldx  0x09
     102a ce 00 ff  ldx  0xff
     102d ce ff ff  ldx  0xffff
+    1030 86 41     ldaa 0x41
+    1032 86 42     ldaa 0x42
+    1034 86 43     ldaa 0x43
+    1036 86 44     ldaa 0x44
+    1038 86 45     ldaa 0x45
 [Label List]
 (no label)

@@ -18,3 +18,9 @@
 	ldx		011
 	ldx		0377
 	ldx		0177777
+	;; character literal
+	ldaa	'A'
+	ldaa	'B'
+	ldaa	'C'
+	ldaa	'D'
+	ldaa	'E'
