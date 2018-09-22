@@ -234,4 +234,4 @@ Example:
 |`ASLB`              |`ASL B`             |Arighmatic shift Left on `B`, bit 0 is set to 0        |
 |`ASL [X+data8]`     |`ASL [X+data8]`     |Arithmetic shift left on `[X+data8]`, bit 0 is set to 0|
 |`ASL [addr16]`      |`ASL [addr16]`      |Arithmetic shift left on `[addr16]`, bit 0 is set to 0 |
-|`BCC disp`          |                    |`if C=0 then PC<-PC+disp+2`                            |
+|`BCC disp`          |                    |if `C=0` then `PC<-PC+disp+2`                          |
