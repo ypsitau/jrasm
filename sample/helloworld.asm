@@ -1,3 +1,4 @@
+	.filename.jr	"hoge"
 	.org	0x2000
 loop:
 	ldx		[ptr_src]

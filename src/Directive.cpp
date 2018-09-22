@@ -31,7 +31,7 @@ void Directive::Initialize()
 	_pDirectivesBuiltIn->push_back(new Directive_ENDM());
 	_pDirectivesBuiltIn->push_back(new Directive_ENDP());
 	_pDirectivesBuiltIn->push_back(new Directive_EQU());
-	_pDirectivesBuiltIn->push_back(new Directive_FILENAMEJR());
+	_pDirectivesBuiltIn->push_back(new Directive_FILENAME_JR());
 	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
 	_pDirectivesBuiltIn->push_back(new Directive_ISEG());
 	_pDirectivesBuiltIn->push_back(new Directive_MACRO());
@@ -271,32 +271,32 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 }
 
 //-----------------------------------------------------------------------------
-// Directive_FILENAMEJR
+// Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
-bool Directive_FILENAMEJR::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_FILENAME_JR::Prepare(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
+bool Directive_FILENAME_JR::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (operands.size() != 1) {
-		ErrorLog::AddError(pExpr, "directive .filenamejr takes one operand");
+		ErrorLog::AddError(pExpr, "directive .filename.jr takes one operand");
 		return false;
 	}
 	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeString()) {
-		ErrorLog::AddError(pExpr, "directive .filenamejr takes a string value as its operand");
+		ErrorLog::AddError(pExpr, "directive .filename.jr takes a string value as its operand");
 		return false;
 	}
 	const char *fileNameJR = dynamic_cast<const Expr_String *>(pExprLast.get())->GetString();
 	if (::strlen(fileNameJR) > 16) {
-		ErrorLog::AddError(pExpr, "the length of JR filename must be up to 16 characters");
+		ErrorLog::AddError(pExpr, "the length of filename.jr must be up to 16 characters");
 		return false;
 	}
 	context.SetFileNameJR(fileNameJR);
-	return true;
-}
-
-bool Directive_FILENAMEJR::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
-{
 	return true;
 }
 
@@ -367,7 +367,7 @@ bool Directive_MACRO::Generate(Context &context, const Expr_Directive *pExpr, Bi
 //-----------------------------------------------------------------------------
 bool Directive_MML::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
-	Handler handler(nullptr);
+	//Handler handler(nullptr);
 	return true;
 }
 

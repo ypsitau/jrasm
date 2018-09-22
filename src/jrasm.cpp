@@ -62,7 +62,6 @@ int main(int argc, const char *argv[])
 	const char *pathNameSrc = argv[1];
 	Parser parser(pathNameSrc);
 	Context context;
-	String fileNameOut;
 	if (!parser.ParseFile()) goto errorDone;
 	if (!parser.Prepare(context)) goto errorDone;
 	upperCaseFlag = false;
@@ -71,21 +70,25 @@ int main(int argc, const char *argv[])
 							   Generator::GetInstance().GetBytesInstMax())) goto errorDone;
 	} else {
 		const char *fileNameSrc = ExtractFileName(pathNameSrc);
+		String fileBaseNameSrc = ::RemoveExtName(fileNameSrc);
+		//String pathBaseNameSrc = ::RemoveExtName(pathNameSrc);
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
+		context.SetFileNameJR(fileBaseNameSrc.c_str());
 		std::unique_ptr<RegionOwner> pRegionOwner(parser.Generate(context, bytesGapToJoin, dataFiller));
 		if (pRegionOwner.get() == nullptr) goto errorDone;
 		upperCaseFlag = false;
 		if (cmdLine.IsSet("print-hexdump-l") || (upperCaseFlag = cmdLine.IsSet("print-hexdump-u"))) {
-			fileNameOut = cmdLine.GetString("output", "");
+			String fileNameOut = cmdLine.GetString("output", "");
 			FormatDump().Write(fileNameOut.c_str(), *pRegionOwner);
+			::printf("%s was created\n", fileNameOut.c_str());
 		} else {
-			fileNameOut = cmdLine.GetString("output", (::RemoveExtName(fileNameSrc) + ".cjr").c_str());
+			String fileNameOut = cmdLine.GetString("output", (fileBaseNameSrc + ".cjr").c_str());
 			FormatCJR format(context.GetFileNameJR());
 			if (!format.Write(fileNameOut.c_str(), *pRegionOwner)) goto errorDone;
+			::printf("%s was created (filename.jr: %s)\n", fileNameOut.c_str(), context.GetFileNameJR());
 		}
 	}
-	if (!fileNameOut.empty()) ::printf("%s was created\n", fileNameOut.c_str());
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-list-l") || (upperCaseFlag = cmdLine.IsSet("print-list-u"))) {
 		const char *format = upperCaseFlag? "%04X  %s\n" : "%04x  %s\n";

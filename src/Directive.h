@@ -123,11 +123,11 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_FILENAMEJR
+// Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
-class Directive_FILENAMEJR : public Directive {
+class Directive_FILENAME_JR : public Directive {
 public:
-	inline Directive_FILENAMEJR() : Directive(".filenamejr") {}
+	inline Directive_FILENAME_JR() : Directive(".filename.jr") {}
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
