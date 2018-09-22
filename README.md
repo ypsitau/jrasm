@@ -49,8 +49,8 @@ Available options are:
 |`--verbose`        |`-v`        |Reports various things.                                            |
 |`--help`           |`-h`        |Prints help message.                                               |
 
-When you launch the program with a source file, it will generate the product of CJR format that
-can be loaded to VJR-200, a JR-200 emulator.
+When you launch the program with a source file, it will generate a product in CJR format
+that can be loaded to VJR-200, a JR-200 emulator.
 
 
 ## First Step
