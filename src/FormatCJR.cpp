@@ -17,13 +17,14 @@ bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 	UInt16 addr = 0;
 	FILE *fp = stdout;
 	if (*fileNameOut != '\0') {
-		if (::fopen_s(&fp, fileNameOut, "w") != 0) {
+		if (::fopen_s(&fp, fileNameOut, "wb") != 0) {
 			ErrorLog::AddError("failed to open output file: %s", fileNameOut);
 			return false;
 		}
 	}
 	do {
 		HeaderBlock headerBlock;
+		::memset(&headerBlock, 0x00, sizeof(headerBlock));
 		::memcpy(headerBlock.preamble,	"\x02\x2a", 2);
 		headerBlock.blockCount			= blockCount++;
 		headerBlock.blockSize 			= 0x1a;
@@ -43,6 +44,8 @@ bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 		for (size_t bytesDone = 0; bytesDone < bytes; ) {
 			DataBlockTop dataBlockTop;
 			DataBlockBtm dataBlockBtm;
+			::memset(&dataBlockTop, 0x00, sizeof(dataBlockTop));
+			::memset(&dataBlockBtm, 0x00, sizeof(dataBlockBtm));
 			size_t bytesBlock = bytes - bytesDone;
 			if (bytesBlock > bytesBlockMax) bytesBlock = bytesBlockMax;
 			::memcpy(dataBlockTop.preamble,	"\x02\x2a", 2);
@@ -62,6 +65,7 @@ bool FormatCJR::Write(const char *fileNameOut, const RegionList &regionList)
 	}
 	do {
 		FooterBlock footerBlock;
+		::memset(&footerBlock, 0x00, sizeof(footerBlock));
 		::memcpy(footerBlock.preamble,	"\x02\x2a", 2);
 		footerBlock.blockCount 			= 0xff;
 		footerBlock.blockSize 			= 0xff;
