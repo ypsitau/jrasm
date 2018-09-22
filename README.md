@@ -203,9 +203,9 @@ Example:
 
 ## Instructions
 
-|Syntax              |Another Syntax      |Operation                                                          |
-|--------------------|--------------------|-------------------------------------------------------------------|
-|`ABA`               |                    |`[A] <- [A] + [B]`                                                 |
-|`ADCA data8`        |`ADC A,data8`       |`[A] <- [A] + data8 + C`                                           |
-|`ADCA {addr8}`      |`ADC A,{addr8}`     |`[A] <- [A] + {addr8} + C`                                         |
-|`ADCA [X+data8]`    |`ADC A,[X+data8]`   |`[A} <- [A] + [data8+[X]] + C`                                     |
+|Syntax              |Another Syntax      |Operation                                                       |
+|--------------------|--------------------|----------------------------------------------------------------|
+|`ABA`               |                    |`[A]&lrr;[A]+[B]`                                               |
+|`ADCA data8`        |`ADC A,data8`       |`[A]&lrr;[A]+data8+C`                                           |
+|`ADCA {addr8}`      |`ADC A,{addr8}`     |`[A]&lrr;[A]+{addr8}+C`                                         |
+|`ADCA [X+data8]`    |`ADC A,[X+data8]`   |`[A}&lrr;[A]+[data8+[X]]+C`                                     |
