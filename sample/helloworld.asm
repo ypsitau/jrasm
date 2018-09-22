@@ -16,6 +16,6 @@ done:
 ptr_src:
 	.DW		hello_world
 ptr_dst:
-	.DW		0xc100
+	.DW		0xc100 + 9 + 20 * 0x20
 hello_world:
 	.DB		"Hello, world!", 0
