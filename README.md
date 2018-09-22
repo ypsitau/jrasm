@@ -209,4 +209,5 @@ Example:
 |`ADCA data8`        |`ADC A,data8`       |`A<-A+data8+C`                                         |
 |`ADCA {addr8}`      |`ADC A,{addr8}`     |`A<-A+{addr8}+C`                                       |
 |`ADCA [X+data8]`    |`ADC A,[X+data8]`   |`A<-A+[X+data8]+C`                                     |
+|`ADCA [addr16]`     |`ADC A,[addr16]`    |`A<-A+[addr16]+C`                                      |
 |`BCC disp`          |                    |`if C=0 then PC<-PC+disp+2`                            |
