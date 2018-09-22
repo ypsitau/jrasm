@@ -230,10 +230,8 @@ Example:
 |`ANDB {addr8}`      |`AND B,{addr8}`     |`B<-B^{addr8}`                                         |
 |`ANDB [X+data8]`    |`AND B,[X+data8]`   |`B<-B^[X+data8]`                                       |
 |`ANDB [addr16]`     |`AND B,[addr16]`    |`B<-B^[addr16]`                                        |
-
 |`ASLA`              |`ASL A`             |Arithmetic shift left on `A`, bit 0 is set to 0        |
 |`ASLB`              |`ASL B`             |Arighmatic shift Left on `B`, bit 0 is set to 0        |
 |`ASL [X+data8]`     |`ASL [X+data8]`     |Arithmetic shift left on `[X+data8]`, bit 0 is set to 0|
 |`ASL [addr16]`      |`ASL [addr16]`      |Arithmetic shift left on `[addr16]`, bit 0 is set to 0 |
-
 |`BCC disp`          |                    |`if C=0 then PC<-PC+disp+2`                            |
