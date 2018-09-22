@@ -74,7 +74,7 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 			::fprintf(fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * nColsPerLineMax).c_str(),
 					  (iLine == 0)? strCode : "");
 			str.clear();
-			addr += iCol;
+			addr += static_cast<UInt32>(iCol);
 			iCol = 0;
 			iLine++;
 		}
