@@ -210,4 +210,30 @@ Example:
 |`ADCA {addr8}`      |`ADC A,{addr8}`     |`A<-A+{addr8}+C`                                       |
 |`ADCA [X+data8]`    |`ADC A,[X+data8]`   |`A<-A+[X+data8]+C`                                     |
 |`ADCA [addr16]`     |`ADC A,[addr16]`    |`A<-A+[addr16]+C`                                      |
+|`ADCB data8`        |`ADC B,data8`       |`B<-B+data8+C`                                         |
+|`ADCB {addr8}`      |`ADC B,{addr8}`     |`B<-B+{addr8}+C`                                       |
+|`ADCB [X+data8]`    |`ADC B,[X+data8]`   |`B<-B+[X+data8]+C`                                     |
+|`ADCB [addr16]`     |`ADC B,[addr16]`    |`B<-B+[addr16]+C`                                      |
+|`ADDA data8`        |`ADD A,data8`       |`A<-A+data8`                                           |
+|`ADDA {addr8}`      |`ADD A,{addr8}`     |`A<-A+{addr8}`                                         |
+|`ADDA [X+data8]`    |`ADD A,[X+data8]`   |`A<-A+[X+data8]`                                       |
+|`ADDA [addr16]`     |`ADD A,[addr16]`    |`A<-A+[addr16]`                                        |
+|`ADDB data8`        |`ADD B,data8`       |`B<-B+data8`                                           |
+|`ADDB {addr8}`      |`ADD B,{addr8}`     |`B<-B+{addr8}`                                         |
+|`ADDB [X+data8]`    |`ADD B,[X+data8]`   |`B<-B+[X+data8]`                                       |
+|`ADDB [addr16]`     |`ADD B,[addr16]`    |`B<-B+[addr16]`                                        |
+|`ANDA data8`        |`AND A,data8`       |`A<-A^data8`                                           |
+|`ANDA {addr8}`      |`AND A,{addr8}`     |`A<-A^{addr8}`                                         |
+|`ANDA [X+data8]`    |`AND A,[X+data8]`   |`A<-A^[X+data8]`                                       |
+|`ANDA [addr16]`     |`AND A,[addr16]`    |`A<-A^[addr16]`                                        |
+|`ANDB data8`        |`AND B,data8`       |`B<-B^data8`                                           |
+|`ANDB {addr8}`      |`AND B,{addr8}`     |`B<-B^{addr8}`                                         |
+|`ANDB [X+data8]`    |`AND B,[X+data8]`   |`B<-B^[X+data8]`                                       |
+|`ANDB [addr16]`     |`AND B,[addr16]`    |`B<-B^[addr16]`                                        |
+
+|`ASLA`              |`ASL A`             |Arithmetic shift left on `A`, bit 0 is set to 0        |
+|`ASLB`              |`ASL B`             |Arighmatic shift Left on `B`, bit 0 is set to 0        |
+|`ASL [X+data8]`     |`ASL [X+data8]`     |Arithmetic shift left on `[X+data8]`, bit 0 is set to 0|
+|`ASL [addr16]`      |`ASL [addr16]`      |Arithmetic shift left on `[addr16]`, bit 0 is set to 0 |
+
 |`BCC disp`          |                    |`if C=0 then PC<-PC+disp+2`                            |
