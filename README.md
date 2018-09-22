@@ -159,7 +159,7 @@ A sybmol literal consists of a series of characters and is used for following pu
 
 The jrasm assembler supports following directives:
 
-### .CSEG, .DSEG
+### .CSEG .DSEG .ISEG
 
 Example:
 ```
@@ -167,7 +167,7 @@ Example:
         .DSEG
 ```
 
-### .DB, .DW
+### .DB .DW
 
 These directive are used to store binary data. The directive `.DB` contains 8-bit data while `.DW` does 16-bit.
 
