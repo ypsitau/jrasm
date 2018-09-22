@@ -25,3 +25,38 @@ $ ../configure
 $ make
 ```
 
+## Command Line
+
+The execution format of `jrasm` is:
+
+```
+jrasm [options] src
+```
+
+Available options are:
+
+Long Format        |Short format|Function
+-------------------+------------+-------------------------------------------------------------------
+`--output=file`    |`-o file`   |Specifies the filename to output.
+`--print-disasm-l` |`-d`        |Prints a disassembler dump of the product in lower case.
+`--print-disasm-l` |`-d`        |Prints a disassembler dump of the product in upper case.
+`--print-hexdump-l`|`-x`        |Prints a hexadecimal dump of the product in lower case.
+`--print-hexdump-u`|`-X`        |Prints a hexadecimal dump of the product in upper case.
+`--print-list-l`   |`-l`        |Prints a list of labels in lower case.
+`--print-list-u`   |`-L`        |Prints a list of labels in upper case.
+`--print-memory-l` |`-m`        |Prints a memory image in lower case.
+`--print-memory-u` |`-M`        |Prints a memory image in upper case.
+`--verbose`        |`-v`        |Reports various things.
+`--help`           |`-h`        |Prints help message.
+
+When you launch the program with a source file, it will generate the product of CJR format that
+can be loaded to VJR-200, a JR-200 emulator.
+
+
+## Directive
+
+The jrasm assembler supports following directives:
+
+### `.cseg`
+
+### `.db`, `.dw`
