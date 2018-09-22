@@ -159,7 +159,7 @@ A sybmol literal consists of a series of characters and is used for following pu
 
 The jrasm assembler supports following directives:
 
-### `.CSEG`, `.DSEG`
+### .CSEG, .DSEG
 
 Example:
 ```
@@ -167,7 +167,7 @@ Example:
         .DSEG
 ```
 
-### `.DB`, `.DW`
+### .DB, .DW
 
 These directive are used to store binary data.
 
@@ -179,7 +179,7 @@ Example:
         .DW     0x1234
 ```
 
-### `.FILENAME.JR`
+### .FILENAME.JR
 
 Example:
 ```
@@ -187,7 +187,7 @@ Example:
 ```
 
 
-### `.ORG`
+### .ORG
 
 Specifies the current address where program or data is to be stored.
 You must specify at least one `.ORG` directive before any source code that generates binary data appears.
