@@ -52,11 +52,89 @@ Available options are:
 When you launch the program with a source file, it will generate the product of CJR format that
 can be loaded to VJR-200, a JR-200 emulator.
 
+
+## First Step
+
+Consider the following source file named `helloworld.asm`:
+
 ```
-$ jrasm hello.asm
+        .ORG    0x2000
+loop:
+        LDX     [ptr_src]
+        LDAA    [x]
+        INX
+        STX     [ptr_src]
+        CMPA    0x00
+        BEQ     done
+        LDX     [ptr_dst]
+        STAA    [x]
+        INX
+        STX     [ptr_dst]
+        BRA     loop
+done:
+        RTS
+ptr_src:
+        .DW     hello_world
+ptr_dst:
+        .DW     0xc100 + 9 + 20 * 0x20
+hello_world:
+        .DB     "Hello, world!", 0
 ```
 
-The example above creates a CJR file named `hello.cjr`.
+To assemble it, just launch `jrasm` with the source file name.
+
+```
+$ jrasm helloworld.asm
+```
+
+This creates a CJR file named `helloworld.cjr`. You can load the CJR file to JR-200 emulator or
+convert it into a WAV file that is fed to a real machine through a cassette recorder interface.
+
+After loading it, you can call the program using JR-200 BASIC like follows:
+
+```
+U=USR($2000)
+```
+
+You see "Hello, world!" on the screen? Congratulations!
+
+Specifying `-D` options prints the produced binary data with corresponding assembler codes
+to the standard output.
+
+```
+$ jrasm -D helloworld.asm
+```
+
+The result is:
+
+```
+loop:
+    2000 FE 20 19  LDX  [ptr_src]
+    2003 A6 00     LDAA [X]
+    2005 08        INX  
+    2006 FF 20 19  STX  [ptr_src]
+    2009 81 00     CMPA 0x00
+    200B 27 0B     BEQ  done
+    200D FE 20 1B  LDX  [ptr_dst]
+    2010 A7 00     STAA [X]
+    2012 08        INX  
+    2013 FF 20 1B  STX  [ptr_dst]
+    2016 20 E8     BRA  loop
+done:
+    2018 39        RTS  
+ptr_src:
+    2019 20 1D     .DW hello_world
+ptr_dst:
+    201B C3 89     .DW 0xC100+0x09+0x14*0x20
+hello_world:
+    201D 48 65     .DB "Hello, world!",0x00
+    201F 6C 6C     
+    2021 6F 2C     
+    2023 20 77     
+    2025 6F 72     
+    2027 6C 64     
+    2029 21 00  
+```
 
 
 ## Literal
@@ -81,6 +159,41 @@ A sybmol literal consists of a series of characters and is used for following pu
 
 The jrasm assembler supports following directives:
 
-### `.cseg`
+### `.CSEG`, `.DSEG`
 
-### `.db`, `.dw`
+Example:
+```
+        .CSEG
+        .DSEG
+```
+
+### `.DB`, `.DW`
+
+These directive are used to store binary data.
+
+Directive `.DB` accepts string literal as well.
+
+Example:
+```
+        .DB     0x00, 0x01
+        .DW     0x1234
+```
+
+### `.FILENAME.JR`
+
+Example:
+```
+        .FILENAME.JR "Hello"
+```
+
+
+### `.ORG`
+
+Specifies the current address where program or data is to be stored.
+You must specify at least one `.ORG` directive before any source code that generates binary data appears.
+
+Example:
+
+```
+        .ORG    0x2000
+```
