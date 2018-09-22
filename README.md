@@ -52,6 +52,30 @@ Available options are:
 When you launch the program with a source file, it will generate the product of CJR format that
 can be loaded to VJR-200, a JR-200 emulator.
 
+```
+$ jrasm hello.asm
+```
+
+The example above creates a CJR file named `hello.cjr`.
+
+
+## Literal
+
+A string literal consists of a series of characters surrounded by a pair of double quotations: eg. `"Hello World"`
+
+The format of number literal is as follows:
+
+- Decimal number ... Begins with `1` to `9` and cosists of digit characters: eg) `123`
+- Hexadecimal number ... Begins with `0x` and consists of digit and `A` to `F` characters: eg) `0x3a22`
+- Octal number ... Begins with `0` and consts of `0` to `7` characters: eg) `0327`
+
+A sybmol literal consists of a series of characters and is used for following purposes:
+
+- Label.
+- Instruction's operation code.
+- Directive's name.
+- Register name.
+
 
 ## Directive
 
