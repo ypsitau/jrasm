@@ -186,7 +186,14 @@ const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
 
 String Expr_Number::ToString(bool upperCaseFlag) const
 {
-	if (!_str.empty()) return _str;
+	if (!_str.empty()) {
+		if (_str[0] != '\'') return _str;
+		String str;
+		str += _str[1];
+		str = MakeQuotedString(str.c_str(), '\'');
+		str = String("'") + str + "'";
+		return str;
+	}
 	const char *format =
 		(_num < 0x100)? (upperCaseFlag? "0x%02X" : "0x%02x") :
 		(_num < 0x10000)? (upperCaseFlag? "0x%04X" : "0x%04x") :
