@@ -4,7 +4,7 @@
 #ifndef __JRASM_H__
 #define __JRASM_H__
 
-#define JRASM_VERSION 			"0.0.2"
+#define JRASM_VERSION 			"0.0.3"
 #define JRASM_COPYRIGHT_YEAR	"2018"
 
 #include "Common.h"
