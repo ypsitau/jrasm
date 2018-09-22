@@ -25,34 +25,6 @@ $ ../configure
 $ make
 ```
 
-## Command Line
-
-The execution format of `jrasm` is:
-
-```
-jrasm [options] src
-```
-
-Available options are:
-
-|Long Format        |Short format|Function                                                           |
-|-------------------|------------|-------------------------------------------------------------------|
-|`--output=file`    |`-o file`   |Specifies the filename to output.                                  |
-|`--print-disasm-l` |`-d`        |Prints a disassembler dump of the product in lower case.           |
-|`--print-disasm-l` |`-d`        |Prints a disassembler dump of the product in upper case.           |
-|`--print-hexdump-l`|`-x`        |Prints a hexadecimal dump of the product in lower case.            |
-|`--print-hexdump-u`|`-X`        |Prints a hexadecimal dump of the product in upper case.            |
-|`--print-list-l`   |`-l`        |Prints a list of labels in lower case.                             |
-|`--print-list-u`   |`-L`        |Prints a list of labels in upper case.                             |
-|`--print-memory-l` |`-m`        |Prints a memory image in lower case.                               |
-|`--print-memory-u` |`-M`        |Prints a memory image in upper case.                               |
-|`--verbose`        |`-v`        |Reports various things.                                            |
-|`--help`           |`-h`        |Prints help message.                                               |
-
-When you launch the program with a source file, it will generate a product in CJR format
-that can be loaded to VJR-200, a JR-200 emulator.
-
-
 ## First Step
 
 Consider the following source file named `helloworld.asm`:
@@ -137,6 +109,34 @@ hello_world:
 ```
 
 
+## Command Line
+
+The execution format of `jrasm` is:
+
+```
+jrasm [options] src
+```
+
+Available options are:
+
+|Long Format        |Short format|Function                                                           |
+|-------------------|------------|-------------------------------------------------------------------|
+|`--output=file`    |`-o file`   |Specifies the filename to output.                                  |
+|`--print-disasm-l` |`-d`        |Prints a disassembler dump of the product in lower case.           |
+|`--print-disasm-l` |`-d`        |Prints a disassembler dump of the product in upper case.           |
+|`--print-hexdump-l`|`-x`        |Prints a hexadecimal dump of the product in lower case.            |
+|`--print-hexdump-u`|`-X`        |Prints a hexadecimal dump of the product in upper case.            |
+|`--print-list-l`   |`-l`        |Prints a list of labels in lower case.                             |
+|`--print-list-u`   |`-L`        |Prints a list of labels in upper case.                             |
+|`--print-memory-l` |`-m`        |Prints a memory image in lower case.                               |
+|`--print-memory-u` |`-M`        |Prints a memory image in upper case.                               |
+|`--verbose`        |`-v`        |Reports various things.                                            |
+|`--help`           |`-h`        |Prints help message.                                               |
+
+When you launch the program with a source file, it will generate a product in CJR format
+that can be loaded to VJR-200, a JR-200 emulator.
+
+
 ## Literal
 
 A string literal consists of a series of characters surrounded by a pair of double quotations: eg. `"Hello World"`
@@ -169,15 +169,18 @@ Example:
 
 ### .DB, .DW
 
-These directive are used to store binary data.
+These directive are used to store binary data. The directive `.DB` contains 8-bit data while `.DW` does 16-bit.
 
 Directive `.DB` accepts string literal as well.
 
 Example:
 ```
-        .DB     0x00, 0x01
+        .DB     0x00, 0x01, "ABC"
         .DW     0x1234
 ```
+
+When a string literal appears in the directive, a null terminate character is NOT appended.
+So, for examle, `"ABC"` in the direcive is equivalent to a sequence of `0x41`, `0x42`, `0x43`
 
 ### .FILENAME.JR
 
@@ -189,7 +192,7 @@ Example:
 
 ### .ORG
 
-Specifies the current address where program or data is to be stored.
+It specifies the current address where program or data is to be stored.
 You must specify at least one `.ORG` directive before any source code that generates binary data appears.
 
 Example:
@@ -197,3 +200,12 @@ Example:
 ```
         .ORG    0x2000
 ```
+
+## Instructions
+
+|Syntax              |Another Syntax      |Operation                                                          |
+|--------------------|--------------------|-------------------------------------------------------------------|
+|`ABA`               |                    |`[A] <- [A] + [B]`                                                 |
+|`ADCA data8`        |`ADC A,data8`       |`[A] <- [A] + data8 + C`                                           |
+|`ADCA {addr8}`      |`ADC A,{addr8}`     |`[A] <- [A] + {addr8} + C`                                         |
+|`ADCA [X+data8]`    |`ADC A,[X+data8]`   |`[A} <- [A] + [data8+[X]] + C`                                     |
