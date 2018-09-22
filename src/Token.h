@@ -79,6 +79,7 @@ public:
 	inline int GetLineNo() const { return _lineNo; }
 	inline UInt32 GetNumber() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
+	inline const String &GetStringSTL() const { return _str; }
 	inline const Expr *GetExpr() const { return _pExpr.get(); }
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
 	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }

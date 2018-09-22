@@ -121,9 +121,9 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 			buffDst += static_cast<UInt8>(num);
 			bytes++;
 		} else if (pExprResolved->IsTypeString()) {
-			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
-			for (const char *p = str; *p != '\0'; p++) {
-				buffDst += static_cast<UInt8>(*p);
+			const String &str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetStringSTL();
+			for (auto ch : str) {
+				buffDst += static_cast<UInt8>(ch);
 				bytes++;
 			}
 		} else {

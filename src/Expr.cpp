@@ -210,7 +210,7 @@ String Expr_String::ToString(bool upperCaseFlag) const
 {
 	String str;
 	str = "\"";
-	str += _str; // not affected by upperCaseFlag
+	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
 	str += "\"";
 	return str;
 }

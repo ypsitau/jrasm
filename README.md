@@ -3,6 +3,7 @@
 This is an assembler of Motorola 6800 MPU that features some functions useful to develop
 programs for JR-200, a micro computer made by Panasonic in 1983.
 
+
 ## Build for Windows
 
 Open the solution file `jrasm.sln` with Visual Studio 2017 and build it.
@@ -13,6 +14,7 @@ according to the selected configuration:
 - `x64\Debug` .. 64-bit executable for debug purpose.
 - `x86\Release` .. 32-bit executable for release.
 - `x86\Debug` .. 32-bit executable for debug purpose.
+
 
 ## Build for Mac and Linux
 
@@ -25,7 +27,8 @@ $ ../configure
 $ make
 ```
 
-## First Step
+
+## Let's Try
 
 Consider the following source file named `helloworld.asm`:
 
@@ -139,13 +142,19 @@ that can be loaded to VJR-200, a JR-200 emulator.
 
 ## Literal
 
-A string literal consists of a series of characters surrounded by a pair of double quotations: eg. `"Hello World"`
+A string literal consists of a series of characters surrounded by a pair of double quotations (e.g. `"Hello World"`).
+
+A string literal can contain escape characters listed below:
+
+- `\0`
+- `\r`
+- `\n`
 
 The format of number literal is as follows:
 
-- Decimal number ... Begins with `1` to `9` and cosists of digit characters: eg) `123`
-- Hexadecimal number ... Begins with `0x` and consists of digit and `A` to `F` characters: eg) `0x3a22`
-- Octal number ... Begins with `0` and consts of `0` to `7` characters: eg) `0327`
+- Decimal number ... Begins with `1` to `9` and cosists of digit characters (e.g. `123`).
+- Hexadecimal number ... Begins with `0x` and consists of digit and `A` to `F` characters (e.g. `0x3a22`).
+- Octal number ... Begins with `0` and consts of `0` to `7` characters (e.g. `0327`).
 
 A sybmol literal consists of a series of characters and is used for following purposes:
 
@@ -154,10 +163,14 @@ A sybmol literal consists of a series of characters and is used for following pu
 - Directive's name.
 - Register name.
 
+A symbol literal is case sensitive when it's used as a label while it's case insensitive for other uses.
+This means that you can describe an instruction `LDAA` with a symbol `LDAA`, `ldaa`, `Ldaa`, `LdAA` and so on.
+
 
 ## Directive
 
 The jrasm assembler supports following directives:
+
 
 ### .CSEG .DSEG .ISEG
 
@@ -165,7 +178,9 @@ Example:
 ```
         .CSEG
         .DSEG
+        .ISEG
 ```
+
 
 ### .DB .DW
 
@@ -181,6 +196,7 @@ Example:
 
 When a string literal appears in the directive, a null terminate character is NOT appended.
 So, for examle, `"ABC"` in the direcive is equivalent to a sequence of `0x41`, `0x42`, `0x43`
+
 
 ### .FILENAME.JR
 
@@ -200,6 +216,7 @@ Example:
 ```
         .ORG    0x2000
 ```
+
 
 ## Instructions
 

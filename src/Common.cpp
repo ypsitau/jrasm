@@ -65,6 +65,42 @@ String ToUpper(const char *str)
 	return rtn;
 }
 
+String MakeQuotedString(const String &str, char chBorder)
+{
+	String strDst;
+	for (auto ch : str) {
+		if (ch == '\0') {
+			strDst += "\\0";
+		} else if (ch == '\a') {
+			strDst += "\\a";
+		} else if (ch == '\b') {
+			strDst += "\\b";
+		} else if (ch == '\f') {
+			strDst += "\\f";
+		} else if (ch == '\n') {
+			strDst += "\\n";
+		} else if (ch == '\r') {
+			strDst += "\\r";
+		} else if (ch == '\t') {
+			strDst += "\\t";
+		} else if (ch == '\v') {
+			strDst += "\\v";
+		} else if (ch == chBorder) {
+			strDst += '\\';
+			strDst += chBorder;
+		} else if (ch == '\\') {
+			strDst += "\\\\";
+		} else if (ch < 0x20 || ch >= 0x7f) {
+			char tmp[16];
+			::sprintf(tmp, "\\x%02x", static_cast<UInt8>(ch));
+			strDst += tmp;
+		} else {
+			strDst += ch;
+		}
+	}
+	return strDst;
+}
+
 const char *ExtractFileName(const char *pathName)
 {
 	const char *p = pathName + ::strlen(pathName);

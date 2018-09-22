@@ -81,7 +81,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 					AddError("unknown directive: %s", symbol);
 					return false;
 				}
-				AutoPtr<Expr> pExpr(new Expr_Instruction(pToken->GetString()));
+				AutoPtr<Expr> pExpr(new Expr_Instruction(pToken->GetStringSTL()));
 				SetExprSourceInfo(pExpr.get(), pToken.get());
 				_exprStack.back()->GetChildren().push_back(pExpr->Reference());
 				_exprStack.push_back(pExpr.release());
@@ -175,11 +175,11 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				AutoPtr<Token> pToken(_tokenStack.Pop());
 				AutoPtr<Expr> pExpr;
 				if (pToken->IsType(TOKEN_Symbol)) {
-					pExpr.reset(new Expr_LabelRef(pToken->GetString()));
+					pExpr.reset(new Expr_LabelRef(pToken->GetStringSTL()));
 				} else if (pToken->IsType(TOKEN_Number)) {
-					pExpr.reset(new Expr_Number(pToken->GetString(), pToken->GetNumber()));
+					pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
 				} else if (pToken->IsType(TOKEN_String)) {
-					pExpr.reset(new Expr_String(pToken->GetString()));
+					pExpr.reset(new Expr_String(pToken->GetStringSTL()));
 				} else {
 					AddError("invalid value type");
 					return false;

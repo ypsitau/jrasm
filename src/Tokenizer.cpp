@@ -118,8 +118,9 @@ bool Tokenizer::FeedChar(char ch)
 		break;
 	}
 	case STAT_String: {
+		const char *literalName = (_chBorder == '"')? "string" : "character";
 		if (IsEOF(ch) || IsEOL(ch)) {
-			AddError("unclosed string literal");
+			AddError("unclosed %s literal", literalName);
 			rtn = false;
 		} else if (ch == _chBorder) {
 			if (ch == '"') {
@@ -146,14 +147,19 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 		} else if (ch == '\'') {
 			_str += ch;
+		} else if (ch == '\\') {
+			_str += ch;
 		} else if (ch == 'n') {
 			_str += '\n';
 		} else if (ch == 'r') {
 			_str += '\r';
+		} else if (ch == '0') {
+			_str += '\0';
 		} else {
-			AddError("invalid escape character");
+			AddError("invalid escape character code: 0x%02x", static_cast<UInt8>(ch));
 			rtn = false;
 		}
+		_stat = STAT_String;
 		break;
 	}
 	case STAT_DetectZero: {
