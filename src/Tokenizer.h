@@ -21,6 +21,7 @@ public:
 		STAT_White,
 		STAT_Comment,
 		STAT_DetectZero,
+		STAT_BinNumber,
 		STAT_OctNumber,
 		STAT_DecNumber,
 		STAT_HexNumber,

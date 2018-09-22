@@ -186,6 +186,7 @@ const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
 
 String Expr_Number::ToString(bool upperCaseFlag) const
 {
+	if (!_str.empty()) return _str;
 	const char *format =
 		(_num < 0x100)? (upperCaseFlag? "0x%02X" : "0x%02x") :
 		(_num < 0x10000)? (upperCaseFlag? "0x%04X" : "0x%04x") :
@@ -416,7 +417,8 @@ String Expr_Instruction::ToString(bool upperCaseFlag) const
 {
 	String str = JustifyLeft(
 		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
-		Generator::GetInstance().GetInstNameLenMax() + 1);
+		Generator::GetInstance().GetInstNameLenMax());
+	str += " ";
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;
 }
@@ -442,8 +444,8 @@ bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, 
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!_pDirective->Generate(context, this, buffDst)) return false;
-	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(), fp,
-					 upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
+	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(),
+					 fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
 	return true;
 }
 
@@ -455,7 +457,9 @@ Expr *Expr_Directive::Resolve(Context &context) const
 String Expr_Directive::ToString(bool upperCaseFlag) const
 {
 	const char *symbol = _pDirective->GetSymbol();
-	String str = upperCaseFlag? ToUpper(symbol) : ToLower(symbol);
+	String str = JustifyLeft(
+		(upperCaseFlag? ToUpper(symbol) : ToLower(symbol)).c_str(),
+		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
 	str += GetChildren().ToString(",", upperCaseFlag);
 	return str;

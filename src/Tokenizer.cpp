@@ -44,6 +44,7 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == '\'') {
 			_chBorder = ch;
 			_str.clear();
+			_str += ch;
 			_stat = STAT_String;
 		} else if (ch == '0') {
 			_num = 0;
@@ -123,11 +124,14 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == _chBorder) {
 			if (ch == '"') {
 				rtn = FeedToken(TOKEN_String, _str);
-			} else if (_str.size() > 1) { // ch == '\''
-				AddError("character literal must contain just one character");
-				rtn = false;
-			} else {
-				rtn = FeedToken(TOKEN_Number, _str, _str[0]);
+			} else { // ch == '\''
+				_str += ch;
+				if (_str.size() > 3) {
+					AddError("character literal must contain just one character");
+					rtn = false;
+				} else {
+					rtn = FeedToken(TOKEN_Number, _str, _str[1]);
+				}
 			}
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {
@@ -153,12 +157,26 @@ bool Tokenizer::FeedChar(char ch)
 		break;
 	}
 	case STAT_DetectZero: {
-		if (ch == 'x') {
+		if (ch == 'b') {
 			_str += ch;
-			_stat = STAT_HexNumber;
+			_stat = STAT_BinNumber;
 		} else if (::isdigit(ch)) {
 			_stat = STAT_OctNumber;
 			Pushback();
+		} else if (ch == 'x') {
+			_str += ch;
+			_stat = STAT_HexNumber;
+		} else {
+			rtn = FeedToken(TOKEN_Number, _str, _num);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_BinNumber: {
+		if ('0' <= ch && ch <= '1') {
+			_str += ch;
+			_num = (_num << 1) + (ch - '0');
 		} else {
 			rtn = FeedToken(TOKEN_Number, _str, _num);
 			_stat = STAT_Neutral;

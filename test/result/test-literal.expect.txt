@@ -1,23 +1,30 @@
-    1000 ce 00 00  ldx  0x00
-    1003 ce 00 01  ldx  0x01
-    1006 ce 00 0b  ldx  0x0b
-    1009 ce 00 ff  ldx  0xff
-    100c ce ff ff  ldx  0xffff
-    100f ce 00 00  ldx  0x00
-    1012 ce 00 01  ldx  0x01
-    1015 ce 00 0b  ldx  0x0b
-    1018 ce 00 ff  ldx  0xff
-    101b ce ff ff  ldx  0xffff
-    101e ce 00 00  ldx  0x00
-    1021 ce 00 01  ldx  0x01
-    1024 ce 00 07  ldx  0x07
-    1027 ce 00 09  ldx  0x09
-    102a ce 00 ff  ldx  0xff
-    102d ce ff ff  ldx  0xffff
-    1030 86 41     ldaa 0x41
-    1032 86 42     ldaa 0x42
-    1034 86 43     ldaa 0x43
-    1036 86 44     ldaa 0x44
-    1038 86 45     ldaa 0x45
+    1000 ce 00 00  ldx  0b0
+    1003 ce 00 01  ldx  0b1
+    1006 ce 00 07  ldx  0b111
+    1009 ce 00 ff  ldx  0b11111111
+    100c ce 00 aa  ldx  0b10101010
+    100f ce aa 55  ldx  0b1010101001010101
+    1012 ce ff ff  ldx  0b1111111111111111
+    1015 ce 00 00  ldx  00
+    1018 ce 00 01  ldx  01
+    101b ce 00 07  ldx  07
+    101e ce 00 09  ldx  011
+    1021 ce 00 ff  ldx  0377
+    1024 ce ff ff  ldx  0177777
+    1027 ce 00 00  ldx  0
+    102a ce 00 01  ldx  1
+    102d ce 00 0b  ldx  11
+    1030 ce 00 ff  ldx  255
+    1033 ce ff ff  ldx  65535
+    1036 ce 00 00  ldx  0x0
+    1039 ce 00 01  ldx  0x1
+    103c ce 00 0b  ldx  0xb
+    103f ce 00 ff  ldx  0xff
+    1042 ce ff ff  ldx  0xffff
+    1045 86 41     ldaa 'A'
+    1047 86 42     ldaa 'B'
+    1049 86 43     ldaa 'C'
+    104b 86 44     ldaa 'D'
+    104d 86 45     ldaa 'E'
 [Label List]
 (no label)

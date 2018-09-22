@@ -177,7 +177,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				if (pToken->IsType(TOKEN_Symbol)) {
 					pExpr.reset(new Expr_LabelRef(pToken->GetString()));
 				} else if (pToken->IsType(TOKEN_Number)) {
-					pExpr.reset(new Expr_Number(pToken->GetNumber()));
+					pExpr.reset(new Expr_Number(pToken->GetString(), pToken->GetNumber()));
 				} else if (pToken->IsType(TOKEN_String)) {
 					pExpr.reset(new Expr_String(pToken->GetString()));
 				} else {

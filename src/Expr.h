@@ -141,11 +141,13 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_Number : public Expr {
 private:
+	String _str;
 	UInt32 _num;
 public:
 	static const Type TYPE;
 public:
 	inline Expr_Number(UInt32 num) : Expr(TYPE), _num(num) {}
+	inline Expr_Number(const String &str, UInt32 num) : Expr(TYPE), _str(str), _num(num) {}
 	inline UInt32 GetNumber() const { return _num; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ToString(bool upperCaseFlag) const;
