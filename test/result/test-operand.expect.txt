@@ -1,0 +1,39 @@
+    1000 86 12     lda  a,0x12
+    1002 96 12     lda  a,{0x12}
+    1004 a6 00     lda  a,[x]
+    1006 a6 12     lda  a,[x+0x12]
+    1008 a6 46     lda  a,[x+0x12+0x34]
+    100a a6 12     lda  a,[0x12+x]
+    100c a6 46     lda  a,[0x12+0x34+x]
+    100e a6 46     lda  a,[0x34+x+0x12]
+    1010 b6 12 34  lda  a,[0x1234]
+    1013 86 12     ldaa 0x12
+    1015 96 12     ldaa {0x12}
+    1017 a6 00     ldaa [x]
+    1019 a6 12     ldaa [x+0x12]
+    101b a6 46     ldaa [x+0x12+0x34]
+    101d a6 12     ldaa [0x12+x]
+    101f a6 46     ldaa [0x12+0x34+x]
+    1021 a6 46     ldaa [0x34+x+0x12]
+    1023 b6 12 34  ldaa [0x1234]
+    1026 97 00     sta  a,{0x00}
+    1028 a7 00     sta  a,[x]
+    102a a7 12     sta  a,[x+0x12]
+    102c a7 46     sta  a,[x+0x12+0x34]
+    102e a7 12     sta  a,[0x12+x]
+    1030 a7 46     sta  a,[0x12+0x34+x]
+    1032 a7 46     sta  a,[0x34+x+0x12]
+    1034 b7 12 34  sta  a,[0x1234]
+    1037 97 00     staa {0x00}
+    1039 a7 00     staa [x]
+    103b a7 12     staa [x+0x12]
+    103d a7 46     staa [x+0x12+0x34]
+    103f a7 12     staa [0x12+x]
+    1041 a7 46     staa [0x12+0x34+x]
+    1043 a7 46     staa [0x34+x+0x12]
+    1045 b7 12 34  staa [0x1234]
+    1048 6e 00     jmp  x
+    104a 6e 12     jmp  x+0x12
+    104c 7e 12 34  jmp  0x1234
+[Label List]
+(no label)
