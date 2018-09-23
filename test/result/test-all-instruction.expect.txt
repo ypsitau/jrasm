@@ -323,13 +323,13 @@ after_incb:
 after_ins:
     1141 08        inx  
 after_inx:
-    1142 6e 12     jmp  [x+0x12]
+    1142 6e 12     jmp  x+0x12
 after_jmp_idx:
-    1144 7e 12 34  jmp  [0x1234]
+    1144 7e 12 34  jmp  0x1234
 after_jmp_ext:
-    1147 ad 12     jsr  [x+0x12]
+    1147 ad 12     jsr  x+0x12
 after_jsr_idx:
-    1149 bd 12 34  jsr  [0x1234]
+    1149 bd 12 34  jsr  0x1234
 after_jsr_ext:
     114c 86 12     lda  a,0x12
 after_lda_a_imm:

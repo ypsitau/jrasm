@@ -324,13 +324,13 @@ after_incb:
 after_ins:
 	inx
 after_inx:
-	jmp		[X+0x12]
+	jmp		X+0x12
 after_jmp_idx:
-	jmp		[0x1234]
+	jmp		0x1234
 after_jmp_ext:
-	jsr		[X+0x12]
+	jsr		X+0x12
 after_jsr_idx:
-	jsr		[0x1234]
+	jsr		0x1234
 after_jsr_ext:
 	lda		a,0x12
 after_lda_a_imm:

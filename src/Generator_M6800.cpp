@@ -73,8 +73,8 @@ Generator_M6800::Generator_M6800() :
 	m.Add(Entry_ACC					("incb", 0x5c));
 	m.Add(Entry_INH					("ins", 0x31));
 	m.Add(Entry_INH					("inx", 0x08));
-	m.Add(Entry_IDX_EXT				("jmp", 0x6e, 0x7e));
-	m.Add(Entry_IDX_EXT				("jsr", 0xad, 0xbd));
+	m.Add(Entry_IDXV_IMM16			("jmp", 0x6e, 0x7e));
+	m.Add(Entry_IDXV_IMM16			("jsr", 0xad, 0xbd));
 	m.Add(Entry_AxB_IMM8_DIR_IDX_EXT("lda", 0x86, 0x96, 0xa6, 0xb6, 0xc6, 0xd6, 0xe6, 0xf6));
 	m.Add(Entry_IMM8_DIR_IDX_EXT	("ldaa", 0x86, 0x96, 0xa6, 0xb6));
 	m.Add(Entry_IMM8_DIR_IDX_EXT	("ldab", 0xc6, 0xd6, 0xe6, 0xf6));
@@ -191,11 +191,11 @@ Generator_M6800::Entry *Generator_M6800::Entry_ACC_ACC(const String &symbol, UIn
 	return pEntry;
 }
 
-Generator_M6800::Entry *Generator_M6800::Entry_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT)
+Generator_M6800::Entry *Generator_M6800::Entry_IDXV_IMM16(const String &symbol, UInt8 codeIDXV, UInt8 codeIMM16)
 {
-	Entry *pEntry = new Entry(symbol, "IDX_EXT");
-	pEntry->AddRule(new Generator_M6800::Rule_IDX(codeIDX));
-	pEntry->AddRule(new Generator_M6800::Rule_EXT(codeEXT));
+	Entry *pEntry = new Entry(symbol, "IDXV_IMM16");
+	pEntry->AddRule(new Generator_M6800::Rule_IDXV(codeIDXV));
+	pEntry->AddRule(new Generator_M6800::Rule_IMM16(codeIMM16));
 	return pEntry;
 }
 
@@ -506,6 +506,41 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		// This rule was determined to be applied.
 		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
 	} else if (exprList.front()->IsTypeLabelRef("x")) {
+		num = 0;
+	} else {
+		return RESULT_Rejected;
+	}
+	if (num > 0xff) {
+		ErrorLog::AddError(pExpr, "external address value exceeds 8-bit range");
+		return RESULT_Error;
+	}
+	if (pBuffDst != nullptr) {
+		*pBuffDst += _code;
+		*pBuffDst += static_cast<UInt8>(num);
+	}
+	context.ForwardAddress(bytes);
+	*pBytes = bytes;
+	return RESULT_Accepted;
+}
+
+Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+{
+	const ExprList &operands = pExpr->GetOperands();
+	// OP x+data8
+	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	if (pExprLast.IsNull()) return RESULT_Error;
+	if (!pExprLast->IsTypeBinOp()) return RESULT_Rejected;
+	UInt32 num = 0;
+	if (pExprLast->IsTypeBinOp()) {
+		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprLast.get());
+		// If operand was specified in x+data16, it has been modified to data16+x in resolving process.
+		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeLabelRef("x")) {
+			return RESULT_Rejected;
+		}
+		// This rule was determined to be applied.
+		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+	} else if (pExprLast->IsTypeLabelRef("x")) {
 		num = 0;
 	} else {
 		return RESULT_Rejected;

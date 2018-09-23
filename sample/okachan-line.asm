@@ -1,4 +1,4 @@
-		.FILENAMEJR "LINE"
+		.FILENAME.JR "LINE"
 ; ************************************
 ; * LINE–½—ß
 ; *
@@ -57,7 +57,7 @@ L6:		STAA	[X+0x05]
 		CLR		[X+0x02]
 LOOP1:	LDAA	[X]
 		LDAB	[X+0x01]
-		JSR		[SUB1]
+		JSR		SUB1
 		LDX		DATA01
 		LDAA	[X]
 		ADDA	[X+0x08]
@@ -88,7 +88,7 @@ L8:		LDAA	[X+0x05]
 		CLR		[X+0x02]
 LOOP2:	LDAA	[X]
 		LDAB	[X+0x01]
-		JSR		[SUB1]
+		JSR		SUB1
 		LDX		DATA01
 		LDAA	[X+0x01]
 		ADDA	[X+0x09]

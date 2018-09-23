@@ -84,6 +84,13 @@ public:
 		inline Rule_IDX(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
 		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
 	};
+	class Rule_IDXV : public Rule {
+	public:
+		enum { bytes = 2 };
+	public:
+		inline Rule_IDXV(UInt8 code) : Rule(code) {}
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+	};
 	class Rule_EXT : public Rule {
 	private:
 		String _accName;
@@ -132,7 +139,7 @@ private:
 	static Entry *Entry_REL(const String &symbol, UInt8 codeREL);
 	static Entry *Entry_INH(const String &symbol, UInt8 codeINH);
 	static Entry *Entry_ACC_ACC(const String &symbol, UInt8 codeACC_A, UInt8 codeACC_B);
-	static Entry *Entry_IDX_EXT(const String &symbol, UInt8 codeIDX, UInt8 codeEXT);
+	static Entry *Entry_IDXV_IMM16(const String &symbol, UInt8 codeIDX, UInt8 codeEXT);
 	static Entry *Entry_DIR_IDX_EXT(
 		const String &symbol, UInt8 codeDIR, UInt8 codeIDX, UInt8 codeEXT);
 	static Entry *Entry_DIR_IDX_IMM8_EXT(
