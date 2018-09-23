@@ -13,6 +13,7 @@ caseNames="$caseNames equ"
 caseNames="$caseNames hexdump"
 caseNames="$caseNames literal"
 caseNames="$caseNames mml"
+caseNames="$caseNames operand"
 caseNames="$caseNames rel"
 caseNames="$caseNames segment"
 

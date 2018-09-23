@@ -530,7 +530,6 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	// OP x+data8
 	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsTypeBinOp()) return RESULT_Rejected;
 	UInt32 num = 0;
 	if (pExprLast->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprLast.get());
