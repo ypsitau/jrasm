@@ -142,11 +142,8 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
 bool Expr_Root::Prepare(Context &context)
 {
-	bool rtn = true;
 	context.SetPreparationFlag(true);
-	for (int i = 0; i < 2; i++) {
-		if (!(rtn = Expr::Prepare(context))) break;
-	}
+	bool rtn = Expr::Prepare(context);
 	context.SetPreparationFlag(false);
 	return rtn;
 }
@@ -309,8 +306,8 @@ const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
 bool Expr_LabelDef::Prepare(Context &context)
 {
-#if 0
 	if (!Expr::Prepare(context)) return false;
+#if 0
 	UInt32 num = 0;
 	if (IsAssigned()) {
 		AutoPtr<Expr> pExprAssigned(GetAssigned()->Resolve(context));
@@ -330,6 +327,14 @@ bool Expr_LabelDef::Prepare(Context &context)
 	}
 	pLookupTable->Set(GetLabel(), num);
 #endif
+	Context::LookupTable *pLookupTable = context.GetLookupTable();
+	if (pLookupTable->IsDefined(GetLabel())) {
+		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
+		return false;
+	}
+	AutoPtr<Expr> pExprAssigned(GetAssigned()->Reference());
+	if (pExprAssigned.IsNull()) pExprAssigned.reset(new Expr_Number(context.GetAddress()));
+	pLookupTable->Set(GetLabel(), pExprAssigned.release());
 	return true;
 }
 
@@ -377,7 +382,6 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
 		return nullptr;
 	}
-	::printf("check %d %p\n", __LINE__, pExpr);
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
 	if (pExprResolved->IsTypeNumber()) {
