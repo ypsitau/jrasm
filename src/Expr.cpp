@@ -358,6 +358,7 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 
 Expr *Expr_LabelRef::Resolve(Context &context) const
 {
+	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
 	if (context.GetPreparationFlag()) return new Expr_Number(0);
 	const Expr *pExpr = Lookup(GetLabel());

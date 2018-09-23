@@ -112,6 +112,7 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 	if (!context.CheckRegionReady()) return false;
 	size_t bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
+		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (pExprResolved->IsTypeNumber()) {
@@ -170,6 +171,7 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binar
 {
 	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
+		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeNumber()) {
@@ -302,6 +304,7 @@ bool Directive_FILENAME_JR::Generate(Context &context, const Expr_Directive *pEx
 		ErrorLog::AddError(pExpr, "directive .filename.jr takes one operand");
 		return false;
 	}
+	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeString()) {
@@ -395,6 +398,7 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 	MmlParser parser(handler);
 	parser.Reset();
 	for (auto pExprData : pExpr->GetOperands()) {
+		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeString()) {
@@ -446,6 +450,7 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 		ErrorLog::AddError(pExpr, "directive .org takes one operand");
 		return false;
 	}
+	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeNumber()) {

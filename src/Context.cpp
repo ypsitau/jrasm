@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context() : _preparationFlag(false)
+Context::Context() : _preparationFlag(false), _pExprListResolved(new ExprList())
 {
 	_fileNameJR = "JRASM_PRODUCT";
 	_lookupTableStack.push_back(new LookupTable());
@@ -50,6 +50,22 @@ Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
 	}
 	pLabelInfoOwner->SortByNumber();
 	return pLabelInfoOwner.release();
+}
+
+void Context::StartToResolve()
+{
+	_pExprListResolved->clear();
+}
+
+bool Context::CheckCircularReference(const Expr *pExpr)
+{
+	if (std::find(_pExprListResolved->begin(), _pExprListResolved->end(),
+				  const_cast<Expr *>(pExpr)) != _pExprListResolved->end()) {
+		ErrorLog::AddError(pExpr, "circular reference is detected");
+		return true;
+	}
+	_pExprListResolved->push_back(const_cast<Expr *>(pExpr));
+	return false;
 }
 
 //-----------------------------------------------------------------------------

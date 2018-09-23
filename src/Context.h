@@ -7,6 +7,7 @@
 #include "Segment.h"
 
 class Expr;
+class ExprList;
 
 //-----------------------------------------------------------------------------
 // Context
@@ -81,6 +82,7 @@ private:
 	SegmentOwner _segmentOwner;
 	bool _preparationFlag;
 	LookupTableStack _lookupTableStack;
+	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context();
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
@@ -106,6 +108,8 @@ public:
 	LookupTable *AddLookupTable();
 	void RemoveLookupTable();
 	LabelInfoOwner *MakeLabelInfoOwner();
+	void StartToResolve();
+	bool CheckCircularReference(const Expr *pExpr);
 };
 
 #endif
