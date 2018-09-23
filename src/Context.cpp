@@ -40,7 +40,7 @@ Context::LabelInfoOwner *Context::MakeLabelInfoOwner() const
 {
 	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
 	for (auto iter : *GetLookupTableRoot()) {
-		pLabelInfoOwner->push_back(new LabelInfo(iter.second, iter.first.c_str()));
+		//pLabelInfoOwner->push_back(new LabelInfo(iter.second, iter.first.c_str()));
 	}
 	pLabelInfoOwner->SortByAddr();
 	return pLabelInfoOwner.release();
@@ -51,12 +51,15 @@ Context::LabelInfoOwner *Context::MakeLabelInfoOwner() const
 //-----------------------------------------------------------------------------
 Context::LookupTable::~LookupTable()
 {
+	for (auto iter : *this) {
+		Expr::Delete(iter.second);
+	}
 }
 
-void Context::LookupTable::Set(const String &label, UInt32 value)
+void Context::LookupTable::Set(const String &label, Expr *pExpr)
 {
 	LookupTable *pLookupTable = IsGlobalLabel(label.c_str())? GetRoot() : this;
-	pLookupTable->insert(std::make_pair(label, value));
+	pLookupTable->insert(std::make_pair(label, pExpr));
 }
 
 bool Context::LookupTable::IsDefined(const char *label) const
@@ -65,18 +68,11 @@ bool Context::LookupTable::IsDefined(const char *label) const
 	return pLookupTable->find(label) != end();
 }
 
-UInt32 Context::LookupTable::Lookup(const char *label, bool *pFoundFlag) const
+const Expr *Context::LookupTable::Lookup(const char *label) const
 {
 	const_iterator iter = find(label);
-	if (iter != end()) {
-		*pFoundFlag = true;
-		return iter->second;
-	}
-	if (!_pLookupTableParent.IsNull()) {
-		return _pLookupTableParent->Lookup(label, pFoundFlag);
-	}
-	*pFoundFlag = false;
-	return 0;
+	if (iter != end())	return iter->second;
+	return _pLookupTableParent.IsNull()? nullptr : _pLookupTableParent->Lookup(label);
 }
 
 Context::LookupTable *Context::LookupTable::GetRoot()

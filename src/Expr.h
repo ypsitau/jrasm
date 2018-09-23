@@ -73,9 +73,8 @@ public:
 	}
 	inline int GetLineNo() const { return _lineNo; }
 	inline bool IsLookupTableReady() const { return !_pLookupTable.IsNull(); }
-	inline UInt32 Lookup(const char *label, bool *pFoundFlag) const {
-		*pFoundFlag = false;
-		return _pLookupTable.IsNull()? 0 : _pLookupTable->Lookup(label, pFoundFlag);
+	inline const Expr *Lookup(const char *label) const {
+		return _pLookupTable.IsNull()? nullptr : _pLookupTable->Lookup(label);
 	}
 	bool IsTypeLabelDef(const char *label) const;
 	bool IsTypeLabelRef(const char *label) const;

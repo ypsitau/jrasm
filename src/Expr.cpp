@@ -309,6 +309,7 @@ const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
 bool Expr_LabelDef::Prepare(Context &context)
 {
+#if 0
 	if (!Expr::Prepare(context)) return false;
 	UInt32 num = 0;
 	if (IsAssigned()) {
@@ -328,6 +329,7 @@ bool Expr_LabelDef::Prepare(Context &context)
 		//return false;
 	}
 	pLookupTable->Set(GetLabel(), num);
+#endif
 	return true;
 }
 
@@ -370,13 +372,19 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
-	bool foundFlag = false;
-	UInt32 num = Lookup(GetLabel(), &foundFlag);
-	if (!context.GetPreparationFlag() && !foundFlag) {
+	const Expr *pExpr = Lookup(GetLabel());
+	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
 		return nullptr;
 	}
-	return new Expr_Number(num);
+	::printf("check %d %p\n", __LINE__, pExpr);
+	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
+	if (pExprResolved.IsNull()) return nullptr;
+	if (pExprResolved->IsTypeNumber()) {
+		ErrorLog::AddError(this, "label %s is associated with something but number", GetLabel());
+		return nullptr;
+	}
+	return pExprResolved.release();
 }
 
 String Expr_LabelRef::ToString(bool upperCaseFlag) const

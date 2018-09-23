@@ -13,7 +13,7 @@ class Expr;
 //-----------------------------------------------------------------------------
 class Context {
 public:
-	class LookupTable : public std::map<String, UInt32> {
+	class LookupTable : public std::map<String, Expr *> {
 	private:
 		int _cntRef;
 		AutoPtr<LookupTable> _pLookupTableParent;
@@ -27,9 +27,9 @@ public:
 	public:
 		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
 		static inline bool IsGlobalLabel(const char *label) { return *label != '@'; }
-		void Set(const String &label, UInt32 value);
+		void Set(const String &label, Expr *pExpr);
 		bool IsDefined(const char *label) const;
-		UInt32 Lookup(const char *label, bool *pFoundFlag) const;
+		const Expr *Lookup(const char *label) const;
 		LookupTable *GetRoot();
 		inline const LookupTable *GetRoot() const {
 			return const_cast<LookupTable *>(this)->GetRoot();
