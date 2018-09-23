@@ -49,6 +49,10 @@ Context::LabelInfoOwner *Context::MakeLabelInfoOwner() const
 //-----------------------------------------------------------------------------
 // Context::LookupTable
 //-----------------------------------------------------------------------------
+Context::LookupTable::~LookupTable()
+{
+}
+
 void Context::LookupTable::Set(const String &label, UInt32 value)
 {
 	LookupTable *pLookupTable = IsGlobalLabel(label.c_str())? GetRoot() : this;

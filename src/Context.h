@@ -23,7 +23,7 @@ public:
 		inline LookupTable(LookupTable *pLookupTableParent = nullptr) :
 			_cntRef(1), _pLookupTableParent(pLookupTableParent) {}
 	private:
-		inline ~LookupTable() {}
+		~LookupTable();
 	public:
 		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
 		static inline bool IsGlobalLabel(const char *label) { return *label != '@'; }
