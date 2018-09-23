@@ -28,7 +28,7 @@ $ make
 ```
 
 
-## Let's Try
+## Let's Try It
 
 Consider the following source file named `helloworld.asm`:
 
