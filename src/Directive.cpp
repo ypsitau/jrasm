@@ -30,6 +30,7 @@ void Directive::Initialize()
 	_pDirectivesBuiltIn->push_back(new Directive_DW());
 	_pDirectivesBuiltIn->push_back(new Directive_ENDM());
 	_pDirectivesBuiltIn->push_back(new Directive_ENDP());
+	_pDirectivesBuiltIn->push_back(new Directive_ENDPCG());
 	_pDirectivesBuiltIn->push_back(new Directive_EQU());
 	_pDirectivesBuiltIn->push_back(new Directive_FILENAME_JR());
 	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
@@ -230,6 +231,20 @@ bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) cons
 
 bool Directive_ENDP::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_ENDPCG
+//-----------------------------------------------------------------------------
+bool Directive_ENDPCG::Prepare(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
+bool Directive_ENDPCG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+{
+	if (!context.CheckRegionReady()) return false;
 	return true;
 }
 

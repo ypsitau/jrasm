@@ -111,6 +111,16 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Directive_ENDPCG
+//-----------------------------------------------------------------------------
+class Directive_ENDPCG : public Directive {
+public:
+	inline Directive_ENDPCG() : Directive(".endpcg") {}
+	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+};
+
+//-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
 class Directive_EQU : public Directive {
