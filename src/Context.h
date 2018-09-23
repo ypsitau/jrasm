@@ -46,9 +46,9 @@ public:
 public:
 	class LabelInfo {
 	public:
-		struct LessThan_Addr {
+		struct LessThan_Number {
 			inline bool operator()(const LabelInfo *pLabelInfo1, const LabelInfo *pLabelInfo2) const {
-				return pLabelInfo1->GetAddr() < pLabelInfo2->GetAddr();
+				return pLabelInfo1->GetNumber() < pLabelInfo2->GetNumber();
 			}
 		};
 		struct LessThan_Label {
@@ -57,16 +57,16 @@ public:
 			}
 		};
 	private:
-		UInt16 _addr;
+		UInt32 _num;
 		String _label;
 	public:
-		inline LabelInfo(UInt16 addr, const String &label) : _addr(addr), _label(label) {}
-		inline UInt16 GetAddr() const { return _addr; }
+		inline LabelInfo(UInt32 num, const String &label) : _num(num), _label(label) {}
+		inline UInt16 GetNumber() const { return _num; }
 		inline const char *GetLabel() const { return _label.c_str(); }
 	};
 	class LabelInfoList : public std::vector<LabelInfo *> {
 	public:
-		void SortByAddr() { std::sort(begin(), end(), LabelInfo::LessThan_Addr()); }
+		void SortByNumber() { std::sort(begin(), end(), LabelInfo::LessThan_Number()); }
 		void SortByLabel() { std::sort(begin(), end(), LabelInfo::LessThan_Label()); }
 		static size_t GetLabelLenMax(const_iterator ppLabelInfo, const_iterator ppLabelInfoEnd);
 	};
@@ -105,7 +105,7 @@ public:
 	void StartRegion(UInt32 addr);
 	LookupTable *AddLookupTable();
 	void RemoveLookupTable();
-	LabelInfoOwner *MakeLabelInfoOwner() const;
+	LabelInfoOwner *MakeLabelInfoOwner();
 };
 
 #endif

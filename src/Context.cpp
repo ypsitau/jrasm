@@ -36,13 +36,19 @@ void Context::RemoveLookupTable()
 	LookupTable::Delete(pLookupTable);
 }
 
-Context::LabelInfoOwner *Context::MakeLabelInfoOwner() const
+Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
 {
 	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
 	for (auto iter : *GetLookupTableRoot()) {
-		//pLabelInfoOwner->push_back(new LabelInfo(iter.second, iter.first.c_str()));
+		const String &label = iter.first;
+		const Expr *pExpr = iter.second;
+		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));
+		if (!pExprResolved.IsNull() && pExprResolved->IsTypeNumber()) {
+			UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
+			pLabelInfoOwner->push_back(new LabelInfo(num, label));
+		}
 	}
-	pLabelInfoOwner->SortByAddr();
+	pLabelInfoOwner->SortByNumber();
 	return pLabelInfoOwner.release();
 }
 

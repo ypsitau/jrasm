@@ -98,7 +98,7 @@ int main(int argc, const char *argv[])
 			::printf("(no label)\n");
 		} else {
 			for (auto pLabelInfo : *pLabelInfoOwner) {
-				::printf(format, pLabelInfo->GetAddr(), pLabelInfo->GetLabel());
+				::printf(format, pLabelInfo->GetNumber(), pLabelInfo->GetLabel());
 			}
 		}
 	}
