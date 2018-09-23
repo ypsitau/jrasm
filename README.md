@@ -265,8 +265,8 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`BCS disp`          |                    |if `C=1` then `PC<-PC+disp+2`                             |
 |`BEQ disp`          |                    |if `Z=1` then `PC<-PC+disp+2`                             |
 |`BGE disp`          |                    |if `N^V=0` then `PC<-PC+disp+2`                           |
-|`BGT disp`          |                    |if `(N^V)|Z=0` then `PC<-PC+disp+2`                       |
-|`BHI disp`          |                    |if `C|Z=0` then `PC<-PC+disp+2`                           |
+|`BGT disp`          |                    |if `(N^V)\|Z=0` then `PC<-PC+disp+2`                      |
+|`BHI disp`          |                    |if `C\|Z=0` then `PC<-PC+disp+2`                          |
 |`BITA data8`        |`BIT A,data8`       |`A&data8`                                                 |
 |`BITA {addr8}`      |`BIT A,{addr8}`     |`A&{addr8}`                                               |
 |`BITA [X+data8]`    |`BIT A,[X+data8]`   |`A&[X+data8]`                                             |
@@ -275,8 +275,8 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`BITB {addr8}`      |`BIT B,{addr8}`     |`B&{addr8}`                                               |
 |`BITB [X+data8]`    |`BIT B,[X+data8]`   |`B&[X+data8]`                                             |
 |`BITB [addr16]`     |`BIT B,[addr16]`    |`B&[addr16]`                                              |
-|`BLE disp`          |                    |if `(N^V)|Z=1` then `PC<-PC+disp+2`                       |
-|`BLS disp`          |                    |if `C|Z=1` then `PC<-PC+disp+2`                           |
+|`BLE disp`          |                    |if `(N^V)\|Z=1` then `PC<-PC+disp+2`                      |
+|`BLS disp`          |                    |if `C\|Z=1` then `PC<-PC+disp+2`                          |
 |`BLT disp`          |                    |if `N^V=1` then `PC<-PC+disp+2`                           |
 |`BMI disp`          |                    |if `N=1` then `PC<-PC+disp+2`                             |
 |`BNE disp`          |                    |if `Z=0` then `PC<-PC+disp+2`                             |
@@ -358,14 +358,14 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`NEG [X+data8]`     |`NEG [X+data8]`     |`[X+data8]<-0-[X+data8]`                                  |
 |`NEG [addr16]`      |`NEG [addr16]`      |`[addr16]<-0-[addr16]`                                    |
 |`NOP`               |                    |No operation                                              |
-|`ORAA data8`        |`ORA A,data8`       |`A<-A&#124;data8`                                              |
-|`ORAA {addr8}`      |`ORA A,{addr8}`     |`A<-A\|{addr8}`                                            |
-|`ORAA [X+data8]`    |`ORA A,[X+data8]`   |`A<-A\|[X+data8]`                                          |
-|`ORAA [addr16]`     |`ORA A,[addr16]`    |`A<-A\|[addr16]`                                           |
-|`ORAB data8`        |`ORA B,data8`       |`B<-B\|data8`                                              |
-|`ORAB {addr8}`      |`ORA B,{addr8}`     |`B<-B\|{addr8}`                                            |
-|`ORAB [X+data8]`    |`ORA B,[X+data8]`   |`B<-B\|[X+data8]`                                          |
-|`ORAB [addr16]`     |`ORA B,[addr16]`    |`B<-B\|[addr16]`                                           |
+|`ORAA data8`        |`ORA A,data8`       |`A<-A\|data8`                                             |
+|`ORAA {addr8}`      |`ORA A,{addr8}`     |`A<-A\|{addr8}`                                           |
+|`ORAA [X+data8]`    |`ORA A,[X+data8]`   |`A<-A\|[X+data8]`                                         |
+|`ORAA [addr16]`     |`ORA A,[addr16]`    |`A<-A\|[addr16]`                                          |
+|`ORAB data8`        |`ORA B,data8`       |`B<-B\|data8`                                             |
+|`ORAB {addr8}`      |`ORA B,{addr8}`     |`B<-B\|{addr8}`                                           |
+|`ORAB [X+data8]`    |`ORA B,[X+data8]`   |`B<-B\|[X+data8]`                                         |
+|`ORAB [addr16]`     |`ORA B,[addr16]`    |`B<-B\|[addr16]`                                          |
 |`PSHA`              |`PSH A`             |`[SP]<-A, SP<-SP-1`                                       |
 |`PSHB`              |`PSH B`             |`[SP]<-B, SP<-SP-1`                                       |
 |`PULA`              |`PUL A`             |`SP<-SP+1, A<-[SP]`                                       |
