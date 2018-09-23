@@ -358,14 +358,14 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`NEG [X+data8]`     |`NEG [X+data8]`     |`[X+data8]<-0-[X+data8]`                                  |
 |`NEG [addr16]`      |`NEG [addr16]`      |`[addr16]<-0-[addr16]`                                    |
 |`NOP`               |                    |No operation                                              |
-|`ORAA data8`        |`ORA A,data8`       |`A<-A|data8`                                              |
-|`ORAA {addr8}`      |`ORA A,{addr8}`     |`A<-A|{addr8}`                                            |
-|`ORAA [X+data8]`    |`ORA A,[X+data8]`   |`A<-A|[X+data8]`                                          |
-|`ORAA [addr16]`     |`ORA A,[addr16]`    |`A<-A|[addr16]`                                           |
-|`ORAB data8`        |`ORA B,data8`       |`B<-B|data8`                                              |
-|`ORAB {addr8}`      |`ORA B,{addr8}`     |`B<-B|{addr8}`                                            |
-|`ORAB [X+data8]`    |`ORA B,[X+data8]`   |`B<-B|[X+data8]`                                          |
-|`ORAB [addr16]`     |`ORA B,[addr16]`    |`B<-B|[addr16]`                                           |
+|`ORAA data8`        |`ORA A,data8`       |`A<-A&#124;data8`                                              |
+|`ORAA {addr8}`      |`ORA A,{addr8}`     |`A<-A\|{addr8}`                                            |
+|`ORAA [X+data8]`    |`ORA A,[X+data8]`   |`A<-A\|[X+data8]`                                          |
+|`ORAA [addr16]`     |`ORA A,[addr16]`    |`A<-A\|[addr16]`                                           |
+|`ORAB data8`        |`ORA B,data8`       |`B<-B\|data8`                                              |
+|`ORAB {addr8}`      |`ORA B,{addr8}`     |`B<-B\|{addr8}`                                            |
+|`ORAB [X+data8]`    |`ORA B,[X+data8]`   |`B<-B\|[X+data8]`                                          |
+|`ORAB [addr16]`     |`ORA B,[addr16]`    |`B<-B\|[addr16]`                                           |
 |`PSHA`              |`PSH A`             |`[SP]<-A, SP<-SP-1`                                       |
 |`PSHB`              |`PSH B`             |`[SP]<-B, SP<-SP-1`                                       |
 |`PULA`              |`PUL A`             |`SP<-SP+1, A<-[SP]`                                       |
