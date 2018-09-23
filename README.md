@@ -10,10 +10,10 @@ Open the solution file `jrasm.sln` with Visual Studio 2017 and build it.
 The executable `jrasm.exe` will be produced in the following directories
 according to the selected configuration:
 
-- `x64\Release` .. 64-bit executable for release.
-- `x64\Debug` .. 64-bit executable for debug purpose.
-- `x86\Release` .. 32-bit executable for release.
-- `x86\Debug` .. 32-bit executable for debug purpose.
+- `x64\Release` ... 64-bit executable for release.
+- `x64\Debug` ... 64-bit executable for debug purpose.
+- `x86\Release` ... 32-bit executable for release.
+- `x86\Debug` ... 32-bit executable for debug purpose.
 
 
 ## Build for Mac and Linux
@@ -200,6 +200,10 @@ So, for examle, `"ABC"` in the direcive is equivalent to a sequence of `0x41`, `
 
 ### .FILENAME.JR
 
+Specivies a filename up to 16 charactesrs that is to be stored in CJR file.
+This name is displayed when you run `LOAD` or `MLOAD` command in JR BASIC environment.
+If this directive is omitted, the name of the assembler source file will be stored.
+
 Example:
 ```
         .FILENAME.JR "Hello"
@@ -258,11 +262,11 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`ASR [X+data8]`     |`ASR [X+data8]`     |Arithmetic shift right on `[X+data8]`, bit 0 is set to `0`|
 |`ASR [addr16]`      |`ASR [addr16]`      |Arithmetic shift right on `[addr16]`, bit 0 is set to `0` |
 |`BCC disp`          |                    |if `C=0` then `PC<-PC+disp+2`                             |
-|`BCS disp`          |                    |                                                          |
-|`BEQ disp`          |                    |                                                          |
-|`BGE disp`          |                    |                                                          |
-|`BGT disp`          |                    |                                                          |
-|`BHI disp`          |                    |                                                          |
+|`BCS disp`          |                    |if `C=1` then `PC<-PC+disp+2`                             |
+|`BEQ disp`          |                    |if `Z=1` then `PC<-PC+disp+2`                             |
+|`BGE disp`          |                    |if `N^V=0` then `PC<-PC+disp+2`                           |
+|`BGT disp`          |                    |if `(N^V)|Z=0` then `PC<-PC+disp+2`                       |
+|`BHI disp`          |                    |if `C|Z=0` then `PC<-PC+disp+2`                           |
 |`BITA data8`        |`BIT A,data8`       |`A&data8`                                                 |
 |`BITA {addr8}`      |`BIT A,{addr8}`     |`A&{addr8}`                                               |
 |`BITA [X+data8]`    |`BIT A,[X+data8]`   |`A&[X+data8]`                                             |
@@ -271,15 +275,15 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`BITB {addr8}`      |`BIT B,{addr8}`     |`B&{addr8}`                                               |
 |`BITB [X+data8]`    |`BIT B,[X+data8]`   |`B&[X+data8]`                                             |
 |`BITB [addr16]`     |`BIT B,[addr16]`    |`B&[addr16]`                                              |
-|`BLE disp`          |                    |                                                          |
-|`BLS disp`          |                    |                                                          |
-|`BLT disp`          |                    |                                                          |
-|`BMI disp`          |                    |                                                          |
-|`BNE disp`          |                    |                                                          |
-|`BPL disp`          |                    |                                                          |
+|`BLE disp`          |                    |if `(N^V)|Z=1` then `PC<-PC+disp+2`                       |
+|`BLS disp`          |                    |if `C|Z=1` then `PC<-PC+disp+2`                           |
+|`BLT disp`          |                    |if `N^V=1` then `PC<-PC+disp+2`                           |
+|`BMI disp`          |                    |if `N=1` then `PC<-PC+disp+2`                             |
+|`BNE disp`          |                    |if `Z=0` then `PC<-PC+disp+2`                             |
+|`BPL disp`          |                    |if `N=0` then `PC<-PC+disp+2`                             |
 |`BRA disp`          |                    |`PC<-PC+disp+2`                                           |
-|`BVC disp`          |                    |                                                          |
-|`BVS disp`          |                    |                                                          |
+|`BVC disp`          |                    |if `V=0` then `PC<-PC+disp+2`                             |
+|`BVS disp`          |                    |if `V=1` then `PC<-PC+disp+2`                             |
 |`CBA`               |                    |A-B                                                       |
 |`CLC`               |                    |C<-0                                                      |
 |`CLI`               |                    |I<-0                                                      |
@@ -287,7 +291,7 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`CLRB`              |`CLR B`             |`B<-0`                                                    |
 |`CLR [X+data8]`     |`CLR [X+data8]`     |`[X+data8]<-0`                                            |
 |`CLR [addr16]`      |`CLR [addr16]`      |`[addr16]<-0`                                             |
-|`CLV`               |                    |O<-0                                                      |
+|`CLV`               |                    |`V<-0`                                                    |
 |`CMPA data8`        |`CMP A,data8`       |`A-data8`                                                 |
 |`CMPA {addr8}`      |`CMP A,{addr8}`     |`A-{addr8}`                                               |
 |`CMPA [X+data8]`    |`CMP A,[X+data8]`   |`A-[X+data8]`                                             |
@@ -299,12 +303,12 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`COMA`              |`COM A`             |`A<-0xff-A`                                               |
 |`COMB`              |`COM B`             |`B<-0xff-B`                                               |
 |`COM [X+data8]`     |`COM [X+data8]`     |`[X+data8]<-0xff-[X+data8]`                               |
-|`COM [addr16]`      |`COM [addr16]`      |`[addr16]<-0`                                             |
-|`CPX {addr8}`       |                    |`X(HI)-{addr8}, X(LO)-{addr8+1}`                          |
-|`CPX [X+data8]`     |                    |`X(HI)-[X+data8], X(LO)-[X+data8+1]`                      |
-|`CPX data16`        |                    |`X(HI)-data16(HI), X(LO)-data16(LO)`                      |
-|`CPX [addr16]`      |                    |`X(HI)-[addr16], X(LO)-[addr16+1]`                        |
-|`DAA`               |                    |                                                          |
+|`COM [addr16]`      |`COM [addr16]`      |`[addr16]<-0xff-[addr16]`                                 |
+|`CPX {addr8}`       |                    |`X(hi)-{addr8}, X(lo)-{addr8+1}`                          |
+|`CPX [X+data8]`     |                    |`X(hi)-[X+data8], X(lo)-[X+data8+1]`                      |
+|`CPX data16`        |                    |`X(hi)-data16(hi), X(lo)-data16(lo)`                      |
+|`CPX [addr16]`      |                    |`X(hi)-[addr16], X(lo)-[addr16+1]`                        |
+|`DAA`               |                    |Decimal adjust on `A`                                     |
 |`DECA`              |`DEC A`             |`A<-A-1`                                                  |
 |`DECB`              |`DEC B`             |`B<-B-1`                                                  |
 |`DEC [X+data8]`     |`DEC [X+data8]`     |`[X+data8]<-[X+data8]-1`                                  |
@@ -327,8 +331,8 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`INX`               |                    |`X<-X+1`                                                  |
 |`JMP X+data8`       |                    |`PC<-X+data8`                                             |
 |`JMP addr16`        |                    |`PC<-addr16`                                              |
-|`JSR X+data8`       |                    |`[SP]<-PC(LO), [SP+1]<-PC(HI), SP<-SP-2, PC<-X+data8`     |
-|`JSR addr16`        |                    |`[SP]<-PC(LO), [SP+1]<-PC(HI), SP<-SP-2, PC<-addr16`      |
+|`JSR X+data8`       |                    |`[SP]<-PC(lo), [SP+1]<-PC(hi), SP<-SP-2, PC<-X+data8`     |
+|`JSR addr16`        |                    |`[SP]<-PC(lo), [SP+1]<-PC(hi), SP<-SP-2, PC<-addr16`      |
 |`LDAA data8`        |`LDA A,data8`       |`A<-data8`                                                |
 |`LDAA {addr8}`      |`LDA A,{addr8}`     |`A<-{addr8}`                                              |
 |`LDAA [X+data8]`    |`LDA A,[X+data8]`   |`A<-[X+data8]`                                            |
@@ -337,14 +341,14 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`LDAB {addr8}`      |`LDA B,{addr8}`     |`B<-{addr8}`                                              |
 |`LDAB [X+data8]`    |`LDA B,[X+data8]`   |`B<-[X+data8]`                                            |
 |`LDAB [addr16]`     |`LDA B,[addr16]`    |`B<-[addr16]`                                             |
-|`LDS {addr8}`       |                    |`SP(HI)<-{addr8}, SP(LO)<-{addr8+1}`                      |
-|`LDS [X+data8]`     |                    |`SP(HI)<-[X+data8], SP(LO)<-[X+data8+1]`                  |
-|`LDS data16`        |                    |`SP(HI)<-data16(HI), SP(LO)<-data16(LO)`                  |
-|`LDS [addr16]`      |                    |`SP(HI)<-[addr16], SP(LO)<-[addr16+1]`                    |
-|`LDX {addr8}`       |                    |`X(HI)<-{addr8}, X(LO)<-{addr8+1}`                        |
-|`LDX [X+data8]`     |                    |`X(HI)<-[X+data8], X(LO)<-[X+data8+1]`                    |
-|`LDX data16`        |                    |`X(HI)<-data16(HI), X(LO)<-data16(LO)`                    |
-|`LDX [addr16]`      |                    |`X(HI)<-[addr16], X(LO)<-[addr16+1]`                      |
+|`LDS {addr8}`       |                    |`SP(hi)<-{addr8}, SP(lo)<-{addr8+1}`                      |
+|`LDS [X+data8]`     |                    |`SP(hi)<-[X+data8], SP(lo)<-[X+data8+1]`                  |
+|`LDS data16`        |                    |`SP(hi)<-data16(hi), SP(lo)<-data16(lo)`                  |
+|`LDS [addr16]`      |                    |`SP(hi)<-[addr16], SP(lo)<-[addr16+1]`                    |
+|`LDX {addr8}`       |                    |`X(hi)<-{addr8}, X(lo)<-{addr8+1}`                        |
+|`LDX [X+data8]`     |                    |`X(hi)<-[X+data8], X(lo)<-[X+data8+1]`                    |
+|`LDX data16`        |                    |`X(hi)<-data16(hi), X(lo)<-data16(lo)`                    |
+|`LDX [addr16]`      |                    |`X(hi)<-[addr16], X(lo)<-[addr16+1]`                      |
 |`LSRA`              |`LSR A`             |Logical shift right on `A`, bit 7 is set to `0`           |
 |`LSRB`              |`LSR B`             |Logical shift right on `B`, bit 7 is set to `0`           |
 |`LSR [X+data8]`     |`LSR [X+data8]`     |Logical shift right on `[X+data8]`, bit 7 is set to `0`   |
@@ -375,40 +379,78 @@ Here is a list of the assembler's syntax for M6800 instructions.
 |`ROR [X+data8]`     |`ROR [X+data8]`     |Rotate right through carry flag on `[X+data8]`            |
 |`ROR [addr16]`      |`ROR [addr16]`      |Rotate right through carry flag on `[addr16]`             |
 |`RTI`               |                    |Return from interrupt.                                    |
-|`RTS`               |                    |`PC(HI)<-[SP+1], PC(LO)<-[SP+2], SP<-SP+2`                |
+|`RTS`               |                    |`PC(hi)<-[SP+1], PC(lo)<-[SP+2], SP<-SP+2`                |
 |`SBA`               |                    |`A<-A-B`                                                  |
-|`SBCA data8`        |`SBC A,data8`       |`A<-A-data8`                                              |
-|`SBCA {addr8}`      |`SBC A,{addr8}`     |`A<-A-{addr8}`                                            |
-|`SBCA [X+data8]`    |`SBC A,[X+data8]`   |`A<-A-[X+data8]`                                          |
-|`SBCA [addr16]`     |`SBC A,[addr16]`    |`A<-A-[addr16]`                                           |
-|`SBCB data8`        |`SBC B,data8`       |`B<-B-data8`                                              |
-|`SBCB {addr8}`      |`SBC B,{addr8}`     |`B<-B-{addr8}`                                            |
-|`SBCB [X+data8]`    |`SBC B,[X+data8]`   |`B<-B-[X+data8]`                                          |
-|`SBCB [addr16]`     |`SBC B,[addr16]`    |`B<-B-[addr16]`                                           |
-|`SEC`               |                    |C<-1                                                      |
-|`SEI`               |                    |I<-1                                                      |
-|`SEV`               |                    |O<-1                                                      |
+|`SBCA data8`        |`SBC A,data8`       |`A<-A-data8-C`                                            |
+|`SBCA {addr8}`      |`SBC A,{addr8}`     |`A<-A-{addr8}-C`                                          |
+|`SBCA [X+data8]`    |`SBC A,[X+data8]`   |`A<-A-[X+data8]-C`                                        |
+|`SBCA [addr16]`     |`SBC A,[addr16]`    |`A<-A-[addr16]-C`                                         |
+|`SBCB data8`        |`SBC B,data8`       |`B<-B-data8-C`                                            |
+|`SBCB {addr8}`      |`SBC B,{addr8}`     |`B<-B-{addr8}-C`                                          |
+|`SBCB [X+data8]`    |`SBC B,[X+data8]`   |`B<-B-[X+data8]-C`                                        |
+|`SBCB [addr16]`     |`SBC B,[addr16]`    |`B<-B-[addr16]-C`                                         |
+|`SEC`               |                    |`C<-1`                                                    |
+|`SEI`               |                    |`I<-1`                                                    |
+|`SEV`               |                    |`V<-1`                                                    |
 |`STAA {addr8}`      |`STA A,{addr8}`     |`{addr8}<-A`                                              |
 |`STAA [X+data8]`    |`STA A,[X+data8]`   |`[X+data8]<-A`                                            |
 |`STAA [addr16]`     |`STA A,[addr16]`    |`[addr16]<-A`                                             |
 |`STAB {addr8}`      |`STA B,{addr8}`     |`{addr8}<-B`                                              |
 |`STAB [X+data8]`    |`STA B,[X+data8]`   |`[X+data8]<-B`                                            |
 |`STAB [addr16]`     |`STA B,[addr16]`    |`[addr16]<-B`                                             |
-|`STS`               |                    |                                                          |
-|`STX`               |                    |                                                          |
-|`SUB`               |                    |                                                          |
-|`SWI`               |                    |                                                          |
-|`TAB`               |                    |                                                          |
-|`TAP`               |                    |                                                          |
-|`TBA`               |                    |                                                          |
-|`TPA`               |                    |                                                          |
-|`TST`               |                    |                                                          |
-|`TSX`               |                    |                                                          |
-|`TXS`               |                    |                                                          |
-|`WAI`               |                    |                                                          |
+|`STS {addr8}`       |                    |`{addr8}<-SP(hi), {add8+1}<-SP(lo)`                       |
+|`STS [X+data8]`     |                    |`[X+data8]<-SP(hi), [X+data8+1]<-SP(lo)`                  |
+|`STS [addr16]`      |                    |`[addr16]<-SP(hi), [addr16+1]<-SP(lo)`                    |
+|`STX {addr8}`       |                    |`{addr8}<-X(hi), {addr8+1}<-X(lo)`                        |
+|`STX [X+data8]`     |                    |`[X+data8]<-X(hi), [X+data8+1]<-X(lo)`                    |
+|`STX [addr16]`      |                    |`[addr16]<-X(hi), [addr16+1]<-X(lo)`                      |
+|`SUBA data8`        |`SUB A,data8`       |`A<-A-data8`                                              |
+|`SUBA {addr8}`      |`SUB A,{addr8}`     |`A<-A-{addr8}`                                            |
+|`SUBA [X+data8]`    |`SUB A,[X+data8]`   |`A<-A-[X+data8]`                                          |
+|`SUBA [addr16]`     |`SUB A,[addr16]`    |`A<-A-[addr16]`                                           |
+|`SUBB data8`        |`SUB B,data8`       |`B<-B-data8`                                              |
+|`SUBB {addr8}`      |`SUB B,{addr8}`     |`B<-B-{addr8}`                                            |
+|`SUBB [X+data8]`    |`SUB B,[X+data8]`   |`B<-B-[X+data8]`                                          |
+|`SUBB [addr16]`     |`SUB B,[addr16]`    |`B<-B-[addr16]`                                           |
+|`SWI`               |                    |Invoke software interrupt                                 |
+|`TAB`               |                    |`B<-AP`                                                   |
+|`TAP`               |                    |`SR<-A`                                                   |
+|`TBA`               |                    |`A<-B`                                                    |
+|`TPA`               |                    |`A<-SR`                                                   |
+|`TSTA`              |`TST A`             |`A-0`                                                     |
+|`TSTB`              |`TST B`             |`B-0`                                                     |
+|`TST [X+data8]`     |`TST [X+data8]`     |`[X+data8]-0`                                             |
+|`TST [addr16]`      |`TST [addr16]`      |`[addr16]-0`                                              |
+|`TSX`               |                    |`X<-SP+1`                                                 |
+|`TXS`               |                    |`SP<-X-1`                                                 |
+|`WAI`               |                    |Wait for interrupt                                        |
 
-																									 
+Operands:
 
+- `A` ... accumulator A
+- `B` ... accumulator B
+- `X` ... index register
+- `SP` ... stack pointer
+- `PC` ... program counter
+- `SR` ... status register
+- `data8` ... immediate 8 bit value
+- `data16` ... immediate 16 bit value
+- `{addr8}` ... direct addressing to the internal RAM
+- `[X+data8]` ... index addresing
+- `[addr16]` ... external addressing to the external RAM or ROM
 
+Meaning of operations:
 
+- `+` ... addition
+- `-` ... subtraction
+- `&` ... bitwise AND
+- `|` ... bitwise OR
+- `^` ... bitwise XOR
 
+The status register `SR` holds following flags:
+
+- `C` ... carry flag
+- `V` ... overflow flag
+- `Z` ... zero flag
+- `N` ... negative flag
+- `I` ... interrupt mask flag
