@@ -113,6 +113,7 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 	size_t bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		if (pExprResolved.IsNull()) return false;
 		if (pExprResolved->IsTypeNumber()) {
 			UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
 			if (num > 0xff) {
@@ -170,6 +171,7 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binar
 	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeNumber()) {
 			ErrorLog::AddError(pExpr, "elements of directive .db must be number value");
 			return false;
@@ -394,6 +396,7 @@ bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Bina
 	parser.Reset();
 	for (auto pExprData : pExpr->GetOperands()) {
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeString()) {
 			ErrorLog::AddError(pExpr, "elements of directive .mml must be string value");
 			return false;
