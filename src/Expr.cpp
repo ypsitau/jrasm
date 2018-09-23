@@ -244,7 +244,7 @@ Expr *Expr_BinOp::Resolve(Context &context) const
 	if (pExprL.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprR(GetRight()->Resolve(context));
 	if (pExprR.IsNull()) return nullptr;
-	return _pOperator->Resolve(pExprL.release(), pExprR.release());
+	return _pOperator->Resolve(context, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -307,34 +307,16 @@ const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 bool Expr_LabelDef::Prepare(Context &context)
 {
 	if (!Expr::Prepare(context)) return false;
-#if 0
-	UInt32 num = 0;
-	if (IsAssigned()) {
-		AutoPtr<Expr> pExprAssigned(GetAssigned()->Resolve(context));
-		if (pExprAssigned.IsNull()) return false;
-		if (!pExprAssigned->IsTypeNumber()) {
-			ErrorLog::AddError(this, "number must be specified for label assignment");
-			return false;
-		}
-		num = dynamic_cast<Expr_Number *>(pExprAssigned.get())->GetNumber();
-	} else {
-		num = context.GetAddress();
-	}
-	Context::LookupTable *pLookupTable = context.GetLookupTable();
-	if (pLookupTable->IsDefined(GetLabel())) {
-		//ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
-		//return false;
-	}
-	pLookupTable->Set(GetLabel(), num);
-#endif
 	Context::LookupTable *pLookupTable = context.GetLookupTable();
 	if (pLookupTable->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
 	}
-	AutoPtr<Expr> pExprAssigned(GetAssigned()->Reference());
-	if (pExprAssigned.IsNull()) pExprAssigned.reset(new Expr_Number(context.GetAddress()));
-	pLookupTable->Set(GetLabel(), pExprAssigned.release());
+	if (IsAssigned()) {
+		pLookupTable->Set(GetLabel(), GetAssigned()->Reference());
+	} else {
+		pLookupTable->Set(GetLabel(), new Expr_Number(context.GetAddress()));
+	}
 	return true;
 }
 
@@ -377,6 +359,7 @@ const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
 Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
+	if (context.GetPreparationFlag()) return new Expr_Number(0);
 	const Expr *pExpr = Lookup(GetLabel());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
@@ -384,7 +367,7 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 	}
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
-	if (pExprResolved->IsTypeNumber()) {
+	if (!pExprResolved->IsTypeNumber()) {
 		ErrorLog::AddError(this, "label %s is associated with something but number", GetLabel());
 		return nullptr;
 	}

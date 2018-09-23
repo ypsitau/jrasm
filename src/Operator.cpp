@@ -22,7 +22,7 @@ void Operator::Initialize()
 //-----------------------------------------------------------------------------
 // Operator_Add
 //-----------------------------------------------------------------------------
-Expr *Operator_Add::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
@@ -45,7 +45,7 @@ Expr *Operator_Add::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 //-----------------------------------------------------------------------------
 // Operator_Sub
 //-----------------------------------------------------------------------------
-Expr *Operator_Sub::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
@@ -58,7 +58,7 @@ Expr *Operator_Sub::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 //-----------------------------------------------------------------------------
 // Operator_Mul
 //-----------------------------------------------------------------------------
-Expr *Operator_Mul::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Mul::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
@@ -71,12 +71,16 @@ Expr *Operator_Mul::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 //-----------------------------------------------------------------------------
 // Operator_Div
 //-----------------------------------------------------------------------------
-Expr *Operator_Div::Resolve(AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+Expr *Operator_Div::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
 		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
 		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
-		if (numR == 0) return nullptr;
+		if (numR == 0) numR = 1;
+		//if (numR == 0) {
+		//	ErrorLog::AddError("divided by zero");
+		//	return nullptr;
+		//}
 		return new Expr_Number(numL / numR);
 	}
 	return new Expr_BinOp(Operator::Div, pExprL.release(), pExprR.release());
