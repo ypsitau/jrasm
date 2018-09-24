@@ -9,7 +9,7 @@
 Context::Context() : _preparationFlag(false), _pExprListResolved(new ExprList())
 {
 	_fileNameJR = "JRASM_PRODUCT";
-	_lookupTableStack.push_back(new LookupTable());
+	_lookupTableStack.push_back(new LookupTable());		// global lookup table
 	_segmentOwner.push_back(new Segment("code"));		// code segment
 	_segmentOwner.push_back(new Segment("data"));		// data segment
 	_segmentOwner.push_back(new Segment("internal"));	// internal segment
@@ -22,14 +22,13 @@ void Context::StartRegion(UInt32 addr)
 	_pSegmentCur->SetAddress(addr);
 }
 
-Context::LookupTable *Context::AddLookupTable()
+void Context::PushLocalLookupTable()
 {
 	LookupTable *pLookupTable = new LookupTable(_lookupTableStack.back()->Reference());
 	_lookupTableStack.push_back(pLookupTable);
-	return pLookupTable;
 }
 
-void Context::RemoveLookupTable()
+void Context::PopLocalLookupTable()
 {
 	LookupTable *pLookupTable = _lookupTableStack.back();
 	_lookupTableStack.pop_back();
@@ -39,7 +38,7 @@ void Context::RemoveLookupTable()
 Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
 {
 	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
-	for (auto iter : *GetLookupTableRoot()) {
+	for (auto iter : *GetLookupTableGlobal()) {
 		const String &label = iter.first;
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));
@@ -80,13 +79,13 @@ Context::LookupTable::~LookupTable()
 
 void Context::LookupTable::Set(const String &label, Expr *pExpr)
 {
-	LookupTable *pLookupTable = IsGlobalLabel(label.c_str())? GetRoot() : this;
+	LookupTable *pLookupTable = IsGlobalLabel(label.c_str())? GetGlobal() : this;
 	pLookupTable->insert(std::make_pair(label, pExpr));
 }
 
 bool Context::LookupTable::IsDefined(const char *label) const
 {
-	const LookupTable *pLookupTable = IsGlobalLabel(label)? GetRoot() : this;
+	const LookupTable *pLookupTable = IsGlobalLabel(label)? GetGlobal() : this;
 	return pLookupTable->find(label) != end();
 }
 
@@ -97,7 +96,7 @@ const Expr *Context::LookupTable::Lookup(const char *label) const
 	return _pLookupTableParent.IsNull()? nullptr : _pLookupTableParent->Lookup(label);
 }
 
-Context::LookupTable *Context::LookupTable::GetRoot()
+Context::LookupTable *Context::LookupTable::GetGlobal()
 {
 	LookupTable *pLookupTable = this;
 	for ( ; pLookupTable->GetParent() != nullptr; pLookupTable = pLookupTable->GetParent()) ;

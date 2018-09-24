@@ -36,9 +36,9 @@ public:
 		void Set(const String &label, Expr *pExpr);
 		bool IsDefined(const char *label) const;
 		const Expr *Lookup(const char *label) const;
-		LookupTable *GetRoot();
-		inline const LookupTable *GetRoot() const {
-			return const_cast<LookupTable *>(this)->GetRoot();
+		LookupTable *GetGlobal();
+		inline const LookupTable *GetGlobal() const {
+			return const_cast<LookupTable *>(this)->GetGlobal();
 		}
 	};
 	class LookupTableList : public std::vector<LookupTable *> {
@@ -106,12 +106,13 @@ public:
 	inline bool GetPreparationFlag() const { return _preparationFlag; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
 	inline const LookupTable *GetLookupTable() const { return _lookupTableStack.back(); }
-	inline LookupTable *GetLookupTableRoot() { return _lookupTableStack.front(); }
-	inline const LookupTable *GetLookupTableRoot() const { return _lookupTableStack.front(); }
+	inline LookupTable *GetLookupTableGlobal() { return _lookupTableStack.front(); }
+	inline const LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
+	inline bool DoesExistLocalLookupTable() const { return _lookupTableStack.size() > 1; }
 	void StartRegion(UInt32 addr);
-	LookupTable *AddLookupTable();
-	void RemoveLookupTable();
+	void PushLocalLookupTable();
+	void PopLocalLookupTable();
 	LabelInfoOwner *MakeLabelInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
