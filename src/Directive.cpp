@@ -12,7 +12,7 @@ Directive::~Directive()
 {
 }
 
-bool Directive::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -194,7 +194,7 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 // Directive_ENDM
 //-----------------------------------------------------------------------------
-bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_ENDM::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	if (exprStack.back()->IsTypeMacroBody()) {
 		pParser->AddError("can't find corresponding directive .MACRO");
@@ -202,7 +202,7 @@ bool Directive_ENDM::HandleToken(const Parser *pParser, ExprStack &exprStack, co
 	}
 	Expr::Delete(exprStack.back());
 	exprStack.pop_back();	// remove the EXPR_MacroBody instance from the stack
-	return Directive::HandleToken(pParser, exprStack, pToken);
+	return Directive::CreateExpr(pParser, exprStack, pToken);
 }
 
 bool Directive_ENDM::Prepare(Context &context, const Expr_Directive *pExpr) const
@@ -265,7 +265,7 @@ bool Directive_ENDPCG::Generate(Context &context, const Expr_Directive *pExpr, B
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
-bool Directive_EQU::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_EQU::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
 	if (pExprLabelDef == nullptr) {
@@ -368,7 +368,7 @@ bool Directive_ISEG::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
-bool Directive_MACRO::HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_MACRO::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
 	if (pExprLabelDef == nullptr) {
@@ -499,6 +499,21 @@ bool Directive_PCG::Generate(Context &context, const Expr_Directive *pExpr, Bina
 //-----------------------------------------------------------------------------
 // Directive_PROC
 //-----------------------------------------------------------------------------
+bool Directive_PROC::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+{
+#if 0
+	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
+	if (pExprLabelDef != nullptr) {
+
+	}
+#endif
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr.release());
+	return true;
+}
+
 bool Directive_PROC::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
 	context.PushLocalLookupTable();

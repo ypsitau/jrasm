@@ -26,7 +26,7 @@ public:
 	static void Initialize();
 	static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const = 0;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
@@ -95,7 +95,7 @@ public:
 class Directive_ENDM : public Directive {
 public:
 	inline Directive_ENDM() : Directive(".endm") {}
-	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
@@ -126,7 +126,7 @@ public:
 class Directive_EQU : public Directive {
 public:
 	inline Directive_EQU() : Directive(".equ") {}
-	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
@@ -168,7 +168,7 @@ public:
 class Directive_MACRO : public Directive {
 public:
 	inline Directive_MACRO() : Directive(".macro") {}
-	virtual bool HandleToken(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
@@ -220,6 +220,7 @@ public:
 class Directive_PROC : public Directive {
 public:
 	inline Directive_PROC() : Directive(".proc") {}
+	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };

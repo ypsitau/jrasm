@@ -13,7 +13,7 @@ Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat
 
 bool Parser::ParseFile()
 {
-	FILE *fp;
+	FILE *fp = nullptr;
 	if (::fopen_s(&fp, GetFileNameSrc(), "rt") != 0) {
 		ErrorLog::AddError("failed to open file: %s\n", GetFileNameSrc());
 		return false;
@@ -86,7 +86,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				SetExprSourceInfo(pExpr.get(), pToken.get());
 				_exprStack.back()->GetChildren().push_back(pExpr->Reference());
 				_exprStack.push_back(pExpr.release());
-			} else if (!pDirective->HandleToken(this, _exprStack, pToken.get())) {
+			} else if (!pDirective->CreateExpr(this, _exprStack, pToken.get())) {
 				return false;
 			}
 			_tokenStack.Reset();
