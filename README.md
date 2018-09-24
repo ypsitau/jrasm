@@ -36,13 +36,13 @@ Consider the following source file named `helloworld.asm`:
         .ORG    0x2000
 loop:
         LDX     [ptr_src]
-        LDAA    [x]
+        LDAA    [X]
         INX
         STX     [ptr_src]
         CMPA    0x00
         BEQ     done
         LDX     [ptr_dst]
-        STAA    [x]
+        STAA    [X]
         INX
         STX     [ptr_dst]
         BRA     loop
@@ -163,8 +163,10 @@ A sybmol literal consists of a series of characters and is used for following pu
 - Directive's name.
 - Register name.
 
-A symbol literal is case sensitive when it's used as a label while it's case insensitive for other uses.
+A symbol literal is case insensitive.
 This means that you can describe an instruction `LDAA` with a symbol `LDAA`, `ldaa`, `Ldaa`, `LdAA` and so on.
+Also, when you define a label named `Label1`, it can be referred to as `label1`, `LABEL1`, `LaBel1`
+and anything like that.
 
 
 ## Directive
@@ -174,10 +176,28 @@ The jrasm assembler supports following directives:
 
 ### .CSEG .DSEG .ISEG
 
-Example:
+The directives `.CSEG` and `.DSEG` declare the beginning of code and data segment respectively.
+They don't put any restriction on what items are place in: you can write data sequence using directive `.DB`
+in the code segment and can put instructions in the data segment as well.
+It could be used to put some data sequence in the middle of program code like follows:
+
 ```
         .CSEG
+        LDX     Hello
         .DSEG
+Hello:  "Hello"
+        .CSEG
+        LDAA    [X]
+        ; ... any jobs ...
+```
+
+The assembler program is pleced in the code segment before any `.CSEG` or `.DSEG` directive appears.
+Each segment must have the current address initialized using `.ORG` directive.
+
+Directive `.ISEG` ...
+
+Example:
+```
         .ISEG
 ```
 
@@ -220,6 +240,8 @@ Example:
 ```
         .ORG    0x2000
 ```
+
+You can specify more than one `.ORG` directive in a program.
 
 
 ## Instructions
