@@ -174,7 +174,7 @@ and anything like that.
 The jrasm assembler supports following directives:
 
 
-### .CSEG .DSEG .ISEG
+### .CSEG, .DSEG and .ISEG
 
 The directives `.CSEG` and `.DSEG` declare the beginning of code and data segment respectively.
 They don't put any restriction on what items are place in: you can write data sequence using directive `.DB`
@@ -202,7 +202,7 @@ Example:
 ```
 
 
-### .DB .DW
+### .DB and .DW
 
 These directive are used to store binary data. The directive `.DB` contains 8-bit data while `.DW` does 16-bit.
 
@@ -242,6 +242,37 @@ Example:
 ```
 
 You can specify more than one `.ORG` directive in a program.
+
+
+### .PROC and .ENDP
+
+You can localize labels by using `.PROC` and `.ENDP` directives.
+Any labels that appear in these directives are hidden from outside.
+It's possible to specify the same symbol for the global and the local labels,
+which are dealt with as different ones.
+
+```
+label1:	.EQU	0x1111
+label2:	.EQU	0x2222
+
+        .PROC
+label1:	.EQU	0x1234
+		.DW		label1	; 0x1234
+		.DW		label2	; 0x2222
+		.ENDP
+
+        .PROC
+label1:	.EQU	0x5678
+		.DW		label1	; 0x5678
+		.DW		label2	; 0x2222
+		.ENDP
+
+		.DW		label	; 0x1111
+		.DW		label2	; 0x2222
+```
+
+Even in the localized region, labels declared with double-colon `::` will be defined as global ones.
+
 
 
 ## Instructions
