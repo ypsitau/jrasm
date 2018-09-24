@@ -1,0 +1,60 @@
+label1:
+    1000 01        nop  
+label2:
+    1001 01        nop  
+label3:            .equ 0x4321
+label4:            .equ 0x8765
+    1002 10 00     .dw  label1
+    1004 10 01     .dw  label2
+    1006 43 21     .dw  label3
+    1008 87 65     .dw  label4
+    100a 10 16     .dw  func1
+    100c 10 17     .dw  func1_inside
+    100e 10 20     .dw  func2
+    1010 10 21     .dw  func2_inside
+    1012 10 2a     .dw  func3
+    1014 10 2b     .dw  func3_inside
+func1:
+label1:
+    1016 01        nop  
+label2:
+func1_inside:
+    1017 01        nop  
+label3:            .equ 0x1234
+    1018 10 16     .dw  label1
+    101a 10 17     .dw  label2
+    101c 12 34     .dw  label3
+    101e 87 65     .dw  label4
+func2:
+label1:
+    1020 01        nop  
+label2:
+func2_inside:
+    1021 01        nop  
+label3:            .equ 0x5678
+    1022 10 20     .dw  label1
+    1024 10 21     .dw  label2
+    1026 56 78     .dw  label3
+    1028 87 65     .dw  label4
+func3:
+label1:
+    102a 01        nop  
+label2:
+func3_inside:
+    102b 01        nop  
+label3:            .equ 0xabcd
+    102c 10 2a     .dw  label1
+    102e 10 2b     .dw  label2
+    1030 ab cd     .dw  label3
+    1032 87 65     .dw  label4
+[Label List]
+1000  label1
+1001  label2
+1016  func1
+1017  func1_inside
+1020  func2
+1021  func2_inside
+102a  func3
+102b  func3_inside
+4321  label3
+8765  label4

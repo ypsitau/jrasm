@@ -15,6 +15,7 @@ caseNames="$caseNames label"
 caseNames="$caseNames literal"
 caseNames="$caseNames mml"
 caseNames="$caseNames operand"
+caseNames="$caseNames proc"
 caseNames="$caseNames rel"
 caseNames="$caseNames segment"
 
