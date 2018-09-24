@@ -17,6 +17,7 @@ const TokenInfo TOKEN_Symbol =			{  4, "Symbol",			"[Sym]"	};
 const TokenInfo TOKEN_String =			{  4, "String",			"[Str]"	};
 const TokenInfo TOKEN_Comma =			{  0, "Comma",			","		};
 const TokenInfo TOKEN_Colon =			{  0, "Colon",			":"		};
+const TokenInfo TOKEN_ColonColon =		{  0, "ColonColon",		"::"	};
 const TokenInfo TOKEN_BracketL =		{  0, "BracketL",		"["		};
 const TokenInfo TOKEN_BracketR =		{  0, "BracketR",		"]"		};
 const TokenInfo TOKEN_BraceL =			{  0, "BraceL",			"{"		};

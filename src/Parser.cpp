@@ -50,9 +50,6 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			AutoPtr<Expr> pExpr(new Expr_LabelDef(pToken->GetString()));
-			SetExprSourceInfo(pExpr.get(), pToken.get());
-			_exprStack.back()->GetChildren().push_back(pExpr.release());
 			_stat = STAT_LabelDef;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Directive;
@@ -60,7 +57,11 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		break;
 	}
 	case STAT_LabelDef: {
-		if (pToken->IsType(TOKEN_Colon)) {
+		bool forceGlobalFlag = false;
+		if (pToken->IsType(TOKEN_Colon) || (forceGlobalFlag = pToken->IsType(TOKEN_ColonColon))) {
+			AutoPtr<Expr> pExpr(new Expr_LabelDef(_pTokenPrev->GetString(), forceGlobalFlag));
+			SetExprSourceInfo(pExpr.get(), _pTokenPrev.get());
+			_exprStack.back()->GetChildren().push_back(pExpr.release());
 			_stat = STAT_Directive;
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
@@ -147,6 +148,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		break;
 	}
 	}
+	_pTokenPrev.reset(pToken->Reference());
 	return true;
 }
 

@@ -22,6 +22,7 @@ private:
 	Stat _stat;
 	ExprStack _exprStack;
 	TokenStack _tokenStack;
+	AutoPtr<Token> _pTokenPrev;
 public:
 	Parser(const String &fileNameSrc);
 	inline const char *GetFileNameSrc() const { return _tokenizer.GetFileNameSrc(); }

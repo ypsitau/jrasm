@@ -20,6 +20,7 @@ public:
 		STAT_Neutral,
 		STAT_White,
 		STAT_Comment,
+		STAT_Colon,
 		STAT_DetectZero,
 		STAT_BinNumber,
 		STAT_OctNumber,

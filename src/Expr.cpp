@@ -307,15 +307,14 @@ const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 bool Expr_LabelDef::Prepare(Context &context)
 {
 	if (!Expr::Prepare(context)) return false;
-	Context::LookupTable *pLookupTable = context.GetLookupTable();
-	if (pLookupTable->IsDefined(GetLabel())) {
+	if (_pLookupTable->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
 	}
 	if (IsAssigned()) {
-		pLookupTable->Set(GetLabel(), GetAssigned()->Reference());
+		_pLookupTable->Associate(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		pLookupTable->Set(GetLabel(), new Expr_Number(context.GetAddress()));
+		_pLookupTable->Associate(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
 	}
 	return true;
 }

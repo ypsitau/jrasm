@@ -77,16 +77,15 @@ Context::LookupTable::~LookupTable()
 	}
 }
 
-void Context::LookupTable::Set(const String &label, Expr *pExpr)
+void Context::LookupTable::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
 {
-	LookupTable *pLookupTable = IsGlobalLabel(label.c_str())? GetGlobal() : this;
+	LookupTable *pLookupTable = forceGlobalFlag? GetGlobal() : this;
 	pLookupTable->insert(std::make_pair(label, pExpr));
 }
 
 bool Context::LookupTable::IsDefined(const char *label) const
 {
-	const LookupTable *pLookupTable = IsGlobalLabel(label)? GetGlobal() : this;
-	return pLookupTable->find(label) != end();
+	return find(label) != end();
 }
 
 const Expr *Context::LookupTable::Lookup(const char *label) const

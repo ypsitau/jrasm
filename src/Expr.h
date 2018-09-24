@@ -219,10 +219,12 @@ public:
 class Expr_LabelDef : public Expr {
 private:
 	String _label;
+	bool _forceGlobalFlag;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_LabelDef(const String &label) : Expr(TYPE), _label(label) {}
+	inline Expr_LabelDef(const String &label, bool forceGlobalFlag) :
+		Expr(TYPE), _label(label), _forceGlobalFlag(forceGlobalFlag) {}
 	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
 	inline const Expr *GetAssigned() const { return GetChildren().back(); }
 	inline bool IsAssigned() const { return !GetChildren().empty(); }

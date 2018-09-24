@@ -32,8 +32,7 @@ public:
 		~LookupTable();
 	public:
 		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
-		static inline bool IsGlobalLabel(const char *label) { return *label != '@'; }
-		void Set(const String &label, Expr *pExpr);
+		void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
 		bool IsDefined(const char *label) const;
 		const Expr *Lookup(const char *label) const;
 		LookupTable *GetGlobal();

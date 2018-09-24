@@ -27,6 +27,7 @@ extern const TokenInfo TOKEN_Symbol;
 extern const TokenInfo TOKEN_String;
 extern const TokenInfo TOKEN_Comma;
 extern const TokenInfo TOKEN_Colon;
+extern const TokenInfo TOKEN_ColonColon;
 extern const TokenInfo TOKEN_BracketL;
 extern const TokenInfo TOKEN_BracketR;
 extern const TokenInfo TOKEN_BraceL;

@@ -59,7 +59,7 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == ';') {
 			_stat = STAT_Comment;
 		} else if (ch == ':') {
-			rtn = FeedToken(TOKEN_Colon);
+			_stat = STAT_Colon;
 		} else if (ch == ',') {
 			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
@@ -104,6 +104,17 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_LineTop;
 		} else {
 			// nothing to do
+		}
+		break;
+	}
+	case STAT_Colon: {
+		if (ch == ':') {
+			rtn = FeedToken(TOKEN_ColonColon);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_Colon);
+			_stat = STAT_Neutral;
+			Pushback();
 		}
 		break;
 	}
