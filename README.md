@@ -252,23 +252,23 @@ It's possible to specify the same symbol for the global and the local labels,
 which are dealt with as different ones.
 
 ```
-label1:	.EQU	0x1111
-label2:	.EQU	0x2222
+label1: .EQU    0x1111
+label2: .EQU    0x2222
 
         .PROC
-label1:	.EQU	0x1234
-		.DW		label1	; 0x1234
-		.DW		label2	; 0x2222
-		.ENDP
+label1: .EQU    0x1234
+        .DW     label1   ; 0x1234
+        .DW     label2   ; 0x2222
+        .ENDP
 
         .PROC
-label1:	.EQU	0x5678
-		.DW		label1	; 0x5678
-		.DW		label2	; 0x2222
-		.ENDP
+label1: .EQU    0x5678
+        .DW     label1   ; 0x5678
+        .DW     label2   ; 0x2222
+        .ENDP
 
-		.DW		label	; 0x1111
-		.DW		label2	; 0x2222
+        .DW     label    ; 0x1111
+        .DW     label2   ; 0x2222
 ```
 
 Even in the localized region, labels declared with double-colon `::` will be defined as global ones.
