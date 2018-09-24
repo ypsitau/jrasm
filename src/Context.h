@@ -14,7 +14,12 @@ class ExprList;
 //-----------------------------------------------------------------------------
 class Context {
 public:
-	class LookupTable : public std::map<String, Expr *> {
+	struct LessThan_StringICase {
+		inline bool operator()(const String &str1, const String &str2) const {
+			return ::strcasecmp(str1.c_str(), str2.c_str()) < 0;
+		}
+	};
+	class LookupTable : public std::map<String, Expr *, LessThan_StringICase> {
 	private:
 		int _cntRef;
 		AutoPtr<LookupTable> _pLookupTableParent;
