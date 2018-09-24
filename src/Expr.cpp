@@ -38,6 +38,11 @@ void Expr::AddChild(Expr *pExpr)
 	_pExprChildren->push_back(pExpr);
 }
 
+void Expr::Print() const
+{
+	::printf("%s\n", ComposeSource(false).c_str());
+}
+
 bool Expr::Prepare(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
@@ -102,12 +107,12 @@ bool ExprList::Prepare(Context &context)
 	return true;
 }
 
-String ExprList::ToString(const char *sep, bool upperCaseFlag) const
+String ExprList::ComposeSource(const char *sep, bool upperCaseFlag) const
 {
 	String rtn;
 	for (auto pExpr : *this) {
 		if (!rtn.empty()) rtn += sep;
-		rtn += pExpr->ToString(upperCaseFlag);
+		rtn += pExpr->ComposeSource(upperCaseFlag);
 	}
 	return rtn;
 }
@@ -115,7 +120,7 @@ String ExprList::ToString(const char *sep, bool upperCaseFlag) const
 void ExprList::Print(bool upperCaseFlag) const
 {
 	for (auto pExpr : *this) {
-		::printf("%s\n", pExpr->ToString(upperCaseFlag).c_str());
+		::printf("%s\n", pExpr->ComposeSource(upperCaseFlag).c_str());
 	}
 }
 
@@ -171,7 +176,7 @@ Expr *Expr_Root::Resolve(Context &context) const
 	return Reference();
 }
 
-String Expr_Root::ToString(bool upperCaseFlag) const
+String Expr_Root::ComposeSource(bool upperCaseFlag) const
 {
 	return "";
 }
@@ -181,7 +186,7 @@ String Expr_Root::ToString(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
 
-String Expr_Number::ToString(bool upperCaseFlag) const
+String Expr_Number::ComposeSource(bool upperCaseFlag) const
 {
 	if (!_str.empty()) {
 		if (_str[0] != '\'') return _str;
@@ -210,7 +215,7 @@ Expr *Expr_Number::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_String::TYPE = Expr::TYPE_String;
 
-String Expr_String::ToString(bool upperCaseFlag) const
+String Expr_String::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "\"";
@@ -229,12 +234,12 @@ Expr *Expr_String::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
 
-String Expr_BinOp::ToString(bool upperCaseFlag) const
+String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
-	str = GetLeft()->ToString(upperCaseFlag);
+	str = GetLeft()->ComposeSource(upperCaseFlag);
 	str += _pOperator->GetSymbol();
-	str += GetRight()->ToString(upperCaseFlag);
+	str += GetRight()->ComposeSource(upperCaseFlag);
 	return str;
 }
 
@@ -252,11 +257,11 @@ Expr *Expr_BinOp::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;
 
-String Expr_Bracket::ToString(bool upperCaseFlag) const
+String Expr_Bracket::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "[";
-	str += GetChildren().ToString(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(",", upperCaseFlag);
 	str += "]";
 	return str;
 }
@@ -278,11 +283,11 @@ Expr *Expr_Bracket::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Brace::TYPE = Expr::TYPE_Brace;
 
-String Expr_Brace::ToString(bool upperCaseFlag) const
+String Expr_Brace::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "{";
-	str += GetChildren().ToString(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(",", upperCaseFlag);
 	str += "}";
 	return str;
 }
@@ -331,7 +336,7 @@ bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, s
 	str += ":";
 	if (IsAssigned()) {
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
-		str += GetAssigned()->ToString(upperCaseFlag);
+		str += GetAssigned()->ComposeSource(upperCaseFlag);
 	}
 	::fprintf(fp, "%s\n", str.c_str());
 	return true;
@@ -342,7 +347,7 @@ Expr *Expr_LabelDef::Resolve(Context &context) const
 	return Reference();
 }
 
-String Expr_LabelDef::ToString(bool upperCaseFlag) const
+String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = _label; // not affected by upperCaseFlag
@@ -374,7 +379,7 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 	return pExprResolved.release();
 }
 
-String Expr_LabelRef::ToString(bool upperCaseFlag) const
+String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
 {
 	if (Generator::GetInstance().IsRegisterSymbol(_label.c_str())) {
 		return upperCaseFlag? ToUpper(_label.c_str()) : ToLower(_label.c_str());
@@ -405,7 +410,7 @@ bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!Generator::GetInstance().Generate(context, this, buffDst)) return false;
-	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(),
+	DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
 					 fp, upperCaseFlag, nColsPerLine, nColsPerLine);
 	return true;
 }
@@ -415,13 +420,13 @@ Expr *Expr_Instruction::Resolve(Context &context) const
 	return Reference();
 }
 
-String Expr_Instruction::ToString(bool upperCaseFlag) const
+String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 {
 	String str = JustifyLeft(
 		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
-	str += GetChildren().ToString(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(",", upperCaseFlag);
 	return str;
 }
 
@@ -446,7 +451,7 @@ bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, 
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!_pDirective->Generate(context, this, buffDst)) return false;
-	DumpDisasmHelper(addr, buffDst, ToString(upperCaseFlag).c_str(),
+	DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
 					 fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
 	return true;
 }
@@ -456,14 +461,14 @@ Expr *Expr_Directive::Resolve(Context &context) const
 	return _pDirective->Resolve(context, this);
 }
 
-String Expr_Directive::ToString(bool upperCaseFlag) const
+String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 {
 	const char *symbol = _pDirective->GetSymbol();
 	String str = JustifyLeft(
 		(upperCaseFlag? ToUpper(symbol) : ToLower(symbol)).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
-	str += GetChildren().ToString(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(",", upperCaseFlag);
 	return str;
 }
 
@@ -477,9 +482,9 @@ Expr *Expr_MacroBody::Resolve(Context &context) const
 	return Reference();
 }
 
-String Expr_MacroBody::ToString(bool upperCaseFlag) const
+String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
 {
-	String str = GetChildren().ToString("\n", upperCaseFlag);
+	String str = GetChildren().ComposeSource("\n", upperCaseFlag);
 	str += "\n";
 	return str;
 }
@@ -494,10 +499,10 @@ Expr *Expr_MacroEntry::Resolve(Context &context) const
 	return Reference();
 }
 
-String Expr_MacroEntry::ToString(bool upperCaseFlag) const
+String Expr_MacroEntry::ComposeSource(bool upperCaseFlag) const
 {
 	String str = _symbol; // not affected by upperCaseFlag
 	str += " ";
-	str += GetChildren().ToString(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(",", upperCaseFlag);
 	return str;
 }

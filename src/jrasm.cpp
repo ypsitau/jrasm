@@ -71,7 +71,6 @@ int main(int argc, const char *argv[])
 	} else {
 		const char *fileNameSrc = ExtractFileName(pathNameSrc);
 		String fileBaseNameSrc = ::RemoveExtName(fileNameSrc);
-		//String pathBaseNameSrc = ::RemoveExtName(pathNameSrc);
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
 		context.SetFileNameJR(fileBaseNameSrc.c_str());

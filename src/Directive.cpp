@@ -196,8 +196,8 @@ bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 bool Directive_ENDM::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	if (exprStack.back()->IsTypeMacroBody()) {
-		pParser->AddError("can't find corresponding directive .MACRO");
+	if (!exprStack.back()->IsTypeMacroBody()) {
+		pParser->AddError("no matching .MACRO directive");
 		return false;
 	}
 	Expr::Delete(exprStack.back());
@@ -231,7 +231,7 @@ bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) cons
 		return false;
 	}
 	if (!context.DoesExistLocalLookupTable()) {
-		ErrorLog::AddError(pExpr, "no corresponding .PROC directive");
+		ErrorLog::AddError(pExpr, "no matching .PROC directive");
 		return false;
 	}
 	context.PopLocalLookupTable();
