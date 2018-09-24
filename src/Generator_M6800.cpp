@@ -146,7 +146,7 @@ bool Generator_M6800::DoCalcInstBytes(Context &context, const Expr_Instruction *
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
 		ErrorLog::AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
-		return 0;
+		return false;
 	}
 	return pEntry->ApplyRule(context, pExpr, nullptr, pBytes);
 }
