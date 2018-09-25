@@ -231,16 +231,15 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_MacroInstance
+// Directive_Custom
 //-----------------------------------------------------------------------------
-class Directive_MacroInstance : public Directive {
+class Directive_Custom : public Directive {
 private:
 	StringList _paramNames;
 	AutoPtr<Expr> _pExprMacroBody;
 public:
-	Directive_MacroInstance(
-		const String &symbol, StringList::const_iterator pParamName,
-		StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody);
+	Directive_Custom(const String &symbol, StringList::const_iterator pParamName,
+					 StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody);
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };

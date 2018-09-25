@@ -595,10 +595,9 @@ bool Expr_MacroEntry::OnPhaseDeclareMacro(Context &context)
 		}
 		labels.push_back(dynamic_cast<const Expr_LabelRef *>(pExpr)->GetLabel());
 	}
-	context.AddDirective(new Directive_MacroInstance(
+	context.AddDirective(new Directive_Custom(
 							 labels[0], labels.begin() + 1, labels.end(),
 							 GetMacroBody()->Reference()));
-	//::printf("Expr_MacroEntry::OnPhaseDeclareMacro()\n");
 	return true;
 }
 

@@ -516,9 +516,9 @@ bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 }
 
 //-----------------------------------------------------------------------------
-// Directive_MacroInstance
+// Directive_Custom
 //-----------------------------------------------------------------------------
-Directive_MacroInstance::Directive_MacroInstance(
+Directive_Custom::Directive_Custom(
 	const String &symbol, StringList::const_iterator pParamName,
 	StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody) :
 	Directive(symbol), _pExprMacroBody(pExprMacroBody)
@@ -526,12 +526,12 @@ Directive_MacroInstance::Directive_MacroInstance(
 	_paramNames.insert(_paramNames.end(), pParamName, pParamNameEnd);
 }
 
-bool Directive_MacroInstance::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
+bool Directive_Custom::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
 
-bool Directive_MacroInstance::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_Custom::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
 	return true;
