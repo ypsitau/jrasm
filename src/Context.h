@@ -136,6 +136,7 @@ public:
 	LabelInfoOwner *MakeLabelInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
+	void AddDirective(Directive *pDirective);
 	const Directive *FindDirective(const char *symbol) const;
 };
 
