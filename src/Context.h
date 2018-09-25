@@ -91,6 +91,7 @@ public:
 		void Clear();
 	};
 private:
+	std::unique_ptr<Parser> _pParser;
 	String _fileNameJR;
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
@@ -98,7 +99,7 @@ private:
 	LookupTableStack _lookupTableStack;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
-	Context();
+	Context(const String &pathNameSrc);
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
@@ -119,10 +120,10 @@ public:
 	inline const LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalLookupTable() const { return _lookupTableStack.size() > 1; }
-	bool ParseFile(Parser &parser);
-	bool Prepare(Parser &parser);
-	RegionOwner *Generate(Parser &parser, size_t bytesGapToJoin, UInt8 dataFiller);
-	bool DumpDisasm(Parser &parser, FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
+	bool ParseFile();
+	bool Prepare();
+	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
+	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
 	void StartRegion(UInt32 addr);
 	void PushLocalLookupTable();
 	void PopLocalLookupTable();

@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context() : _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
+Context::Context(const String &pathNameSrc) :
+	_pParser(new Parser(pathNameSrc)), _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 {
 	_fileNameJR = "JRASM_PRODUCT";
 	_lookupTableStack.push_back(new LookupTable());		// global lookup table
@@ -16,47 +17,47 @@ Context::Context() : _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 	SelectCodeSegment();
 }
 
-bool Context::ParseFile(Parser &parser)
+bool Context::ParseFile()
 {
 	FILE *fp = nullptr;
-	if (::fopen_s(&fp, parser.GetFileNameSrc(), "rt") != 0) {
-		ErrorLog::AddError("failed to open file: %s\n", parser.GetFileNameSrc());
+	if (::fopen_s(&fp, _pParser->GetFileNameSrc(), "rt") != 0) {
+		ErrorLog::AddError("failed to open file: %s\n", _pParser->GetFileNameSrc());
 		return false;
 	}
 	for (;;) {
 		int chRaw = ::fgetc(fp);
 		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
-		if (!parser.FeedChar(ch)) break;
+		if (!_pParser->FeedChar(ch)) break;
 		if (ch == '\0') break;
 	}
 	::fclose(fp);
 	return !ErrorLog::HasError();
 }
 
-bool Context::Prepare(Parser &parser)
+bool Context::Prepare()
 {
 	SetPhase(PHASE_Include);
-	if (!parser.GetRoot()->OnPhaseInclude(*this)) return false;
+	if (!_pParser->GetRoot()->OnPhaseInclude(*this)) return false;
 	SetPhase(PHASE_DeclareMacro);
-	if (!parser.GetRoot()->OnPhaseDeclareMacro(*this)) return false;
+	if (!_pParser->GetRoot()->OnPhaseDeclareMacro(*this)) return false;
 	SetPhase(PHASE_ExpandMacro);
-	if (!parser.GetRoot()->OnPhaseExpandMacro(*this)) return false;
+	if (!_pParser->GetRoot()->OnPhaseExpandMacro(*this)) return false;
 	SetPhase(PHASE_SetupLookup);
-	if (!parser.GetRoot()->OnPhaseSetupLookup(*this)) return false;
+	if (!_pParser->GetRoot()->OnPhaseSetupLookup(*this)) return false;
 	return true;
 }
 
-RegionOwner *Context::Generate(Parser &parser, size_t bytesGapToJoin, UInt8 dataFiller)
+RegionOwner *Context::Generate(size_t bytesGapToJoin, UInt8 dataFiller)
 {
 	SetPhase(PHASE_Generate);
-	if (!parser.GetRoot()->OnPhaseGenerate(*this)) return nullptr;
+	if (!_pParser->GetRoot()->OnPhaseGenerate(*this)) return nullptr;
 	return GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
 }
 
-bool Context::DumpDisasm(Parser &parser, FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
+bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 {
 	SetPhase(PHASE_Generate);
-	return parser.GetRoot()->OnPhaseDisasm(*this, fp, upperCaseFlag, nColsPerLine);
+	return _pParser->GetRoot()->OnPhaseDisasm(*this, fp, upperCaseFlag, nColsPerLine);
 }
 
 void Context::StartRegion(UInt32 addr)

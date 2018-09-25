@@ -60,13 +60,12 @@ int main(int argc, const char *argv[])
 		return 1;
 	}
 	const char *pathNameSrc = argv[1];
-	Parser parser(pathNameSrc);
-	Context context;
-	if (!context.ParseFile(parser)) goto errorDone;
-	if (!context.Prepare(parser)) goto errorDone;
+	Context context(pathNameSrc);
+	if (!context.ParseFile()) goto errorDone;
+	if (!context.Prepare()) goto errorDone;
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-disasm-l") || (upperCaseFlag = cmdLine.IsSet("print-disasm-u"))) {
-		if (!context.DumpDisasm(parser, stdout, upperCaseFlag,
+		if (!context.DumpDisasm(stdout, upperCaseFlag,
 							   Generator::GetInstance().GetBytesInstMax())) goto errorDone;
 	} else {
 		const char *fileNameSrc = ExtractFileName(pathNameSrc);
@@ -74,7 +73,7 @@ int main(int argc, const char *argv[])
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
 		context.SetFileNameJR(fileBaseNameSrc.c_str());
-		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(parser, bytesGapToJoin, dataFiller));
+		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(bytesGapToJoin, dataFiller));
 		if (pRegionOwner.get() == nullptr) goto errorDone;
 		upperCaseFlag = false;
 		if (cmdLine.IsSet("print-hexdump-l") || (upperCaseFlag = cmdLine.IsSet("print-hexdump-u"))) {
@@ -111,7 +110,7 @@ int main(int argc, const char *argv[])
 		}
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
-		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(parser, bytesGapToJoin, dataFiller));
+		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(bytesGapToJoin, dataFiller));
 		::printf("[Memory Image]\n");
 		for (auto pRegion : *pRegionOwner) {
 			::printf(formatRoot, pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
