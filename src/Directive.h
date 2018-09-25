@@ -9,7 +9,9 @@
 
 class Token;
 class Parser;
+class Context;
 class ExprStack;
+class Expr;
 class Expr_Directive;
 class DirectiveOwner;
 
@@ -18,11 +20,16 @@ class DirectiveOwner;
 //-----------------------------------------------------------------------------
 class Directive {
 private:
+	int _cntRef;
 	String _symbol;
 	static std::unique_ptr<DirectiveOwner> _pDirectivesBuiltIn;
 public:
-	inline Directive(const String &symbol) : _symbol(symbol) {}
+	DeclareReferenceAccessor(Directive);
+public:
+	inline Directive(const String &symbol) : _cntRef(1), _symbol(symbol) {}
+protected:
 	virtual ~Directive();
+public:
 	static void Initialize();
 	static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
@@ -222,6 +229,18 @@ class Directive_PROC : public Directive {
 public:
 	inline Directive_PROC() : Directive(".PROC") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_MacroInstance
+//-----------------------------------------------------------------------------
+class Directive_MacroInstance : public Directive {
+private:
+	
+public:
+	inline Directive_MacroInstance(const String &symbol) : Directive(symbol) {}
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };

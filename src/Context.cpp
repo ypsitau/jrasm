@@ -16,6 +16,32 @@ Context::Context() : _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 	SelectCodeSegment();
 }
 
+bool Context::Prepare(Parser &parser)
+{
+	SetPhase(PHASE_Include);
+	if (!parser.GetRoot()->OnPhaseInclude(*this)) return false;
+	SetPhase(PHASE_DeclareMacro);
+	if (!parser.GetRoot()->OnPhaseDeclareMacro(*this)) return false;
+	SetPhase(PHASE_ExpandMacro);
+	if (!parser.GetRoot()->OnPhaseExpandMacro(*this)) return false;
+	SetPhase(PHASE_SetupLookup);
+	if (!parser.GetRoot()->OnPhaseSetupLookup(*this)) return false;
+	return true;
+}
+
+RegionOwner *Context::Generate(Parser &parser, size_t bytesGapToJoin, UInt8 dataFiller)
+{
+	SetPhase(PHASE_Generate);
+	if (!parser.GetRoot()->OnPhaseGenerate(*this)) return nullptr;
+	return GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
+}
+
+bool Context::DumpDisasm(Parser &parser, FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
+{
+	SetPhase(PHASE_Generate);
+	return parser.GetRoot()->OnPhaseDisasm(*this, fp, upperCaseFlag, nColsPerLine);
+}
+
 void Context::StartRegion(UInt32 addr)
 {
 	_pSegmentCur->AddRegion(new Region(addr));

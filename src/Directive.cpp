@@ -97,7 +97,7 @@ DirectiveOwner::~DirectiveOwner()
 void DirectiveOwner::Clear()
 {
 	for (auto pDirective : *this) {
-		delete pDirective;
+		Directive::Delete(pDirective);
 	}
 	clear();
 }
@@ -541,4 +541,18 @@ bool Directive_PROC::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	return OnPhaseSetupLookup(context, pExpr);
+}
+
+//-----------------------------------------------------------------------------
+// Directive_MacroInstance
+//-----------------------------------------------------------------------------
+bool Directive_MacroInstance::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
+bool Directive_MacroInstance::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+{
+	if (!context.CheckRegionReady()) return false;
+	return true;
 }

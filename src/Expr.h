@@ -5,7 +5,6 @@
 #define __EXPR_H__
 
 #include "Directive.h"
-#include "Context.h"
 #include "Operator.h"
 
 class ExprOwner;

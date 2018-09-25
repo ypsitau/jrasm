@@ -6,6 +6,7 @@
 
 #include "Segment.h"
 
+class Parser;
 class Expr;
 class ExprList;
 
@@ -118,6 +119,9 @@ public:
 	inline const LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalLookupTable() const { return _lookupTableStack.size() > 1; }
+	bool Prepare(Parser &parser);
+	RegionOwner *Generate(Parser &parser, size_t bytesGapToJoin, UInt8 dataFiller);
+	bool DumpDisasm(Parser &parser, FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
 	void StartRegion(UInt32 addr);
 	void PushLocalLookupTable();
 	void PopLocalLookupTable();
