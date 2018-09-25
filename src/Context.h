@@ -14,6 +14,12 @@ class ExprList;
 //-----------------------------------------------------------------------------
 class Context {
 public:
+	enum Phase {
+		PHASE_None,
+		PHASE_Resolve,
+		PHASE_Generate,
+	};
+public:
 	struct LessThan_StringICase {
 		inline bool operator()(const String &str1, const String &str2) const {
 			return ::strcasecmp(str1.c_str(), str2.c_str()) < 0;
@@ -84,7 +90,7 @@ private:
 	String _fileNameJR;
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
-	bool _preparationFlag;
+	Phase _phaseCur;
 	LookupTableStack _lookupTableStack;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
@@ -101,8 +107,11 @@ public:
 	inline void ForwardAddress(UInt32 bytes) { _pSegmentCur->ForwardAddress(bytes); }
 	inline SegmentOwner &GetSegmentOwner() { return _segmentOwner; }
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
-	inline void SetPreparationFlag(bool preparationFlag) { _preparationFlag = preparationFlag; }
-	inline bool GetPreparationFlag() const { return _preparationFlag; }
+	inline void SetPhase_Resolve() { _phaseCur = PHASE_Resolve; }
+	inline void SetPhase_Generate() { _phaseCur = PHASE_Generate; }
+	inline bool IsPhase_Preparation() const { return _phaseCur != PHASE_Generate; }
+	inline bool IsPhase_Resolve() const { return _phaseCur == PHASE_Resolve; }
+	inline bool IsPhase_Generate() const { return _phaseCur == PHASE_Generate; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
 	inline const LookupTable *GetLookupTable() const { return _lookupTableStack.back(); }
 	inline LookupTable *GetLookupTableGlobal() { return _lookupTableStack.front(); }

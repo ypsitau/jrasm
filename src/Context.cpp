@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 // Context
 //-----------------------------------------------------------------------------
-Context::Context() : _preparationFlag(false), _pExprListResolved(new ExprList())
+Context::Context() : _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 {
 	_fileNameJR = "JRASM_PRODUCT";
 	_lookupTableStack.push_back(new LookupTable());		// global lookup table

@@ -142,15 +142,15 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 bool Expr_Root::OnPhaseResolve(Context &context)
 {
 	context.ResetSegment();
-	context.SetPreparationFlag(true);
+	context.SetPhase_Resolve();
 	bool rtn = Expr::OnPhaseResolve(context);
-	context.SetPreparationFlag(false);
 	return rtn;
 }
 
 bool Expr_Root::OnPhaseGenerate(Context &context) const
 {
 	context.ResetSegment();
+	context.SetPhase_Generate();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseGenerate(context)) return false;
 	}
@@ -160,6 +160,7 @@ bool Expr_Root::OnPhaseGenerate(Context &context) const
 bool Expr_Root::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	context.ResetSegment();
+	context.SetPhase_Generate();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
 	}
@@ -395,7 +396,7 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
-	if (context.GetPreparationFlag()) return new Expr_Number(0);
+	if (context.IsPhase_Preparation()) return new Expr_Number(0);
 	const Expr *pExpr = Lookup(GetLabel());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
