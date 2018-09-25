@@ -43,11 +43,11 @@ void Expr::Print() const
 	::printf("%s\n", ComposeSource(false).c_str());
 }
 
-bool Expr::OnPhaseResolve(Context &context)
+bool Expr::OnPhaseSetupLookup(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
 	for (auto pExpr : *_pExprChildren) {
-		if (!pExpr->OnPhaseResolve(context)) return false;
+		if (!pExpr->OnPhaseSetupLookup(context)) return false;
 	}
 	return true;
 }
@@ -139,11 +139,11 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
-bool Expr_Root::OnPhaseResolve(Context &context)
+bool Expr_Root::OnPhaseSetupLookup(Context &context)
 {
 	context.ResetSegment();
-	context.SetPhase_Resolve();
-	bool rtn = Expr::OnPhaseResolve(context);
+	context.SetPhase_SetupLookup();
+	bool rtn = Expr::OnPhaseSetupLookup(context);
 	return rtn;
 }
 
@@ -341,9 +341,9 @@ Expr *Expr_Brace::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
-bool Expr_LabelDef::OnPhaseResolve(Context &context)
+bool Expr_LabelDef::OnPhaseSetupLookup(Context &context)
 {
-	if (!Expr::OnPhaseResolve(context)) return false;
+	if (!Expr::OnPhaseSetupLookup(context)) return false;
 	if (_pLookupTable->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
@@ -396,7 +396,7 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
-	if (context.IsPhase_Preparation()) return new Expr_Number(0);
+	if (!context.IsPhase_Generate()) return new Expr_Number(0);
 	const Expr *pExpr = Lookup(GetLabel());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
@@ -424,9 +424,9 @@ String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 
-bool Expr_Instruction::OnPhaseResolve(Context &context)
+bool Expr_Instruction::OnPhaseSetupLookup(Context &context)
 {
-	if (!Expr::OnPhaseResolve(context)) return false;
+	if (!Expr::OnPhaseSetupLookup(context)) return false;
 	UInt32 bytes = 0;
 	Generator::GetInstance().CalcInstBytes(context, this, &bytes);
 	return true;
@@ -467,10 +467,10 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
-bool Expr_Directive::OnPhaseResolve(Context &context)
+bool Expr_Directive::OnPhaseSetupLookup(Context &context)
 {
-	if (!Expr::OnPhaseResolve(context)) return false;
-	return _pDirective->OnPhaseResolve(context, this);
+	if (!Expr::OnPhaseSetupLookup(context)) return false;
+	return _pDirective->OnPhaseSetupLookup(context, this);
 }
 
 bool Expr_Directive::OnPhaseGenerate(Context &context) const

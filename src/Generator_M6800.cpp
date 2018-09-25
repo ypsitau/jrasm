@@ -328,7 +328,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
-	if (context.IsPhase_Preparation()) {
+	if (!context.IsPhase_Generate()) {
 		num = 0;
 	} else if (operands.back()->IsTypeNumber()) {
 		if (num > 0xff) {

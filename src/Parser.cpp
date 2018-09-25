@@ -30,7 +30,7 @@ bool Parser::ParseFile()
 
 bool Parser::Prepare(Context &context)
 {
-	return GetRoot()->OnPhaseResolve(context);
+	return GetRoot()->OnPhaseSetupLookup(context);
 }
 
 RegionOwner *Parser::Generate(Context &context, size_t bytesGapToJoin, UInt8 dataFiller)

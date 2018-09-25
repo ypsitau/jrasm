@@ -81,7 +81,7 @@ void DirectiveOwner::Clear()
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
-bool Directive_CSEG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_CSEG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -94,13 +94,13 @@ bool Directive_CSEG::OnPhaseResolve(Context &context, const Expr_Directive *pExp
 
 bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseResolve(context, pExpr);
+	return OnPhaseSetupLookup(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
-bool Directive_DB::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DB::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return DoGenerate(context, pExpr, nullptr);
 }
@@ -154,7 +154,7 @@ bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
-bool Directive_DSEG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DSEG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -167,13 +167,13 @@ bool Directive_DSEG::OnPhaseResolve(Context &context, const Expr_Directive *pExp
 
 bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseResolve(context, pExpr);
+	return OnPhaseSetupLookup(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
-bool Directive_DW::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DW::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	context.ForwardAddress(static_cast<UInt32>(pExpr->GetOperands().size() * sizeof(UInt16)));
 	return true;
@@ -217,7 +217,7 @@ bool Directive_ENDM::CreateExpr(const Parser *pParser, ExprStack &exprStack, con
 	return Directive::CreateExpr(pParser, exprStack, pToken);
 }
 
-bool Directive_ENDM::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDM::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -235,7 +235,7 @@ bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_ENDP
 //-----------------------------------------------------------------------------
-bool Directive_ENDP::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDP::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -252,13 +252,13 @@ bool Directive_ENDP::OnPhaseResolve(Context &context, const Expr_Directive *pExp
 
 bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseResolve(context, pExpr);
+	return OnPhaseSetupLookup(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_ENDPCG
 //-----------------------------------------------------------------------------
-bool Directive_ENDPCG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDPCG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -291,7 +291,7 @@ bool Directive_EQU::CreateExpr(const Parser *pParser, ExprStack &exprStack, cons
 	return true;
 }
 
-bool Directive_EQU::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_EQU::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	// nothing to do
 	return true;
@@ -316,7 +316,7 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 // Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
-bool Directive_FILENAME_JR::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_FILENAME_JR::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -347,7 +347,7 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directi
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
-bool Directive_INCLUDE::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	
 	return true;
@@ -361,7 +361,7 @@ bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *
 //-----------------------------------------------------------------------------
 // Directive_ISEG
 //-----------------------------------------------------------------------------
-bool Directive_ISEG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ISEG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -374,7 +374,7 @@ bool Directive_ISEG::OnPhaseResolve(Context &context, const Expr_Directive *pExp
 
 bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseResolve(context, pExpr);
+	return OnPhaseSetupLookup(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
@@ -395,7 +395,7 @@ bool Directive_MACRO::CreateExpr(const Parser *pParser, ExprStack &exprStack, co
 	return true;
 }
 
-bool Directive_MACRO::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MACRO::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -408,7 +408,7 @@ bool Directive_MACRO::OnPhaseGenerate(Context &context, const Expr_Directive *pE
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
-bool Directive_MML::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MML::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	//Handler handler(nullptr);
 	return true;
@@ -466,7 +466,7 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
-bool Directive_ORG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ORG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (operands.size() != 1) {
@@ -491,13 +491,13 @@ bool Directive_ORG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr
 
 bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseResolve(context, pExpr);
+	return OnPhaseSetupLookup(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
-bool Directive_PCG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PCG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -526,7 +526,7 @@ bool Directive_PROC::CreateExpr(const Parser *pParser, ExprStack &exprStack, con
 	return true;
 }
 
-bool Directive_PROC::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PROC::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	context.PushLocalLookupTable();
 	return true;
@@ -534,5 +534,5 @@ bool Directive_PROC::OnPhaseResolve(Context &context, const Expr_Directive *pExp
 
 bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseResolve(context, pExpr);
+	return OnPhaseSetupLookup(context, pExpr);
 }
