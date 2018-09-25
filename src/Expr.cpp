@@ -46,7 +46,9 @@ void Expr::Print() const
 bool Expr::OnPhaseResolve(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
-	_pExprChildren->OnPhaseResolve(context);
+	for (auto pExpr : *_pExprChildren) {
+		if (!pExpr->OnPhaseResolve(context)) return false;
+	}
 	return true;
 }
 
@@ -99,14 +101,6 @@ Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
 	return (pExprLabelDef == nullptr || pExprLabelDef->IsAssigned())? nullptr : pExprLabelDef;
 }
 
-bool ExprList::OnPhaseResolve(Context &context)
-{
-	for (auto pExpr : *this) {
-		if (!pExpr->OnPhaseResolve(context)) return false;
-	}
-	return true;
-}
-
 String ExprList::ComposeSource(const char *sep, bool upperCaseFlag) const
 {
 	String rtn;
@@ -147,6 +141,7 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
 bool Expr_Root::OnPhaseResolve(Context &context)
 {
+	context.ResetSegment();
 	context.SetPreparationFlag(true);
 	bool rtn = Expr::OnPhaseResolve(context);
 	context.SetPreparationFlag(false);

@@ -99,7 +99,6 @@ public:
 class ExprList : public std::vector<Expr *> {
 public:
 	Expr_LabelDef *SeekLabelDefToAssoc();
-	bool OnPhaseResolve(Context &context);
 	String ComposeSource(const char *sep, bool upperCaseFlag) const;
 	void Print(bool upperCaseFlag) const;
 	template<typename T_Expr> inline T_Expr *GetBack() {
