@@ -81,7 +81,7 @@ void DirectiveOwner::Clear()
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
-bool Directive_CSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_CSEG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -92,26 +92,26 @@ bool Directive_CSEG::Prepare(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
-bool Directive_CSEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return Prepare(context, pExpr);
+	return OnPhaseResolve(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
-bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DB::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
-	return DoGenerate(context, pExpr, nullptr);
+	return DoOnPhaseGenerate(context, pExpr, nullptr);
 }
 
-bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_DB::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
-	return DoGenerate(context, pExpr, &buffDst);
+	return DoOnPhaseGenerate(context, pExpr, &buffDst);
 }
 
-bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+bool Directive_DB::DoOnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	UInt32 bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
@@ -154,7 +154,7 @@ bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
-bool Directive_DSEG::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DSEG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -165,21 +165,21 @@ bool Directive_DSEG::Prepare(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
-bool Directive_DSEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return Prepare(context, pExpr);
+	return OnPhaseResolve(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
-bool Directive_DW::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DW::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	context.ForwardAddress(static_cast<UInt32>(pExpr->GetOperands().size() * sizeof(UInt16)));
 	return true;
 }
 
-bool Directive_DW::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
 	for (auto pExprData : pExpr->GetOperands()) {
@@ -217,7 +217,7 @@ bool Directive_ENDM::CreateExpr(const Parser *pParser, ExprStack &exprStack, con
 	return Directive::CreateExpr(pParser, exprStack, pToken);
 }
 
-bool Directive_ENDM::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDM::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -227,7 +227,7 @@ bool Directive_ENDM::Prepare(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
-bool Directive_ENDM::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	return true;
 }
@@ -235,7 +235,7 @@ bool Directive_ENDM::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 // Directive_ENDP
 //-----------------------------------------------------------------------------
-bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDP::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -250,15 +250,15 @@ bool Directive_ENDP::Prepare(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
-bool Directive_ENDP::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return Prepare(context, pExpr);
+	return OnPhaseResolve(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_ENDPCG
 //-----------------------------------------------------------------------------
-bool Directive_ENDPCG::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDPCG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -268,7 +268,7 @@ bool Directive_ENDPCG::Prepare(Context &context, const Expr_Directive *pExpr) co
 	return true;
 }
 
-bool Directive_ENDPCG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
 	return true;
@@ -291,13 +291,13 @@ bool Directive_EQU::CreateExpr(const Parser *pParser, ExprStack &exprStack, cons
 	return true;
 }
 
-bool Directive_EQU::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_EQU::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Directive_EQU::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_EQU::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	// nothing to do
 	return true;
@@ -316,12 +316,12 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 // Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
-bool Directive_FILENAME_JR::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_FILENAME_JR::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
 
-bool Directive_FILENAME_JR::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (operands.size() != 1) {
@@ -347,13 +347,13 @@ bool Directive_FILENAME_JR::Generate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
-bool Directive_INCLUDE::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	
 	return true;
 }
 
-bool Directive_INCLUDE::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	return true;
 }
@@ -361,7 +361,7 @@ bool Directive_INCLUDE::Generate(Context &context, const Expr_Directive *pExpr, 
 //-----------------------------------------------------------------------------
 // Directive_ISEG
 //-----------------------------------------------------------------------------
-bool Directive_ISEG::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ISEG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
@@ -372,9 +372,9 @@ bool Directive_ISEG::Prepare(Context &context, const Expr_Directive *pExpr) cons
 	return true;
 }
 
-bool Directive_ISEG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return Prepare(context, pExpr);
+	return OnPhaseResolve(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
@@ -395,12 +395,12 @@ bool Directive_MACRO::CreateExpr(const Parser *pParser, ExprStack &exprStack, co
 	return true;
 }
 
-bool Directive_MACRO::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MACRO::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
 
-bool Directive_MACRO::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_MACRO::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	return true;
 }
@@ -408,13 +408,13 @@ bool Directive_MACRO::Generate(Context &context, const Expr_Directive *pExpr, Bi
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
-bool Directive_MML::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MML::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	//Handler handler(nullptr);
 	return true;
 }
 
-bool Directive_MML::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_MML::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
 	Handler handler(&buffDst);
@@ -466,7 +466,7 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
-bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ORG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (operands.size() != 1) {
@@ -489,20 +489,20 @@ bool Directive_ORG::Prepare(Context &context, const Expr_Directive *pExpr) const
 	return true;
 }
 
-bool Directive_ORG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return Prepare(context, pExpr);
+	return OnPhaseResolve(context, pExpr);
 }
 
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
-bool Directive_PCG::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PCG::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
 
-bool Directive_PCG::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
 	return true;
@@ -526,13 +526,13 @@ bool Directive_PROC::CreateExpr(const Parser *pParser, ExprStack &exprStack, con
 	return true;
 }
 
-bool Directive_PROC::Prepare(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PROC::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
 	context.PushLocalLookupTable();
 	return true;
 }
 
-bool Directive_PROC::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
+bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return Prepare(context, pExpr);
+	return OnPhaseResolve(context, pExpr);
 }

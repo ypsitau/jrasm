@@ -43,14 +43,14 @@ void Expr::Print() const
 	::printf("%s\n", ComposeSource(false).c_str());
 }
 
-bool Expr::Prepare(Context &context)
+bool Expr::OnPhaseResolve(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
-	_pExprChildren->Prepare(context);
+	_pExprChildren->OnPhaseResolve(context);
 	return true;
 }
 
-bool Expr::Generate(Context &context) const
+bool Expr::OnPhaseGenerate(Context &context) const
 {
 	// nothing to do
 	return true;
@@ -99,10 +99,10 @@ Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
 	return (pExprLabelDef == nullptr || pExprLabelDef->IsAssigned())? nullptr : pExprLabelDef;
 }
 
-bool ExprList::Prepare(Context &context)
+bool ExprList::OnPhaseResolve(Context &context)
 {
 	for (auto pExpr : *this) {
-		if (!pExpr->Prepare(context)) return false;
+		if (!pExpr->OnPhaseResolve(context)) return false;
 	}
 	return true;
 }
@@ -145,19 +145,19 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
-bool Expr_Root::Prepare(Context &context)
+bool Expr_Root::OnPhaseResolve(Context &context)
 {
 	context.SetPreparationFlag(true);
-	bool rtn = Expr::Prepare(context);
+	bool rtn = Expr::OnPhaseResolve(context);
 	context.SetPreparationFlag(false);
 	return rtn;
 }
 
-bool Expr_Root::Generate(Context &context) const
+bool Expr_Root::OnPhaseGenerate(Context &context) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		if (!pExpr->Generate(context)) return false;
+		if (!pExpr->OnPhaseGenerate(context)) return false;
 	}
 	return true;
 }
@@ -345,9 +345,9 @@ Expr *Expr_Brace::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
-bool Expr_LabelDef::Prepare(Context &context)
+bool Expr_LabelDef::OnPhaseResolve(Context &context)
 {
-	if (!Expr::Prepare(context)) return false;
+	if (!Expr::OnPhaseResolve(context)) return false;
 	if (_pLookupTable->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
@@ -360,7 +360,7 @@ bool Expr_LabelDef::Prepare(Context &context)
 	return true;
 }
 
-bool Expr_LabelDef::Generate(Context &context) const
+bool Expr_LabelDef::OnPhaseGenerate(Context &context) const
 {
 	// nothing to do
 	return true;
@@ -428,15 +428,15 @@ String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 
-bool Expr_Instruction::Prepare(Context &context)
+bool Expr_Instruction::OnPhaseResolve(Context &context)
 {
-	if (!Expr::Prepare(context)) return false;
+	if (!Expr::OnPhaseResolve(context)) return false;
 	UInt32 bytes = 0;
 	Generator::GetInstance().CalcInstBytes(context, this, &bytes);
 	return true;
 }
 
-bool Expr_Instruction::Generate(Context &context) const
+bool Expr_Instruction::OnPhaseGenerate(Context &context) const
 {
 	return Generator::GetInstance().Generate(context, this);
 }
@@ -471,22 +471,22 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
-bool Expr_Directive::Prepare(Context &context)
+bool Expr_Directive::OnPhaseResolve(Context &context)
 {
-	if (!Expr::Prepare(context)) return false;
-	return _pDirective->Prepare(context, this);
+	if (!Expr::OnPhaseResolve(context)) return false;
+	return _pDirective->OnPhaseResolve(context, this);
 }
 
-bool Expr_Directive::Generate(Context &context) const
+bool Expr_Directive::OnPhaseGenerate(Context &context) const
 {
-	return _pDirective->Generate(context, this, context.GetBuffer());
+	return _pDirective->OnPhaseGenerate(context, this, context.GetBuffer());
 }
 
 bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
-	if (!_pDirective->Generate(context, this, buffDst)) return false;
+	if (!_pDirective->OnPhaseGenerate(context, this, buffDst)) return false;
 	DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
 					 fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
 	return true;

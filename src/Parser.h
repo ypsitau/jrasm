@@ -38,8 +38,8 @@ public:
 	}
 	bool ParseFile();
 	bool Prepare(Context &context);
-	bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	RegionOwner *Generate(Context &context, size_t bytesGapToJoin, UInt8 dataFiller);
+	bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;
 public:
