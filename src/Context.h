@@ -9,6 +9,7 @@
 class Parser;
 class Expr;
 class ExprList;
+class DirectiveOwner;
 
 //-----------------------------------------------------------------------------
 // Context
@@ -92,6 +93,7 @@ public:
 	};
 private:
 	std::unique_ptr<Parser> _pParser;
+	std::unique_ptr<DirectiveOwner> _pDirectiveOwner;
 	String _fileNameJR;
 	String _fileBaseNameSrc;
 	Segment *_pSegmentCur;
