@@ -142,6 +142,8 @@ that can be loaded to VJR-200, a JR-200 emulator.
 
 ## Literal
 
+### String
+
 A string literal consists of a series of characters surrounded by a pair of double quotations (e.g. `"Hello World"`).
 
 A string literal can contain escape characters listed below:
@@ -150,11 +152,15 @@ A string literal can contain escape characters listed below:
 - `\r`
 - `\n`
 
+### Number
+
 The format of number literal is as follows:
 
 - Decimal number ... Begins with `1` to `9` and cosists of digit characters (e.g. `123`).
 - Hexadecimal number ... Begins with `0x` and consists of digit and `A` to `F` characters (e.g. `0x3a22`).
 - Octal number ... Begins with `0` and consts of `0` to `7` characters (e.g. `0327`).
+
+### Symbol
 
 A sybmol literal consists of a series of characters and is used for following purposes:
 
@@ -163,11 +169,25 @@ A sybmol literal consists of a series of characters and is used for following pu
 - Directive's name.
 - Register name.
 
-A symbol literal is case insensitive.
+A symbol is case insensitive.
 This means that you can describe an instruction `LDAA` with a symbol `LDAA`, `ldaa`, `Ldaa`, `LdAA` and so on.
 Also, when you define a label named `Label1`, it can be referred to as `label1`, `LABEL1`, `LaBel1`
 and anything like that.
 
+### Bit-Pattern
+
+A string preceded by "`b`" is a bit-pattern literal that consists of a series of ascii characters
+that correspond to binary data `0` and `1`.
+The space, period `'.'`, comma `','`, under score `'_'` and hyphen `'-'` are recognied as `0` and
+others are `1`.
+The bit-pattern literal generates a sequence of byte-sized data like follows:
+
+
+```
+        .db     b"#.#.#.#."                                 ; 0xaa
+        .db     b"#.#......##...#."                         ; 0xa0, 0x62
+        .db     b"#.#......##...#.#.#.#.#.########..#....." ; 0xa0, 0x62, 0xaa, 0xff, 0x20
+```
 
 ## Directive
 
