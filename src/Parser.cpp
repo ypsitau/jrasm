@@ -182,6 +182,8 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 					pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
 				} else if (pToken->IsType(TOKEN_String)) {
 					pExpr.reset(new Expr_String(pToken->GetStringSTL()));
+				} else if (pToken->IsType(TOKEN_BitPattern)) {
+					pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
 				} else {
 					AddError("invalid value type");
 					return false;

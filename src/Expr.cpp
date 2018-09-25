@@ -230,6 +230,25 @@ Expr *Expr_String::Resolve(Context &context) const
 }
 
 //-----------------------------------------------------------------------------
+// Expr_BitPattern
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_BitPattern::TYPE = Expr::TYPE_BitPattern;
+
+String Expr_BitPattern::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "b\"";
+	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
+	str += "\"";
+	return str;
+}
+
+Expr *Expr_BitPattern::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+//-----------------------------------------------------------------------------
 // Expr_BinOp
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;

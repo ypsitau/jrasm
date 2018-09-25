@@ -25,6 +25,7 @@ extern const TokenInfo TOKEN_Slash;
 extern const TokenInfo TOKEN_Number;
 extern const TokenInfo TOKEN_Symbol;
 extern const TokenInfo TOKEN_String;
+extern const TokenInfo TOKEN_BitPattern;
 extern const TokenInfo TOKEN_Comma;
 extern const TokenInfo TOKEN_Colon;
 extern const TokenInfo TOKEN_ColonColon;

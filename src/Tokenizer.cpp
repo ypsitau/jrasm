@@ -8,7 +8,8 @@
 //-----------------------------------------------------------------------------
 Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
 	_stat(STAT_LineTop), _pListener(pListener),
-	_pFileNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0), _chBorder('\0')
+	_pFileNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0),
+	_quotedType(QUOTEDTYPE_None)
 {
 }
 
@@ -33,19 +34,21 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_LineTop;
 		} else if (IsWhite(ch)) {
 			_stat = STAT_White;
+		} else if (ch == '"') {
+			_quotedType = QUOTEDTYPE_String;
+			_str.clear();
+			_stat = STAT_Quoted;
+		} else if (ch == '\'') {
+			_quotedType = QUOTEDTYPE_Character;
+			_str.clear();
+			_str += ch;
+			_stat = STAT_Quoted;
+		} else if (ch == 'b') {
+			_stat = STAT_BitPatternPre;
 		} else if (IsSymbolFirst(ch)) {
 			_str.clear();
 			_str += ch;
 			_stat = STAT_Symbol;
-		} else if (ch == '"') {
-			_chBorder = ch;
-			_str.clear();
-			_stat = STAT_String;
-		} else if (ch == '\'') {
-			_chBorder = ch;
-			_str.clear();
-			_str += ch;
-			_stat = STAT_String;
 		} else if (ch == '0') {
 			_num = 0;
 			_str.clear();
@@ -128,15 +131,31 @@ bool Tokenizer::FeedChar(char ch)
 		}
 		break;
 	}
-	case STAT_String: {
-		const char *literalName = (_chBorder == '"')? "string" : "character";
+	case STAT_BitPatternPre: {
+		if (ch == '"') {
+			_quotedType = QUOTEDTYPE_BitPattern;
+			_stat = STAT_Quoted;
+		} else {
+			_str.clear();
+			_str += 'b';
+			_stat = STAT_Symbol;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_Quoted: {
+		const char *literalName =
+			(_quotedType == QUOTEDTYPE_String)? "string" :
+			(_quotedType == QUOTEDTYPE_Character)? "character" :
+			(_quotedType == QUOTEDTYPE_BitPattern)? "bit-pattern" : "none";
+		char chBorder = _quotedType == (QUOTEDTYPE_Character)? '\'' : '"';
 		if (IsEOF(ch) || IsEOL(ch)) {
 			AddError("unclosed %s literal", literalName);
 			rtn = false;
-		} else if (ch == _chBorder) {
-			if (ch == '"') {
+		} else if (ch == chBorder) {
+			if (_quotedType == QUOTEDTYPE_String) {
 				rtn = FeedToken(TOKEN_String, _str);
-			} else { // ch == '\''
+			} else if (_quotedType == QUOTEDTYPE_Character) {
 				_str += ch;
 				if (_str.size() > 3) {
 					AddError("character literal must contain just one character");
@@ -144,16 +163,18 @@ bool Tokenizer::FeedChar(char ch)
 				} else {
 					rtn = FeedToken(TOKEN_Number, _str, _str[1]);
 				}
+			} else if (_quotedType == QUOTEDTYPE_BitPattern) {
+				//rtn = FeedToken(TOKEN_BitPattern, _str);
 			}
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {
-			_stat = STAT_StringEsc;
+			_stat = STAT_QuotedEsc;
 		} else {
 			_str += ch;
 		}
 		break;
 	}
-	case STAT_StringEsc: {
+	case STAT_QuotedEsc: {
 		if (ch == '"') {
 			_str += ch;
 		} else if (ch == '\'') {
@@ -170,7 +191,7 @@ bool Tokenizer::FeedChar(char ch)
 			AddError("invalid escape character code: 0x%02x", static_cast<UInt8>(ch));
 			rtn = false;
 		}
-		_stat = STAT_String;
+		_stat = STAT_Quoted;
 		break;
 	}
 	case STAT_DetectZero: {

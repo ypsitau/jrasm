@@ -20,6 +20,7 @@ public:
 		TYPE_Root,
 		TYPE_Number,
 		TYPE_String,
+		TYPE_BitPattern,
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Brace,
@@ -48,6 +49,7 @@ public:
 	inline bool IsTypeRoot() const { return IsType(TYPE_Root); }
 	inline bool IsTypeNumber() const { return IsType(TYPE_Number); }
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
+	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
 	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
@@ -165,6 +167,21 @@ public:
 	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
+	virtual Expr *Resolve(Context &context) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_BitPattern
+//-----------------------------------------------------------------------------
+class Expr_BitPattern : public Expr {
+private:
+	String _str;
+public:
+	static const Type TYPE;
+public:
+	inline Expr_BitPattern(const String &str) : Expr(TYPE), _str(str) {}
+	inline const char *GetBitPattern() const { return _str.c_str(); }
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };

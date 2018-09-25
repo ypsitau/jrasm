@@ -27,8 +27,15 @@ public:
 		STAT_DecNumber,
 		STAT_HexNumber,
 		STAT_Symbol,
-		STAT_String,
-		STAT_StringEsc,
+		STAT_BitPatternPre,
+		STAT_Quoted,
+		STAT_QuotedEsc,
+	};
+	enum QuotedType {
+		QUOTEDTYPE_None,
+		QUOTEDTYPE_String,
+		QUOTEDTYPE_Character,
+		QUOTEDTYPE_BitPattern,
 	};
 private:
 	Stat _stat;
@@ -37,7 +44,7 @@ private:
 	UInt16 _num;
 	String _str;
 	int _nLines;
-	char _chBorder;
+	char _quotedType;
 public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
 	inline const char *GetFileNameSrc() const { return _pFileNameSrc->GetString(); }

@@ -15,6 +15,7 @@ const TokenInfo TOKEN_Slash =			{  3, "Slash",			"/"		};
 const TokenInfo TOKEN_Number =			{  4, "Number",			"[Num]"	};
 const TokenInfo TOKEN_Symbol =			{  4, "Symbol",			"[Sym]"	};
 const TokenInfo TOKEN_String =			{  4, "String",			"[Str]"	};
+const TokenInfo TOKEN_BitPattern =		{  4, "BitPattern",		"[BPt]"	};
 const TokenInfo TOKEN_Comma =			{  0, "Comma",			","		};
 const TokenInfo TOKEN_Colon =			{  0, "Colon",			":"		};
 const TokenInfo TOKEN_ColonColon =		{  0, "ColonColon",		"::"	};
