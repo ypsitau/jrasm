@@ -68,11 +68,8 @@ int main(int argc, const char *argv[])
 		if (!context.DumpDisasm(stdout, upperCaseFlag,
 							   Generator::GetInstance().GetBytesInstMax())) goto errorDone;
 	} else {
-		const char *fileNameSrc = ExtractFileName(pathNameSrc);
-		String fileBaseNameSrc = ::RemoveExtName(fileNameSrc);
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
-		context.SetFileNameJR(fileBaseNameSrc.c_str());
 		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(bytesGapToJoin, dataFiller));
 		if (pRegionOwner.get() == nullptr) goto errorDone;
 		upperCaseFlag = false;
@@ -81,7 +78,7 @@ int main(int argc, const char *argv[])
 			FormatDump().Write(fileNameOut.c_str(), *pRegionOwner);
 			::printf("%s was created\n", fileNameOut.c_str());
 		} else {
-			String fileNameOut = cmdLine.GetString("output", (fileBaseNameSrc + ".cjr").c_str());
+			String fileNameOut = cmdLine.GetString("output", context.MakeFileNameOut(".cjr").c_str());
 			FormatCJR format(context.GetFileNameJR());
 			if (!format.Write(fileNameOut.c_str(), *pRegionOwner)) goto errorDone;
 			::printf("%s was created (filename.jr: %s)\n", fileNameOut.c_str(), context.GetFileNameJR());

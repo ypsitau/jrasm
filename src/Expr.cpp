@@ -582,7 +582,7 @@ const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
 
 bool Expr_MacroEntry::OnPhaseDeclareMacro(Context &context)
 {
-	::printf("Expr_MacroEntry::OnPhaseDeclareMacro()\n");
+	//::printf("Expr_MacroEntry::OnPhaseDeclareMacro()\n");
 	return true;
 }
 

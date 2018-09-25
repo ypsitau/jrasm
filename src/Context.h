@@ -93,6 +93,7 @@ public:
 private:
 	std::unique_ptr<Parser> _pParser;
 	String _fileNameJR;
+	String _fileBaseNameSrc;
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
@@ -102,6 +103,8 @@ public:
 	Context(const String &pathNameSrc);
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
+	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
+	inline String MakeFileNameOut(const char *extName) const { return _fileBaseNameSrc + extName; }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
 	inline void SelectInternalSegment() { _pSegmentCur = _segmentOwner[2]; }
