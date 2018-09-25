@@ -133,6 +133,9 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Root() : Expr(TYPE) {}
+	virtual bool OnPhaseInclude(Context &context);
+	virtual bool OnPhaseDeclareMacro(Context &context);
+	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupLookup(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
@@ -346,6 +349,7 @@ public:
 	inline Expr_MacroBody *GetMacroBody() { return _pExprMacroBody.get(); }
 	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;

@@ -30,21 +30,27 @@ bool Parser::ParseFile()
 
 bool Parser::Prepare(Context &context)
 {
-	
-	context.SetPhase_SetupLookup();
-	return GetRoot()->OnPhaseSetupLookup(context);
+	context.SetPhase(Context::PHASE_Include);
+	if (!GetRoot()->OnPhaseInclude(context)) return false;
+	context.SetPhase(Context::PHASE_DeclareMacro);
+	if (!GetRoot()->OnPhaseDeclareMacro(context)) return false;
+	context.SetPhase(Context::PHASE_ExpandMacro);
+	if (!GetRoot()->OnPhaseExpandMacro(context)) return false;
+	context.SetPhase(Context::PHASE_SetupLookup);
+	if (!GetRoot()->OnPhaseSetupLookup(context)) return false;
+	return true;
 }
 
 RegionOwner *Parser::Generate(Context &context, size_t bytesGapToJoin, UInt8 dataFiller)
 {
-	context.SetPhase_Generate();
+	context.SetPhase(Context::PHASE_Generate);
 	if (!GetRoot()->OnPhaseGenerate(context)) return nullptr;
 	return context.GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
 }
 
 bool Parser::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
-	context.SetPhase_Generate();
+	context.SetPhase(Context::PHASE_Generate);
 	return GetRoot()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
 }
 

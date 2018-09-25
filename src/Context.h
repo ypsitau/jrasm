@@ -16,6 +16,9 @@ class Context {
 public:
 	enum Phase {
 		PHASE_None,
+		PHASE_Include,
+		PHASE_DeclareMacro,
+		PHASE_ExpandMacro,
 		PHASE_SetupLookup,
 		PHASE_Generate,
 	};
@@ -107,10 +110,8 @@ public:
 	inline void ForwardAddress(UInt32 bytes) { _pSegmentCur->ForwardAddress(bytes); }
 	inline SegmentOwner &GetSegmentOwner() { return _segmentOwner; }
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
-	inline void SetPhase_SetupLookup() { _phaseCur = PHASE_SetupLookup; }
-	inline void SetPhase_Generate() { _phaseCur = PHASE_Generate; }
-	inline bool IsPhase_SetupLookup() const { return _phaseCur == PHASE_SetupLookup; }
-	inline bool IsPhase_Generate() const { return _phaseCur == PHASE_Generate; }
+	inline void SetPhase(Phase phase) { _phaseCur = phase; }
+	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
 	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
 	inline const LookupTable *GetLookupTable() const { return _lookupTableStack.back(); }
 	inline LookupTable *GetLookupTableGlobal() { return _lookupTableStack.front(); }

@@ -157,6 +157,30 @@ void ExprOwner::Clear()
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
+bool Expr_Root::OnPhaseInclude(Context &context)
+{
+	for (auto pExpr : GetChildren()) {
+		if (!pExpr->OnPhaseInclude(context)) return false;
+	}
+	return true;
+}
+
+bool Expr_Root::OnPhaseDeclareMacro(Context &context)
+{
+	for (auto pExpr : GetChildren()) {
+		if (!pExpr->OnPhaseDeclareMacro(context)) return false;
+	}
+	return true;
+}
+
+bool Expr_Root::OnPhaseExpandMacro(Context &context)
+{
+	for (auto pExpr : GetChildren()) {
+		if (!pExpr->OnPhaseExpandMacro(context)) return false;
+	}
+	return true;
+}
+
 bool Expr_Root::OnPhaseSetupLookup(Context &context)
 {
 	context.ResetSegment();
@@ -411,7 +435,7 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
-	if (!context.IsPhase_Generate()) return new Expr_Number(0);
+	if (!context.IsPhase(Context::PHASE_Generate)) return new Expr_Number(0);
 	const Expr *pExpr = Lookup(GetLabel());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
@@ -555,6 +579,11 @@ String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
 // Expr_MacroEntry
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
+
+bool Expr_MacroEntry::OnPhaseDeclareMacro(Context &context)
+{
+	return true;
+}
 
 bool Expr_MacroEntry::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
