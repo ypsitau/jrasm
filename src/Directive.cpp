@@ -65,6 +65,12 @@ bool Directive::OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr
 	return true;
 }
 
+bool Directive::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
+{
+	// nothing to do
+	return true;
+}
+
 Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();
@@ -103,7 +109,7 @@ bool Directive_CSEG::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .CSEG takes no operands");
+		ErrorLog::AddError(pExpr, "directive .CSEG needs no operands");
 		return false;
 	}
 	context.SelectCodeSegment();
@@ -176,7 +182,7 @@ bool Directive_DSEG::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .DSEG takes no operands");
+		ErrorLog::AddError(pExpr, "directive .DSEG needs no operands");
 		return false;
 	}
 	context.SelectDataSegment();
@@ -239,18 +245,13 @@ bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	return true;
 }
 
-bool Directive_ENDM::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ENDM takes no operands");
+		ErrorLog::AddError(pExpr, "directive .ENDM needs no operands");
 		return false;
 	}
-	return true;
-}
-
-bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
-{
 	return true;
 }
 
@@ -261,7 +262,7 @@ bool Directive_ENDP::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ENDP takes no operands");
+		ErrorLog::AddError(pExpr, "directive .ENDP needs no operands");
 		return false;
 	}
 	if (!context.DoesExistLocalLookupTable()) {
@@ -280,18 +281,13 @@ bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_ENDPCG
 //-----------------------------------------------------------------------------
-bool Directive_ENDPCG::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ENDPCG takes no operands");
+		ErrorLog::AddError(pExpr, "directive .ENDPCG needs no operands");
 		return false;
 	}
-	return true;
-}
-
-bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
-{
 	if (!context.CheckRegionReady()) return false;
 	return true;
 }
@@ -310,12 +306,6 @@ bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	pExprLabelDef->SetAssigned(pExpr->Reference());	// associate it to the preceding label
 	exprStack.push_back(pExpr.release());
-	return true;
-}
-
-bool Directive_EQU::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
-{
-	// nothing to do
 	return true;
 }
 
@@ -338,11 +328,6 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 // Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
-bool Directive_FILENAME_JR::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
-{
-	return true;
-}
-
 bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	const ExprList &operands = pExpr->GetOperands();
@@ -374,12 +359,6 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, const Expr_Directive *p
 	return true;
 }
 
-bool Directive_INCLUDE::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
-{
-	
-	return true;
-}
-
 bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	return true;
@@ -392,7 +371,7 @@ bool Directive_ISEG::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (!operands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ISEG takes no operands");
+		ErrorLog::AddError(pExpr, "directive .ISEG needs no operands");
 		return false;
 	}
 	context.SelectInternalSegment();
@@ -418,11 +397,6 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 }
 
 bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
-{
-	return true;
-}
-
-bool Directive_MACRO::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
@@ -555,6 +529,11 @@ bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 
 bool Directive_PROC::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
+	const ExprList &operands = pExpr->GetOperands();
+	if (!operands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .PROC needs no operands");
+		return false;
+	}
 	context.PushLocalLookupTable();
 	return true;
 }
