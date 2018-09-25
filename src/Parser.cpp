@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------
 // Parser
 //-----------------------------------------------------------------------------
-Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
+Parser::Parser(Context &context, const String &fileNameSrc) :
+	_context(context), _tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
 {
 	_exprStack.push_back(new Expr_Root());
 }

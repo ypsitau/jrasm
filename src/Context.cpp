@@ -7,7 +7,8 @@
 // Context
 //-----------------------------------------------------------------------------
 Context::Context(const String &pathNameSrc) :
-	_pParser(new Parser(pathNameSrc)), _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
+	_pParser(new Parser(*this, pathNameSrc)), _phaseCur(PHASE_None),
+	_pExprListResolved(new ExprList())
 {
 	const char *fileNameSrc = ::ExtractFileName(pathNameSrc.c_str());
 	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc);

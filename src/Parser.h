@@ -18,13 +18,14 @@ private:
 		STAT_Operand,
 	};
 private:
+	Context &_context;
 	Tokenizer _tokenizer;
 	Stat _stat;
 	ExprStack _exprStack;
 	TokenStack _tokenStack;
 	AutoPtr<Token> _pTokenPrev;
 public:
-	Parser(const String &fileNameSrc);
+	Parser(Context &context, const String &fileNameSrc);
 	inline const char *GetFileNameSrc() const { return _tokenizer.GetFileNameSrc(); }
 	inline Expr_Root *GetRoot() {
 		return dynamic_cast<Expr_Root *>(_exprStack.front());
