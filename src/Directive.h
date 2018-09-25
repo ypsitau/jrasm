@@ -68,7 +68,7 @@ public:
 	virtual bool OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 private:
-	bool DoOnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
+	bool DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------

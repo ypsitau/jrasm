@@ -102,16 +102,16 @@ bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_DB::OnPhaseResolve(Context &context, const Expr_Directive *pExpr) const
 {
-	return DoOnPhaseGenerate(context, pExpr, nullptr);
+	return DoGenerate(context, pExpr, nullptr);
 }
 
 bool Directive_DB::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
-	return DoOnPhaseGenerate(context, pExpr, &buffDst);
+	return DoGenerate(context, pExpr, &buffDst);
 }
 
-bool Directive_DB::DoOnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	UInt32 bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
@@ -187,12 +187,12 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeNumber()) {
-			ErrorLog::AddError(pExpr, "elements of directive .DB must be number value");
+			ErrorLog::AddError(pExpr, "elements of directive .DW must be number value");
 			return false;
 		}
 		UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
 		if (num > 0xffff) {
-			ErrorLog::AddError(pExpr, "an element value of directive .DB exceeds 16-bit range");
+			ErrorLog::AddError(pExpr, "an element value of directive .DW exceeds 16-bit range");
 			return false;
 		}
 		buffDst += static_cast<UInt8>(num >> 8);
