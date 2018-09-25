@@ -46,7 +46,7 @@ void Expr::Print() const
 bool Expr::OnPhaseSetupLookup(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
-	for (auto pExpr : *_pExprChildren) {
+	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseSetupLookup(context)) return false;
 	}
 	return true;
@@ -141,16 +141,16 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
 bool Expr_Root::OnPhaseSetupLookup(Context &context)
 {
-	context.ResetSegment();
 	context.SetPhase_SetupLookup();
+	context.ResetSegment();
 	bool rtn = Expr::OnPhaseSetupLookup(context);
 	return rtn;
 }
 
 bool Expr_Root::OnPhaseGenerate(Context &context) const
 {
-	context.ResetSegment();
 	context.SetPhase_Generate();
+	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseGenerate(context)) return false;
 	}
@@ -159,8 +159,8 @@ bool Expr_Root::OnPhaseGenerate(Context &context) const
 
 bool Expr_Root::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
-	context.ResetSegment();
 	context.SetPhase_Generate();
+	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
 	}

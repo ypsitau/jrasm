@@ -86,7 +86,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				SetExprSourceInfo(pExpr.get(), pToken.get());
 				_exprStack.back()->GetChildren().push_back(pExpr->Reference());
 				_exprStack.push_back(pExpr.release());
-			} else if (!pDirective->CreateExpr(this, _exprStack, pToken.get())) {
+			} else if (!pDirective->OnPhaseParse(this, _exprStack, pToken.get())) {
 				return false;
 			}
 			_tokenStack.Reset();

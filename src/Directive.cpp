@@ -12,15 +12,6 @@ Directive::~Directive()
 {
 }
 
-bool Directive::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
-{
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
-	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	exprStack.back()->GetChildren().push_back(pExpr->Reference());
-	exprStack.push_back(pExpr.release());
-	return true;
-}
-
 void Directive::Initialize()
 {
 	_pDirectivesBuiltIn.reset(new DirectiveOwner());
@@ -45,6 +36,15 @@ void Directive::Initialize()
 const Directive *Directive::FindBuiltIn(const char *symbol)
 {
 	return _pDirectivesBuiltIn->FindBySymbol(symbol);
+}
+
+bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+{
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr.release());
+	return true;
 }
 
 Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
@@ -206,7 +206,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 //-----------------------------------------------------------------------------
 // Directive_ENDM
 //-----------------------------------------------------------------------------
-bool Directive_ENDM::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	if (!exprStack.back()->IsTypeMacroBody()) {
 		pParser->AddError("no matching .MACRO directive");
@@ -214,7 +214,7 @@ bool Directive_ENDM::CreateExpr(const Parser *pParser, ExprStack &exprStack, con
 	}
 	Expr::Delete(exprStack.back());
 	exprStack.pop_back();	// remove the EXPR_MacroBody instance from the stack
-	return Directive::CreateExpr(pParser, exprStack, pToken);
+	return Directive::OnPhaseParse(pParser, exprStack, pToken);
 }
 
 bool Directive_ENDM::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
@@ -277,7 +277,7 @@ bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *p
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
-bool Directive_EQU::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
 	if (pExprLabelDef == nullptr) {
@@ -380,7 +380,7 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
-bool Directive_MACRO::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
 	if (pExprLabelDef == nullptr) {
@@ -511,7 +511,7 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_PROC
 //-----------------------------------------------------------------------------
-bool Directive_PROC::CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 #if 0
 	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();

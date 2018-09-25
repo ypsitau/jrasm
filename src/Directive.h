@@ -26,7 +26,7 @@ public:
 	static void Initialize();
 	static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const = 0;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const = 0;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
@@ -97,7 +97,7 @@ public:
 class Directive_ENDM : public Directive {
 public:
 	inline Directive_ENDM() : Directive(".ENDM") {}
-	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
@@ -128,7 +128,7 @@ public:
 class Directive_EQU : public Directive {
 public:
 	inline Directive_EQU() : Directive(".EQU") {}
-	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
@@ -170,7 +170,7 @@ public:
 class Directive_MACRO : public Directive {
 public:
 	inline Directive_MACRO() : Directive(".MACRO") {}
-	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
@@ -222,7 +222,7 @@ public:
 class Directive_PROC : public Directive {
 public:
 	inline Directive_PROC() : Directive(".PROC") {}
-	virtual bool CreateExpr(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
