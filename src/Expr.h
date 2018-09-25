@@ -182,6 +182,8 @@ public:
 public:
 	inline Expr_BitPattern(const String &str) : Expr(TYPE), _str(str) {}
 	inline const char *GetBitPattern() const { return _str.c_str(); }
+	inline size_t GetBitPatternLen() const { return _str.size(); }
+	Binary GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };

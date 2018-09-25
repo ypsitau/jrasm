@@ -134,6 +134,7 @@ bool Tokenizer::FeedChar(char ch)
 	case STAT_BitPatternPre: {
 		if (ch == '"') {
 			_quotedType = QUOTEDTYPE_BitPattern;
+			_str.clear();
 			_stat = STAT_Quoted;
 		} else {
 			_str.clear();

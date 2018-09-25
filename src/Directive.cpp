@@ -132,6 +132,16 @@ bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Bin
 				if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(ch);
 				bytes++;
 			}
+		} else if (pExprResolved->IsTypeBitPattern()) {
+			Expr_BitPattern *pExprEx = dynamic_cast<Expr_BitPattern *>(pExprResolved.get());
+			size_t len = pExprEx->GetBitPatternLen();
+			if (len % 8 != 0) {
+				ErrorLog::AddError(pExpr, "the bit pattern length is %zu, not a multiple of eight", len);
+				return false;
+			}
+			Binary buff = pExprEx->GetBinary();
+			if (pBuffDst != nullptr) *pBuffDst += buff;
+			bytes += static_cast<UInt32>(buff.size());
 		} else {
 			ErrorLog::AddError(pExpr, "elements of directive .DB must be number or string value");
 			return false;
