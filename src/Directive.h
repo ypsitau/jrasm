@@ -4,7 +4,7 @@
 #ifndef __DIRECTIVE_H__
 #define __DIRECTIVE_H__
 
-#include "Common.h"
+#include "Expr.h"
 #include "MmlParser.h"
 
 class Token;
@@ -22,7 +22,6 @@ class Directive {
 private:
 	int _cntRef;
 	String _symbol;
-	//static std::unique_ptr<DirectiveOwner> _pDirectivesBuiltIn;
 public:
 	DeclareReferenceAccessor(Directive);
 public:
@@ -30,8 +29,6 @@ public:
 protected:
 	virtual ~Directive();
 public:
-	//static void Initialize();
-	//static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const;
@@ -238,9 +235,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_MacroInstance : public Directive {
 private:
-	
+	StringList _paramNames;
+	AutoPtr<Expr> _pExprMacroBody;
 public:
-	inline Directive_MacroInstance(const String &symbol) : Directive(symbol) {}
+	Directive_MacroInstance(
+		const String &symbol, StringList::const_iterator pParamName,
+		StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody);
 	virtual bool OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };

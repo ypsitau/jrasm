@@ -4,9 +4,9 @@
 #ifndef __EXPR_H__
 #define __EXPR_H__
 
-#include "Directive.h"
 #include "Operator.h"
 
+class Directive;
 class ExprOwner;
 class Expr_LabelDef;
 

@@ -6,23 +6,9 @@
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
-//std::unique_ptr<DirectiveOwner> Directive::_pDirectivesBuiltIn;
-
 Directive::~Directive()
 {
 }
-
-#if 0
-void Directive::Initialize()
-{
-	_pDirectivesBuiltIn.reset(new DirectiveOwner());
-}
-
-const Directive *Directive::FindBuiltIn(const char *symbol)
-{
-	return _pDirectivesBuiltIn->FindBySymbol(symbol);
-}
-#endif
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
@@ -532,6 +518,14 @@ bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_MacroInstance
 //-----------------------------------------------------------------------------
+Directive_MacroInstance::Directive_MacroInstance(
+	const String &symbol, StringList::const_iterator pParamName,
+	StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody) :
+	Directive(symbol), _pExprMacroBody(pExprMacroBody)
+{
+	_paramNames.insert(_paramNames.end(), pParamName, pParamNameEnd);
+}
+
 bool Directive_MacroInstance::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;

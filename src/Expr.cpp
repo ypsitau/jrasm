@@ -582,6 +582,22 @@ const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
 
 bool Expr_MacroEntry::OnPhaseDeclareMacro(Context &context)
 {
+	const ExprList &operands = GetOperands();
+	if (operands.empty()) {
+		ErrorLog::AddError(this, "directive .MACRO needs at least one operand");
+		return false;
+	}
+	StringList labels;
+	for (auto pExpr : operands) {
+		if (!pExpr->IsTypeLabelRef()) {
+			ErrorLog::AddError(this, "directive .MACRO takes a list of labels as its operands");
+			return false;
+		}
+		labels.push_back(dynamic_cast<const Expr_LabelRef *>(pExpr)->GetLabel());
+	}
+	context.AddDirective(new Directive_MacroInstance(
+							 labels[0], labels.begin() + 1, labels.end(),
+							 GetMacroBody()->Reference()));
 	//::printf("Expr_MacroEntry::OnPhaseDeclareMacro()\n");
 	return true;
 }
