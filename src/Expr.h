@@ -86,6 +86,9 @@ public:
 	static void DumpDisasmHelper(
 		UInt32 addr, const Binary &buff, const char *strCode,
 		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
+	virtual bool OnPhaseInclude(Context &context);
+	virtual bool OnPhaseDeclareMacro(Context &context);
+	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupLookup(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
@@ -305,6 +308,9 @@ public:
 	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE), _pDirective(pDirective) {}
 	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool OnPhaseInclude(Context &context);
+	virtual bool OnPhaseDeclareMacro(Context &context);
+	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupLookup(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
@@ -329,17 +335,18 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_MacroEntry : public Expr {
 private:
-	String _symbol;
 	AutoPtr<Expr_MacroBody> _pExprMacroBody;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroEntry(const String &symbol) :
-		Expr(TYPE), _symbol(symbol), _pExprMacroBody(new Expr_MacroBody) {}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline Expr_MacroEntry() : Expr(TYPE), _pExprMacroBody(new Expr_MacroBody()) {}
+	inline const char *GetLabel() const {
+		return dynamic_cast<Expr_LabelRef *>(GetChildren().front())->GetLabel();
+	}
 	inline Expr_MacroBody *GetMacroBody() { return _pExprMacroBody.get(); }
 	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };

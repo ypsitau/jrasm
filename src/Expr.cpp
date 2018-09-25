@@ -43,6 +43,24 @@ void Expr::Print() const
 	::printf("%s\n", ComposeSource(false).c_str());
 }
 
+bool Expr::OnPhaseInclude(Context &context)
+{
+	// nothing to do
+	return true;
+}
+
+bool Expr::OnPhaseDeclareMacro(Context &context)
+{
+	// nothing to do
+	return true;
+}
+
+bool Expr::OnPhaseExpandMacro(Context &context)
+{
+	// nothing to do
+	return true;
+}
+
 bool Expr::OnPhaseSetupLookup(Context &context)
 {
 	_pLookupTable.reset(context.GetLookupTable()->Reference());
@@ -141,7 +159,6 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
 bool Expr_Root::OnPhaseSetupLookup(Context &context)
 {
-	context.SetPhase_SetupLookup();
 	context.ResetSegment();
 	bool rtn = Expr::OnPhaseSetupLookup(context);
 	return rtn;
@@ -149,7 +166,6 @@ bool Expr_Root::OnPhaseSetupLookup(Context &context)
 
 bool Expr_Root::OnPhaseGenerate(Context &context) const
 {
-	context.SetPhase_Generate();
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseGenerate(context)) return false;
@@ -159,7 +175,6 @@ bool Expr_Root::OnPhaseGenerate(Context &context) const
 
 bool Expr_Root::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
-	context.SetPhase_Generate();
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
@@ -467,6 +482,21 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
+bool Expr_Directive::OnPhaseInclude(Context &context)
+{
+	return _pDirective->OnPhaseInclude(context, this);
+}
+
+bool Expr_Directive::OnPhaseDeclareMacro(Context &context)
+{
+	return _pDirective->OnPhaseDeclareMacro(context, this);
+}
+
+bool Expr_Directive::OnPhaseExpandMacro(Context &context)
+{
+	return _pDirective->OnPhaseExpandMacro(context, this);
+}
+
 bool Expr_Directive::OnPhaseSetupLookup(Context &context)
 {
 	if (!Expr::OnPhaseSetupLookup(context)) return false;
@@ -526,6 +556,16 @@ String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
 
+bool Expr_MacroEntry::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+{
+	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
+	::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag).c_str());
+	for (auto pExpr : GetMacroBody()->GetChildren()) {
+		::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());
+	}
+	return true;
+}
+
 Expr *Expr_MacroEntry::Resolve(Context &context) const
 {
 	return Reference();
@@ -533,8 +573,8 @@ Expr *Expr_MacroEntry::Resolve(Context &context) const
 
 String Expr_MacroEntry::ComposeSource(bool upperCaseFlag) const
 {
-	String str = _symbol; // not affected by upperCaseFlag
-	str += " ";
+	String str = upperCaseFlag? ".MACRO" : ".macro";
+	str += ' ';
 	str += GetChildren().ComposeSource(",", upperCaseFlag);
 	return str;
 }

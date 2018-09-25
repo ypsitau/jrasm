@@ -11,6 +11,13 @@ const StringList StringList::Empty;
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
+String MakePadding(size_t width, char padding)
+{
+	String rtn;
+	while (width-- > 0) rtn += padding;
+	return rtn;
+}
+
 String JustifyLeft(const char *str, size_t width, char padding)
 {
 	size_t widthBody = ::strlen(str);

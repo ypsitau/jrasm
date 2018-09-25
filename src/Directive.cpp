@@ -47,6 +47,24 @@ bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const 
 	return true;
 }
 
+bool Directive::OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const
+{
+	// nothing to do
+	return true;
+}
+
+bool Directive::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+{
+	// nothing to do
+	return true;
+}
+
+bool Directive::OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const
+{
+	// nothing to do
+	return true;
+}
+
 Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();
@@ -212,9 +230,13 @@ bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 		pParser->AddError("no matching .MACRO directive");
 		return false;
 	}
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetChildren().push_back(pExpr->Reference());
 	Expr::Delete(exprStack.back());
 	exprStack.pop_back();	// remove the EXPR_MacroBody instance from the stack
-	return Directive::OnPhaseParse(pParser, exprStack, pToken);
+	exprStack.push_back(pExpr.release());
+	return true;
 }
 
 bool Directive_ENDM::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
@@ -347,6 +369,11 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directi
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
+bool Directive_INCLUDE::OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
 bool Directive_INCLUDE::OnPhaseSetupLookup(Context &context, const Expr_Directive *pExpr) const
 {
 	
@@ -382,16 +409,16 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
-	if (pExprLabelDef == nullptr) {
-		pParser->AddError("directive .MACRO must be preceded by a label");
-		return false;
-	}
-	AutoPtr<Expr_MacroEntry> pExpr(new Expr_MacroEntry(pExprLabelDef->GetLabel()));
+	AutoPtr<Expr_MacroEntry> pExpr(new Expr_MacroEntry());
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprLabelDef->SetAssigned(pExpr->Reference());	// associate it to the preceding label
+	exprStack.back()->GetChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body
 	exprStack.push_back(pExpr.release());						// for operands
+	return true;
+}
+
+bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+{
 	return true;
 }
 
