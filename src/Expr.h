@@ -88,7 +88,7 @@ public:
 		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
 	virtual bool OnPhaseResolve(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual String ComposeSource(bool upperCaseFlag) const = 0;
 };
@@ -133,7 +133,7 @@ public:
 	inline Expr_Root() : Expr(TYPE) {}
 	virtual bool OnPhaseResolve(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -253,7 +253,7 @@ public:
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual bool OnPhaseResolve(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -289,7 +289,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseResolve(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -308,7 +308,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseResolve(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
-	virtual bool DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };

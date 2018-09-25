@@ -56,7 +56,7 @@ bool Expr::OnPhaseGenerate(Context &context) const
 	return true;
 }
 
-bool Expr::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	// nothing to do
 	return true;
@@ -162,11 +162,11 @@ bool Expr_Root::OnPhaseGenerate(Context &context) const
 	return true;
 }
 
-bool Expr_Root::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_Root::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		if (!pExpr->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
+		if (!pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
 	}
 	return true;
 }
@@ -366,7 +366,7 @@ bool Expr_LabelDef::OnPhaseGenerate(Context &context) const
 	return true;
 }
 
-bool Expr_LabelDef::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	String str = _label;
 	str += ":";
@@ -441,7 +441,7 @@ bool Expr_Instruction::OnPhaseGenerate(Context &context) const
 	return Generator::GetInstance().Generate(context, this);
 }
 
-bool Expr_Instruction::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_Instruction::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
@@ -482,7 +482,7 @@ bool Expr_Directive::OnPhaseGenerate(Context &context) const
 	return _pDirective->OnPhaseGenerate(context, this, context.GetBuffer());
 }
 
-bool Expr_Directive::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_Directive::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();

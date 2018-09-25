@@ -41,7 +41,7 @@ RegionOwner *Parser::Generate(Context &context, size_t bytesGapToJoin, UInt8 dat
 
 bool Parser::DumpDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
-	return GetRoot()->DumpDisasm(context, fp, upperCaseFlag, nColsPerLine);
+	return GetRoot()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
 }
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
