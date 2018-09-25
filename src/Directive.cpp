@@ -6,37 +6,23 @@
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
-std::unique_ptr<DirectiveOwner> Directive::_pDirectivesBuiltIn;
+//std::unique_ptr<DirectiveOwner> Directive::_pDirectivesBuiltIn;
 
 Directive::~Directive()
 {
 }
 
+#if 0
 void Directive::Initialize()
 {
 	_pDirectivesBuiltIn.reset(new DirectiveOwner());
-	_pDirectivesBuiltIn->push_back(new Directive_CSEG());
-	_pDirectivesBuiltIn->push_back(new Directive_DB());
-	_pDirectivesBuiltIn->push_back(new Directive_DSEG());
-	_pDirectivesBuiltIn->push_back(new Directive_DW());
-	_pDirectivesBuiltIn->push_back(new Directive_ENDM());
-	_pDirectivesBuiltIn->push_back(new Directive_ENDP());
-	_pDirectivesBuiltIn->push_back(new Directive_ENDPCG());
-	_pDirectivesBuiltIn->push_back(new Directive_EQU());
-	_pDirectivesBuiltIn->push_back(new Directive_FILENAME_JR());
-	_pDirectivesBuiltIn->push_back(new Directive_INCLUDE());
-	_pDirectivesBuiltIn->push_back(new Directive_ISEG());
-	_pDirectivesBuiltIn->push_back(new Directive_MACRO());
-	_pDirectivesBuiltIn->push_back(new Directive_MML());
-	_pDirectivesBuiltIn->push_back(new Directive_ORG());
-	_pDirectivesBuiltIn->push_back(new Directive_PCG());
-	_pDirectivesBuiltIn->push_back(new Directive_PROC());
 }
 
 const Directive *Directive::FindBuiltIn(const char *symbol)
 {
 	return _pDirectivesBuiltIn->FindBySymbol(symbol);
 }
+#endif
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {

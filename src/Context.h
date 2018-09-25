@@ -9,6 +9,7 @@
 class Parser;
 class Expr;
 class ExprList;
+class Directive;
 class DirectiveOwner;
 
 //-----------------------------------------------------------------------------
@@ -135,6 +136,7 @@ public:
 	LabelInfoOwner *MakeLabelInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
+	const Directive *FindDirective(const char *symbol) const;
 };
 
 #endif

@@ -17,6 +17,22 @@ Context::Context(const String &pathNameSrc) :
 	_segmentOwner.push_back(new Segment("data"));		// data segment
 	_segmentOwner.push_back(new Segment("internal"));	// internal segment
 	SelectCodeSegment();
+	_pDirectiveOwner->push_back(new Directive_CSEG());
+	_pDirectiveOwner->push_back(new Directive_DB());
+	_pDirectiveOwner->push_back(new Directive_DSEG());
+	_pDirectiveOwner->push_back(new Directive_DW());
+	_pDirectiveOwner->push_back(new Directive_ENDM());
+	_pDirectiveOwner->push_back(new Directive_ENDP());
+	_pDirectiveOwner->push_back(new Directive_ENDPCG());
+	_pDirectiveOwner->push_back(new Directive_EQU());
+	_pDirectiveOwner->push_back(new Directive_FILENAME_JR());
+	_pDirectiveOwner->push_back(new Directive_INCLUDE());
+	_pDirectiveOwner->push_back(new Directive_ISEG());
+	_pDirectiveOwner->push_back(new Directive_MACRO());
+	_pDirectiveOwner->push_back(new Directive_MML());
+	_pDirectiveOwner->push_back(new Directive_ORG());
+	_pDirectiveOwner->push_back(new Directive_PCG());
+	_pDirectiveOwner->push_back(new Directive_PROC());
 }
 
 bool Context::ParseFile()
@@ -111,6 +127,11 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	}
 	_pExprListResolved->push_back(const_cast<Expr *>(pExpr));
 	return false;
+}
+
+const Directive *Context::FindDirective(const char *symbol) const
+{
+	return _pDirectiveOwner->FindBySymbol(symbol);
 }
 
 //-----------------------------------------------------------------------------

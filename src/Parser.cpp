@@ -44,7 +44,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_Symbol)) {
 			const char *symbol = pToken->GetString();
-			const Directive *pDirective = Directive::FindBuiltIn(symbol);
+			const Directive *pDirective = _context.FindDirective(symbol);
 			if (pDirective == nullptr) {
 				if (*symbol == '.') {
 					AddError("unknown directive: %s", symbol);

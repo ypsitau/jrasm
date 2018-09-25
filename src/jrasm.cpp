@@ -49,7 +49,6 @@ int main(int argc, const char *argv[])
 	}
 	ErrorLog::Clear();
 	Operator::Initialize();
-	Directive::Initialize();
 	Generator::Initialize(new Generator_M6800());
 	if (cmdLine.IsSet("help")) {
 		fprintf(stderr, "%s%s%s", strBanner, strUsage, strOption);

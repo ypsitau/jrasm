@@ -22,7 +22,7 @@ class Directive {
 private:
 	int _cntRef;
 	String _symbol;
-	static std::unique_ptr<DirectiveOwner> _pDirectivesBuiltIn;
+	//static std::unique_ptr<DirectiveOwner> _pDirectivesBuiltIn;
 public:
 	DeclareReferenceAccessor(Directive);
 public:
@@ -30,8 +30,8 @@ public:
 protected:
 	virtual ~Directive();
 public:
-	static void Initialize();
-	static const Directive *FindBuiltIn(const char *symbol);
+	//static void Initialize();
+	//static const Directive *FindBuiltIn(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const;
