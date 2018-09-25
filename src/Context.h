@@ -119,6 +119,7 @@ public:
 	inline const LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalLookupTable() const { return _lookupTableStack.size() > 1; }
+	bool ParseFile(Parser &parser);
 	bool Prepare(Parser &parser);
 	RegionOwner *Generate(Parser &parser, size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(Parser &parser, FILE *fp, bool upperCaseFlag, size_t nColsPerLine);

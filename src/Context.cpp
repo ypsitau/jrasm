@@ -16,6 +16,23 @@ Context::Context() : _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 	SelectCodeSegment();
 }
 
+bool Context::ParseFile(Parser &parser)
+{
+	FILE *fp = nullptr;
+	if (::fopen_s(&fp, parser.GetFileNameSrc(), "rt") != 0) {
+		ErrorLog::AddError("failed to open file: %s\n", parser.GetFileNameSrc());
+		return false;
+	}
+	for (;;) {
+		int chRaw = ::fgetc(fp);
+		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
+		if (!parser.FeedChar(ch)) break;
+		if (ch == '\0') break;
+	}
+	::fclose(fp);
+	return !ErrorLog::HasError();
+}
+
 bool Context::Prepare(Parser &parser)
 {
 	SetPhase(PHASE_Include);

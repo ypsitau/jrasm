@@ -11,23 +11,6 @@ Parser::Parser(const String &fileNameSrc) : _tokenizer(this, fileNameSrc), _stat
 	_exprStack.push_back(new Expr_Root());
 }
 
-bool Parser::ParseFile()
-{
-	FILE *fp = nullptr;
-	if (::fopen_s(&fp, GetFileNameSrc(), "rt") != 0) {
-		ErrorLog::AddError("failed to open file: %s\n", GetFileNameSrc());
-		return false;
-	}
-	for (;;) {
-		int chRaw = ::fgetc(fp);
-		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
-		if (!FeedChar(ch)) break;
-		if (ch == '\0') break;
-	}
-	::fclose(fp);
-	return !ErrorLog::HasError();
-}
-
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
 	//::printf("%s\n", pToken->ToString().c_str());

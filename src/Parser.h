@@ -36,7 +36,6 @@ public:
 	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
 		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
-	bool ParseFile();
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;
 public:
