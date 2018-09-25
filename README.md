@@ -178,7 +178,7 @@ and anything like that.
 
 A string preceded by "`b`" is a bit-pattern literal that consists of a series of ascii characters
 that correspond to binary data `0` and `1`.
-The space, period `'.'`, comma `','`, under score `'_'` and hyphen `'-'` are recognied as `0` and
+The space, period '`.`', comma '`,`', under score '`_`' and hyphen '`-`' are recognized as `0` and
 others are `1`.
 The bit-pattern literal generates a sequence of byte-sized data like follows:
 
