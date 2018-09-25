@@ -1,3 +1,4 @@
+label1:
     1000 00 01     .db  0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07
     1002 02 03     
     1004 04 05     
@@ -126,12 +127,14 @@
     10fa fa fb     
     10fc fc fd     
     10fe fe ff     
+label2:
     1100 48 65     .db  "Hello World"
     1102 6c 6c     
     1104 6f 20     
     1106 57 6f     
     1108 72 6c     
     110a 64        
+label3:
     110b 61 62     .db  "abc","defghi","jklmnopqr"
     110d 63 64     
     110f 65 66     
@@ -141,7 +144,271 @@
     1117 6d 6e     
     1119 6f 70     
     111b 71 72     
+label4:
     111d 41 42     .db  'A','B','C','D'
     111f 43 44     
+label5:
+    1121 3c 00     .dw  0x3c00,0x3c01,0x3c02,0x3c03,0x3c04,0x3c05,0x3c06,0x3c07
+    1123 3c 01     
+    1125 3c 02     
+    1127 3c 03     
+    1129 3c 04     
+    112b 3c 05     
+    112d 3c 06     
+    112f 3c 07     
+    1131 3c 08     .dw  0x3c08,0x3c09,0x3c0a,0x3c0b,0x3c0c,0x3c0d,0x3c0e,0x3c0f
+    1133 3c 09     
+    1135 3c 0a     
+    1137 3c 0b     
+    1139 3c 0c     
+    113b 3c 0d     
+    113d 3c 0e     
+    113f 3c 0f     
+    1141 3c 10     .dw  0x3c10,0x3c11,0x3c12,0x3c13,0x3c14,0x3c15,0x3c16,0x3c17
+    1143 3c 11     
+    1145 3c 12     
+    1147 3c 13     
+    1149 3c 14     
+    114b 3c 15     
+    114d 3c 16     
+    114f 3c 17     
+    1151 3c 18     .dw  0x3c18,0x3c19,0x3c1a,0x3c1b,0x3c1c,0x3c1d,0x3c1e,0x3c1f
+    1153 3c 19     
+    1155 3c 1a     
+    1157 3c 1b     
+    1159 3c 1c     
+    115b 3c 1d     
+    115d 3c 1e     
+    115f 3c 1f     
+    1161 3c 20     .dw  0x3c20,0x3c21,0x3c22,0x3c23,0x3c24,0x3c25,0x3c26,0x3c27
+    1163 3c 21     
+    1165 3c 22     
+    1167 3c 23     
+    1169 3c 24     
+    116b 3c 25     
+    116d 3c 26     
+    116f 3c 27     
+    1171 3c 28     .dw  0x3c28,0x3c29,0x3c2a,0x3c2b,0x3c2c,0x3c2d,0x3c2e,0x3c2f
+    1173 3c 29     
+    1175 3c 2a     
+    1177 3c 2b     
+    1179 3c 2c     
+    117b 3c 2d     
+    117d 3c 2e     
+    117f 3c 2f     
+    1181 3c 30     .dw  0x3c30,0x3c31,0x3c32,0x3c33,0x3c34,0x3c35,0x3c36,0x3c37
+    1183 3c 31     
+    1185 3c 32     
+    1187 3c 33     
+    1189 3c 34     
+    118b 3c 35     
+    118d 3c 36     
+    118f 3c 37     
+    1191 3c 38     .dw  0x3c38,0x3c39,0x3c3a,0x3c3b,0x3c3c,0x3c3d,0x3c3e,0x3c3f
+    1193 3c 39     
+    1195 3c 3a     
+    1197 3c 3b     
+    1199 3c 3c     
+    119b 3c 3d     
+    119d 3c 3e     
+    119f 3c 3f     
+    11a1 3c 40     .dw  0x3c40,0x3c41,0x3c42,0x3c43,0x3c44,0x3c45,0x3c46,0x3c47
+    11a3 3c 41     
+    11a5 3c 42     
+    11a7 3c 43     
+    11a9 3c 44     
+    11ab 3c 45     
+    11ad 3c 46     
+    11af 3c 47     
+    11b1 3c 48     .dw  0x3c48,0x3c49,0x3c4a,0x3c4b,0x3c4c,0x3c4d,0x3c4e,0x3c4f
+    11b3 3c 49     
+    11b5 3c 4a     
+    11b7 3c 4b     
+    11b9 3c 4c     
+    11bb 3c 4d     
+    11bd 3c 4e     
+    11bf 3c 4f     
+    11c1 3c 50     .dw  0x3c50,0x3c51,0x3c52,0x3c53,0x3c54,0x3c55,0x3c56,0x3c57
+    11c3 3c 51     
+    11c5 3c 52     
+    11c7 3c 53     
+    11c9 3c 54     
+    11cb 3c 55     
+    11cd 3c 56     
+    11cf 3c 57     
+    11d1 3c 58     .dw  0x3c58,0x3c59,0x3c5a,0x3c5b,0x3c5c,0x3c5d,0x3c5e,0x3c5f
+    11d3 3c 59     
+    11d5 3c 5a     
+    11d7 3c 5b     
+    11d9 3c 5c     
+    11db 3c 5d     
+    11dd 3c 5e     
+    11df 3c 5f     
+    11e1 3c 60     .dw  0x3c60,0x3c61,0x3c62,0x3c63,0x3c64,0x3c65,0x3c66,0x3c67
+    11e3 3c 61     
+    11e5 3c 62     
+    11e7 3c 63     
+    11e9 3c 64     
+    11eb 3c 65     
+    11ed 3c 66     
+    11ef 3c 67     
+    11f1 3c 68     .dw  0x3c68,0x3c69,0x3c6a,0x3c6b,0x3c6c,0x3c6d,0x3c6e,0x3c6f
+    11f3 3c 69     
+    11f5 3c 6a     
+    11f7 3c 6b     
+    11f9 3c 6c     
+    11fb 3c 6d     
+    11fd 3c 6e     
+    11ff 3c 6f     
+    1201 3c 70     .dw  0x3c70,0x3c71,0x3c72,0x3c73,0x3c74,0x3c75,0x3c76,0x3c77
+    1203 3c 71     
+    1205 3c 72     
+    1207 3c 73     
+    1209 3c 74     
+    120b 3c 75     
+    120d 3c 76     
+    120f 3c 77     
+    1211 3c 78     .dw  0x3c78,0x3c79,0x3c7a,0x3c7b,0x3c7c,0x3c7d,0x3c7e,0x3c7f
+    1213 3c 79     
+    1215 3c 7a     
+    1217 3c 7b     
+    1219 3c 7c     
+    121b 3c 7d     
+    121d 3c 7e     
+    121f 3c 7f     
+    1221 3c 80     .dw  0x3c80,0x3c81,0x3c82,0x3c83,0x3c84,0x3c85,0x3c86,0x3c87
+    1223 3c 81     
+    1225 3c 82     
+    1227 3c 83     
+    1229 3c 84     
+    122b 3c 85     
+    122d 3c 86     
+    122f 3c 87     
+    1231 3c 88     .dw  0x3c88,0x3c89,0x3c8a,0x3c8b,0x3c8c,0x3c8d,0x3c8e,0x3c8f
+    1233 3c 89     
+    1235 3c 8a     
+    1237 3c 8b     
+    1239 3c 8c     
+    123b 3c 8d     
+    123d 3c 8e     
+    123f 3c 8f     
+    1241 3c 90     .dw  0x3c90,0x3c91,0x3c92,0x3c93,0x3c94,0x3c95,0x3c96,0x3c97
+    1243 3c 91     
+    1245 3c 92     
+    1247 3c 93     
+    1249 3c 94     
+    124b 3c 95     
+    124d 3c 96     
+    124f 3c 97     
+    1251 3c 98     .dw  0x3c98,0x3c99,0x3c9a,0x3c9b,0x3c9c,0x3c9d,0x3c9e,0x3c9f
+    1253 3c 99     
+    1255 3c 9a     
+    1257 3c 9b     
+    1259 3c 9c     
+    125b 3c 9d     
+    125d 3c 9e     
+    125f 3c 9f     
+    1261 3c a0     .dw  0x3ca0,0x3ca1,0x3ca2,0x3ca3,0x3ca4,0x3ca5,0x3ca6,0x3ca7
+    1263 3c a1     
+    1265 3c a2     
+    1267 3c a3     
+    1269 3c a4     
+    126b 3c a5     
+    126d 3c a6     
+    126f 3c a7     
+    1271 3c a8     .dw  0x3ca8,0x3ca9,0x3caa,0x3cab,0x3cac,0x3cad,0x3cae,0x3caf
+    1273 3c a9     
+    1275 3c aa     
+    1277 3c ab     
+    1279 3c ac     
+    127b 3c ad     
+    127d 3c ae     
+    127f 3c af     
+    1281 3c b0     .dw  0x3cb0,0x3cb1,0x3cb2,0x3cb3,0x3cb4,0x3cb5,0x3cb6,0x3cb7
+    1283 3c b1     
+    1285 3c b2     
+    1287 3c b3     
+    1289 3c b4     
+    128b 3c b5     
+    128d 3c b6     
+    128f 3c b7     
+    1291 3c b8     .dw  0x3cb8,0x3cb9,0x3cba,0x3cbb,0x3cbc,0x3cbd,0x3cbe,0x3cbf
+    1293 3c b9     
+    1295 3c ba     
+    1297 3c bb     
+    1299 3c bc     
+    129b 3c bd     
+    129d 3c be     
+    129f 3c bf     
+    12a1 3c c0     .dw  0x3cc0,0x3cc1,0x3cc2,0x3cc3,0x3cc4,0x3cc5,0x3cc6,0x3cc7
+    12a3 3c c1     
+    12a5 3c c2     
+    12a7 3c c3     
+    12a9 3c c4     
+    12ab 3c c5     
+    12ad 3c c6     
+    12af 3c c7     
+    12b1 3c c8     .dw  0x3cc8,0x3cc9,0x3cca,0x3ccb,0x3ccc,0x3ccd,0x3cce,0x3ccf
+    12b3 3c c9     
+    12b5 3c ca     
+    12b7 3c cb     
+    12b9 3c cc     
+    12bb 3c cd     
+    12bd 3c ce     
+    12bf 3c cf     
+    12c1 3c d0     .dw  0x3cd0,0x3cd1,0x3cd2,0x3cd3,0x3cd4,0x3cd5,0x3cd6,0x3cd7
+    12c3 3c d1     
+    12c5 3c d2     
+    12c7 3c d3     
+    12c9 3c d4     
+    12cb 3c d5     
+    12cd 3c d6     
+    12cf 3c d7     
+    12d1 3c d8     .dw  0x3cd8,0x3cd9,0x3cda,0x3cdb,0x3cdc,0x3cdd,0x3cde,0x3cdf
+    12d3 3c d9     
+    12d5 3c da     
+    12d7 3c db     
+    12d9 3c dc     
+    12db 3c dd     
+    12dd 3c de     
+    12df 3c df     
+    12e1 3c e0     .dw  0x3ce0,0x3ce1,0x3ce2,0x3ce3,0x3ce4,0x3ce5,0x3ce6,0x3ce7
+    12e3 3c e1     
+    12e5 3c e2     
+    12e7 3c e3     
+    12e9 3c e4     
+    12eb 3c e5     
+    12ed 3c e6     
+    12ef 3c e7     
+    12f1 3c e8     .dw  0x3ce8,0x3ce9,0x3cea,0x3ceb,0x3cec,0x3ced,0x3cee,0x3cef
+    12f3 3c e9     
+    12f5 3c ea     
+    12f7 3c eb     
+    12f9 3c ec     
+    12fb 3c ed     
+    12fd 3c ee     
+    12ff 3c ef     
+    1301 3c f0     .dw  0x3cf0,0x3cf1,0x3cf2,0x3cf3,0x3cf4,0x3cf5,0x3cf6,0x3cf7
+    1303 3c f1     
+    1305 3c f2     
+    1307 3c f3     
+    1309 3c f4     
+    130b 3c f5     
+    130d 3c f6     
+    130f 3c f7     
+    1311 3c f8     .dw  0x3cf8,0x3cf9,0x3cfa,0x3cfb,0x3cfc,0x3cfd,0x3cfe,0x3cff
+    1313 3c f9     
+    1315 3c fa     
+    1317 3c fb     
+    1319 3c fc     
+    131b 3c fd     
+    131d 3c fe     
+    131f 3c ff     
+label6:
 [Label List]
-(no label)
+1000  label1
+1100  label2
+110b  label3
+111d  label4
+1121  label5
+1321  label6

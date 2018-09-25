@@ -67,6 +67,8 @@ public:
 	inline Directive_DB() : Directive(".db") {}
 	virtual bool Prepare(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+private:
+	bool DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------

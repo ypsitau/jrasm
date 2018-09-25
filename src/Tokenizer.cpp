@@ -164,7 +164,7 @@ bool Tokenizer::FeedChar(char ch)
 					rtn = FeedToken(TOKEN_Number, _str, _str[1]);
 				}
 			} else if (_quotedType == QUOTEDTYPE_BitPattern) {
-				//rtn = FeedToken(TOKEN_BitPattern, _str);
+				rtn = FeedToken(TOKEN_BitPattern, _str);
 			}
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {

@@ -102,16 +102,18 @@ bool Directive_CSEG::Generate(Context &context, const Expr_Directive *pExpr, Bin
 //-----------------------------------------------------------------------------
 bool Directive_DB::Prepare(Context &context, const Expr_Directive *pExpr) const
 {
-	//*********
-	context.ForwardAddress(static_cast<UInt32>(pExpr->GetOperands().size() * sizeof(UInt8)));
-
-	return true;
+	return DoGenerate(context, pExpr, nullptr);
 }
 
 bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
-	size_t bytes = 0;
+	return DoGenerate(context, pExpr, &buffDst);
+}
+
+bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+{
+	UInt32 bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
 		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
@@ -122,12 +124,12 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 				ErrorLog::AddError(pExpr, "an element value of directive .DB exceeds 8-bit range");
 				return false;
 			}
-			buffDst += static_cast<UInt8>(num);
+			if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(num);
 			bytes++;
 		} else if (pExprResolved->IsTypeString()) {
 			const String &str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetStringSTL();
 			for (auto ch : str) {
-				buffDst += static_cast<UInt8>(ch);
+				if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(ch);
 				bytes++;
 			}
 		} else {
