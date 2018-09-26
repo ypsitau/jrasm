@@ -135,9 +135,6 @@ public:
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	void AddChild(Expr *pExpr);
 	void Print() const;
-	static void DumpDisasmHelper(
-		UInt32 addr, const Binary &buff, const char *strCode,
-		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
@@ -146,6 +143,10 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual String ComposeSource(bool upperCaseFlag) const = 0;
+protected:
+	static void DumpDisasmHelper(
+		UInt32 addr, const Binary &buff, const char *strCode,
+		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
 };
 
 //-----------------------------------------------------------------------------
