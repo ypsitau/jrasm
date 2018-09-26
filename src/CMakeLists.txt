@@ -15,6 +15,7 @@ add_executable(jrasm
 	FormatDump.cpp
 	Generator.cpp
 	Generator_M6800.cpp
+	Macro.cpp
 	MmlParser.cpp
 	Operator.cpp
 	Parser.cpp

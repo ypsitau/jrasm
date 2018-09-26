@@ -17,6 +17,7 @@
 #include "FormatDump.h"
 #include "Generator.h"
 #include "Generator_M6800.h"
+#include "Macro.h"
 #include "MmlParser.h"
 #include "Parser.h"
 #include "Region.h"

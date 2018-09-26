@@ -176,7 +176,7 @@ bool ExprDict::IsDefined(const char *label) const
 const Expr *ExprDict::Lookup(const char *label) const
 {
 	const_iterator iter = find(label);
-	if (iter != end())	return iter->second;
+	if (iter != end()) return iter->second;
 	return _pExprDictParent.IsNull()? nullptr : _pExprDictParent->Lookup(label);
 }
 
