@@ -155,7 +155,12 @@ void ExprOwner::Clear()
 
 ExprOwner *ExprOwner::Substitute(const ExprDict &exprDict) const
 {
-	return nullptr;
+	AutoPtr<ExprOwner> pExprOwner(new ExprOwner());
+	pExprOwner->reserve(size());
+	for (auto pExpr : *this) {
+		pExprOwner->push_back(pExpr->Substitute(exprDict));
+	}
+	return pExprOwner.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -568,9 +573,26 @@ const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 {
 	const Macro *pMacro = context.GetMacroDict().Lookup(GetSymbol());
-	if (pMacro != nullptr) {
-		_pExprsExpanded.reset(pMacro->GetExprOwner().Reference());
+	if (pMacro == nullptr) return true;
+	AutoPtr<ExprDict> pExprDict(new ExprDict());
+	const StringList &paramNames = pMacro->GetParamNames();
+	const ExprList &exprList = GetOperands();
+	StringList::const_iterator pParamName = paramNames.begin();
+	ExprList::const_iterator ppExpr = exprList.begin();
+	for ( ; pParamName != paramNames.end() && ppExpr != exprList.end(); pParamName++, ppExpr++) {
+		const String &paramName = *pParamName;
+		const Expr *pExpr = *ppExpr;
+		pExprDict->Associate(paramName, pExpr->Reference(), false);
 	}
+	if (pParamName != paramNames.end()) {
+		ErrorLog::AddError(this, "too few parameters for %s", pMacro->GetSymbol());
+		return false;
+	}
+	if (ppExpr != exprList.end()) {
+		ErrorLog::AddError(this, "too many parameters for %s", pMacro->GetSymbol());
+		return false;
+	}
+	_pExprsExpanded.reset(pMacro->GetExprOwner().Substitute(*pExprDict));
 	return true;
 }
 
