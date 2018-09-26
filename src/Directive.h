@@ -10,9 +10,16 @@
 class Token;
 class Parser;
 class Context;
-class ExprStack;
-class Expr;
-class Expr_Directive;
+class Directive;
+
+//-----------------------------------------------------------------------------
+// DirectiveList
+//-----------------------------------------------------------------------------
+class DirectiveList : public std::vector<const Directive *> {
+public:
+	inline void Assign(const Directive *pDirective) { push_back(pDirective); }
+	const Directive *FindBySymbol(const char *symbol) const;
+};
 
 //-----------------------------------------------------------------------------
 // Directive
@@ -37,6 +44,8 @@ public:
 	static const Directive *ORG;
 	static const Directive *PCG;
 	static const Directive *PROC;
+private:
+	static DirectiveList _directiveList;
 public:
 	inline Directive(const String &symbol) : _symbol(symbol) {}
 protected:
@@ -51,14 +60,6 @@ public:
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const = 0;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
-};
-
-//-----------------------------------------------------------------------------
-// DirectiveList
-//-----------------------------------------------------------------------------
-class DirectiveList : public std::vector<const Directive *> {
-public:
-	const Directive *FindBySymbol(const char *symbol) const;
 };
 
 //-----------------------------------------------------------------------------

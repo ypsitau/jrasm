@@ -23,28 +23,30 @@ const Directive *Directive::ORG			= nullptr;
 const Directive *Directive::PCG			= nullptr;
 const Directive *Directive::PROC		= nullptr;
 
+DirectiveList Directive::_directiveList;
+
 Directive::~Directive()
 {
 }
 
 void Directive::Initialize()
 {
-	CSEG		= new Directive_CSEG();
-	DB			= new Directive_DB();
-	DSEG		= new Directive_DSEG();
-	DW			= new Directive_DW();
-	ENDM		= new Directive_ENDM();
-	ENDP		= new Directive_ENDP();
-	ENDPCG		= new Directive_ENDPCG();
-	EQU			= new Directive_EQU();
-	FILENAME_JR	= new Directive_FILENAME_JR();
-	INCLUDE		= new Directive_INCLUDE();
-	ISEG		= new Directive_ISEG();
-	MACRO		= new Directive_MACRO();
-	MML			= new Directive_MML();
-	ORG			= new Directive_ORG();
-	PCG			= new Directive_PCG();
-	PROC		= new Directive_PROC();
+	_directiveList.Assign(CSEG			= new Directive_CSEG());
+	_directiveList.Assign(DB			= new Directive_DB());
+	_directiveList.Assign(DSEG			= new Directive_DSEG());
+	_directiveList.Assign(DW			= new Directive_DW());
+	_directiveList.Assign(ENDM			= new Directive_ENDM());
+	_directiveList.Assign(ENDP			= new Directive_ENDP());
+	_directiveList.Assign(ENDPCG		= new Directive_ENDPCG());
+	_directiveList.Assign(EQU			= new Directive_EQU());
+	_directiveList.Assign(FILENAME_JR	= new Directive_FILENAME_JR());
+	_directiveList.Assign(INCLUDE		= new Directive_INCLUDE());
+	_directiveList.Assign(ISEG			= new Directive_ISEG());
+	_directiveList.Assign(MACRO			= new Directive_MACRO());
+	_directiveList.Assign(MML			= new Directive_MML());
+	_directiveList.Assign(ORG			= new Directive_ORG());
+	_directiveList.Assign(PCG			= new Directive_PCG());
+	_directiveList.Assign(PROC			= new Directive_PROC());
 }
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
