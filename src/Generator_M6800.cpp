@@ -141,7 +141,7 @@ bool Generator_M6800::IsRegisterSymbol(const char *symbol) const
 	return false;
 }
 
-bool Generator_M6800::DoCalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
+bool Generator_M6800::DoForwardAddress(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {

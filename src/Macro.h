@@ -26,6 +26,7 @@ private:
 	inline ~Macro() {}
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline const ExprOwner &GetExprOwner() const { return *_pExprOwner; }
 };
 
 //-----------------------------------------------------------------------------

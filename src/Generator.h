@@ -26,11 +26,11 @@ public:
 	inline size_t GetBytesInstMax() const { return _bytesInstMax; }
 	inline size_t GetInstNameLenMax() const { return _instNameLenMax; }
 	static void Initialize(Generator *pGenerator);
-	bool CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
+	bool ForwardAddress(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
 	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
-	virtual bool DoCalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const = 0;
+	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const = 0;
 	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const = 0;
 };
 

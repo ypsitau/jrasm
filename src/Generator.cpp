@@ -17,10 +17,10 @@ void Generator::Initialize(Generator *pGenerator)
 	_pGenerator.reset(pGenerator);
 }
 
-bool Generator::CalcInstBytes(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
+bool Generator::ForwardAddress(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
 {
 	if (!context.CheckRegionReady()) return false;
-	return DoCalcInstBytes(context, pExpr, pBytes);
+	return DoForwardAddress(context, pExpr, pBytes);
 }
 
 bool Generator::Generate(Context &context, const Expr_Instruction *pExpr) const

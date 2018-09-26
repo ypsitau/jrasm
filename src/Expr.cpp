@@ -515,22 +515,25 @@ String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 
+bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
+{
+	const Macro *pMacro = context.GetMacroDict().Lookup(GetSymbol());
+	if (pMacro != nullptr) {
+		_pExprsExpanded.reset(pMacro->GetExprOwner().Reference());
+	}
+	return true;
+}
+
 bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
 	UInt32 bytes = 0;
-	Generator::GetInstance().CalcInstBytes(context, this, &bytes);
+	Generator::GetInstance().ForwardAddress(context, this, &bytes);
 	return true;
 }
 
 bool Expr_Instruction::OnPhaseGenerate(Context &context) const
 {
-	const Directive *pDirective = context.FindDirective("");
-	if (pDirective != nullptr) {
-		
-		//return pDirective->OnPhaseGenerate(context, this);
-		
-	}
 	return Generator::GetInstance().Generate(context, this);
 }
 

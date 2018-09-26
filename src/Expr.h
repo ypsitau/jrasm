@@ -335,12 +335,14 @@ public:
 class Expr_Instruction : public Expr {
 private:
 	String _symbol;
+	AutoPtr<ExprOwner> _pExprsExpanded;
 public:
 	static const Type TYPE;
 public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
+	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
