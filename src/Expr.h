@@ -325,7 +325,7 @@ public:
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
-	static String ComposeSource(const char *label, bool forceGlobalFlag);
+	static String MakeSource(const char *label, bool forceGlobalFlag);
 };
 
 //-----------------------------------------------------------------------------

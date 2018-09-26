@@ -513,7 +513,8 @@ bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag
 	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
 		return GetAssigned()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
 	}
-	String str = ComposeSource(upperCaseFlag);
+	//String str = ComposeSource(upperCaseFlag);
+	String str = MakeSource(_label.c_str(), _forceGlobalFlag);
 	if (IsAssigned()) {
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
 		str += GetAssigned()->ComposeSource(upperCaseFlag);
@@ -534,10 +535,18 @@ Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
 
 String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
 {
-	return ComposeSource(_label.c_str(), _forceGlobalFlag);
+	String str = MakeSource(_label.c_str(), _forceGlobalFlag);
+#if 0
+	const int nColsPerLine = 3; //**********************
+	if (IsAssigned()) {
+		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
+		str += GetAssigned()->ComposeSource(upperCaseFlag);
+	}
+#endif
+	return str;
 }
 
-String Expr_LabelDef::ComposeSource(const char *label, bool forceGlobalFlag)
+String Expr_LabelDef::MakeSource(const char *label, bool forceGlobalFlag)
 {
 	String str;
 	str = label;
@@ -790,14 +799,20 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 
 bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
-	String str = Expr_LabelDef::ComposeSource(_symbol.c_str(), _forceGlobalFlag);
+#if 0
+	String str = Expr_LabelDef::MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
 	str += ComposeSource(upperCaseFlag);
 	::fprintf(fp, "%s\n", str.c_str());
 	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
 	for (auto pExpr : GetMacroBody()->GetChildren()) {
-		::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());
+		if (pExpr->IsTypeLabelDef()) {
+			::fprintf(fp, "%s\n", pExpr->ComposeSource(upperCaseFlag).c_str());
+		} else {
+			::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());
+		}
 	}
+#endif
 	return true;
 }
 
