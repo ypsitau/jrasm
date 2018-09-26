@@ -57,7 +57,7 @@ public:
 	static const Directive *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
-	virtual bool OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
@@ -162,7 +162,10 @@ public:
 class Directive_INCLUDE : public Directive {
 public:
 	inline Directive_INCLUDE() : Directive(".INCLUDE") {}
-	virtual bool OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
+	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
 };
 

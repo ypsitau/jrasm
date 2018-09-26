@@ -63,7 +63,7 @@ bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const 
 	return true;
 }
 
-bool Directive::OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const
+bool Directive::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
 {
 	// nothing to do
 	return true;
@@ -359,7 +359,38 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directi
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
-bool Directive_INCLUDE::OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
+{
+	const ExprList &operands = pExpr->GetOperands();
+	if (operands.size() != 1) {
+		ErrorLog::AddError(pExpr, "directive .INCLUDE takes one operand");
+		return false;
+	}
+	const Expr *pExprLast = operands.back();
+	if (pExprLast->IsTypeString()) {
+		ErrorLog::AddError(pExpr, "directive .INCLUDE takes a string value as its operand");
+		return false;
+	}
+	const char *fileNameIncluded = dynamic_cast<const Expr_String *>(pExprLast)->GetString();
+	String pathNameIncluded = JoinPathName(context.GetDirNameSrc(), fileNameIncluded);
+	Parser parser(pathNameIncluded);
+	if (!parser.ParseFile()) return false;
+	pExpr->SetExprIncluded(parser.GetRoot()->Reference());
+	return true;
+}
+
+bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+{
+	//return pExpr->GetExprIncluded()->OnPhaseDeclareMacro(context);
+	return true;
+}
+
+bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const
+{
+	return true;
+}
+
+bool Directive_INCLUDE::OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const
 {
 	return true;
 }
