@@ -27,7 +27,7 @@ private:
 	~ExprDict();
 public:
 	inline ExprDict *GetParent() { return _pExprDictParent.get(); }
-	void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
+	void Assign(const String &label, Expr *pExpr, bool forceGlobalFlag);
 	bool IsDefined(const char *label) const;
 	const Expr *Lookup(const char *label) const;
 	ExprDict *GetGlobal();

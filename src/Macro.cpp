@@ -23,7 +23,7 @@ MacroDict::~MacroDict()
 	}
 }
 
-void MacroDict::Associate(const String &label, Macro *pMacro)
+void MacroDict::Assign(const String &label, Macro *pMacro)
 {
 	insert(std::make_pair(label, pMacro));
 }

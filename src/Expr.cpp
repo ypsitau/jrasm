@@ -173,7 +173,7 @@ ExprDict::~ExprDict()
 	}
 }
 
-void ExprDict::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
+void ExprDict::Assign(const String &label, Expr *pExpr, bool forceGlobalFlag)
 {
 	ExprDict *pExprDict = forceGlobalFlag? GetGlobal() : this;
 	pExprDict->insert(std::make_pair(label, pExpr));
@@ -485,9 +485,9 @@ bool Expr_LabelDef::OnPhaseSetupExprDict(Context &context)
 		return false;
 	}
 	if (IsAssigned()) {
-		_pExprDict->Associate(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
+		_pExprDict->Assign(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		_pExprDict->Associate(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
+		_pExprDict->Assign(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
 	}
 	return true;
 }
@@ -582,7 +582,7 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 	for ( ; pParamName != paramNames.end() && ppExpr != exprList.end(); pParamName++, ppExpr++) {
 		const String &paramName = *pParamName;
 		const Expr *pExpr = *ppExpr;
-		pExprDict->Associate(paramName, pExpr->Reference(), false);
+		pExprDict->Assign(paramName, pExpr->Reference(), false);
 	}
 	if (pParamName != paramNames.end()) {
 		ErrorLog::AddError(this, "too few parameters for %s", pMacro->GetSymbol());
@@ -771,7 +771,7 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	}
 	AutoPtr<Macro> pMacro(new Macro(labels[0], labels.begin() + 1, labels.end(),
 									GetMacroBody()->GetChildren().Reference()));
-	context.GetMacroDict().Associate(pMacro->GetSymbol(), pMacro.release());
+	context.GetMacroDict().Assign(pMacro->GetSymbol(), pMacro.release());
 	return true;
 }
 

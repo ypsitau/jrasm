@@ -38,7 +38,7 @@ public:
 	inline MacroDict() {}
 	~MacroDict();
 public:
-	void Associate(const String &label, Macro *pMacro);
+	void Assign(const String &label, Macro *pMacro);
 	bool IsDefined(const char *label) const;
 	const Macro *Lookup(const char *label) const;
 };
