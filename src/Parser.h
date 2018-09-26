@@ -25,16 +25,11 @@ private:
 	AutoPtr<Token> _pTokenPrev;
 public:
 	Parser(const String &fileNameSrc);
-	inline const char *GetFileNameSrc() const { return _tokenizer.GetFileNameSrc(); }
-	inline Expr_Root *GetRoot() {
-		return dynamic_cast<Expr_Root *>(_pExprStack->front());
-	}
-	inline const Expr_Root *GetRoot() const {
-		return dynamic_cast<const Expr_Root *>(_pExprStack->front());
-	}
+	inline const char *GetPathNameSrc() const { return _tokenizer.GetPathNameSrc(); }
+	inline const Expr *GetRoot() const { return _pExprStack->front(); }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
-		pExpr->SetSourceInfo(_tokenizer.GetFileNameSrcShared()->Reference(), pToken->GetLineNo());
+		pExpr->SetSourceInfo(_tokenizer.GetPathNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;

@@ -40,15 +40,15 @@ public:
 private:
 	Stat _stat;
 	Listener *_pListener;
-	AutoPtr<StringShared> _pFileNameSrc;
+	AutoPtr<StringShared> _pPathNameSrc;
 	UInt16 _num;
 	String _str;
 	int _nLines;
 	char _quotedType;
 public:
 	Tokenizer(Listener *pListener, const String &fileNameSrc);
-	inline const char *GetFileNameSrc() const { return _pFileNameSrc->GetString(); }
-	inline const StringShared *GetFileNameSrcShared() const { return _pFileNameSrc.get(); }
+	inline const char *GetPathNameSrc() const { return _pPathNameSrc->GetString(); }
+	inline const StringShared *GetPathNameSrcShared() const { return _pPathNameSrc.get(); }
 	bool FeedChar(char ch);
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;

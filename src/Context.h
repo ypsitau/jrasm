@@ -56,7 +56,6 @@ public:
 		void Clear();
 	};
 private:
-	std::unique_ptr<Parser> _pParser;
 	String _pathNameSrc;
 	String _fileBaseNameSrc;
 	String _fileNameJR;
@@ -65,6 +64,7 @@ private:
 	Phase _phaseCur;
 	ExprDictStack _exprDictStack;
 	MacroDict _macroDict;
+	AutoPtr<Expr> _pExprRoot;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);

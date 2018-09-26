@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
 	_stat(STAT_LineTop), _pListener(pListener),
-	_pFileNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0),
+	_pPathNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0),
 	_quotedType(QUOTEDTYPE_None)
 {
 }
@@ -295,5 +295,5 @@ void Tokenizer::AddError(const char *format, ...) const
 
 void Tokenizer::AddErrorV(const char *format, va_list ap) const
 {
-	ErrorLog::AddErrorV(GetFileNameSrc(), _nLines + 1, format, ap);
+	ErrorLog::AddErrorV(GetPathNameSrc(), _nLines + 1, format, ap);
 }
