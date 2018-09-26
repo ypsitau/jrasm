@@ -6,6 +6,12 @@
 //-----------------------------------------------------------------------------
 // Macro
 //-----------------------------------------------------------------------------
+Macro::Macro(const String &symbol, StringList::const_iterator pParamName,
+			 StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody) :
+	_symbol(symbol), _pExprMacroBody(pExprMacroBody)
+{
+	_paramNames.insert(_paramNames.end(), pParamName, pParamNameEnd);
+}
 
 //-----------------------------------------------------------------------------
 // MacroDict

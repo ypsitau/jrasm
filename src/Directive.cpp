@@ -514,25 +514,3 @@ bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 {
 	return OnPhaseSetupExprDict(context, pExpr);
 }
-
-//-----------------------------------------------------------------------------
-// Directive_Custom
-//-----------------------------------------------------------------------------
-Directive_Custom::Directive_Custom(
-	const String &symbol, StringList::const_iterator pParamName,
-	StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody) :
-	Directive(symbol), _pExprMacroBody(pExprMacroBody)
-{
-	_paramNames.insert(_paramNames.end(), pParamName, pParamNameEnd);
-}
-
-bool Directive_Custom::OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const
-{
-	return true;
-}
-
-bool Directive_Custom::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
-{
-	if (!context.CheckRegionReady()) return false;
-	return true;
-}
