@@ -13,12 +13,14 @@ class Context;
 class Directive;
 
 //-----------------------------------------------------------------------------
-// DirectiveList
+// DirectiveDict
 //-----------------------------------------------------------------------------
-class DirectiveList : public std::vector<const Directive *> {
+class DirectiveDict : public std::map<String, const Directive *, LessThan_StringICase> {
 public:
-	inline void Assign(const Directive *pDirective) { push_back(pDirective); }
-	const Directive *FindBySymbol(const char *symbol) const;
+	inline DirectiveDict() {}
+public:
+	void Assign(const Directive *pDirective);
+	const Directive *Lookup(const char *symbol) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -45,7 +47,7 @@ public:
 	static const Directive *PCG;
 	static const Directive *PROC;
 private:
-	static DirectiveList _directiveList;
+	static DirectiveDict _directiveDict;
 public:
 	inline Directive(const String &symbol) : _symbol(symbol) {}
 protected:

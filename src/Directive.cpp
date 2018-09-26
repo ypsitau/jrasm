@@ -23,7 +23,7 @@ const Directive *Directive::ORG			= nullptr;
 const Directive *Directive::PCG			= nullptr;
 const Directive *Directive::PROC		= nullptr;
 
-DirectiveList Directive::_directiveList;
+DirectiveDict Directive::_directiveDict;
 
 Directive::~Directive()
 {
@@ -31,27 +31,27 @@ Directive::~Directive()
 
 void Directive::Initialize()
 {
-	_directiveList.Assign(CSEG			= new Directive_CSEG());
-	_directiveList.Assign(DB			= new Directive_DB());
-	_directiveList.Assign(DSEG			= new Directive_DSEG());
-	_directiveList.Assign(DW			= new Directive_DW());
-	_directiveList.Assign(ENDM			= new Directive_ENDM());
-	_directiveList.Assign(ENDP			= new Directive_ENDP());
-	_directiveList.Assign(ENDPCG		= new Directive_ENDPCG());
-	_directiveList.Assign(EQU			= new Directive_EQU());
-	_directiveList.Assign(FILENAME_JR	= new Directive_FILENAME_JR());
-	_directiveList.Assign(INCLUDE		= new Directive_INCLUDE());
-	_directiveList.Assign(ISEG			= new Directive_ISEG());
-	_directiveList.Assign(MACRO			= new Directive_MACRO());
-	_directiveList.Assign(MML			= new Directive_MML());
-	_directiveList.Assign(ORG			= new Directive_ORG());
-	_directiveList.Assign(PCG			= new Directive_PCG());
-	_directiveList.Assign(PROC			= new Directive_PROC());
+	_directiveDict.Assign(CSEG			= new Directive_CSEG());
+	_directiveDict.Assign(DB			= new Directive_DB());
+	_directiveDict.Assign(DSEG			= new Directive_DSEG());
+	_directiveDict.Assign(DW			= new Directive_DW());
+	_directiveDict.Assign(ENDM			= new Directive_ENDM());
+	_directiveDict.Assign(ENDP			= new Directive_ENDP());
+	_directiveDict.Assign(ENDPCG		= new Directive_ENDPCG());
+	_directiveDict.Assign(EQU			= new Directive_EQU());
+	_directiveDict.Assign(FILENAME_JR	= new Directive_FILENAME_JR());
+	_directiveDict.Assign(INCLUDE		= new Directive_INCLUDE());
+	_directiveDict.Assign(ISEG			= new Directive_ISEG());
+	_directiveDict.Assign(MACRO			= new Directive_MACRO());
+	_directiveDict.Assign(MML			= new Directive_MML());
+	_directiveDict.Assign(ORG			= new Directive_ORG());
+	_directiveDict.Assign(PCG			= new Directive_PCG());
+	_directiveDict.Assign(PROC			= new Directive_PROC());
 }
 
 const Directive *Directive::Lookup(const char *symbol)
 {
-	return _directiveList.FindBySymbol(symbol);
+	return _directiveDict.Lookup(symbol);
 }
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
@@ -93,14 +93,17 @@ Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
 }
 
 //-----------------------------------------------------------------------------
-// DirectiveList
+// DirectiveDict
 //-----------------------------------------------------------------------------
-const Directive *DirectiveList::FindBySymbol(const char *symbol) const
+void DirectiveDict::Assign(const Directive *pDirective)
 {
-	for (auto pDirective : *this) {
-		if (strcasecmp(pDirective->GetSymbol(), symbol) == 0) return pDirective;
-	}
-	return nullptr;
+	insert(std::make_pair(pDirective->GetSymbol(), pDirective));
+}
+
+const Directive *DirectiveDict::Lookup(const char *label) const
+{
+	const_iterator iter = find(label);
+	return (iter == end())? nullptr : iter->second;
 }
 
 //-----------------------------------------------------------------------------
