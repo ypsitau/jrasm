@@ -100,7 +100,7 @@ void Context::PopLocalExprDict()
 Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
 {
 	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
-	for (auto iter : *GetExprDictGlobal()) {
+	for (auto iter : GetExprDictGlobal()) {
 		const String &label = iter.first;
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));

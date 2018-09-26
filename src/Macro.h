@@ -26,7 +26,6 @@ private:
 class MacroDict : public std::map<String, Macro *, LessThan_StringICase> {
 public:
 	inline MacroDict() {}
-private:
 	~MacroDict();
 public:
 	void Associate(const String &label, Macro *pMacro);

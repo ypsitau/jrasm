@@ -6,6 +6,7 @@
 
 #include "Segment.h"
 #include "Expr.h"
+#include "Macro.h"
 
 class Parser;
 class Directive;
@@ -65,6 +66,7 @@ private:
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
 	ExprDictStack _exprDictStack;
+	MacroDict _macroDict;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);
@@ -84,10 +86,12 @@ public:
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
 	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
-	inline ExprDict *GetExprDictCurrent() { return _exprDictStack.back(); }
-	inline const ExprDict *GetExprDictCurrent() const { return _exprDictStack.back(); }
-	inline ExprDict *GetExprDictGlobal() { return _exprDictStack.front(); }
-	inline const ExprDict *GetExprDictGlobal() const { return _exprDictStack.front(); }
+	inline ExprDict &GetExprDictCurrent() { return *_exprDictStack.back(); }
+	inline const ExprDict &GetExprDictCurrent() const { return *_exprDictStack.back(); }
+	inline ExprDict &GetExprDictGlobal() { return *_exprDictStack.front(); }
+	inline const ExprDict &GetExprDictGlobal() const { return *_exprDictStack.front(); }
+	inline MacroDict &GetMacroDict() { return _macroDict; }
+	inline const MacroDict &GetMacroDict() const { return _macroDict; }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	bool ParseFile();
