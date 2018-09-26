@@ -108,13 +108,26 @@ String MakeQuotedString(const String &str, char chBorder)
 	return strDst;
 }
 
-const char *ExtractFileName(const char *pathName)
+String JoinPathName(const char *pathName1, const char *pathName2)
+{
+	const char fileSepChar = '/';
+	if (*pathName1 == '\0') return pathName2;
+	if (*pathName2 == '\0') return pathName1;
+	String rtn;
+	rtn += pathName1;
+	if (!IsFileSeparator(*(pathName1 + ::strlen(pathName1) - 1))) rtn += fileSepChar;
+	rtn += pathName2;
+	return rtn;
+}
+
+void SplitFileName(const char *pathName, String *pDirName, String *pFileName)
 {
 	const char *p = pathName + ::strlen(pathName);
 	for ( ; p > pathName; p--) {
 		if (IsFileSeparator(*(p - 1))) break;
 	}
-	return p;
+	if (pDirName != nullptr) *pDirName = String(pathName, p);
+	if (pFileName != nullptr) *pFileName = String(p);
 }
 
 const char *SeekExtName(const char *pathName)

@@ -9,8 +9,9 @@
 Context::Context(const String &pathNameSrc) :
 	_pathNameSrc(pathNameSrc), _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 {
-	const char *fileNameSrc = ::ExtractFileName(pathNameSrc.c_str());
-	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc);
+	String fileNameSrc;
+	SplitFileName(pathNameSrc.c_str(), &_dirNameSrc, &fileNameSrc);
+	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc.c_str());
 	_exprDictStack.push_back(new ExprDict());			// global exprDict
 	_segmentOwner.push_back(new Segment("code"));		// code segment
 	_segmentOwner.push_back(new Segment("data"));		// data segment

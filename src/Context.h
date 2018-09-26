@@ -58,6 +58,7 @@ public:
 	};
 private:
 	String _pathNameSrc;
+	String _dirNameSrc;
 	String _fileBaseNameSrc;
 	String _fileNameJR;
 	Segment *_pSegmentCur;
@@ -70,6 +71,7 @@ private:
 public:
 	Context(const String &pathNameSrc);
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
+	inline const char *GetDirNameSrc() const { return _dirNameSrc.c_str(); }
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
 	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
 	inline String MakeFileNameOut(const char *extName) const { return _fileBaseNameSrc + extName; }

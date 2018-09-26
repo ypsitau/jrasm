@@ -146,7 +146,8 @@ String JustifyRight(const char *str, size_t width, char padding = ' ');
 String ToLower(const char *str);
 String ToUpper(const char *str);
 String MakeQuotedString(const String &str, char chBorder);
-const char *ExtractFileName(const char *pathName);
+String JoinPathName(const char *pathName1, const char *pathName2);
+void SplitFileName(const char *pathName, String *pDirName, String *pFileName);
 const char *SeekExtName(const char *pathName);
 String RemoveExtName(const char *pathName);
 
