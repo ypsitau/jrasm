@@ -6,11 +6,9 @@
 //-----------------------------------------------------------------------------
 // Macro
 //-----------------------------------------------------------------------------
-Macro::Macro(const String &symbol, StringList::const_iterator pParamName,
-			 StringList::const_iterator pParamNameEnd, ExprOwner *pExprOwner) :
-	_symbol(symbol), _pExprOwner(pExprOwner)
+Macro::Macro(const String &symbol, ExprOwner *pExprOwner) :
+	_cntRef(1), _symbol(symbol), _pExprOwner(pExprOwner)
 {
-	_paramNames.insert(_paramNames.end(), pParamName, pParamNameEnd);
 }
 
 //-----------------------------------------------------------------------------
@@ -23,9 +21,9 @@ MacroDict::~MacroDict()
 	}
 }
 
-void MacroDict::Assign(const String &label, Macro *pMacro)
+void MacroDict::Assign(Macro *pMacro)
 {
-	insert(std::make_pair(label, pMacro));
+	insert(std::make_pair(pMacro->GetSymbol(), pMacro));
 }
 
 bool MacroDict::IsDefined(const char *label) const

@@ -42,7 +42,7 @@ public:
 class ExprList : public std::vector<Expr *> {
 public:
 	Expr_LabelDef *SeekLabelDefToAssoc();
-	String ComposeSource(const char *sep, bool upperCaseFlag) const;
+	String ComposeSource(bool upperCaseFlag, const char *sep) const;
 	void Print(bool upperCaseFlag) const;
 };
 
@@ -311,11 +311,13 @@ public:
 	inline Expr_LabelDef(const String &label, bool forceGlobalFlag) :
 		Expr(TYPE), _label(label), _forceGlobalFlag(forceGlobalFlag) {}
 	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
+	inline Expr *GetAssigned() { return GetChildren().back(); }
 	inline const Expr *GetAssigned() const { return GetChildren().back(); }
 	inline bool IsAssigned() const { return !GetChildren().empty(); }
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
+	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
@@ -405,11 +407,13 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_MacroDecl : public Expr {
 private:
+	String _symbol;
 	AutoPtr<Expr_MacroBody> _pExprMacroBody;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroDecl() : Expr(TYPE), _pExprMacroBody(new Expr_MacroBody()) {}
+	inline Expr_MacroDecl(const String &symbol) :
+		Expr(TYPE), _symbol(symbol), _pExprMacroBody(new Expr_MacroBody()) {}
 	inline const char *GetLabel() const {
 		return dynamic_cast<Expr_LabelRef *>(GetChildren().front())->GetLabel();
 	}

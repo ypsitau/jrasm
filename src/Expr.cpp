@@ -125,7 +125,7 @@ Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
 	return pExprLabelDef->IsAssigned()? nullptr : pExprLabelDef;
 }
 
-String ExprList::ComposeSource(const char *sep, bool upperCaseFlag) const
+String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
 {
 	String rtn;
 	for (auto pExpr : *this) {
@@ -424,7 +424,7 @@ String Expr_Bracket::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "[";
-	str += GetChildren().ComposeSource(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(upperCaseFlag, ",");
 	str += "]";
 	return str;
 }
@@ -455,7 +455,7 @@ String Expr_Brace::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "{";
-	str += GetChildren().ComposeSource(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(upperCaseFlag, ",");
 	str += "}";
 	return str;
 }
@@ -482,6 +482,11 @@ Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
+bool Expr_LabelDef::OnPhaseDeclareMacro(Context &context)
+{
+	return IsAssigned()? GetAssigned()->OnPhaseDeclareMacro(context) : true;
+}
+
 bool Expr_LabelDef::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
@@ -506,7 +511,7 @@ bool Expr_LabelDef::OnPhaseGenerate(Context &context) const
 bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	String str = _label;
-	str += ":";
+	str += _forceGlobalFlag? "::" : ":";
 	if (IsAssigned()) {
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
 		str += GetAssigned()->ComposeSource(upperCaseFlag);
@@ -666,7 +671,7 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
-	str += GetChildren().ComposeSource(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(upperCaseFlag, ",");
 	return str;
 }
 
@@ -728,7 +733,7 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 		(upperCaseFlag? ToUpper(symbol) : ToLower(symbol)).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
-	str += GetChildren().ComposeSource(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(upperCaseFlag, ",");
 	return str;
 }
 
@@ -749,7 +754,7 @@ Expr *Expr_MacroBody::Substitute(const ExprDict &exprDict) const
 
 String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
 {
-	String str = GetChildren().ComposeSource("\n", upperCaseFlag);
+	String str = GetChildren().ComposeSource(upperCaseFlag, "\n");
 	str += "\n";
 	return str;
 }
@@ -762,21 +767,17 @@ const Expr::Type Expr_MacroDecl::TYPE = Expr::TYPE_MacroDecl;
 bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 {
 	const ExprList &operands = GetOperands();
-	if (operands.empty()) {
-		ErrorLog::AddError(this, "directive .MACRO needs at least one operand");
-		return false;
-	}
-	StringList labels;
+	AutoPtr<Macro> pMacro(new Macro(_symbol, GetMacroBody()->GetChildren().Reference()));
+	StringList &paramNames = pMacro->GetParamNames();
+	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
 		if (!pExpr->IsTypeLabelRef()) {
-			ErrorLog::AddError(this, "directive .MACRO takes a list of labels as its operands");
+			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
 			return false;
 		}
-		labels.push_back(dynamic_cast<const Expr_LabelRef *>(pExpr)->GetLabel());
+		paramNames.push_back(dynamic_cast<const Expr_LabelRef *>(pExpr)->GetLabel());
 	}
-	AutoPtr<Macro> pMacro(new Macro(labels[0], labels.begin() + 1, labels.end(),
-									GetMacroBody()->GetChildren().Reference()));
-	context.GetMacroDict().Assign(pMacro->GetSymbol(), pMacro.release());
+	context.GetMacroDict().Assign(pMacro.release());
 	return true;
 }
 
@@ -804,6 +805,6 @@ String Expr_MacroDecl::ComposeSource(bool upperCaseFlag) const
 {
 	String str = upperCaseFlag? ".MACRO" : ".macro";
 	str += ' ';
-	str += GetChildren().ComposeSource(",", upperCaseFlag);
+	str += GetChildren().ComposeSource(upperCaseFlag, ",");
 	return str;
 }
