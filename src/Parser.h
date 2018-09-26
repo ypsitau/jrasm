@@ -24,13 +24,14 @@ private:
 	TokenStack _tokenStack;
 	AutoPtr<Token> _pTokenPrev;
 public:
-	Parser(const String &fileNameSrc);
+	Parser(const String &pathNameSrc);
 	inline const char *GetPathNameSrc() const { return _tokenizer.GetPathNameSrc(); }
 	inline const Expr *GetRoot() const { return _pExprStack->front(); }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
 		pExpr->SetSourceInfo(_tokenizer.GetPathNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
+	bool ParseFile();
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;
 public:

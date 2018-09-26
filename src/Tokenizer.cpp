@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 // Tokenizer
 //-----------------------------------------------------------------------------
-Tokenizer::Tokenizer(Listener *pListener, const String &fileNameSrc) :
+Tokenizer::Tokenizer(Listener *pListener, const String &pathNameSrc) :
 	_stat(STAT_LineTop), _pListener(pListener),
-	_pPathNameSrc(new StringShared(fileNameSrc)), _num(0), _nLines(0),
+	_pPathNameSrc(new StringShared(pathNameSrc)), _num(0), _nLines(0),
 	_quotedType(QUOTEDTYPE_None)
 {
 }

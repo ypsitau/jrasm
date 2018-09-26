@@ -46,7 +46,7 @@ private:
 	int _nLines;
 	char _quotedType;
 public:
-	Tokenizer(Listener *pListener, const String &fileNameSrc);
+	Tokenizer(Listener *pListener, const String &pathNameSrc);
 	inline const char *GetPathNameSrc() const { return _pPathNameSrc->GetString(); }
 	inline const StringShared *GetPathNameSrcShared() const { return _pPathNameSrc.get(); }
 	bool FeedChar(char ch);

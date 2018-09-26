@@ -21,20 +21,9 @@ Context::Context(const String &pathNameSrc) :
 bool Context::ParseFile()
 {
 	Parser parser(_pathNameSrc);
-	FILE *fp = nullptr;
-	if (::fopen_s(&fp, parser.GetPathNameSrc(), "rt") != 0) {
-		ErrorLog::AddError("failed to open file: %s\n", parser.GetPathNameSrc());
-		return false;
-	}
-	for (;;) {
-		int chRaw = ::fgetc(fp);
-		char ch = (chRaw < 0)? '\0' : static_cast<unsigned char>(chRaw);
-		if (!parser.FeedChar(ch)) break;
-		if (ch == '\0') break;
-	}
-	::fclose(fp);
+	if (!parser.ParseFile()) return false;
 	_pExprRoot.reset(parser.GetRoot()->Reference());
-	return !ErrorLog::HasError();
+	return true;
 }
 
 bool Context::Prepare()
