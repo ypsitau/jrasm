@@ -12,10 +12,10 @@ Context::Context(const String &pathNameSrc) :
 {
 	const char *fileNameSrc = ::ExtractFileName(pathNameSrc.c_str());
 	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc);
-	_lookupTableStack.push_back(new LookupTable());		// global lookup table
-	_segmentOwner.push_back(new Segment("code"));		// code segment
-	_segmentOwner.push_back(new Segment("data"));		// data segment
-	_segmentOwner.push_back(new Segment("internal"));	// internal segment
+	_lookupTableStack.push_back(new Expr::LookupTable());	// global lookup table
+	_segmentOwner.push_back(new Segment("code"));			// code segment
+	_segmentOwner.push_back(new Segment("data"));			// data segment
+	_segmentOwner.push_back(new Segment("internal"));		// internal segment
 	SelectCodeSegment();
 	AddDirective(new Directive_CSEG());
 	AddDirective(new Directive_DB());
@@ -86,15 +86,15 @@ void Context::StartRegion(UInt32 addr)
 
 void Context::PushLocalLookupTable()
 {
-	LookupTable *pLookupTable = new LookupTable(_lookupTableStack.back()->Reference());
+	Expr::LookupTable *pLookupTable = new Expr::LookupTable(_lookupTableStack.back()->Reference());
 	_lookupTableStack.push_back(pLookupTable);
 }
 
 void Context::PopLocalLookupTable()
 {
-	LookupTable *pLookupTable = _lookupTableStack.back();
+	Expr::LookupTable *pLookupTable = _lookupTableStack.back();
 	_lookupTableStack.pop_back();
-	LookupTable::Delete(pLookupTable);
+	Expr::LookupTable::Delete(pLookupTable);
 }
 
 Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
@@ -139,56 +139,6 @@ const Directive *Context::FindDirective(const char *symbol) const
 	return _pDirectiveOwner->FindBySymbol(symbol);
 }
 
-//-----------------------------------------------------------------------------
-// Context::LookupTable
-//-----------------------------------------------------------------------------
-Context::LookupTable::~LookupTable()
-{
-	for (auto iter : *this) {
-		Expr::Delete(iter.second);
-	}
-}
-
-void Context::LookupTable::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
-{
-	LookupTable *pLookupTable = forceGlobalFlag? GetGlobal() : this;
-	pLookupTable->insert(std::make_pair(label, pExpr));
-}
-
-bool Context::LookupTable::IsDefined(const char *label) const
-{
-	return find(label) != end();
-}
-
-const Expr *Context::LookupTable::Lookup(const char *label) const
-{
-	const_iterator iter = find(label);
-	if (iter != end())	return iter->second;
-	return _pLookupTableParent.IsNull()? nullptr : _pLookupTableParent->Lookup(label);
-}
-
-Context::LookupTable *Context::LookupTable::GetGlobal()
-{
-	LookupTable *pLookupTable = this;
-	for ( ; pLookupTable->GetParent() != nullptr; pLookupTable = pLookupTable->GetParent()) ;
-	return pLookupTable;
-}
-
-//-----------------------------------------------------------------------------
-// Context::LookupTableOwner
-//-----------------------------------------------------------------------------
-Context::LookupTableOwner::~LookupTableOwner()
-{
-	Clear();
-}
-
-void Context::LookupTableOwner::Clear()
-{
-	for (auto pLookupTable : *this) {
-		LookupTable::Delete(pLookupTable);
-	}
-	clear();
-}
 
 //-----------------------------------------------------------------------------
 // Context::LabelInfoList

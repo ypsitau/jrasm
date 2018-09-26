@@ -5,10 +5,9 @@
 #define __CONTEXT_H__
 
 #include "Segment.h"
+#include "Expr.h"
 
 class Parser;
-class Expr;
-class ExprList;
 class Directive;
 class DirectiveOwner;
 
@@ -25,41 +24,6 @@ public:
 		PHASE_SetupLookup,
 		PHASE_Generate,
 	};
-public:
-	struct LessThan_StringICase {
-		inline bool operator()(const String &str1, const String &str2) const {
-			return ::strcasecmp(str1.c_str(), str2.c_str()) < 0;
-		}
-	};
-	class LookupTable : public std::map<String, Expr *, LessThan_StringICase> {
-	private:
-		int _cntRef;
-		AutoPtr<LookupTable> _pLookupTableParent;
-	public:
-		DeclareReferenceAccessor(LookupTable);
-	public:
-		inline LookupTable(LookupTable *pLookupTableParent = nullptr) :
-			_cntRef(1), _pLookupTableParent(pLookupTableParent) {}
-	private:
-		~LookupTable();
-	public:
-		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
-		void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
-		bool IsDefined(const char *label) const;
-		const Expr *Lookup(const char *label) const;
-		LookupTable *GetGlobal();
-		inline const LookupTable *GetGlobal() const {
-			return const_cast<LookupTable *>(this)->GetGlobal();
-		}
-	};
-	class LookupTableList : public std::vector<LookupTable *> {
-	};
-	class LookupTableOwner : public LookupTableList {
-	public:
-		~LookupTableOwner();
-		void Clear();
-	};
-	typedef LookupTableOwner LookupTableStack;
 public:
 	class LabelInfo {
 	public:
@@ -100,7 +64,7 @@ private:
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
-	LookupTableStack _lookupTableStack;
+	Expr::LookupTableStack _lookupTableStack;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);
@@ -120,10 +84,10 @@ public:
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
 	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
-	inline LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
-	inline const LookupTable *GetLookupTable() const { return _lookupTableStack.back(); }
-	inline LookupTable *GetLookupTableGlobal() { return _lookupTableStack.front(); }
-	inline const LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
+	inline Expr::LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
+	inline const Expr::LookupTable *GetLookupTable() const { return _lookupTableStack.back(); }
+	inline Expr::LookupTable *GetLookupTableGlobal() { return _lookupTableStack.front(); }
+	inline const Expr::LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalLookupTable() const { return _lookupTableStack.size() > 1; }
 	bool ParseFile();

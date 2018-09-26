@@ -30,11 +30,41 @@ public:
 		TYPE_MacroBody,
 		TYPE_MacroEntry,
 	};
+public:
+	class LookupTable : public std::map<String, Expr *, LessThan_StringICase> {
+	private:
+		int _cntRef;
+		AutoPtr<LookupTable> _pLookupTableParent;
+	public:
+		DeclareReferenceAccessor(LookupTable);
+	public:
+		inline LookupTable(LookupTable *pLookupTableParent = nullptr) :
+			_cntRef(1), _pLookupTableParent(pLookupTableParent) {}
+	private:
+		~LookupTable();
+	public:
+		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
+		void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
+		bool IsDefined(const char *label) const;
+		const Expr *Lookup(const char *label) const;
+		LookupTable *GetGlobal();
+		inline const LookupTable *GetGlobal() const {
+			return const_cast<LookupTable *>(this)->GetGlobal();
+		}
+	};
+	class LookupTableList : public std::vector<LookupTable *> {
+	};
+	class LookupTableOwner : public LookupTableList {
+	public:
+		~LookupTableOwner();
+		void Clear();
+	};
+	typedef LookupTableOwner LookupTableStack;
 protected:
 	int _cntRef;
 	Type _type;
 	std::auto_ptr<ExprOwner> _pExprChildren;
-	AutoPtr<Context::LookupTable> _pLookupTable;
+	AutoPtr<LookupTable> _pLookupTable;
 	AutoPtr<StringShared> _pFileNameSrc;
 	int _lineNo;
 public:

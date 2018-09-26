@@ -127,6 +127,15 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// LessThan/GreaterThan
+//-----------------------------------------------------------------------------
+struct LessThan_StringICase {
+	inline bool operator()(const String &str1, const String &str2) const {
+		return ::strcasecmp(str1.c_str(), str2.c_str()) < 0;
+	}
+};
+
+//-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
 inline bool IsFileSeparator(char ch) { return ch == '\\' || ch == '/'; }

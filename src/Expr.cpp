@@ -111,6 +111,57 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 }
 
 //-----------------------------------------------------------------------------
+// Expr::LookupTable
+//-----------------------------------------------------------------------------
+Expr::LookupTable::~LookupTable()
+{
+	for (auto iter : *this) {
+		Expr::Delete(iter.second);
+	}
+}
+
+void Expr::LookupTable::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
+{
+	LookupTable *pLookupTable = forceGlobalFlag? GetGlobal() : this;
+	pLookupTable->insert(std::make_pair(label, pExpr));
+}
+
+bool Expr::LookupTable::IsDefined(const char *label) const
+{
+	return find(label) != end();
+}
+
+const Expr *Expr::LookupTable::Lookup(const char *label) const
+{
+	const_iterator iter = find(label);
+	if (iter != end())	return iter->second;
+	return _pLookupTableParent.IsNull()? nullptr : _pLookupTableParent->Lookup(label);
+}
+
+Expr::LookupTable *Expr::LookupTable::GetGlobal()
+{
+	LookupTable *pLookupTable = this;
+	for ( ; pLookupTable->GetParent() != nullptr; pLookupTable = pLookupTable->GetParent()) ;
+	return pLookupTable;
+}
+
+//-----------------------------------------------------------------------------
+// Expr::LookupTableOwner
+//-----------------------------------------------------------------------------
+Expr::LookupTableOwner::~LookupTableOwner()
+{
+	Clear();
+}
+
+void Expr::LookupTableOwner::Clear()
+{
+	for (auto pLookupTable : *this) {
+		LookupTable::Delete(pLookupTable);
+	}
+	clear();
+}
+
+//-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
 Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
@@ -473,6 +524,12 @@ bool Expr_Instruction::OnPhaseSetupLookup(Context &context)
 
 bool Expr_Instruction::OnPhaseGenerate(Context &context) const
 {
+	const Directive *pDirective = context.FindDirective("");
+	if (pDirective != nullptr) {
+		
+		//return pDirective->OnPhaseGenerate(context, this);
+		
+	}
 	return Generator::GetInstance().Generate(context, this);
 }
 
