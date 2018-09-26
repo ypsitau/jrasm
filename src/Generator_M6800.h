@@ -25,7 +25,7 @@ public:
 	public:
 		inline Rule(UInt8 code) : _code(code) {}
 		virtual ~Rule();
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes) = 0;
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) = 0;
 	};
 	class Rule_ACC : public Rule {
 	private:
@@ -34,21 +34,21 @@ public:
 		enum { bytes = 1 };
 	public:
 		inline Rule_ACC(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_REL : public Rule {
 	public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_REL(UInt8 code) : Rule(code) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_INH : public Rule {
 	public:
 		enum { bytes = 1 };
 	public:
 		inline Rule_INH(UInt8 code) : Rule(code) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_IMM8 : public Rule {
 	private:
@@ -57,14 +57,14 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IMM8(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_IMM16 : public Rule {
 	public:
 		enum { bytes = 3 };
 	public:
 		inline Rule_IMM16(UInt8 code) : Rule(code) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_DIR : public Rule {
 	private:
@@ -73,7 +73,7 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_DIR(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_IDX : public Rule {
 	private:
@@ -82,14 +82,14 @@ public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IDX(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_IDXV : public Rule {
 	public:
 		enum { bytes = 2 };
 	public:
 		inline Rule_IDXV(UInt8 code) : Rule(code) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	class Rule_EXT : public Rule {
 	private:
@@ -98,7 +98,7 @@ public:
 		enum { bytes = 3 };
 	public:
 		inline Rule_EXT(UInt8 code, const char *accName = "") : Rule(code), _accName(accName) {}
-		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes);
+		virtual Result Apply(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst);
 	};
 	typedef std::vector<Rule *> RuleList;
 	class RuleOwner : public RuleList {
@@ -113,7 +113,7 @@ public:
 		RuleOwner _ruleOwner;
 	public:
 		Entry(const String &symbol, const String &syntaxDesc);
-		bool ApplyRule(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes) const;
+		bool ApplyRule(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const;
 		inline const char *GetSymbol() const { return _symbol.c_str(); }
 		inline const char *GetSyntaxDesc() const { return _syntaxDesc.c_str(); }
 		inline void AddRule(Rule *pRule) { _ruleOwner.push_back(pRule); }
@@ -132,7 +132,7 @@ private:
 public:
 	Generator_M6800();
 	virtual bool IsRegisterSymbol(const char *symbol) const;
-	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const;
+	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const;
 	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);

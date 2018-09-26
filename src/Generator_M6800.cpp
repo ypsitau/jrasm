@@ -141,14 +141,14 @@ bool Generator_M6800::IsRegisterSymbol(const char *symbol) const
 	return false;
 }
 
-bool Generator_M6800::DoForwardAddress(Context &context, const Expr_Instruction *pExpr, UInt32 *pBytes) const
+bool Generator_M6800::DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const
 {
 	const Entry *pEntry = _entryMap.Lookup(pExpr->GetSymbol());
 	if (pEntry == nullptr) {
 		ErrorLog::AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
 		return false;
 	}
-	return pEntry->ApplyRule(context, pExpr, nullptr, pBytes);
+	return pEntry->ApplyRule(context, pExpr, nullptr);
 }
 
 bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const
@@ -158,8 +158,7 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 		ErrorLog::AddError(pExpr, "unknown instruction: %s\n", pExpr->GetSymbol());
 		return false;
 	}
-	UInt32 bytes = 0;
-	return pEntry->ApplyRule(context, pExpr, &buffDst, &bytes);
+	return pEntry->ApplyRule(context, pExpr, &buffDst);
 }
 
 Generator_M6800::Entry *Generator_M6800::Entry_ACC(const String &symbol, UInt8 codeACC)
@@ -293,7 +292,7 @@ Generator_M6800::Rule::~Rule()
 }
 
 Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -312,12 +311,11 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 		*pBuffDst += _code;
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP disp
@@ -357,12 +355,11 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP
@@ -372,12 +369,11 @@ Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
 		*pBuffDst += _code;
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -406,12 +402,11 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP data16
@@ -432,12 +427,11 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -476,12 +470,11 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -524,12 +517,11 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	// OP x+data8
@@ -559,12 +551,11 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
 Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
 	const ExprList &operands = pExpr->GetOperands();
 	if (_accName.empty()) {
@@ -604,7 +595,6 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	context.ForwardAddress(bytes);
-	*pBytes = bytes;
 	return RESULT_Accepted;
 }
 
@@ -633,10 +623,10 @@ Generator_M6800::Entry::Entry(const String &symbol, const String &syntaxDesc) :
 }
 
 bool Generator_M6800::Entry::ApplyRule(
-	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst, UInt32 *pBytes) const
+	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const
 {
 	for (auto pRule : _ruleOwner) {
-		Result result = pRule->Apply(context, pExpr, pBuffDst, pBytes);
+		Result result = pRule->Apply(context, pExpr, pBuffDst);
 		if (result == RESULT_Accepted) {
 			return true;
 		} else if (result == RESULT_Error) {

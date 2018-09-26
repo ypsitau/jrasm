@@ -527,9 +527,7 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
-	UInt32 bytes = 0;
-	Generator::GetInstance().ForwardAddress(context, this, &bytes);
-	return true;
+	return Generator::GetInstance().ForwardAddress(context, this);
 }
 
 bool Expr_Instruction::OnPhaseGenerate(Context &context) const
