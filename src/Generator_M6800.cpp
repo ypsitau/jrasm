@@ -451,7 +451,7 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	if (!pExprLast->IsTypeBrace()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Brace *>(pExprLast.get())->GetChildren();
-	const char *errMsg = "the format of direct addressing operand is (addr8)";
+	const char *errMsg = "the format of direct addressing operand must be (addr8)";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
@@ -575,7 +575,7 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
-	const char *errMsg = "the format of external addressing operand is [addr16]";
+	const char *errMsg = "the format of external addressing operand must be [addr16]";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
