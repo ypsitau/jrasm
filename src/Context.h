@@ -84,8 +84,8 @@ public:
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
 	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
-	inline ExprDict *GetExprDict() { return _exprDictStack.back(); }
-	inline const ExprDict *GetExprDict() const { return _exprDictStack.back(); }
+	inline ExprDict *GetExprDictCurrent() { return _exprDictStack.back(); }
+	inline const ExprDict *GetExprDictCurrent() const { return _exprDictStack.back(); }
 	inline ExprDict *GetExprDictGlobal() { return _exprDictStack.front(); }
 	inline const ExprDict *GetExprDictGlobal() const { return _exprDictStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }

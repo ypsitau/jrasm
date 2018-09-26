@@ -63,7 +63,7 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 
 bool Expr::OnPhaseSetupExprDict(Context &context)
 {
-	_pExprDict.reset(context.GetExprDict()->Reference());
+	_pExprDict.reset(context.GetExprDictCurrent()->Reference());
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
 	}
