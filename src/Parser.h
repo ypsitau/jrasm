@@ -21,17 +21,17 @@ private:
 	Context &_context;
 	Tokenizer _tokenizer;
 	Stat _stat;
-	ExprStack _exprStack;
+	AutoPtr<ExprStack> _pExprStack;
 	TokenStack _tokenStack;
 	AutoPtr<Token> _pTokenPrev;
 public:
 	Parser(Context &context, const String &fileNameSrc);
 	inline const char *GetFileNameSrc() const { return _tokenizer.GetFileNameSrc(); }
 	inline Expr_Root *GetRoot() {
-		return dynamic_cast<Expr_Root *>(_exprStack.front());
+		return dynamic_cast<Expr_Root *>(_pExprStack->front());
 	}
 	inline const Expr_Root *GetRoot() const {
-		return dynamic_cast<const Expr_Root *>(_exprStack.front());
+		return dynamic_cast<const Expr_Root *>(_pExprStack->front());
 	}
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {

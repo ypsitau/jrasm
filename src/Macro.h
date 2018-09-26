@@ -14,10 +14,10 @@ private:
 	int _cntRef;
 	String _symbol;
 	StringList _paramNames;
-	AutoPtr<Expr> _pExprMacroBody;
+	AutoPtr<ExprOwner> _pExprOwner;
 public:
 	Macro(const String &symbol, StringList::const_iterator pParamName,
-		  StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody);
+		  StringList::const_iterator pParamNameEnd, ExprOwner *pExprOwner);
 public:
 	DeclareReferenceAccessor(Macro);
 public:

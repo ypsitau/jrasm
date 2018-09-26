@@ -7,8 +7,8 @@
 // Macro
 //-----------------------------------------------------------------------------
 Macro::Macro(const String &symbol, StringList::const_iterator pParamName,
-			 StringList::const_iterator pParamNameEnd, Expr *pExprMacroBody) :
-	_symbol(symbol), _pExprMacroBody(pExprMacroBody)
+			 StringList::const_iterator pParamNameEnd, ExprOwner *pExprOwner) :
+	_symbol(symbol), _pExprOwner(pExprOwner)
 {
 	_paramNames.insert(_paramNames.end(), pParamName, pParamNameEnd);
 }

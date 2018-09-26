@@ -7,9 +7,10 @@
 // Parser
 //-----------------------------------------------------------------------------
 Parser::Parser(Context &context, const String &fileNameSrc) :
-	_context(context), _tokenizer(this, fileNameSrc), _stat(STAT_LineTop)
+	_context(context), _tokenizer(this, fileNameSrc), _stat(STAT_LineTop),
+	_pExprStack(new ExprStack())
 {
-	_exprStack.push_back(new Expr_Root());
+	_pExprStack->push_back(new Expr_Root());
 }
 
 bool Parser::FeedToken(AutoPtr<Token> pToken)
@@ -29,7 +30,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		if (pToken->IsType(TOKEN_Colon) || (forceGlobalFlag = pToken->IsType(TOKEN_ColonColon))) {
 			AutoPtr<Expr> pExpr(new Expr_LabelDef(_pTokenPrev->GetString(), forceGlobalFlag));
 			SetExprSourceInfo(pExpr.get(), _pTokenPrev.get());
-			_exprStack.back()->GetChildren().push_back(pExpr.release());
+			_pExprStack->back()->GetChildren().push_back(pExpr.release());
 			_stat = STAT_Directive;
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
@@ -52,9 +53,9 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				}
 				AutoPtr<Expr> pExpr(new Expr_Instruction(pToken->GetStringSTL()));
 				SetExprSourceInfo(pExpr.get(), pToken.get());
-				_exprStack.back()->GetChildren().push_back(pExpr->Reference());
-				_exprStack.push_back(pExpr.release());
-			} else if (!pDirective->OnPhaseParse(this, _exprStack, pToken.get())) {
+				_pExprStack->back()->GetChildren().push_back(pExpr->Reference());
+				_pExprStack->push_back(pExpr.release());
+			} else if (!pDirective->OnPhaseParse(this, *_pExprStack, pToken.get())) {
 				return false;
 			}
 			_tokenStack.Reset();
@@ -77,7 +78,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			//::printf("check\n");
 			//::printf("%s\n", _tokenStack.ToString().c_str());
 			if (_tokenStack.size() == 3 && _tokenStack[1]->IsType(TOKEN_Expr)) {
-				_exprStack.back()->AddChild(_tokenStack[1]->GetExpr()->Reference());
+				_pExprStack->back()->AddChild(_tokenStack[1]->GetExpr()->Reference());
 			} else if (_tokenStack.size() == 2) {
 				// nothing to do as the stack has no tokens
 			} else {
@@ -86,28 +87,28 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			}
 			_tokenStack.Reset();
 			if (pToken->IsType(TOKEN_EOL)) {
-				_exprStack.pop_back();
+				_pExprStack->pop_back();
 				_stat = STAT_LineTop;
 			} else if (pToken->IsType(TOKEN_Comma)) {
 				
 			} else if (pToken->IsType(TOKEN_BracketL)) {
 				AutoPtr<Expr> pExpr(new Expr_Bracket());
-				_exprStack.back()->AddChild(pExpr->Reference());
-				_exprStack.push_back(pExpr.release());
+				_pExprStack->back()->AddChild(pExpr->Reference());
+				_pExprStack->push_back(pExpr.release());
 			} else if (pToken->IsType(TOKEN_BracketR)) {
-				if (!_exprStack.back()->IsTypeBracket()) {
+				if (!_pExprStack->back()->IsTypeBracket()) {
 					AddError("no opening bracket matched");
 				}
-				_exprStack.pop_back();
+				_pExprStack->pop_back();
 			} else if (pToken->IsType(TOKEN_BraceL)) {
 				AutoPtr<Expr> pExpr(new Expr_Brace());
-				_exprStack.back()->AddChild(pExpr->Reference());
-				_exprStack.push_back(pExpr.release());
+				_pExprStack->back()->AddChild(pExpr->Reference());
+				_pExprStack->push_back(pExpr.release());
 			} else if (pToken->IsType(TOKEN_BraceR)) {
-				if (!_exprStack.back()->IsTypeBrace()) {
+				if (!_pExprStack->back()->IsTypeBrace()) {
 					AddError("no opening parenthesis matched");
 				}
-				_exprStack.pop_back();
+				_pExprStack->pop_back();
 			} else {
 				AddError("invalid format of operands");
 				return false;

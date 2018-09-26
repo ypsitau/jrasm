@@ -115,8 +115,9 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 //-----------------------------------------------------------------------------
 Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
 {
-	Expr_LabelDef *pExprLabelDef = GetBack<Expr_LabelDef>();
-	return (pExprLabelDef == nullptr || pExprLabelDef->IsAssigned())? nullptr : pExprLabelDef;
+	if (empty() || !back()->IsTypeLabelDef()) return nullptr;
+	Expr_LabelDef *pExprLabelDef = dynamic_cast<Expr_LabelDef *>(back());
+	return pExprLabelDef->IsAssigned()? nullptr : pExprLabelDef;
 }
 
 String ExprList::ComposeSource(const char *sep, bool upperCaseFlag) const
@@ -652,7 +653,8 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 		}
 		labels.push_back(dynamic_cast<const Expr_LabelRef *>(pExpr)->GetLabel());
 	}
-	AutoPtr<Macro> pMacro(new Macro(labels[0], labels.begin() + 1, labels.end(), GetMacroBody()->Reference()));
+	AutoPtr<Macro> pMacro(new Macro(labels[0], labels.begin() + 1, labels.end(),
+									GetMacroBody()->GetChildren().Reference()));
 	context.GetMacroDict().Associate(pMacro->GetSymbol(), pMacro.release());
 	return true;
 }

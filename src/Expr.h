@@ -12,6 +12,32 @@ class Expr;
 class Expr_LabelDef;
 
 //-----------------------------------------------------------------------------
+// ExprList
+//-----------------------------------------------------------------------------
+class ExprList : public std::vector<Expr *> {
+public:
+	Expr_LabelDef *SeekLabelDefToAssoc();
+	String ComposeSource(const char *sep, bool upperCaseFlag) const;
+	void Print(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
+// ExprOwner
+//-----------------------------------------------------------------------------
+class ExprOwner : public ExprList {
+private:
+	int _cntRef;
+public:
+	DeclareReferenceAccessor(ExprOwner);
+public:
+	inline ExprOwner() : _cntRef(1) {}
+protected:
+	~ExprOwner();
+public:
+	void Clear();
+};
+
+//-----------------------------------------------------------------------------
 // ExprDict
 //-----------------------------------------------------------------------------
 class ExprDict : public std::map<String, Expr *, LessThan_StringICase> {
@@ -60,7 +86,7 @@ public:
 protected:
 	int _cntRef;
 	Type _type;
-	std::auto_ptr<ExprOwner> _pExprChildren;
+	AutoPtr<ExprOwner> _pExprChildren;
 	AutoPtr<ExprDict> _pExprDict;
 	AutoPtr<StringShared> _pFileNameSrc;
 	int _lineNo;
@@ -120,29 +146,6 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual String ComposeSource(bool upperCaseFlag) const = 0;
-};
-
-//-----------------------------------------------------------------------------
-// ExprList
-//-----------------------------------------------------------------------------
-class ExprList : public std::vector<Expr *> {
-public:
-	Expr_LabelDef *SeekLabelDefToAssoc();
-	String ComposeSource(const char *sep, bool upperCaseFlag) const;
-	void Print(bool upperCaseFlag) const;
-	template<typename T_Expr> inline T_Expr *GetBack() {
-		if (empty() || !back()->IsType(T_Expr::TYPE)) return nullptr;
-		return dynamic_cast<T_Expr *>(back());
-	}
-};
-
-//-----------------------------------------------------------------------------
-// ExprOwner
-//-----------------------------------------------------------------------------
-class ExprOwner : public ExprList {
-public:
-	~ExprOwner();
-	void Clear();
 };
 
 //-----------------------------------------------------------------------------
