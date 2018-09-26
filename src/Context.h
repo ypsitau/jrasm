@@ -17,6 +17,7 @@ class Context {
 public:
 	enum Phase {
 		PHASE_None,
+		PHASE_Parse,
 		PHASE_Include,
 		PHASE_DeclareMacro,
 		PHASE_ExpandMacro,

@@ -18,16 +18,12 @@ Context::Context(const String &pathNameSrc) :
 	SelectCodeSegment();
 }
 
-bool Context::ParseFile()
+bool Context::Prepare()
 {
+	SetPhase(PHASE_Parse);
 	Parser parser(_pathNameSrc);
 	if (!parser.ParseFile()) return false;
 	_pExprRoot.reset(parser.GetRoot()->Reference());
-	return true;
-}
-
-bool Context::Prepare()
-{
 	SetPhase(PHASE_Include);
 	if (!_pExprRoot->OnPhaseInclude(*this)) return false;
 	SetPhase(PHASE_DeclareMacro);

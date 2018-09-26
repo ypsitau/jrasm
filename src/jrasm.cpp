@@ -61,7 +61,6 @@ int main(int argc, const char *argv[])
 	}
 	const char *pathNameSrc = argv[1];
 	Context context(pathNameSrc);
-	if (!context.ParseFile()) goto errorDone;
 	if (!context.Prepare()) goto errorDone;
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-disasm-l") || (upperCaseFlag = cmdLine.IsSet("print-disasm-u"))) {
