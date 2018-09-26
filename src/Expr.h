@@ -8,7 +8,33 @@
 
 class Directive;
 class ExprOwner;
+class Expr;
 class Expr_LabelDef;
+
+//-----------------------------------------------------------------------------
+// ExprDict
+//-----------------------------------------------------------------------------
+class ExprDict : public std::map<String, Expr *, LessThan_StringICase> {
+private:
+	int _cntRef;
+	AutoPtr<ExprDict> _pExprDictParent;
+public:
+	DeclareReferenceAccessor(ExprDict);
+public:
+	inline ExprDict(ExprDict *pExprDictParent = nullptr) :
+	_cntRef(1), _pExprDictParent(pExprDictParent) {}
+private:
+	~ExprDict();
+public:
+	inline ExprDict *GetParent() { return _pExprDictParent.get(); }
+	void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
+	bool IsDefined(const char *label) const;
+	const Expr *Lookup(const char *label) const;
+	ExprDict *GetGlobal();
+	inline const ExprDict *GetGlobal() const {
+		return const_cast<ExprDict *>(this)->GetGlobal();
+	}
+};
 
 //-----------------------------------------------------------------------------
 // Expr
@@ -31,40 +57,11 @@ public:
 		TYPE_MacroEntry,
 	};
 public:
-	class Dictionary : public std::map<String, Expr *, LessThan_StringICase> {
-	private:
-		int _cntRef;
-		AutoPtr<Dictionary> _pDictionaryParent;
-	public:
-		DeclareReferenceAccessor(Dictionary);
-	public:
-		inline Dictionary(Dictionary *pDictionaryParent = nullptr) :
-			_cntRef(1), _pDictionaryParent(pDictionaryParent) {}
-	private:
-		~Dictionary();
-	public:
-		inline Dictionary *GetParent() { return _pDictionaryParent.get(); }
-		void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
-		bool IsDefined(const char *label) const;
-		const Expr *Lookup(const char *label) const;
-		Dictionary *GetGlobal();
-		inline const Dictionary *GetGlobal() const {
-			return const_cast<Dictionary *>(this)->GetGlobal();
-		}
-	};
-	class DictionaryList : public std::vector<Dictionary *> {
-	};
-	class DictionaryOwner : public DictionaryList {
-	public:
-		~DictionaryOwner();
-		void Clear();
-	};
-	typedef DictionaryOwner DictionaryStack;
 protected:
 	int _cntRef;
 	Type _type;
 	std::auto_ptr<ExprOwner> _pExprChildren;
-	AutoPtr<Dictionary> _pDictionary;
+	AutoPtr<ExprDict> _pExprDict;
 	AutoPtr<StringShared> _pFileNameSrc;
 	int _lineNo;
 public:
@@ -103,9 +100,9 @@ public:
 		return _pFileNameSrc.IsNull()? "" : _pFileNameSrc->GetString();
 	}
 	inline int GetLineNo() const { return _lineNo; }
-	inline bool IsDictionaryReady() const { return !_pDictionary.IsNull(); }
+	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }
 	inline const Expr *Lookup(const char *label) const {
-		return _pDictionary.IsNull()? nullptr : _pDictionary->Lookup(label);
+		return _pExprDict.IsNull()? nullptr : _pExprDict->Lookup(label);
 	}
 	bool IsTypeLabelDef(const char *label) const;
 	bool IsTypeLabelRef(const char *label) const;
@@ -153,6 +150,26 @@ public:
 //-----------------------------------------------------------------------------
 class ExprStack : public ExprOwner {
 };
+
+//-----------------------------------------------------------------------------
+// ExprDictList
+//-----------------------------------------------------------------------------
+class ExprDictList : public std::vector<ExprDict *> {
+};
+
+//-----------------------------------------------------------------------------
+// ExprDictList
+//-----------------------------------------------------------------------------
+class ExprDictOwner : public ExprDictList {
+public:
+	~ExprDictOwner();
+	void Clear();
+};
+
+//-----------------------------------------------------------------------------
+// ExprDictOwner
+//-----------------------------------------------------------------------------
+typedef ExprDictOwner ExprDictStack;
 
 //-----------------------------------------------------------------------------
 // Expr_Root

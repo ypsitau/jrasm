@@ -12,10 +12,10 @@ Context::Context(const String &pathNameSrc) :
 {
 	const char *fileNameSrc = ::ExtractFileName(pathNameSrc.c_str());
 	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc);
-	_dictionaryStack.push_back(new Expr::Dictionary());	// global dictionary
-	_segmentOwner.push_back(new Segment("code"));			// code segment
-	_segmentOwner.push_back(new Segment("data"));			// data segment
-	_segmentOwner.push_back(new Segment("internal"));		// internal segment
+	_exprDictStack.push_back(new ExprDict());			// global exprDict
+	_segmentOwner.push_back(new Segment("code"));		// code segment
+	_segmentOwner.push_back(new Segment("data"));		// data segment
+	_segmentOwner.push_back(new Segment("internal"));	// internal segment
 	SelectCodeSegment();
 	AddDirective(new Directive_CSEG());
 	AddDirective(new Directive_DB());
@@ -84,23 +84,23 @@ void Context::StartRegion(UInt32 addr)
 	_pSegmentCur->SetAddress(addr);
 }
 
-void Context::PushLocalDictionary()
+void Context::PushLocalExprDict()
 {
-	Expr::Dictionary *pDictionary = new Expr::Dictionary(_dictionaryStack.back()->Reference());
-	_dictionaryStack.push_back(pDictionary);
+	ExprDict *pExprDict = new ExprDict(_exprDictStack.back()->Reference());
+	_exprDictStack.push_back(pExprDict);
 }
 
-void Context::PopLocalDictionary()
+void Context::PopLocalExprDict()
 {
-	Expr::Dictionary *pDictionary = _dictionaryStack.back();
-	_dictionaryStack.pop_back();
-	Expr::Dictionary::Delete(pDictionary);
+	ExprDict *pExprDict = _exprDictStack.back();
+	_exprDictStack.pop_back();
+	ExprDict::Delete(pExprDict);
 }
 
 Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
 {
 	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
-	for (auto iter : *GetDictionaryGlobal()) {
+	for (auto iter : *GetExprDictGlobal()) {
 		const String &label = iter.first;
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));

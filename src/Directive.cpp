@@ -237,11 +237,11 @@ bool Directive_ENDP::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 		ErrorLog::AddError(pExpr, "directive .ENDP needs no operands");
 		return false;
 	}
-	if (!context.DoesExistLocalDictionary()) {
+	if (!context.DoesExistLocalExprDict()) {
 		ErrorLog::AddError(pExpr, "no matching .PROC directive");
 		return false;
 	}
-	context.PopLocalDictionary();
+	context.PopLocalExprDict();
 	return true;
 }
 
@@ -506,7 +506,7 @@ bool Directive_PROC::OnPhaseSetupLookup(Context &context, const Expr_Directive *
 		ErrorLog::AddError(pExpr, "directive .PROC needs no operands");
 		return false;
 	}
-	context.PushLocalDictionary();
+	context.PushLocalExprDict();
 	return true;
 }
 

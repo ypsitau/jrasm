@@ -63,7 +63,7 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 
 bool Expr::OnPhaseSetupLookup(Context &context)
 {
-	_pDictionary.reset(context.GetDictionary()->Reference());
+	_pExprDict.reset(context.GetExprDict()->Reference());
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseSetupLookup(context)) return false;
 	}
@@ -111,57 +111,6 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 }
 
 //-----------------------------------------------------------------------------
-// Expr::Dictionary
-//-----------------------------------------------------------------------------
-Expr::Dictionary::~Dictionary()
-{
-	for (auto iter : *this) {
-		Expr::Delete(iter.second);
-	}
-}
-
-void Expr::Dictionary::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
-{
-	Dictionary *pDictionary = forceGlobalFlag? GetGlobal() : this;
-	pDictionary->insert(std::make_pair(label, pExpr));
-}
-
-bool Expr::Dictionary::IsDefined(const char *label) const
-{
-	return find(label) != end();
-}
-
-const Expr *Expr::Dictionary::Lookup(const char *label) const
-{
-	const_iterator iter = find(label);
-	if (iter != end())	return iter->second;
-	return _pDictionaryParent.IsNull()? nullptr : _pDictionaryParent->Lookup(label);
-}
-
-Expr::Dictionary *Expr::Dictionary::GetGlobal()
-{
-	Dictionary *pDictionary = this;
-	for ( ; pDictionary->GetParent() != nullptr; pDictionary = pDictionary->GetParent()) ;
-	return pDictionary;
-}
-
-//-----------------------------------------------------------------------------
-// Expr::DictionaryOwner
-//-----------------------------------------------------------------------------
-Expr::DictionaryOwner::~DictionaryOwner()
-{
-	Clear();
-}
-
-void Expr::DictionaryOwner::Clear()
-{
-	for (auto pDictionary : *this) {
-		Dictionary::Delete(pDictionary);
-	}
-	clear();
-}
-
-//-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
 Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
@@ -199,6 +148,57 @@ void ExprOwner::Clear()
 {
 	for (auto pExpr : *this) {
 		Expr::Delete(pExpr);
+	}
+	clear();
+}
+
+//-----------------------------------------------------------------------------
+// ExprDict
+//-----------------------------------------------------------------------------
+ExprDict::~ExprDict()
+{
+	for (auto iter : *this) {
+		Expr::Delete(iter.second);
+	}
+}
+
+void ExprDict::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
+{
+	ExprDict *pExprDict = forceGlobalFlag? GetGlobal() : this;
+	pExprDict->insert(std::make_pair(label, pExpr));
+}
+
+bool ExprDict::IsDefined(const char *label) const
+{
+	return find(label) != end();
+}
+
+const Expr *ExprDict::Lookup(const char *label) const
+{
+	const_iterator iter = find(label);
+	if (iter != end())	return iter->second;
+	return _pExprDictParent.IsNull()? nullptr : _pExprDictParent->Lookup(label);
+}
+
+ExprDict *ExprDict::GetGlobal()
+{
+	ExprDict *pExprDict = this;
+	for ( ; pExprDict->GetParent() != nullptr; pExprDict = pExprDict->GetParent()) ;
+	return pExprDict;
+}
+
+//-----------------------------------------------------------------------------
+// ExprDictOwner
+//-----------------------------------------------------------------------------
+ExprDictOwner::~ExprDictOwner()
+{
+	Clear();
+}
+
+void ExprDictOwner::Clear()
+{
+	for (auto pExprDict : *this) {
+		ExprDict::Delete(pExprDict);
 	}
 	clear();
 }
@@ -434,14 +434,14 @@ const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 bool Expr_LabelDef::OnPhaseSetupLookup(Context &context)
 {
 	if (!Expr::OnPhaseSetupLookup(context)) return false;
-	if (_pDictionary->IsDefined(GetLabel())) {
+	if (_pExprDict->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
 	}
 	if (IsAssigned()) {
-		_pDictionary->Associate(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
+		_pExprDict->Associate(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		_pDictionary->Associate(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
+		_pExprDict->Associate(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
 	}
 	return true;
 }

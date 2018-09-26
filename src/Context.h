@@ -64,7 +64,7 @@ private:
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
-	Expr::DictionaryStack _dictionaryStack;
+	ExprDictStack _exprDictStack;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);
@@ -84,19 +84,19 @@ public:
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
 	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
-	inline Expr::Dictionary *GetDictionary() { return _dictionaryStack.back(); }
-	inline const Expr::Dictionary *GetDictionary() const { return _dictionaryStack.back(); }
-	inline Expr::Dictionary *GetDictionaryGlobal() { return _dictionaryStack.front(); }
-	inline const Expr::Dictionary *GetDictionaryGlobal() const { return _dictionaryStack.front(); }
+	inline ExprDict *GetExprDict() { return _exprDictStack.back(); }
+	inline const ExprDict *GetExprDict() const { return _exprDictStack.back(); }
+	inline ExprDict *GetExprDictGlobal() { return _exprDictStack.front(); }
+	inline const ExprDict *GetExprDictGlobal() const { return _exprDictStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
-	inline bool DoesExistLocalDictionary() const { return _dictionaryStack.size() > 1; }
+	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	bool ParseFile();
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
 	void StartRegion(UInt32 addr);
-	void PushLocalDictionary();
-	void PopLocalDictionary();
+	void PushLocalExprDict();
+	void PopLocalExprDict();
 	LabelInfoOwner *MakeLabelInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
