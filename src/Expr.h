@@ -416,7 +416,7 @@ public:
 	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	inline void SetExprIncluded(Expr *pExprIncluded) { _pExprIncluded.reset(pExprIncluded); }
-	inline const Expr *GetExprIncluded() const { return _pExprIncluded.get(); }
+	inline Expr *GetExprIncluded() const { return _pExprIncluded.get(); }
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);

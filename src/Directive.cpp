@@ -367,7 +367,7 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) 
 		return false;
 	}
 	const Expr *pExprLast = operands.back();
-	if (pExprLast->IsTypeString()) {
+	if (!pExprLast->IsTypeString()) {
 		ErrorLog::AddError(pExpr, "directive .INCLUDE takes a string value as its operand");
 		return false;
 	}
@@ -381,23 +381,22 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) 
 
 bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
 {
-	//return pExpr->GetExprIncluded()->OnPhaseDeclareMacro(context);
-	return true;
+	return pExpr->GetExprIncluded()->OnPhaseDeclareMacro(context);
 }
 
 bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const
 {
-	return true;
+	return pExpr->GetExprIncluded()->OnPhaseExpandMacro(context);
 }
 
 bool Directive_INCLUDE::OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const
 {
-	return true;
+	return pExpr->GetExprIncluded()->OnPhaseSetupExprDict(context);
 }
 
 bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return true;
+	return pExpr->GetExprIncluded()->OnPhaseGenerate(context);
 }
 
 //-----------------------------------------------------------------------------
