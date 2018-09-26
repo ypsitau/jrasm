@@ -510,11 +510,8 @@ bool Expr_LabelDef::OnPhaseGenerate(Context &context) const
 
 bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
-	String str = _label;
-	str += _forceGlobalFlag? "::" : ":";
+	String str = ComposeSource(upperCaseFlag);
 	if (IsAssigned()) {
-		String sepEachLine = "\n";
-		sepEachLine += MakePadding(9 + 3 * nColsPerLine + 1);
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
 		str += GetAssigned()->ComposeSource(upperCaseFlag);
 	}
@@ -534,9 +531,14 @@ Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
 
 String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
 {
+	return ComposeSource(_label.c_str(), _forceGlobalFlag);
+}
+
+String Expr_LabelDef::ComposeSource(const char *label, bool forceGlobalFlag)
+{
 	String str;
-	str = _label; // not affected by upperCaseFlag
-	str += ":";
+	str = label;
+	str += forceGlobalFlag? "::" : ":";
 	return str;
 }
 

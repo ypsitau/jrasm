@@ -366,9 +366,8 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 		pParser->AddError("directive .MACRO must be preceded by a label");
 		return false;
 	}
-	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprLabelDef->GetLabel()));
+	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprLabelDef));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	//exprStack.back()->GetChildren().push_back(pExpr->Reference());
 	pExprLabelDef->SetAssigned(pExpr->Reference());				// associate it to the preceding label
 	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body
 	exprStack.push_back(pExpr.release());						// for operands

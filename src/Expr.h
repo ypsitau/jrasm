@@ -315,6 +315,7 @@ public:
 	inline const Expr *GetAssigned() const { return GetChildren().back(); }
 	inline bool IsAssigned() const { return !GetChildren().empty(); }
 	inline const char *GetLabel() const { return _label.c_str(); }
+	inline bool GetForceGlobalFlag() const { return _forceGlobalFlag; }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual bool OnPhaseDeclareMacro(Context &context);
@@ -324,6 +325,7 @@ public:
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
+	static String ComposeSource(const char *label, bool forceGlobalFlag);
 };
 
 //-----------------------------------------------------------------------------
@@ -408,12 +410,14 @@ public:
 class Expr_MacroDecl : public Expr {
 private:
 	String _symbol;
+	bool _forceGlobalFlag;
 	AutoPtr<Expr_MacroBody> _pExprMacroBody;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroDecl(const String &symbol) :
-		Expr(TYPE), _symbol(symbol), _pExprMacroBody(new Expr_MacroBody()) {}
+	inline Expr_MacroDecl(const Expr_LabelDef *pExprLabelDef) :
+		Expr(TYPE), _symbol(pExprLabelDef->GetLabel()),
+		_forceGlobalFlag(pExprLabelDef->GetForceGlobalFlag()), _pExprMacroBody(new Expr_MacroBody()) {}
 	inline const char *GetLabel() const {
 		return dynamic_cast<Expr_LabelRef *>(GetChildren().front())->GetLabel();
 	}
