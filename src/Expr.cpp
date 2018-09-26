@@ -348,7 +348,7 @@ Expr *Expr_Number::Clone() const
 
 Expr *Expr_Number::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	return Clone();
 }
 
 //-----------------------------------------------------------------------------
@@ -377,7 +377,7 @@ Expr *Expr_String::Clone() const
 
 Expr *Expr_String::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	return Clone();
 }
 
 //-----------------------------------------------------------------------------
@@ -406,7 +406,7 @@ Expr *Expr_BitPattern::Clone() const
 
 Expr *Expr_BitPattern::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	return Clone();
 }
 
 Binary Expr_BitPattern::GetBinary() const
@@ -597,7 +597,7 @@ Expr *Expr_LabelDef::Clone() const
 
 Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	return Clone();
 }
 
 String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
@@ -658,7 +658,7 @@ Expr *Expr_LabelRef::Clone() const
 Expr *Expr_LabelRef::Substitute(const ExprDict &exprDict) const
 {
 	const Expr *pExpr = exprDict.Lookup(GetLabel());
-	return (pExpr == nullptr)? Reference() : pExpr->Reference();
+	return (pExpr == nullptr)? Clone() : pExpr->Clone();
 }
 
 String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
@@ -864,7 +864,7 @@ Expr *Expr_MacroBody::Clone() const
 
 Expr *Expr_MacroBody::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	return Clone();
 }
 
 String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
@@ -927,7 +927,7 @@ Expr *Expr_MacroDecl::Clone() const
 
 Expr *Expr_MacroDecl::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	return Clone();
 }
 
 String Expr_MacroDecl::ComposeSource(bool upperCaseFlag) const
