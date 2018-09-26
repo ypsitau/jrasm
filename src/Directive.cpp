@@ -360,7 +360,7 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	AutoPtr<Expr_MacroEntry> pExpr(new Expr_MacroEntry());
+	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl());
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body

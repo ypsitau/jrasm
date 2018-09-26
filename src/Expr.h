@@ -54,7 +54,7 @@ public:
 		TYPE_Instruction,
 		TYPE_Directive,
 		TYPE_MacroBody,
-		TYPE_MacroEntry,
+		TYPE_MacroDecl,
 	};
 public:
 protected:
@@ -84,7 +84,7 @@ public:
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
 	inline bool IsTypeMacroBody() const { return IsType(TYPE_MacroBody); }
-	inline bool IsTypeMacroEntry() const { return IsType(TYPE_MacroEntry); }
+	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetChildren() { return *_pExprChildren; }
 	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
@@ -380,15 +380,15 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_MacroEntry
+// Expr_MacroDecl
 //-----------------------------------------------------------------------------
-class Expr_MacroEntry : public Expr {
+class Expr_MacroDecl : public Expr {
 private:
 	AutoPtr<Expr_MacroBody> _pExprMacroBody;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroEntry() : Expr(TYPE), _pExprMacroBody(new Expr_MacroBody()) {}
+	inline Expr_MacroDecl() : Expr(TYPE), _pExprMacroBody(new Expr_MacroBody()) {}
 	inline const char *GetLabel() const {
 		return dynamic_cast<Expr_LabelRef *>(GetChildren().front())->GetLabel();
 	}

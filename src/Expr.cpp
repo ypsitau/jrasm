@@ -633,11 +633,11 @@ String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_MacroEntry
+// Expr_MacroDecl
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_MacroEntry::TYPE = Expr::TYPE_MacroEntry;
+const Expr::Type Expr_MacroDecl::TYPE = Expr::TYPE_MacroDecl;
 
-bool Expr_MacroEntry::OnPhaseDeclareMacro(Context &context)
+bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 {
 	const ExprList &operands = GetOperands();
 	if (operands.empty()) {
@@ -657,7 +657,7 @@ bool Expr_MacroEntry::OnPhaseDeclareMacro(Context &context)
 	return true;
 }
 
-bool Expr_MacroEntry::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
 	::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag).c_str());
@@ -667,12 +667,12 @@ bool Expr_MacroEntry::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFl
 	return true;
 }
 
-Expr *Expr_MacroEntry::Resolve(Context &context) const
+Expr *Expr_MacroDecl::Resolve(Context &context) const
 {
 	return Reference();
 }
 
-String Expr_MacroEntry::ComposeSource(bool upperCaseFlag) const
+String Expr_MacroDecl::ComposeSource(bool upperCaseFlag) const
 {
 	String str = upperCaseFlag? ".MACRO" : ".macro";
 	str += ' ';
