@@ -60,6 +60,7 @@ protected:
 	~ExprOwner();
 public:
 	void Clear();
+	ExprOwner *Clone() const;
 	ExprOwner *Substitute(const ExprDict &exprDict) const;
 };
 
@@ -96,6 +97,7 @@ public:
 public:
 	Expr(Type type);
 	Expr(Type type, ExprOwner *pExprChildren);
+	Expr(const Expr &expr);
 protected:
 	virtual ~Expr();
 public:
@@ -129,9 +131,7 @@ public:
 	}
 	inline int GetLineNo() const { return _lineNo; }
 	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }
-	inline const Expr *Lookup(const char *label) const {
-		return _pExprDict.IsNull()? nullptr : _pExprDict->Lookup(label);
-	}
+	inline const ExprDict *GetExprDict() const { return _pExprDict.get(); }
 	bool IsTypeLabelDef(const char *label) const;
 	bool IsTypeLabelRef(const char *label) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
@@ -144,6 +144,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
+	virtual Expr *Clone() const = 0;
 	virtual Expr *Substitute(const ExprDict &exprDict) const = 0;
 	virtual String ComposeSource(bool upperCaseFlag) const = 0;
 protected:
@@ -187,6 +188,7 @@ public:
 public:
 	inline Expr_Root() : Expr(TYPE) {}
 	inline Expr_Root(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
+	inline Expr_Root(const Expr_Root &expr) : Expr(expr) {}
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
@@ -194,6 +196,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -210,8 +213,10 @@ public:
 public:
 	inline Expr_Number(UInt32 num) : Expr(TYPE), _num(num) {}
 	inline Expr_Number(const String &str, UInt32 num) : Expr(TYPE), _str(str), _num(num) {}
+	inline Expr_Number(const Expr_Number &expr) : Expr(expr), _str(expr._str), _num(expr._num) {}
 	inline UInt32 GetNumber() const { return _num; }
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -226,9 +231,11 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
+	inline Expr_String(const Expr_String &expr) : Expr(expr), _str(expr._str) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -243,10 +250,12 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_BitPattern(const String &str) : Expr(TYPE), _str(str) {}
+	inline Expr_BitPattern(const Expr_BitPattern &expr) : Expr(expr), _str(expr._str) {}
 	inline const char *GetBitPattern() const { return _str.c_str(); }
 	inline size_t GetBitPatternLen() const { return _str.size(); }
 	Binary GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -267,10 +276,12 @@ public:
 	}
 	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprChildren) :			
 		Expr(TYPE, pExprChildren), _pOperator(pOperator) {}
+	inline Expr_BinOp(const Expr_BinOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
 	inline const Expr *GetLeft() const { return GetChildren()[0]; }
 	inline const Expr *GetRight() const { return GetChildren()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -284,7 +295,9 @@ public:
 public:
 	inline Expr_Bracket() : Expr(TYPE) {}
 	inline Expr_Bracket(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
+	inline Expr_Bracket(const Expr_Bracket &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -298,7 +311,9 @@ public:
 public:
 	inline Expr_Brace() : Expr(TYPE) {}
 	inline Expr_Brace(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
+	inline Expr_Brace(const Expr_Brace &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -315,6 +330,8 @@ public:
 public:
 	inline Expr_LabelDef(const String &label, bool forceGlobalFlag) :
 		Expr(TYPE), _label(label), _forceGlobalFlag(forceGlobalFlag) {}
+	inline Expr_LabelDef(const Expr_LabelDef &expr) :
+		Expr(expr), _label(expr._label), _forceGlobalFlag(expr._forceGlobalFlag) {}
 	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
 	inline Expr *GetAssigned() { return GetChildren().back(); }
 	inline const Expr *GetAssigned() const { return GetChildren().back(); }
@@ -328,6 +345,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 	static String MakeSource(const char *label, bool forceGlobalFlag);
@@ -343,10 +361,12 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_LabelRef(const String &label) : Expr(TYPE), _label(label) {}
+	inline Expr_LabelRef(const Expr_LabelRef &expr) : Expr(expr), _label(expr._label) {}
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -364,6 +384,9 @@ public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
 	inline Expr_Instruction(const String &symbol, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprChildren), _symbol(symbol) {}
+	inline Expr_Instruction(const Expr_Instruction &expr) :
+		Expr(expr), _symbol(expr._symbol),
+		_pExprsExpanded(expr._pExprsExpanded.IsNull()? nullptr : expr._pExprsExpanded->Clone()) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseExpandMacro(Context &context);
@@ -371,6 +394,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -387,6 +411,7 @@ public:
 	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE), _pDirective(pDirective) {}
 	inline Expr_Directive(const Directive *pDirective, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprChildren), _pDirective(pDirective) {}
+	inline Expr_Directive(const Expr_Directive &expr) : Expr(expr), _pDirective(expr._pDirective) {}
 	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseInclude(Context &context);
@@ -396,6 +421,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -408,7 +434,9 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_MacroBody() : Expr(TYPE) {}
+	inline Expr_MacroBody(const Expr_MacroBody &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
@@ -427,6 +455,9 @@ public:
 	inline Expr_MacroDecl(const Expr_LabelDef *pExprLabelDef) :
 		Expr(TYPE), _symbol(pExprLabelDef->GetLabel()),
 		_forceGlobalFlag(pExprLabelDef->GetForceGlobalFlag()), _pExprMacroBody(new Expr_MacroBody()) {}
+	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
+		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag),
+		_pExprMacroBody(dynamic_cast<Expr_MacroBody *>(expr._pExprMacroBody->Clone())) {}
 	inline const char *GetLabel() const {
 		return dynamic_cast<Expr_LabelRef *>(GetChildren().front())->GetLabel();
 	}
@@ -436,6 +467,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };

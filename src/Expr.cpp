@@ -16,6 +16,13 @@ Expr::Expr(Type type, ExprOwner *pExprChildren) :
 {
 }
 
+Expr::Expr(const Expr &expr) :
+	_cntRef(1), _type(expr._type), _pExprChildren(expr._pExprChildren->Clone()),
+	_pFileNameSrc(expr._pFileNameSrc->Reference()), _lineNo(expr._lineNo)
+{
+	// don't copy _pExprDict, which should be different for each Expr instance.
+}
+
 Expr::~Expr()
 {
 }
@@ -158,6 +165,16 @@ void ExprOwner::Clear()
 	clear();
 }
 
+ExprOwner *ExprOwner::Clone() const
+{
+	AutoPtr<ExprOwner> pExprOwner(new ExprOwner());
+	pExprOwner->reserve(size());
+	for (auto pExpr : *this) {
+		pExprOwner->push_back(pExpr->Clone());
+	}
+	return pExprOwner.release();
+}
+
 ExprOwner *ExprOwner::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOwner(new ExprOwner());
@@ -278,6 +295,11 @@ Expr *Expr_Root::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_Root::Clone() const
+{
+	return new Expr_Root(*this);
+}
+
 Expr *Expr_Root::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<Expr> pExprRtn(new Expr_Root(GetChildren().Substitute(exprDict)));
@@ -319,6 +341,11 @@ Expr *Expr_Number::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_Number::Clone() const
+{
+	return new Expr_Number(*this);
+}
+
 Expr *Expr_Number::Substitute(const ExprDict &exprDict) const
 {
 	return Reference();
@@ -343,6 +370,11 @@ Expr *Expr_String::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_String::Clone() const
+{
+	return new Expr_String(*this);
+}
+
 Expr *Expr_String::Substitute(const ExprDict &exprDict) const
 {
 	return Reference();
@@ -365,6 +397,11 @@ String Expr_BitPattern::ComposeSource(bool upperCaseFlag) const
 Expr *Expr_BitPattern::Resolve(Context &context) const
 {
 	return Reference();
+}
+
+Expr *Expr_BitPattern::Clone() const
+{
+	return new Expr_BitPattern(*this);
 }
 
 Expr *Expr_BitPattern::Substitute(const ExprDict &exprDict) const
@@ -412,6 +449,11 @@ Expr *Expr_BinOp::Resolve(Context &context) const
 	return _pOperator->Resolve(context, pExprL.release(), pExprR.release());
 }
 
+Expr *Expr_BinOp::Clone() const
+{
+	return new Expr_BinOp(*this);
+}
+
 Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<Expr> pExprRtn(new Expr_BinOp(GetOperator(), GetChildren().Substitute(exprDict)));
@@ -445,6 +487,11 @@ Expr *Expr_Bracket::Resolve(Context &context) const
 	return pExprRtn.release();
 }
 
+Expr *Expr_Bracket::Clone() const
+{
+	return new Expr_Bracket(*this);
+}
+
 Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<Expr> pExprRtn(new Expr_Bracket(GetChildren().Substitute(exprDict)));
@@ -476,6 +523,11 @@ Expr *Expr_Brace::Resolve(Context &context) const
 		pExprRtn->AddChild(pExprChildResolved.release());
 	}
 	return pExprRtn.release();
+}
+
+Expr *Expr_Brace::Clone() const
+{
+	return new Expr_Brace(*this);
 }
 
 Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
@@ -538,6 +590,11 @@ Expr *Expr_LabelDef::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_LabelDef::Clone() const
+{
+	return new Expr_LabelDef(*this);
+}
+
 Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
 {
 	return Reference();
@@ -578,7 +635,8 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 		pExprRtn->DeriveSourceInfo(this);
 		return pExprRtn.release();
 	}
-	const Expr *pExpr = Lookup(GetLabel());
+	//::printf("ref: %p\n", _pExprDict.get());
+	const Expr *pExpr = _pExprDict->Lookup(GetLabel());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
 		return nullptr;
@@ -590,6 +648,11 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 		return nullptr;
 	}
 	return pExprResolved.release();
+}
+
+Expr *Expr_LabelRef::Clone() const
+{
+	return new Expr_LabelRef(*this);
 }
 
 Expr *Expr_LabelRef::Substitute(const ExprDict &exprDict) const
@@ -634,7 +697,6 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 		return false;
 	}
 	_pExprsExpanded.reset(pMacro->GetExprOwner().Substitute(*pExprDict));
-	//_pExprsExpanded.insert(_pExprsExpanded->begin(), new Expr_Directive());
 	return true;
 }
 
@@ -647,7 +709,9 @@ bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 	} else {
 		context.PushLocalExprDict();	// .proc
 		for (auto pExpr : *_pExprsExpanded) {
+			//pExpr->Print();
 			if (!(rtn = pExpr->OnPhaseSetupExprDict(context))) break;
+			//::printf("%p\n", pExpr->GetExprDict());
 		}
 		context.PopLocalExprDict();		// .endp
 	}
@@ -690,6 +754,11 @@ bool Expr_Instruction::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseF
 Expr *Expr_Instruction::Resolve(Context &context) const
 {
 	return Reference();
+}
+
+Expr *Expr_Instruction::Clone() const
+{
+	return new Expr_Instruction(*this);
 }
 
 Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
@@ -755,6 +824,11 @@ Expr *Expr_Directive::Resolve(Context &context) const
 	return _pDirective->Resolve(context, this);
 }
 
+Expr *Expr_Directive::Clone() const
+{
+	return new Expr_Directive(*this);
+}
+
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<Expr> pExprRtn(new Expr_Directive(GetDirective(), GetChildren().Substitute(exprDict)));
@@ -781,6 +855,11 @@ const Expr::Type Expr_MacroBody::TYPE = Expr::TYPE_MacroBody;
 Expr *Expr_MacroBody::Resolve(Context &context) const
 {
 	return Reference();
+}
+
+Expr *Expr_MacroBody::Clone() const
+{
+	return new Expr_MacroBody(*this);
 }
 
 Expr *Expr_MacroBody::Substitute(const ExprDict &exprDict) const
@@ -839,6 +918,11 @@ bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFla
 Expr *Expr_MacroDecl::Resolve(Context &context) const
 {
 	return Reference();
+}
+
+Expr *Expr_MacroDecl::Clone() const
+{
+	return new Expr_MacroDecl(*this);
 }
 
 Expr *Expr_MacroDecl::Substitute(const ExprDict &exprDict) const
