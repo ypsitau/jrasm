@@ -186,6 +186,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Root() : Expr(TYPE) {}
+	inline Expr_Root(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
@@ -264,6 +265,8 @@ public:
 		GetChildren().push_back(pExprL);
 		GetChildren().push_back(pExprR);
 	}
+	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprChildren) :			
+		Expr(TYPE, pExprChildren), _pOperator(pOperator) {}
 	inline const Expr *GetLeft() const { return GetChildren()[0]; }
 	inline const Expr *GetRight() const { return GetChildren()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }
@@ -280,6 +283,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Bracket() : Expr(TYPE) {}
+	inline Expr_Bracket(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
@@ -293,6 +297,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Brace() : Expr(TYPE) {}
+	inline Expr_Brace(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
@@ -357,6 +362,8 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
+	inline Expr_Instruction(const String &symbol, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprChildren), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseExpandMacro(Context &context);
@@ -378,6 +385,8 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE), _pDirective(pDirective) {}
+	inline Expr_Directive(const Directive *pDirective, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprChildren), _pDirective(pDirective) {}
 	inline const Directive *GetDirective() const { return _pDirective; }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseInclude(Context &context);

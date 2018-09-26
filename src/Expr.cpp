@@ -280,7 +280,9 @@ Expr *Expr_Root::Resolve(Context &context) const
 
 Expr *Expr_Root::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	AutoPtr<Expr> pExprRtn(new Expr_Root(GetChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 String Expr_Root::ComposeSource(bool upperCaseFlag) const
@@ -412,7 +414,9 @@ Expr *Expr_BinOp::Resolve(Context &context) const
 
 Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	AutoPtr<Expr> pExprRtn(new Expr_BinOp(GetOperator(), GetChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -443,7 +447,9 @@ Expr *Expr_Bracket::Resolve(Context &context) const
 
 Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	AutoPtr<Expr> pExprRtn(new Expr_Bracket(GetChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -474,7 +480,9 @@ Expr *Expr_Brace::Resolve(Context &context) const
 
 Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	AutoPtr<Expr> pExprRtn(new Expr_Brace(GetChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -497,7 +505,9 @@ bool Expr_LabelDef::OnPhaseSetupExprDict(Context &context)
 	if (IsAssigned()) {
 		_pExprDict->Assign(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		_pExprDict->Assign(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
+		AutoPtr<Expr> pExpr(new Expr_Number(context.GetAddress()));
+		pExpr->DeriveSourceInfo(this);
+		_pExprDict->Assign(GetLabel(), pExpr.release(), _forceGlobalFlag);
 	}
 	return true;
 }
@@ -563,7 +573,11 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
-	if (!context.IsPhase(Context::PHASE_Generate)) return new Expr_Number(0);
+	if (!context.IsPhase(Context::PHASE_Generate)) {
+		AutoPtr<Expr> pExprRtn(new Expr_Number(0));
+		pExprRtn->DeriveSourceInfo(this);
+		return pExprRtn.release();
+	}
 	const Expr *pExpr = Lookup(GetLabel());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
@@ -580,7 +594,8 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 
 Expr *Expr_LabelRef::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	const Expr *pExpr = exprDict.Lookup(GetLabel());
+	return (pExpr == nullptr)? Reference() : pExpr->Reference();
 }
 
 String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
@@ -678,7 +693,9 @@ Expr *Expr_Instruction::Resolve(Context &context) const
 
 Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	AutoPtr<Expr> pExprRtn(new Expr_Instruction(GetSymbol(), GetChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
@@ -739,7 +756,9 @@ Expr *Expr_Directive::Resolve(Context &context) const
 
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 {
-	return Reference();
+	AutoPtr<Expr> pExprRtn(new Expr_Directive(GetDirective(), GetChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 String Expr_Directive::ComposeSource(bool upperCaseFlag) const
