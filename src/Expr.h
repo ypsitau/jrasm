@@ -145,7 +145,7 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual Expr *Substitute(const ExprDict &exprDict) const = 0;
-	virtual String ComposeSource(bool upperCaseFlag) const = 0;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const = 0;
 protected:
 	static void DumpDisasmHelper(
 		UInt32 addr, const Binary &buff, const char *strCode,
@@ -194,7 +194,7 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -212,7 +212,7 @@ public:
 	inline UInt32 GetNumber() const { return _num; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -229,7 +229,7 @@ public:
 	inline const String &GetStringSTL() const { return _str; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -247,7 +247,7 @@ public:
 	Binary GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -269,7 +269,7 @@ public:
 	inline const Operator *GetOperator() const { return _pOperator; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -282,7 +282,7 @@ public:
 	inline Expr_Bracket() : Expr(TYPE) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -295,7 +295,7 @@ public:
 	inline Expr_Brace() : Expr(TYPE) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -323,7 +323,7 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -341,7 +341,7 @@ public:
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -363,7 +363,7 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -386,7 +386,7 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -399,7 +399,7 @@ public:
 	inline Expr_MacroBody() : Expr(TYPE) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 //-----------------------------------------------------------------------------
@@ -424,7 +424,7 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
+	virtual String ComposeSource(bool upperCaseFlag, const char *sepEachLine = "\n") const;
 };
 
 #endif

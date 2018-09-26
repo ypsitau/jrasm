@@ -283,7 +283,7 @@ Expr *Expr_Root::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_Root::ComposeSource(bool upperCaseFlag) const
+String Expr_Root::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	return "";
 }
@@ -293,7 +293,7 @@ String Expr_Root::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
 
-String Expr_Number::ComposeSource(bool upperCaseFlag) const
+String Expr_Number::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	if (!_str.empty()) {
 		if (_str[0] != '\'') return _str;
@@ -327,7 +327,7 @@ Expr *Expr_Number::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_String::TYPE = Expr::TYPE_String;
 
-String Expr_String::ComposeSource(bool upperCaseFlag) const
+String Expr_String::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str;
 	str = "\"";
@@ -351,7 +351,7 @@ Expr *Expr_String::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BitPattern::TYPE = Expr::TYPE_BitPattern;
 
-String Expr_BitPattern::ComposeSource(bool upperCaseFlag) const
+String Expr_BitPattern::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str;
 	str = "b\"";
@@ -392,7 +392,7 @@ Binary Expr_BitPattern::GetBinary() const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
 
-String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
+String Expr_BinOp::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str;
 	str = GetLeft()->ComposeSource(upperCaseFlag);
@@ -420,7 +420,7 @@ Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;
 
-String Expr_Bracket::ComposeSource(bool upperCaseFlag) const
+String Expr_Bracket::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str;
 	str = "[";
@@ -451,7 +451,7 @@ Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Brace::TYPE = Expr::TYPE_Brace;
 
-String Expr_Brace::ComposeSource(bool upperCaseFlag) const
+String Expr_Brace::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str;
 	str = "{";
@@ -513,8 +513,10 @@ bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag
 	String str = _label;
 	str += _forceGlobalFlag? "::" : ":";
 	if (IsAssigned()) {
+		String sepEachLine = "\n";
+		sepEachLine += MakePadding(9 + 3 * nColsPerLine + 1);
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
-		str += GetAssigned()->ComposeSource(upperCaseFlag);
+		str += GetAssigned()->ComposeSource(upperCaseFlag, sepEachLine.c_str());
 	}
 	::fprintf(fp, "%s\n", str.c_str());
 	return true;
@@ -530,7 +532,7 @@ Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
+String Expr_LabelDef::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str;
 	str = _label; // not affected by upperCaseFlag
@@ -567,7 +569,7 @@ Expr *Expr_LabelRef::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
+String Expr_LabelRef::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	if (Generator::GetInstance().IsRegisterSymbol(_label.c_str())) {
 		return upperCaseFlag? ToUpper(_label.c_str()) : ToLower(_label.c_str());
@@ -665,7 +667,7 @@ Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
+String Expr_Instruction::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str = JustifyLeft(
 		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
@@ -726,7 +728,7 @@ Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_Directive::ComposeSource(bool upperCaseFlag) const
+String Expr_Directive::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	const char *symbol = _pDirective->GetSymbol();
 	String str = JustifyLeft(
@@ -752,7 +754,7 @@ Expr *Expr_MacroBody::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
+String Expr_MacroBody::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str = GetChildren().ComposeSource(upperCaseFlag, "\n");
 	str += "\n";
@@ -783,11 +785,17 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 
 bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
+#if 0
 	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
 	::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag).c_str());
 	for (auto pExpr : GetMacroBody()->GetChildren()) {
 		::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());
 	}
+#endif
+	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
+	String sepEachLine = "\n";
+	sepEachLine += paddingLeft;
+	::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag, sepEachLine.c_str()).c_str());
 	return true;
 }
 
@@ -801,10 +809,14 @@ Expr *Expr_MacroDecl::Substitute(const ExprDict &exprDict) const
 	return Reference();
 }
 
-String Expr_MacroDecl::ComposeSource(bool upperCaseFlag) const
+String Expr_MacroDecl::ComposeSource(bool upperCaseFlag, const char *sepEachLine) const
 {
 	String str = upperCaseFlag? ".MACRO" : ".macro";
 	str += ' ';
 	str += GetChildren().ComposeSource(upperCaseFlag, ",");
+	for (auto pExpr : GetMacroBody()->GetChildren()) {
+		str += sepEachLine;
+		str += pExpr->ComposeSource(upperCaseFlag);
+	}
 	return str;
 }
