@@ -7,7 +7,7 @@
 // Context
 //-----------------------------------------------------------------------------
 Context::Context(const String &pathNameSrc) :
-	_pParser(new Parser(*this, pathNameSrc)), _pDirectiveList(new DirectiveList()),
+	_pParser(new Parser(pathNameSrc)),
 	_phaseCur(PHASE_None), _pExprListResolved(new ExprList())
 {
 	const char *fileNameSrc = ::ExtractFileName(pathNameSrc.c_str());
@@ -17,22 +17,6 @@ Context::Context(const String &pathNameSrc) :
 	_segmentOwner.push_back(new Segment("data"));		// data segment
 	_segmentOwner.push_back(new Segment("internal"));	// internal segment
 	SelectCodeSegment();
-	_pDirectiveList->push_back(Directive::CSEG);
-	_pDirectiveList->push_back(Directive::DB);
-	_pDirectiveList->push_back(Directive::DSEG);
-	_pDirectiveList->push_back(Directive::DW);
-	_pDirectiveList->push_back(Directive::ENDM);
-	_pDirectiveList->push_back(Directive::ENDP);
-	_pDirectiveList->push_back(Directive::ENDPCG);
-	_pDirectiveList->push_back(Directive::EQU);
-	_pDirectiveList->push_back(Directive::FILENAME_JR);
-	_pDirectiveList->push_back(Directive::INCLUDE);
-	_pDirectiveList->push_back(Directive::ISEG);
-	_pDirectiveList->push_back(Directive::MACRO);
-	_pDirectiveList->push_back(Directive::MML);
-	_pDirectiveList->push_back(Directive::ORG);
-	_pDirectiveList->push_back(Directive::PCG);
-	_pDirectiveList->push_back(Directive::PROC);
 }
 
 bool Context::ParseFile()
@@ -127,11 +111,6 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	}
 	_pExprListResolved->push_back(const_cast<Expr *>(pExpr));
 	return false;
-}
-
-const Directive *Context::FindDirective(const char *symbol) const
-{
-	return _pDirectiveList->FindBySymbol(symbol);
 }
 
 //-----------------------------------------------------------------------------

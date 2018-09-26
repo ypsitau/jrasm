@@ -52,6 +52,7 @@ protected:
 	virtual ~Directive();
 public:
 	static void Initialize();
+	static const Directive *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const;

@@ -6,9 +6,8 @@
 //-----------------------------------------------------------------------------
 // Parser
 //-----------------------------------------------------------------------------
-Parser::Parser(Context &context, const String &fileNameSrc) :
-	_context(context), _tokenizer(this, fileNameSrc), _stat(STAT_LineTop),
-	_pExprStack(new ExprStack())
+Parser::Parser(const String &fileNameSrc) :
+	_tokenizer(this, fileNameSrc), _stat(STAT_LineTop), _pExprStack(new ExprStack())
 {
 	_pExprStack->push_back(new Expr_Root());
 }
@@ -45,7 +44,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_Symbol)) {
 			const char *symbol = pToken->GetString();
-			const Directive *pDirective = _context.FindDirective(symbol);
+			const Directive *pDirective = Directive::Lookup(symbol);
 			if (pDirective == nullptr) {
 				if (*symbol == '.') {
 					AddError("unknown directive: %s", symbol);

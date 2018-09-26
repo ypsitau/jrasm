@@ -9,8 +9,6 @@
 #include "Macro.h"
 
 class Parser;
-class Directive;
-class DirectiveList;
 
 //-----------------------------------------------------------------------------
 // Context
@@ -59,7 +57,6 @@ public:
 	};
 private:
 	std::unique_ptr<Parser> _pParser;
-	std::unique_ptr<DirectiveList> _pDirectiveList;
 	String _fileNameJR;
 	String _fileBaseNameSrc;
 	Segment *_pSegmentCur;
@@ -104,7 +101,6 @@ public:
 	LabelInfoOwner *MakeLabelInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
-	const Directive *FindDirective(const char *symbol) const;
 };
 
 #endif

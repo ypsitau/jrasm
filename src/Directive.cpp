@@ -49,6 +49,11 @@ void Directive::Initialize()
 	_directiveList.Assign(PROC			= new Directive_PROC());
 }
 
+const Directive *Directive::Lookup(const char *symbol)
+{
+	return _directiveList.FindBySymbol(symbol);
+}
+
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
