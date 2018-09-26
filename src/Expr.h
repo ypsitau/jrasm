@@ -95,6 +95,7 @@ public:
 	DeclareReferenceAccessor(Expr);
 public:
 	Expr(Type type);
+	Expr(Type type, ExprOwner *pExprChildren);
 protected:
 	virtual ~Expr();
 public:
