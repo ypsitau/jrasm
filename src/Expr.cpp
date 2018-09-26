@@ -153,6 +153,11 @@ void ExprOwner::Clear()
 	clear();
 }
 
+ExprOwner *ExprOwner::Substitute(const ExprDict &exprDict) const
+{
+	return nullptr;
+}
+
 //-----------------------------------------------------------------------------
 // ExprDict
 //-----------------------------------------------------------------------------
@@ -263,6 +268,11 @@ Expr *Expr_Root::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_Root::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 String Expr_Root::ComposeSource(bool upperCaseFlag) const
 {
 	return "";
@@ -297,6 +307,11 @@ Expr *Expr_Number::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_Number::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
@@ -316,6 +331,11 @@ Expr *Expr_String::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_String::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_BitPattern
 //-----------------------------------------------------------------------------
@@ -331,6 +351,11 @@ String Expr_BitPattern::ComposeSource(bool upperCaseFlag) const
 }
 
 Expr *Expr_BitPattern::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_BitPattern::Substitute(const ExprDict &exprDict) const
 {
 	return Reference();
 }
@@ -375,6 +400,11 @@ Expr *Expr_BinOp::Resolve(Context &context) const
 	return _pOperator->Resolve(context, pExprL.release(), pExprR.release());
 }
 
+Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Bracket
 //-----------------------------------------------------------------------------
@@ -401,6 +431,11 @@ Expr *Expr_Bracket::Resolve(Context &context) const
 	return pExprRtn.release();
 }
 
+Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Brace
 //-----------------------------------------------------------------------------
@@ -425,6 +460,11 @@ Expr *Expr_Brace::Resolve(Context &context) const
 		pExprRtn->AddChild(pExprChildResolved.release());
 	}
 	return pExprRtn.release();
+}
+
+Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
 }
 
 //-----------------------------------------------------------------------------
@@ -470,6 +510,11 @@ Expr *Expr_LabelDef::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
@@ -500,6 +545,11 @@ Expr *Expr_LabelRef::Resolve(Context &context) const
 		return nullptr;
 	}
 	return pExprResolved.release();
+}
+
+Expr *Expr_LabelRef::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
 }
 
 String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
@@ -578,6 +628,11 @@ Expr *Expr_Instruction::Resolve(Context &context) const
 	return Reference();
 }
 
+Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 {
 	String str = JustifyLeft(
@@ -634,6 +689,11 @@ Expr *Expr_Directive::Resolve(Context &context) const
 	return _pDirective->Resolve(context, this);
 }
 
+Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
+{
+	return Reference();
+}
+
 String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 {
 	const char *symbol = _pDirective->GetSymbol();
@@ -651,6 +711,11 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 const Expr::Type Expr_MacroBody::TYPE = Expr::TYPE_MacroBody;
 
 Expr *Expr_MacroBody::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_MacroBody::Substitute(const ExprDict &exprDict) const
 {
 	return Reference();
 }
@@ -699,6 +764,11 @@ bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFla
 }
 
 Expr *Expr_MacroDecl::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_MacroDecl::Substitute(const ExprDict &exprDict) const
 {
 	return Reference();
 }
