@@ -13,22 +13,36 @@ class Context;
 class ExprStack;
 class Expr;
 class Expr_Directive;
-class DirectiveOwner;
 
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
 class Directive {
 private:
-	int _cntRef;
 	String _symbol;
 public:
-	DeclareReferenceAccessor(Directive);
+	static const Directive *CSEG;
+	static const Directive *DB;
+	static const Directive *DSEG;
+	static const Directive *DW;
+	static const Directive *ENDM;
+	static const Directive *ENDP;
+	static const Directive *ENDPCG;
+	static const Directive *EQU;
+	static const Directive *FILENAME_JR;
+	static const Directive *INCLUDE;
+	static const Directive *ISEG;
+	static const Directive *MACRO;
+	static const Directive *MML;
+	static const Directive *ORG;
+	static const Directive *PCG;
+	static const Directive *PROC;
 public:
-	inline Directive(const String &symbol) : _cntRef(1), _symbol(symbol) {}
+	inline Directive(const String &symbol) : _symbol(symbol) {}
 protected:
 	virtual ~Directive();
 public:
+	static void Initialize();
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, const Expr_Directive *pExpr) const;
@@ -42,18 +56,9 @@ public:
 //-----------------------------------------------------------------------------
 // DirectiveList
 //-----------------------------------------------------------------------------
-class DirectiveList : public std::vector<Directive *> {
+class DirectiveList : public std::vector<const Directive *> {
 public:
 	const Directive *FindBySymbol(const char *symbol) const;
-};
-
-//-----------------------------------------------------------------------------
-// DirectiveOwner
-//-----------------------------------------------------------------------------
-class DirectiveOwner : public DirectiveList {
-public:
-	~DirectiveOwner();
-	void Clear();
 };
 
 //-----------------------------------------------------------------------------

@@ -6,8 +6,45 @@
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
+const Directive *Directive::CSEG		= nullptr;
+const Directive *Directive::DB			= nullptr;
+const Directive *Directive::DSEG		= nullptr;
+const Directive *Directive::DW			= nullptr;
+const Directive *Directive::ENDM		= nullptr;
+const Directive *Directive::ENDP		= nullptr;
+const Directive *Directive::ENDPCG		= nullptr;
+const Directive *Directive::EQU			= nullptr;
+const Directive *Directive::FILENAME_JR	= nullptr;
+const Directive *Directive::INCLUDE		= nullptr;
+const Directive *Directive::ISEG		= nullptr;
+const Directive *Directive::MACRO		= nullptr;
+const Directive *Directive::MML			= nullptr;
+const Directive *Directive::ORG			= nullptr;
+const Directive *Directive::PCG			= nullptr;
+const Directive *Directive::PROC		= nullptr;
+
 Directive::~Directive()
 {
+}
+
+void Directive::Initialize()
+{
+	CSEG		= new Directive_CSEG();
+	DB			= new Directive_DB();
+	DSEG		= new Directive_DSEG();
+	DW			= new Directive_DW();
+	ENDM		= new Directive_ENDM();
+	ENDP		= new Directive_ENDP();
+	ENDPCG		= new Directive_ENDPCG();
+	EQU			= new Directive_EQU();
+	FILENAME_JR	= new Directive_FILENAME_JR();
+	INCLUDE		= new Directive_INCLUDE();
+	ISEG		= new Directive_ISEG();
+	MACRO		= new Directive_MACRO();
+	MML			= new Directive_MML();
+	ORG			= new Directive_ORG();
+	PCG			= new Directive_PCG();
+	PROC		= new Directive_PROC();
 }
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
@@ -57,21 +94,6 @@ const Directive *DirectiveList::FindBySymbol(const char *symbol) const
 		if (strcasecmp(pDirective->GetSymbol(), symbol) == 0) return pDirective;
 	}
 	return nullptr;
-}
-
-//-----------------------------------------------------------------------------
-// DirectiveOwner
-//-----------------------------------------------------------------------------
-DirectiveOwner::~DirectiveOwner()
-{
-}
-
-void DirectiveOwner::Clear()
-{
-	for (auto pDirective : *this) {
-		Directive::Delete(pDirective);
-	}
-	clear();
 }
 
 //-----------------------------------------------------------------------------

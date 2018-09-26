@@ -634,6 +634,7 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 		return false;
 	}
 	_pExprsExpanded.reset(pMacro->GetExprOwner().Substitute(*pExprDict));
+	//_pExprsExpanded.insert(_pExprsExpanded->begin(), new Expr_Directive());
 	return true;
 }
 
