@@ -57,8 +57,9 @@ public:
 	};
 private:
 	std::unique_ptr<Parser> _pParser;
-	String _fileNameJR;
+	String _pathNameSrc;
 	String _fileBaseNameSrc;
+	String _fileNameJR;
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
