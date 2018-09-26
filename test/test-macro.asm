@@ -31,9 +31,22 @@ macro3:
 	ldaa	arg
 	.endm
 
+macro4:
+	.macro
+	.dw		addr1
+	.dw		addr2
+addr1:
+	.dw		addr1
+addr2:
+	.dw		addr2
+	.endm
+	
 	macro1	8
 	macro2	3, 4
 	macro3	0x22
 	macro3	{0x22}
 	macro3	[x+0x22]
 	macro3	[0x1234]
+	macro4
+	macro4
+	macro4

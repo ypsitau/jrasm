@@ -25,5 +25,26 @@ external_val:      .equ 0x20
     1028 a6 22     ldaa [x+0x22]
                    macro3 [0x1234]
     102a b6 12 34  ldaa [0x1234]
+                   macro4 
+    102d 10 31     .dw  addr1
+    102f 10 33     .dw  addr2
+addr1:
+    1031 10 31     .dw  addr1
+addr2:
+    1033 10 33     .dw  addr2
+                   macro4 
+    1035 10 39     .dw  addr1
+    1037 10 3b     .dw  addr2
+addr1:
+    1039 10 39     .dw  addr1
+addr2:
+    103b 10 3b     .dw  addr2
+                   macro4 
+    103d 10 41     .dw  addr1
+    103f 10 43     .dw  addr2
+addr1:
+    1041 10 41     .dw  addr1
+addr2:
+    1043 10 43     .dw  addr2
 [Label List]
 0020  external_val
