@@ -115,7 +115,7 @@ public:
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupLookup(Context &context);
+	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
@@ -182,7 +182,7 @@ public:
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupLookup(Context &context);
+	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
@@ -302,7 +302,7 @@ public:
 	inline const char *GetLabel() const { return _label.c_str(); }
 	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
 	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
-	virtual bool OnPhaseSetupLookup(Context &context);
+	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
@@ -338,7 +338,7 @@ public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
-	virtual bool OnPhaseSetupLookup(Context &context);
+	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
@@ -360,7 +360,7 @@ public:
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupLookup(Context &context);
+	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;

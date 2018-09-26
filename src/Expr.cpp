@@ -61,11 +61,11 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 	return true;
 }
 
-bool Expr::OnPhaseSetupLookup(Context &context)
+bool Expr::OnPhaseSetupExprDict(Context &context)
 {
 	_pExprDict.reset(context.GetExprDict()->Reference());
 	for (auto pExpr : GetChildren()) {
-		if (!pExpr->OnPhaseSetupLookup(context)) return false;
+		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
 	}
 	return true;
 }
@@ -232,10 +232,10 @@ bool Expr_Root::OnPhaseExpandMacro(Context &context)
 	return true;
 }
 
-bool Expr_Root::OnPhaseSetupLookup(Context &context)
+bool Expr_Root::OnPhaseSetupExprDict(Context &context)
 {
 	context.ResetSegment();
-	bool rtn = Expr::OnPhaseSetupLookup(context);
+	bool rtn = Expr::OnPhaseSetupExprDict(context);
 	return rtn;
 }
 
@@ -431,9 +431,9 @@ Expr *Expr_Brace::Resolve(Context &context) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 
-bool Expr_LabelDef::OnPhaseSetupLookup(Context &context)
+bool Expr_LabelDef::OnPhaseSetupExprDict(Context &context)
 {
-	if (!Expr::OnPhaseSetupLookup(context)) return false;
+	if (!Expr::OnPhaseSetupExprDict(context)) return false;
 	if (_pExprDict->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
@@ -514,9 +514,9 @@ String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 
-bool Expr_Instruction::OnPhaseSetupLookup(Context &context)
+bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 {
-	if (!Expr::OnPhaseSetupLookup(context)) return false;
+	if (!Expr::OnPhaseSetupExprDict(context)) return false;
 	UInt32 bytes = 0;
 	Generator::GetInstance().CalcInstBytes(context, this, &bytes);
 	return true;
@@ -578,10 +578,10 @@ bool Expr_Directive::OnPhaseExpandMacro(Context &context)
 	return _pDirective->OnPhaseExpandMacro(context, this);
 }
 
-bool Expr_Directive::OnPhaseSetupLookup(Context &context)
+bool Expr_Directive::OnPhaseSetupExprDict(Context &context)
 {
-	if (!Expr::OnPhaseSetupLookup(context)) return false;
-	return _pDirective->OnPhaseSetupLookup(context, this);
+	if (!Expr::OnPhaseSetupExprDict(context)) return false;
+	return _pDirective->OnPhaseSetupExprDict(context, this);
 }
 
 bool Expr_Directive::OnPhaseGenerate(Context &context) const

@@ -60,8 +60,8 @@ bool Context::Prepare()
 	if (!_pParser->GetRoot()->OnPhaseDeclareMacro(*this)) return false;
 	SetPhase(PHASE_ExpandMacro);
 	if (!_pParser->GetRoot()->OnPhaseExpandMacro(*this)) return false;
-	SetPhase(PHASE_SetupLookup);
-	if (!_pParser->GetRoot()->OnPhaseSetupLookup(*this)) return false;
+	SetPhase(PHASE_SetupExprDict);
+	if (!_pParser->GetRoot()->OnPhaseSetupExprDict(*this)) return false;
 	return true;
 }
 

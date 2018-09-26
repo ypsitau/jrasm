@@ -21,7 +21,7 @@ public:
 		PHASE_Include,
 		PHASE_DeclareMacro,
 		PHASE_ExpandMacro,
-		PHASE_SetupLookup,
+		PHASE_SetupExprDict,
 		PHASE_Generate,
 	};
 public:
