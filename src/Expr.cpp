@@ -63,7 +63,7 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 
 bool Expr::OnPhaseSetupLookup(Context &context)
 {
-	_pLookupTable.reset(context.GetLookupTable()->Reference());
+	_pDictionary.reset(context.GetDictionary()->Reference());
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseSetupLookup(context)) return false;
 	}
@@ -111,52 +111,52 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 }
 
 //-----------------------------------------------------------------------------
-// Expr::LookupTable
+// Expr::Dictionary
 //-----------------------------------------------------------------------------
-Expr::LookupTable::~LookupTable()
+Expr::Dictionary::~Dictionary()
 {
 	for (auto iter : *this) {
 		Expr::Delete(iter.second);
 	}
 }
 
-void Expr::LookupTable::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
+void Expr::Dictionary::Associate(const String &label, Expr *pExpr, bool forceGlobalFlag)
 {
-	LookupTable *pLookupTable = forceGlobalFlag? GetGlobal() : this;
-	pLookupTable->insert(std::make_pair(label, pExpr));
+	Dictionary *pDictionary = forceGlobalFlag? GetGlobal() : this;
+	pDictionary->insert(std::make_pair(label, pExpr));
 }
 
-bool Expr::LookupTable::IsDefined(const char *label) const
+bool Expr::Dictionary::IsDefined(const char *label) const
 {
 	return find(label) != end();
 }
 
-const Expr *Expr::LookupTable::Lookup(const char *label) const
+const Expr *Expr::Dictionary::Lookup(const char *label) const
 {
 	const_iterator iter = find(label);
 	if (iter != end())	return iter->second;
-	return _pLookupTableParent.IsNull()? nullptr : _pLookupTableParent->Lookup(label);
+	return _pDictionaryParent.IsNull()? nullptr : _pDictionaryParent->Lookup(label);
 }
 
-Expr::LookupTable *Expr::LookupTable::GetGlobal()
+Expr::Dictionary *Expr::Dictionary::GetGlobal()
 {
-	LookupTable *pLookupTable = this;
-	for ( ; pLookupTable->GetParent() != nullptr; pLookupTable = pLookupTable->GetParent()) ;
-	return pLookupTable;
+	Dictionary *pDictionary = this;
+	for ( ; pDictionary->GetParent() != nullptr; pDictionary = pDictionary->GetParent()) ;
+	return pDictionary;
 }
 
 //-----------------------------------------------------------------------------
-// Expr::LookupTableOwner
+// Expr::DictionaryOwner
 //-----------------------------------------------------------------------------
-Expr::LookupTableOwner::~LookupTableOwner()
+Expr::DictionaryOwner::~DictionaryOwner()
 {
 	Clear();
 }
 
-void Expr::LookupTableOwner::Clear()
+void Expr::DictionaryOwner::Clear()
 {
-	for (auto pLookupTable : *this) {
-		LookupTable::Delete(pLookupTable);
+	for (auto pDictionary : *this) {
+		Dictionary::Delete(pDictionary);
 	}
 	clear();
 }
@@ -434,14 +434,14 @@ const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
 bool Expr_LabelDef::OnPhaseSetupLookup(Context &context)
 {
 	if (!Expr::OnPhaseSetupLookup(context)) return false;
-	if (_pLookupTable->IsDefined(GetLabel())) {
+	if (_pDictionary->IsDefined(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
 	}
 	if (IsAssigned()) {
-		_pLookupTable->Associate(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
+		_pDictionary->Associate(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		_pLookupTable->Associate(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
+		_pDictionary->Associate(GetLabel(), new Expr_Number(context.GetAddress()), _forceGlobalFlag);
 	}
 	return true;
 }

@@ -64,7 +64,7 @@ private:
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
-	Expr::LookupTableStack _lookupTableStack;
+	Expr::DictionaryStack _dictionaryStack;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);
@@ -84,19 +84,19 @@ public:
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
 	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
-	inline Expr::LookupTable *GetLookupTable() { return _lookupTableStack.back(); }
-	inline const Expr::LookupTable *GetLookupTable() const { return _lookupTableStack.back(); }
-	inline Expr::LookupTable *GetLookupTableGlobal() { return _lookupTableStack.front(); }
-	inline const Expr::LookupTable *GetLookupTableGlobal() const { return _lookupTableStack.front(); }
+	inline Expr::Dictionary *GetDictionary() { return _dictionaryStack.back(); }
+	inline const Expr::Dictionary *GetDictionary() const { return _dictionaryStack.back(); }
+	inline Expr::Dictionary *GetDictionaryGlobal() { return _dictionaryStack.front(); }
+	inline const Expr::Dictionary *GetDictionaryGlobal() const { return _dictionaryStack.front(); }
 	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
-	inline bool DoesExistLocalLookupTable() const { return _lookupTableStack.size() > 1; }
+	inline bool DoesExistLocalDictionary() const { return _dictionaryStack.size() > 1; }
 	bool ParseFile();
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
 	void StartRegion(UInt32 addr);
-	void PushLocalLookupTable();
-	void PopLocalLookupTable();
+	void PushLocalDictionary();
+	void PopLocalDictionary();
 	LabelInfoOwner *MakeLabelInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);

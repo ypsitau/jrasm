@@ -12,7 +12,7 @@ Context::Context(const String &pathNameSrc) :
 {
 	const char *fileNameSrc = ::ExtractFileName(pathNameSrc.c_str());
 	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc);
-	_lookupTableStack.push_back(new Expr::LookupTable());	// global lookup table
+	_dictionaryStack.push_back(new Expr::Dictionary());	// global dictionary
 	_segmentOwner.push_back(new Segment("code"));			// code segment
 	_segmentOwner.push_back(new Segment("data"));			// data segment
 	_segmentOwner.push_back(new Segment("internal"));		// internal segment
@@ -84,23 +84,23 @@ void Context::StartRegion(UInt32 addr)
 	_pSegmentCur->SetAddress(addr);
 }
 
-void Context::PushLocalLookupTable()
+void Context::PushLocalDictionary()
 {
-	Expr::LookupTable *pLookupTable = new Expr::LookupTable(_lookupTableStack.back()->Reference());
-	_lookupTableStack.push_back(pLookupTable);
+	Expr::Dictionary *pDictionary = new Expr::Dictionary(_dictionaryStack.back()->Reference());
+	_dictionaryStack.push_back(pDictionary);
 }
 
-void Context::PopLocalLookupTable()
+void Context::PopLocalDictionary()
 {
-	Expr::LookupTable *pLookupTable = _lookupTableStack.back();
-	_lookupTableStack.pop_back();
-	Expr::LookupTable::Delete(pLookupTable);
+	Expr::Dictionary *pDictionary = _dictionaryStack.back();
+	_dictionaryStack.pop_back();
+	Expr::Dictionary::Delete(pDictionary);
 }
 
 Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
 {
 	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
-	for (auto iter : *GetLookupTableGlobal()) {
+	for (auto iter : *GetDictionaryGlobal()) {
 		const String &label = iter.first;
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));

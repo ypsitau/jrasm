@@ -31,40 +31,40 @@ public:
 		TYPE_MacroEntry,
 	};
 public:
-	class LookupTable : public std::map<String, Expr *, LessThan_StringICase> {
+	class Dictionary : public std::map<String, Expr *, LessThan_StringICase> {
 	private:
 		int _cntRef;
-		AutoPtr<LookupTable> _pLookupTableParent;
+		AutoPtr<Dictionary> _pDictionaryParent;
 	public:
-		DeclareReferenceAccessor(LookupTable);
+		DeclareReferenceAccessor(Dictionary);
 	public:
-		inline LookupTable(LookupTable *pLookupTableParent = nullptr) :
-			_cntRef(1), _pLookupTableParent(pLookupTableParent) {}
+		inline Dictionary(Dictionary *pDictionaryParent = nullptr) :
+			_cntRef(1), _pDictionaryParent(pDictionaryParent) {}
 	private:
-		~LookupTable();
+		~Dictionary();
 	public:
-		inline LookupTable *GetParent() { return _pLookupTableParent.get(); }
+		inline Dictionary *GetParent() { return _pDictionaryParent.get(); }
 		void Associate(const String &label, Expr *pExpr, bool forceGlobalFlag);
 		bool IsDefined(const char *label) const;
 		const Expr *Lookup(const char *label) const;
-		LookupTable *GetGlobal();
-		inline const LookupTable *GetGlobal() const {
-			return const_cast<LookupTable *>(this)->GetGlobal();
+		Dictionary *GetGlobal();
+		inline const Dictionary *GetGlobal() const {
+			return const_cast<Dictionary *>(this)->GetGlobal();
 		}
 	};
-	class LookupTableList : public std::vector<LookupTable *> {
+	class DictionaryList : public std::vector<Dictionary *> {
 	};
-	class LookupTableOwner : public LookupTableList {
+	class DictionaryOwner : public DictionaryList {
 	public:
-		~LookupTableOwner();
+		~DictionaryOwner();
 		void Clear();
 	};
-	typedef LookupTableOwner LookupTableStack;
+	typedef DictionaryOwner DictionaryStack;
 protected:
 	int _cntRef;
 	Type _type;
 	std::auto_ptr<ExprOwner> _pExprChildren;
-	AutoPtr<LookupTable> _pLookupTable;
+	AutoPtr<Dictionary> _pDictionary;
 	AutoPtr<StringShared> _pFileNameSrc;
 	int _lineNo;
 public:
@@ -103,9 +103,9 @@ public:
 		return _pFileNameSrc.IsNull()? "" : _pFileNameSrc->GetString();
 	}
 	inline int GetLineNo() const { return _lineNo; }
-	inline bool IsLookupTableReady() const { return !_pLookupTable.IsNull(); }
+	inline bool IsDictionaryReady() const { return !_pDictionary.IsNull(); }
 	inline const Expr *Lookup(const char *label) const {
-		return _pLookupTable.IsNull()? nullptr : _pLookupTable->Lookup(label);
+		return _pDictionary.IsNull()? nullptr : _pDictionary->Lookup(label);
 	}
 	bool IsTypeLabelDef(const char *label) const;
 	bool IsTypeLabelRef(const char *label) const;
