@@ -247,7 +247,8 @@ bool Directive_ENDP::OnPhaseSetupExprDict(Context &context, const Expr_Directive
 
 bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseSetupExprDict(context, pExpr);
+	// nothing to do
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -512,5 +513,6 @@ bool Directive_PROC::OnPhaseSetupExprDict(Context &context, const Expr_Directive
 
 bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return OnPhaseSetupExprDict(context, pExpr);
+	// nothing to do
+	return true;
 }

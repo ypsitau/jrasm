@@ -527,45 +527,50 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
+	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {
-		return Generator::GetInstance().ForwardAddress(context, this);
+		rtn = Generator::GetInstance().ForwardAddress(context, this);
 	} else {
+		context.PushLocalExprDict();	// .proc
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!pExpr->OnPhaseSetupExprDict(context)) return false;
+			if (!(rtn = pExpr->OnPhaseSetupExprDict(context))) break;
 		}
-		return true;
+		context.PopLocalExprDict();		// .endp
 	}
+	return rtn;
 }
 
 bool Expr_Instruction::OnPhaseGenerate(Context &context) const
 {
+	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {
-		return Generator::GetInstance().Generate(context, this);
+		rtn = Generator::GetInstance().Generate(context, this);
 	} else {
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!pExpr->OnPhaseGenerate(context)) return false;
+			if (!(rtn = pExpr->OnPhaseGenerate(context))) break;
 		}
-		return true;
 	}
+	return rtn;
 }
 
 bool Expr_Instruction::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
+	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {
 		Binary buffDst;
 		UInt32 addr = context.GetAddress();
-		if (!Generator::GetInstance().Generate(context, this, buffDst)) return false;
-		DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
-						 fp, upperCaseFlag, nColsPerLine, nColsPerLine);
-		return true;
+		if ((rtn = Generator::GetInstance().Generate(context, this, buffDst))) {
+			DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
+							 fp, upperCaseFlag, nColsPerLine, nColsPerLine);
+		}
 	} else {
 		String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
 		::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag).c_str());
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
+			if (!(rtn = pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine))) break;
 		}
-		return true;
 	}
+	return rtn;
 }
 
 Expr *Expr_Instruction::Resolve(Context &context) const
