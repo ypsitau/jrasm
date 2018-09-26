@@ -26,7 +26,7 @@ void MacroDict::Assign(Macro *pMacro)
 	insert(std::make_pair(pMacro->GetSymbol(), pMacro));
 }
 
-bool MacroDict::IsDefined(const char *label) const
+bool MacroDict::IsAssigned(const char *label) const
 {
 	return find(label) != end();
 }

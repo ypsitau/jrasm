@@ -184,7 +184,7 @@ void ExprDict::Assign(const String &label, Expr *pExpr, bool forceGlobalFlag)
 	pExprDict->insert(std::make_pair(label, pExpr));
 }
 
-bool ExprDict::IsDefined(const char *label) const
+bool ExprDict::IsAssigned(const char *label) const
 {
 	return find(label) != end();
 }
@@ -498,7 +498,7 @@ bool Expr_LabelDef::OnPhaseDeclareMacro(Context &context)
 bool Expr_LabelDef::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
-	if (_pExprDict->IsDefined(GetLabel())) {
+	if (_pExprDict->IsAssigned(GetLabel())) {
 		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
 		return false;
 	}

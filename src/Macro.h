@@ -37,7 +37,7 @@ public:
 	~MacroDict();
 public:
 	void Assign(Macro *pMacro);
-	bool IsDefined(const char *label) const;
+	bool IsAssigned(const char *label) const;
 	const Macro *Lookup(const char *label) const;
 };
 
