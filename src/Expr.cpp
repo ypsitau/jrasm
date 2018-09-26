@@ -510,6 +510,9 @@ bool Expr_LabelDef::OnPhaseGenerate(Context &context) const
 
 bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
+	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
+		return GetAssigned()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
+	}
 	String str = ComposeSource(upperCaseFlag);
 	if (IsAssigned()) {
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
@@ -787,8 +790,11 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 
 bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
+	String str = Expr_LabelDef::ComposeSource(_symbol.c_str(), _forceGlobalFlag);
+	str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
+	str += ComposeSource(upperCaseFlag);
+	::fprintf(fp, "%s\n", str.c_str());
 	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
-	::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag).c_str());
 	for (auto pExpr : GetMacroBody()->GetChildren()) {
 		::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());
 	}
