@@ -407,6 +407,7 @@ bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *
 
 bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const
 {
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str());
 	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, disasmDumper);
 }
 
