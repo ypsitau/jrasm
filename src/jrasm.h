@@ -11,6 +11,7 @@
 #include "CommandLine.h"
 #include "Context.h"
 #include "Directive.h"
+#include "DisasmDumper.h"
 #include "ErrorLog.h"
 #include "Expr.h"
 #include "FormatCJR.h"

@@ -9,6 +9,7 @@ add_executable(jrasm
 	Common.cpp
 	Context.cpp
 	Directive.cpp
+	DisasmDumper.cpp
 	ErrorLog.cpp
 	Expr.cpp
 	FormatCJR.cpp

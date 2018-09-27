@@ -153,6 +153,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Directive.h" />
+    <ClInclude Include="DisasmDumper.h" />
     <ClInclude Include="ErrorLog.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="FormatCJR.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="Directive.cpp" />
+    <ClCompile Include="DisasmDumper.cpp" />
     <ClCompile Include="ErrorLog.cpp" />
     <ClCompile Include="Expr.cpp" />
     <ClCompile Include="FormatCJR.cpp" />
