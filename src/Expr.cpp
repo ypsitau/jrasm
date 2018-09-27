@@ -547,7 +547,6 @@ bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper,
 	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
 		return GetAssigned()->OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 	}
-	//String str = ComposeSource(upperCaseFlag);
 	String strLabel = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	if (IsAssigned()) {
 		disasmDumper.DumpLabelAndCode(
@@ -718,7 +717,7 @@ bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumpe
 	} else {
 		disasmDumper.DumpCode(ComposeSource(upperCaseFlag).c_str(), indentLevelCode);
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!(rtn = pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode))) break;
+			if (!(rtn = pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1))) break;
 		}
 	}
 	return rtn;
@@ -866,20 +865,6 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 
 bool Expr_MacroDecl::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-#if 0
-	String str = Expr_SymbolDef::MakeSource(_symbol.c_str(), _forceGlobalFlag);
-	str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
-	str += ComposeSource(upperCaseFlag);
-	::fprintf(fp, "%s\n", str.c_str());
-	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
-	for (auto pExpr : GetMacroBody()->GetChildren()) {
-		if (pExpr->IsTypeSymbolDef()) {
-			::fprintf(fp, "%s\n", pExpr->ComposeSource(upperCaseFlag).c_str());
-		} else {
-			::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());
-		}
-	}
-#endif
 	return true;
 }
 
