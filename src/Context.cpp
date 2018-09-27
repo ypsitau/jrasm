@@ -46,7 +46,8 @@ RegionOwner *Context::Generate(size_t bytesGapToJoin, UInt8 dataFiller)
 bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 {
 	SetPhase(PHASE_Generate);
-	return _pExprRoot->OnPhaseDisasm(*this, fp, upperCaseFlag, nColsPerLine);
+	DisasmDumper disasmDumper(fp, upperCaseFlag, nColsPerLine);
+	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper);
 }
 
 void Context::StartRegion(UInt32 addr)

@@ -5,6 +5,7 @@
 #define __EXPR_H__
 
 #include "Operator.h"
+#include "DisasmDumper.h"
 
 class Directive;
 class ExprOwner;
@@ -142,7 +143,7 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual Expr *Clone() const = 0;
 	virtual Expr *Substitute(const ExprDict &exprDict) const = 0;
@@ -190,7 +191,7 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -339,7 +340,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -388,7 +389,7 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -418,7 +419,7 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -464,7 +465,7 @@ public:
 	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseDeclareMacro(Context &context);
-	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
+	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

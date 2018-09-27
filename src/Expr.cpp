@@ -88,7 +88,7 @@ bool Expr::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return true;
 }
 
-bool Expr::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
 {
 	// nothing to do
 	return true;
@@ -253,11 +253,11 @@ bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return true;
 }
 
-bool Expr_Root::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_Root::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		if (!pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine)) return false;
+		if (!pExpr->OnPhaseDisasm(context, disasmDumper)) return false;
 	}
 	return true;
 }
@@ -542,18 +542,19 @@ bool Expr_SymbolDef::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return true;
 }
 
-bool Expr_SymbolDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
 {
 	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
-		return GetAssigned()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
+		return GetAssigned()->OnPhaseDisasm(context, disasmDumper);
 	}
 	//String str = ComposeSource(upperCaseFlag);
-	String str = MakeSource(_symbol.c_str(), _forceGlobalFlag);
+	String strLabel = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	if (IsAssigned()) {
-		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
-		str += GetAssigned()->ComposeSource(upperCaseFlag);
+		disasmDumper.DumpLabelAndCode(
+			strLabel.c_str(), GetAssigned()->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str());
+	} else {
+		disasmDumper.DumpLabel(strLabel.c_str());
 	}
-	::fprintf(fp, "%s\n", str.c_str());
 	return true;
 }
 
@@ -703,21 +704,20 @@ bool Expr_Instruction::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return rtn;
 }
 
-bool Expr_Instruction::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
 {
 	bool rtn = true;
+	bool upperCaseFlag = disasmDumper.GetUpperCaseFlag();
 	if (_pExprsExpanded.IsNull()) {
 		Binary buffDst;
 		UInt32 addr = context.GetAddress();
 		if ((rtn = Generator::GetInstance().Generate(context, this, &buffDst))) {
-			Generator::DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
-										fp, upperCaseFlag, nColsPerLine, nColsPerLine);
+			disasmDumper.DumpDataAndCode(addr, buffDst, ComposeSource(upperCaseFlag).c_str());
 		}
 	} else {
-		String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
-		::fprintf(fp, "%s%s\n", paddingLeft.c_str(), ComposeSource(upperCaseFlag).c_str());
+		disasmDumper.DumpCode(ComposeSource(upperCaseFlag).c_str());
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!(rtn = pExpr->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine))) break;
+			if (!(rtn = pExpr->OnPhaseDisasm(context, disasmDumper))) break;
 		}
 	}
 	return rtn;
@@ -781,9 +781,9 @@ bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return _pDirective->OnPhaseGenerate(context, this, pBuffDst);
 }
 
-bool Expr_Directive::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_Directive::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
 {
-	return _pDirective->OnPhaseDisasm(context, this, fp, upperCaseFlag, nColsPerLine);
+	return _pDirective->OnPhaseDisasm(context, this, disasmDumper);
 }
 
 Expr *Expr_Directive::Resolve(Context &context) const
@@ -863,7 +863,7 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	return true;
 }
 
-bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_MacroDecl::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
 {
 #if 0
 	String str = Expr_SymbolDef::MakeSource(_symbol.c_str(), _forceGlobalFlag);

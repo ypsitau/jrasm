@@ -93,15 +93,13 @@ bool Directive::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, B
 	return true;
 }
 
-bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
-							  FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
-	Generator::DumpDisasmHelper(
-		addr, buffDst, pExpr->ComposeSource(upperCaseFlag).c_str(),
-		fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
+	disasmDumper.DumpDataAndCode(
+		addr, buffDst, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str());
 	return true;
 }
 
@@ -407,10 +405,9 @@ bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *
 	return pExpr->GetExprIncluded()->OnPhaseGenerate(context, pBuffDst);
 }
 
-bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
-									  FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const
 {
-	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
+	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, disasmDumper);
 }
 
 //-----------------------------------------------------------------------------
