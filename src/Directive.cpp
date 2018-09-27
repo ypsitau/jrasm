@@ -93,13 +93,15 @@ bool Directive::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, B
 	return true;
 }
 
-bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const
+bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
 	disasmDumper.DumpDataAndCode(
-		addr, buffDst, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str());
+		addr, buffDst,
+		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 
@@ -405,10 +407,11 @@ bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *
 	return pExpr->GetExprIncluded()->OnPhaseGenerate(context, pBuffDst);
 }
 
-bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const
+bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+									  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str());
-	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, disasmDumper);
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
 //-----------------------------------------------------------------------------

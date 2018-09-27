@@ -88,7 +88,7 @@ bool Expr::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return true;
 }
 
-bool Expr::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
+bool Expr::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	// nothing to do
 	return true;
@@ -253,11 +253,11 @@ bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return true;
 }
 
-bool Expr_Root::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
+bool Expr_Root::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		if (!pExpr->OnPhaseDisasm(context, disasmDumper)) return false;
+		if (!pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
 	}
 	return true;
 }
@@ -542,16 +542,17 @@ bool Expr_SymbolDef::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return true;
 }
 
-bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
+bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
-		return GetAssigned()->OnPhaseDisasm(context, disasmDumper);
+		return GetAssigned()->OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 	}
 	//String str = ComposeSource(upperCaseFlag);
 	String strLabel = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	if (IsAssigned()) {
 		disasmDumper.DumpLabelAndCode(
-			strLabel.c_str(), GetAssigned()->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str());
+			strLabel.c_str(),
+			GetAssigned()->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	} else {
 		disasmDumper.DumpLabel(strLabel.c_str());
 	}
@@ -704,7 +705,7 @@ bool Expr_Instruction::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return rtn;
 }
 
-bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
+bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	bool rtn = true;
 	bool upperCaseFlag = disasmDumper.GetUpperCaseFlag();
@@ -712,12 +713,12 @@ bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumpe
 		Binary buffDst;
 		UInt32 addr = context.GetAddress();
 		if ((rtn = Generator::GetInstance().Generate(context, this, &buffDst))) {
-			disasmDumper.DumpDataAndCode(addr, buffDst, ComposeSource(upperCaseFlag).c_str());
+			disasmDumper.DumpDataAndCode(addr, buffDst, ComposeSource(upperCaseFlag).c_str(), indentLevelCode);
 		}
 	} else {
-		disasmDumper.DumpCode(ComposeSource(upperCaseFlag).c_str());
+		disasmDumper.DumpCode(ComposeSource(upperCaseFlag).c_str(), indentLevelCode);
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!(rtn = pExpr->OnPhaseDisasm(context, disasmDumper))) break;
+			if (!(rtn = pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode))) break;
 		}
 	}
 	return rtn;
@@ -781,9 +782,9 @@ bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 	return _pDirective->OnPhaseGenerate(context, this, pBuffDst);
 }
 
-bool Expr_Directive::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
+bool Expr_Directive::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	return _pDirective->OnPhaseDisasm(context, this, disasmDumper);
+	return _pDirective->OnPhaseDisasm(context, this, disasmDumper, indentLevelCode);
 }
 
 Expr *Expr_Directive::Resolve(Context &context) const
@@ -863,7 +864,7 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	return true;
 }
 
-bool Expr_MacroDecl::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper) const
+bool Expr_MacroDecl::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 #if 0
 	String str = Expr_SymbolDef::MakeSource(_symbol.c_str(), _forceGlobalFlag);

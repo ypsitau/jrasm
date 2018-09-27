@@ -47,7 +47,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 {
 	SetPhase(PHASE_Generate);
 	DisasmDumper disasmDumper(fp, upperCaseFlag, nColsPerLine);
-	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper);
+	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 
 void Context::StartRegion(UInt32 addr)

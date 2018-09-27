@@ -19,9 +19,9 @@ public:
 	DisasmDumper(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
 	inline bool GetUpperCaseFlag() const { return _upperCaseFlag; }
 	void DumpLabel(const char *strLabel);
-	void DumpCode(const char *strCode);
-	void DumpLabelAndCode(const char *strLabel, const char *strCode);
-	void DumpDataAndCode(UInt32 addr, const Binary &buff, const char *strCode);
+	void DumpCode(const char *strCode, int indentLevelCode);
+	void DumpLabelAndCode(const char *strLabel, const char *strCode, int indentLevelCode);
+	void DumpDataAndCode(UInt32 addr, const Binary &buff, const char *strCode, int indentLevelCode);
 };
 
 #endif

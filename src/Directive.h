@@ -62,7 +62,8 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
 
@@ -166,7 +167,8 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr, DisasmDumper &disasmDumper) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 //-----------------------------------------------------------------------------

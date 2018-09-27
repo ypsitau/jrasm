@@ -17,20 +17,25 @@ void DisasmDumper::DumpLabel(const char *strLabel)
 	::fprintf(_fp, "%s\n", strLabel);
 }
 
-void DisasmDumper::DumpCode(const char *strCode)
+void DisasmDumper::DumpCode(const char *strCode, int indentLevelCode)
 {
-	::fprintf(_fp, "%s%s\n", _paddingLeft.c_str(), strCode);
+	String indentCode = MakePadding(indentLevelCode * 2);
+	::fprintf(_fp, "%s%s%s\n", _paddingLeft.c_str(), indentCode.c_str(), strCode);
 }
 
-void DisasmDumper::DumpLabelAndCode(const char *strLabel, const char *strCode)
+void DisasmDumper::DumpLabelAndCode(const char *strLabel, const char *strCode, int indentLevelCode)
 {
-	::fprintf(_fp, "%s %s\n", JustifyLeft(strLabel, 9 + 3 * _nColsPerLine).c_str(), strCode);
+	String indentCode = MakePadding(indentLevelCode * 2 + 1);
+	::fprintf(_fp, "%s%s%s\n", JustifyLeft(strLabel, 9 + 3 * _nColsPerLine).c_str(),
+			  indentCode.c_str(), strCode);
 }
 
-void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *strCode)
+void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *strCode, int indentLevelCode)
 {
 	const char *formatData = _upperCaseFlag? " %02X" : " %02x";
-	const char *formatHead = _upperCaseFlag? "    %04X%s  %s\n" : "    %04x%s  %s\n";
+	const char *formatHead = _upperCaseFlag? "    %04X%s  %s%s\n" : "    %04x%s  %s%s\n";
+	const char *formatFollow = _upperCaseFlag? "    %04X%s\n" : "    %04x%s\n";
+	String indentCode = MakePadding(indentLevelCode * 2);
 	String str;
 	size_t iCol = 0;
 	size_t iLine = 0;
@@ -41,8 +46,12 @@ void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *
 		str += buff;
 		iCol++;
 		if (iCol == nColsFold) {
-			::fprintf(_fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str(),
-					  (iLine == 0)? strCode : "");
+			if (iLine == 0) {
+				::fprintf(_fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str(),
+						  indentCode.c_str(), strCode);
+			} else {
+				::fprintf(_fp, formatFollow, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str());
+			}
 			str.clear();
 			addr += static_cast<UInt32>(iCol);
 			iCol = 0;
@@ -50,8 +59,12 @@ void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *
 		}
 	}
 	if (iCol > 0) {
-		::fprintf(_fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str(),
-				  (iLine == 0)? strCode : "");
+		if (iLine == 0) {
+			::fprintf(_fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str(),
+					  indentCode.c_str(), strCode);
+		} else {
+			::fprintf(_fp, formatFollow, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str());
+		}
 	}
 }
 
