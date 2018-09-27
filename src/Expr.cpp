@@ -282,6 +282,33 @@ String Expr_Root::ComposeSource(bool upperCaseFlag) const
 }
 
 //-----------------------------------------------------------------------------
+// Expr_Group
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_Group::TYPE = Expr::TYPE_Group;
+
+Expr *Expr_Group::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_Group::Clone() const
+{
+	return new Expr_Group(*this);
+}
+
+Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
+{
+	return Clone();
+}
+
+String Expr_Group::ComposeSource(bool upperCaseFlag) const
+{
+	String str = GetChildren().ComposeSource(upperCaseFlag, "\n");
+	str += "\n";
+	return str;
+}
+
+//-----------------------------------------------------------------------------
 // Expr_Number
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
@@ -790,7 +817,9 @@ Expr *Expr_Directive::Resolve(Context &context) const
 
 Expr *Expr_Directive::Clone() const
 {
-	return new Expr_Directive(*this);
+	AutoPtr<Expr> pExprRtn(new Expr_Directive(*this));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
 }
 
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
@@ -808,33 +837,6 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
 	str += GetChildren().ComposeSource(upperCaseFlag, ",");
-	return str;
-}
-
-//-----------------------------------------------------------------------------
-// Expr_Group
-//-----------------------------------------------------------------------------
-const Expr::Type Expr_Group::TYPE = Expr::TYPE_Group;
-
-Expr *Expr_Group::Resolve(Context &context) const
-{
-	return Reference();
-}
-
-Expr *Expr_Group::Clone() const
-{
-	return new Expr_Group(*this);
-}
-
-Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
-{
-	return Clone();
-}
-
-String Expr_Group::ComposeSource(bool upperCaseFlag) const
-{
-	String str = GetChildren().ComposeSource(upperCaseFlag, "\n");
-	str += "\n";
 	return str;
 }
 

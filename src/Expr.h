@@ -199,6 +199,21 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Expr_Group
+//-----------------------------------------------------------------------------
+class Expr_Group : public Expr {
+public:
+	static const Type TYPE;
+public:
+	inline Expr_Group() : Expr(TYPE) {}
+	inline Expr_Group(const Expr_Group &expr) : Expr(expr) {}
+	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
+	virtual Expr *Substitute(const ExprDict &exprDict) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
 // Expr_Number
 //-----------------------------------------------------------------------------
 class Expr_Number : public Expr {
@@ -420,21 +435,6 @@ public:
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
-	virtual Expr *Resolve(Context &context) const;
-	virtual Expr *Clone() const;
-	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
-};
-
-//-----------------------------------------------------------------------------
-// Expr_Group
-//-----------------------------------------------------------------------------
-class Expr_Group : public Expr {
-public:
-	static const Type TYPE;
-public:
-	inline Expr_Group() : Expr(TYPE) {}
-	inline Expr_Group(const Expr_Group &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
