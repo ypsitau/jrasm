@@ -383,7 +383,9 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) 
 	String pathNameIncluded = JoinPathName(context.GetDirNameSrc(), fileNameIncluded);
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
-	pExpr->SetExprIncluded(parser.GetRoot()->Reference());
+	AutoPtr<Expr> pExprRoot(parser.GetRoot()->Reference());
+	if (!pExprRoot->OnPhaseInclude(context)) return false;
+	pExpr->SetExprIncluded(pExprRoot.release());
 	return true;
 }
 
