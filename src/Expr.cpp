@@ -722,8 +722,7 @@ bool Expr_Instruction::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {
-		if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
-		rtn = Generator::GetInstance().Generate(context, this, *pBuffDst);
+		rtn = Generator::GetInstance().Generate(context, this, pBuffDst);
 	} else {
 		for (auto pExpr : *_pExprsExpanded) {
 			if (!(rtn = pExpr->OnPhaseGenerate(context, pBuffDst))) break;
@@ -738,7 +737,7 @@ bool Expr_Instruction::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseF
 	if (_pExprsExpanded.IsNull()) {
 		Binary buffDst;
 		UInt32 addr = context.GetAddress();
-		if ((rtn = Generator::GetInstance().Generate(context, this, buffDst))) {
+		if ((rtn = Generator::GetInstance().Generate(context, this, &buffDst))) {
 			DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
 							 fp, upperCaseFlag, nColsPerLine, nColsPerLine);
 		}
@@ -807,15 +806,14 @@ bool Expr_Directive::OnPhaseSetupExprDict(Context &context)
 
 bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
-	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
-	return _pDirective->OnPhaseGenerate(context, this, *pBuffDst);
+	return _pDirective->OnPhaseGenerate(context, this, pBuffDst);
 }
 
 bool Expr_Directive::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
-	if (!_pDirective->OnPhaseGenerate(context, this, buffDst)) return false;
+	if (!_pDirective->OnPhaseGenerate(context, this, &buffDst)) return false;
 	DumpDisasmHelper(addr, buffDst, ComposeSource(upperCaseFlag).c_str(),
 					 fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
 	return true;

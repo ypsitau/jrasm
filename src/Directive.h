@@ -61,7 +61,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const = 0;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const = 0;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
 
@@ -72,7 +72,7 @@ class Directive_CSEG : public Directive {
 public:
 	inline Directive_CSEG() : Directive(".CSEG") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ class Directive_DB : public Directive {
 public:
 	inline Directive_DB() : Directive(".DB") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 private:
 	bool DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -94,7 +94,7 @@ class Directive_DSEG : public Directive {
 public:
 	inline Directive_DSEG() : Directive(".DSEG") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -104,7 +104,7 @@ class Directive_DW : public Directive {
 public:
 	inline Directive_DW() : Directive(".DW") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ class Directive_ENDM : public Directive {
 public:
 	inline Directive_ENDM() : Directive(".ENDM") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ class Directive_ENDP : public Directive {
 public:
 	inline Directive_ENDP() : Directive(".ENDP") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -133,7 +133,7 @@ public:
 class Directive_ENDPCG : public Directive {
 public:
 	inline Directive_ENDPCG() : Directive(".ENDPCG") {}
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ class Directive_EQU : public Directive {
 public:
 	inline Directive_EQU() : Directive(".EQU") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
 
@@ -153,7 +153,7 @@ public:
 class Directive_FILENAME_JR : public Directive {
 public:
 	inline Directive_FILENAME_JR() : Directive(".FILENAME.JR") {}
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -166,7 +166,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -176,7 +176,7 @@ class Directive_ISEG : public Directive {
 public:
 	inline Directive_ISEG() : Directive(".ISEG") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ public:
 	inline Directive_MACRO() : Directive(".MACRO") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -208,7 +208,7 @@ public:
 public:
 	inline Directive_MML() : Directive(".MML") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -218,7 +218,7 @@ class Directive_ORG : public Directive {
 public:
 	inline Directive_ORG() : Directive(".ORG") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -228,7 +228,7 @@ class Directive_PCG : public Directive {
 public:
 	inline Directive_PCG() : Directive(".PCG") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -239,7 +239,7 @@ public:
 	inline Directive_PROC() : Directive(".PROC") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 #endif

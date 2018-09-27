@@ -23,8 +23,9 @@ bool Generator::ForwardAddress(Context &context, const Expr_Instruction *pExpr) 
 	return DoForwardAddress(context, pExpr);
 }
 
-bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const
+bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const
 {
 	if (!context.CheckRegionReady()) return false;
-	return DoGenerate(context, pExpr, buffDst);
+	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+	return DoGenerate(context, pExpr, *pBuffDst);
 }

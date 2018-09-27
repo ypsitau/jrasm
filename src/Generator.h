@@ -27,7 +27,7 @@ public:
 	inline size_t GetInstNameLenMax() const { return _instNameLenMax; }
 	static void Initialize(Generator *pGenerator);
 	bool ForwardAddress(Context &context, const Expr_Instruction *pExpr) const;
-	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
+	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const;
 	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
 	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const = 0;
 	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const = 0;
