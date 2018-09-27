@@ -87,6 +87,17 @@ bool Directive::OnPhaseSetupExprDict(Context &context, const Expr_Directive *pEx
 	return true;
 }
 
+bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							  FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+{
+	Binary buffDst;
+	UInt32 addr = context.GetAddress();
+	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
+	Generator::DumpDisasmHelper(addr, buffDst, pExpr->ComposeSource(upperCaseFlag).c_str(),
+								fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
+	return true;
+}
+
 Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();

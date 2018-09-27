@@ -147,10 +147,6 @@ public:
 	virtual Expr *Clone() const = 0;
 	virtual Expr *Substitute(const ExprDict &exprDict) const = 0;
 	virtual String ComposeSource(bool upperCaseFlag) const = 0;
-protected:
-	static void DumpDisasmHelper(
-		UInt32 addr, const Binary &buff, const char *strCode,
-		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
 };
 
 //-----------------------------------------------------------------------------

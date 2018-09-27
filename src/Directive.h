@@ -62,6 +62,8 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const = 0;
+	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							   FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
 
