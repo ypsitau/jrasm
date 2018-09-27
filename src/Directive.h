@@ -85,8 +85,7 @@ public:
 	inline Directive_DB() : Directive(".DB") {}
 	virtual bool OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
-private:
-	bool DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
+	static bool Generate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst, UInt32 *pBytes);
 };
 
 //-----------------------------------------------------------------------------

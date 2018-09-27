@@ -148,17 +148,23 @@ bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_DB::OnPhaseSetupExprDict(Context &context, const Expr_Directive *pExpr) const
 {
-	return DoGenerate(context, pExpr, nullptr);
+	UInt32 bytes = 0;
+	if (!Generate(context, pExpr, nullptr, &bytes)) return false;
+	context.ForwardAddress(bytes);
+	return true;
 }
 
 bool Directive_DB::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	if (!context.CheckSegmentRegionReady()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
-	return DoGenerate(context, pExpr, pBuffDst);
+	UInt32 bytes = 0;
+	if (!Generate(context, pExpr, pBuffDst, &bytes)) return false;
+	context.ForwardAddress(bytes);
+	return true;
 }
 
-bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	UInt32 bytes = 0;
 	for (auto pExprData : pExpr->GetOperands()) {
@@ -194,7 +200,7 @@ bool Directive_DB::DoGenerate(Context &context, const Expr_Directive *pExpr, Bin
 			return false;
 		}
 	}
-	context.ForwardAddress(static_cast<UInt32>(bytes));
+	*pBytes = bytes;
 	return true;
 }
 
