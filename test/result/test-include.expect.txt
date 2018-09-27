@@ -1,0 +1,8 @@
+                   .include "test-include/include1.asm"
+    1000 00 01     | .dw  0x0001
+                   .include "test-include/include2.asm"
+    1002 00 02     | .dw  0x0002
+                   .include "test-include/include3.asm"
+    1004 00 03     | .dw  0x0003
+[Symbol List]
+(no symbol)
