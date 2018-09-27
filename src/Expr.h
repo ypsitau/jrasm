@@ -82,7 +82,7 @@ public:
 		TYPE_SymbolRef,
 		TYPE_Instruction,
 		TYPE_Directive,
-		TYPE_MacroBody,
+		TYPE_Group,
 		TYPE_MacroDecl,
 	};
 public:
@@ -114,7 +114,7 @@ public:
 	inline bool IsTypeSymbolRef() const { return IsType(TYPE_SymbolRef); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
-	inline bool IsTypeMacroBody() const { return IsType(TYPE_MacroBody); }
+	inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetChildren() { return *_pExprChildren; }
@@ -427,14 +427,14 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_MacroBody
+// Expr_Group
 //-----------------------------------------------------------------------------
-class Expr_MacroBody : public Expr {
+class Expr_Group : public Expr {
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroBody() : Expr(TYPE) {}
-	inline Expr_MacroBody(const Expr_MacroBody &expr) : Expr(expr) {}
+	inline Expr_Group() : Expr(TYPE) {}
+	inline Expr_Group(const Expr_Group &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -448,21 +448,21 @@ class Expr_MacroDecl : public Expr {
 private:
 	String _symbol;
 	bool _forceGlobalFlag;
-	AutoPtr<Expr_MacroBody> _pExprMacroBody;
+	AutoPtr<Expr_Group> _pExprGroup;
 public:
 	static const Type TYPE;
 public:
 	inline Expr_MacroDecl(const Expr_SymbolDef *pExprSymbolDef) :
 		Expr(TYPE), _symbol(pExprSymbolDef->GetSymbol()),
-		_forceGlobalFlag(pExprSymbolDef->GetForceGlobalFlag()), _pExprMacroBody(new Expr_MacroBody()) {}
+		_forceGlobalFlag(pExprSymbolDef->GetForceGlobalFlag()), _pExprGroup(new Expr_Group()) {}
 	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag),
-		_pExprMacroBody(dynamic_cast<Expr_MacroBody *>(expr._pExprMacroBody->Clone())) {}
+		_pExprGroup(dynamic_cast<Expr_Group *>(expr._pExprGroup->Clone())) {}
 	inline const char *GetSymbol() const {
 		return dynamic_cast<Expr_SymbolRef *>(GetChildren().front())->GetSymbol();
 	}
-	inline Expr_MacroBody *GetMacroBody() { return _pExprMacroBody.get(); }
-	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }
+	inline Expr_Group *GetGroup() { return _pExprGroup.get(); }
+	inline const Expr_Group *GetGroup() const { return _pExprGroup.get(); }
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;

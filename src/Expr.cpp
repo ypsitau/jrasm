@@ -812,26 +812,26 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_MacroBody
+// Expr_Group
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_MacroBody::TYPE = Expr::TYPE_MacroBody;
+const Expr::Type Expr_Group::TYPE = Expr::TYPE_Group;
 
-Expr *Expr_MacroBody::Resolve(Context &context) const
+Expr *Expr_Group::Resolve(Context &context) const
 {
 	return Reference();
 }
 
-Expr *Expr_MacroBody::Clone() const
+Expr *Expr_Group::Clone() const
 {
-	return new Expr_MacroBody(*this);
+	return new Expr_Group(*this);
 }
 
-Expr *Expr_MacroBody::Substitute(const ExprDict &exprDict) const
+Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
 {
 	return Clone();
 }
 
-String Expr_MacroBody::ComposeSource(bool upperCaseFlag) const
+String Expr_Group::ComposeSource(bool upperCaseFlag) const
 {
 	String str = GetChildren().ComposeSource(upperCaseFlag, "\n");
 	str += "\n";
@@ -846,7 +846,7 @@ const Expr::Type Expr_MacroDecl::TYPE = Expr::TYPE_MacroDecl;
 bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 {
 	const ExprList &operands = GetOperands();
-	AutoPtr<Macro> pMacro(new Macro(_symbol, GetMacroBody()->GetChildren().Reference()));
+	AutoPtr<Macro> pMacro(new Macro(_symbol, GetGroup()->GetChildren().Reference()));
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {

@@ -262,7 +262,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 //-----------------------------------------------------------------------------
 bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	if (!exprStack.back()->IsTypeMacroBody()) {
+	if (!exprStack.back()->IsTypeGroup()) {
 		pParser->AddError("no matching .MACRO directive");
 		return false;
 	}
@@ -270,7 +270,7 @@ bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetChildren().push_back(pExpr->Reference());
 	Expr::Delete(exprStack.back());
-	exprStack.pop_back();	// remove the EXPR_MacroBody instance from the stack
+	exprStack.pop_back();	// remove the EXPR_Group instance from the stack
 	exprStack.push_back(pExpr.release());
 	return true;
 }
@@ -453,9 +453,9 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	}
 	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprSymbolDef));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprSymbolDef->SetAssigned(pExpr->Reference());			// associate it to the preceding symbol
-	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body
-	exprStack.push_back(pExpr.release());						// for operands
+	pExprSymbolDef->SetAssigned(pExpr->Reference());		// associate it to the preceding symbol
+	exprStack.push_back(pExpr->GetGroup()->Reference());	// for directives in the body
+	exprStack.push_back(pExpr.release());					// for operands
 	return true;
 }
 
