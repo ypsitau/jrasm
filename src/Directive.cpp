@@ -87,14 +87,21 @@ bool Directive::OnPhaseSetupExprDict(Context &context, const Expr_Directive *pEx
 	return true;
 }
 
+bool Directive::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+{
+	// nothing to do
+	return true;
+}
+
 bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 							  FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	Binary buffDst;
 	UInt32 addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
-	Generator::DumpDisasmHelper(addr, buffDst, pExpr->ComposeSource(upperCaseFlag).c_str(),
-								fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
+	Generator::DumpDisasmHelper(
+		addr, buffDst, pExpr->ComposeSource(upperCaseFlag).c_str(),
+		fp, upperCaseFlag, nColsPerLine / 2 * 2, nColsPerLine);
 	return true;
 }
 
@@ -290,12 +297,6 @@ bool Directive_ENDP::OnPhaseSetupExprDict(Context &context, const Expr_Directive
 	return true;
 }
 
-bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
-	// nothing to do
-	return true;
-}
-
 //-----------------------------------------------------------------------------
 // Directive_ENDPCG
 //-----------------------------------------------------------------------------
@@ -324,12 +325,6 @@ bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	pExprSymbolDef->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr.release());
-	return true;
-}
-
-bool Directive_EQU::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
-	// nothing to do
 	return true;
 }
 
@@ -443,19 +438,9 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	}
 	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprSymbolDef));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprSymbolDef->SetAssigned(pExpr->Reference());				// associate it to the preceding symbol
+	pExprSymbolDef->SetAssigned(pExpr->Reference());			// associate it to the preceding symbol
 	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body
 	exprStack.push_back(pExpr.release());						// for operands
-	return true;
-}
-
-bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
-{
-	return true;
-}
-
-bool Directive_MACRO::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
 	return true;
 }
 
@@ -589,11 +574,5 @@ bool Directive_PROC::OnPhaseSetupExprDict(Context &context, const Expr_Directive
 		return false;
 	}
 	context.PushLocalExprDict();
-	return true;
-}
-
-bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
-	// nothing to do
 	return true;
 }
