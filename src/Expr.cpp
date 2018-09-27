@@ -239,14 +239,12 @@ bool Expr_Root::OnPhaseExpandMacro(Context &context)
 
 bool Expr_Root::OnPhaseSetupExprDict(Context &context)
 {
-	context.ResetSegment();
 	bool rtn = Expr::OnPhaseSetupExprDict(context);
 	return rtn;
 }
 
 bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
-	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseGenerate(context, pBuffDst)) return false;
 	}
@@ -255,7 +253,6 @@ bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 
 bool Expr_Root::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
 		if (!pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
 	}
@@ -553,7 +550,7 @@ bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper,
 			strLabel.c_str(),
 			GetAssigned()->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	} else {
-		disasmDumper.DumpLabel(strLabel.c_str());
+		disasmDumper.DumpLabel(strLabel.c_str(), indentLevelCode);
 	}
 	return true;
 }

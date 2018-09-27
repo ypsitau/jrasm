@@ -140,7 +140,7 @@ struct LessThan_StringICase {
 //-----------------------------------------------------------------------------
 inline bool IsFileSeparator(char ch) { return ch == '\\' || ch == '/'; }
 
-String MakePadding(size_t width, char padding = ' ');
+String MakePadding(size_t width, const char *padding = " ");
 String JustifyLeft(const char *str, size_t width, char padding = ' ');
 String JustifyRight(const char *str, size_t width, char padding = ' ');
 String ToLower(const char *str);

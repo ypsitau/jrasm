@@ -32,6 +32,7 @@ bool Context::Prepare()
 	SetPhase(PHASE_ExpandMacro);
 	if (!_pExprRoot->OnPhaseExpandMacro(*this)) return false;
 	SetPhase(PHASE_SetupExprDict);
+	ResetSegment();
 	if (!_pExprRoot->OnPhaseSetupExprDict(*this)) return false;
 	return true;
 }
@@ -39,6 +40,7 @@ bool Context::Prepare()
 RegionOwner *Context::Generate(size_t bytesGapToJoin, UInt8 dataFiller)
 {
 	SetPhase(PHASE_Generate);
+	ResetSegment();
 	if (!_pExprRoot->OnPhaseGenerate(*this, nullptr)) return nullptr;
 	return GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
 }
@@ -47,6 +49,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 {
 	SetPhase(PHASE_Generate);
 	DisasmDumper disasmDumper(fp, upperCaseFlag, nColsPerLine);
+	ResetSegment();
 	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 

@@ -12,21 +12,27 @@ DisasmDumper::DisasmDumper(FILE *fp, bool upperCaseFlag, size_t nColsPerLine) :
 	_paddingLeft = MakePadding(9 + 3 * _nColsPerLine + 1);
 }
 
-void DisasmDumper::DumpLabel(const char *strLabel)
+void DisasmDumper::DumpLabel(const char *strLabel, int indentLevelCode)
 {
-	::fprintf(_fp, "%s\n", strLabel);
+	if (indentLevelCode == 0) {
+		::fprintf(_fp, "%s\n", strLabel);
+	} else {
+		String indentCode = MakePadding(indentLevelCode, "| ");
+		::fprintf(_fp, "%s%s\n", JustifyLeft(strLabel, 9 + 3 * _nColsPerLine + 1).c_str(),
+				  indentCode.c_str());
+	}
 }
 
 void DisasmDumper::DumpCode(const char *strCode, int indentLevelCode)
 {
-	String indentCode = MakePadding(indentLevelCode * 2);
+	String indentCode = MakePadding(indentLevelCode, "| ");
 	::fprintf(_fp, "%s%s%s\n", _paddingLeft.c_str(), indentCode.c_str(), strCode);
 }
 
 void DisasmDumper::DumpLabelAndCode(const char *strLabel, const char *strCode, int indentLevelCode)
 {
-	String indentCode = MakePadding(indentLevelCode * 2 + 1);
-	::fprintf(_fp, "%s%s%s\n", JustifyLeft(strLabel, 9 + 3 * _nColsPerLine).c_str(),
+	String indentCode = MakePadding(indentLevelCode, "| ");
+	::fprintf(_fp, "%s%s%s\n", JustifyLeft(strLabel, 9 + 3 * _nColsPerLine + 1).c_str(),
 			  indentCode.c_str(), strCode);
 }
 
@@ -35,7 +41,7 @@ void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *
 	const char *formatData = _upperCaseFlag? " %02X" : " %02x";
 	const char *formatHead = _upperCaseFlag? "    %04X%s  %s%s\n" : "    %04x%s  %s%s\n";
 	const char *formatFollow = _upperCaseFlag? "    %04X%s\n" : "    %04x%s\n";
-	String indentCode = MakePadding(indentLevelCode * 2);
+	String indentCode = MakePadding(indentLevelCode, "| ");
 	String str;
 	size_t iCol = 0;
 	size_t iLine = 0;

@@ -11,7 +11,7 @@ const StringList StringList::Empty;
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
-String MakePadding(size_t width, char padding)
+String MakePadding(size_t width, const char *padding)
 {
 	String rtn;
 	while (width-- > 0) rtn += padding;

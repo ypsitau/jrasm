@@ -1,50 +1,50 @@
 external_val:      .equ 0x20
                    macro1 8
-    1000 86 08     ldaa 8
-    1002 96 08     ldaa {8}
-    1004 a6 08     ldaa [x+8]
-    1006 b6 00 08  ldaa [8]
-    1009 86 28     ldaa 8+external_val
-    100b 96 28     ldaa {8+external_val}
-    100d a6 28     ldaa [x+8+external_val]
-    100f b6 00 28  ldaa [8+external_val]
+    1000 86 08     | ldaa 8
+    1002 96 08     | ldaa {8}
+    1004 a6 08     | ldaa [x+8]
+    1006 b6 00 08  | ldaa [8]
+    1009 86 28     | ldaa 8+external_val
+    100b 96 28     | ldaa {8+external_val}
+    100d a6 28     | ldaa [x+8+external_val]
+    100f b6 00 28  | ldaa [8+external_val]
                    macro2 3,4
-    1012 86 07     ldaa 3+4
-    1014 96 07     ldaa {3+4}
-    1016 a6 07     ldaa [x+3+4]
-    1018 b6 00 07  ldaa [3+4]
-    101b 86 27     ldaa 3+4+external_val
-    101d 96 27     ldaa {3+4+external_val}
-    101f a6 27     ldaa [x+3+4+external_val]
-    1021 b6 00 27  ldaa [3+4+external_val]
+    1012 86 07     | ldaa 3+4
+    1014 96 07     | ldaa {3+4}
+    1016 a6 07     | ldaa [x+3+4]
+    1018 b6 00 07  | ldaa [3+4]
+    101b 86 27     | ldaa 3+4+external_val
+    101d 96 27     | ldaa {3+4+external_val}
+    101f a6 27     | ldaa [x+3+4+external_val]
+    1021 b6 00 27  | ldaa [3+4+external_val]
                    macro3 0x22
-    1024 86 22     ldaa 0x22
+    1024 86 22     | ldaa 0x22
                    macro3 {0x22}
-    1026 96 22     ldaa {0x22}
+    1026 96 22     | ldaa {0x22}
                    macro3 [x+0x22]
-    1028 a6 22     ldaa [x+0x22]
+    1028 a6 22     | ldaa [x+0x22]
                    macro3 [0x1234]
-    102a b6 12 34  ldaa [0x1234]
+    102a b6 12 34  | ldaa [0x1234]
                    macro4 
-    102d 10 31     .dw  addr1
-    102f 10 33     .dw  addr2
-addr1:
-    1031 10 31     .dw  addr1
-addr2:
-    1033 10 33     .dw  addr2
+    102d 10 31     | .dw  addr1
+    102f 10 33     | .dw  addr2
+addr1:             | 
+    1031 10 31     | .dw  addr1
+addr2:             | 
+    1033 10 33     | .dw  addr2
                    macro4 
-    1035 10 39     .dw  addr1
-    1037 10 3b     .dw  addr2
-addr1:
-    1039 10 39     .dw  addr1
-addr2:
-    103b 10 3b     .dw  addr2
+    1035 10 39     | .dw  addr1
+    1037 10 3b     | .dw  addr2
+addr1:             | 
+    1039 10 39     | .dw  addr1
+addr2:             | 
+    103b 10 3b     | .dw  addr2
                    macro4 
-    103d 10 41     .dw  addr1
-    103f 10 43     .dw  addr2
-addr1:
-    1041 10 41     .dw  addr1
-addr2:
-    1043 10 43     .dw  addr2
+    103d 10 41     | .dw  addr1
+    103f 10 43     | .dw  addr2
+addr1:             | 
+    1041 10 41     | .dw  addr1
+addr2:             | 
+    1043 10 43     | .dw  addr2
 [Symbol List]
 0020  external_val
