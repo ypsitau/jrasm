@@ -19,13 +19,13 @@ void Generator::Initialize(Generator *pGenerator)
 
 bool Generator::ForwardAddress(Context &context, const Expr_Instruction *pExpr) const
 {
-	if (!context.CheckRegionReady()) return false;
+	if (!context.CheckSegmentRegionReady()) return false;
 	return DoForwardAddress(context, pExpr);
 }
 
 bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckRegionReady()) return false;
-	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+	if (!context.CheckSegmentRegionReady()) return false;
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	return DoGenerate(context, pExpr, *pBuffDst);
 }

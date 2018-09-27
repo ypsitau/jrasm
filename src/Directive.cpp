@@ -135,8 +135,8 @@ bool Directive_DB::OnPhaseSetupExprDict(Context &context, const Expr_Directive *
 
 bool Directive_DB::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckRegionReady()) return false;
-	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+	if (!context.CheckSegmentRegionReady()) return false;
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	return DoGenerate(context, pExpr, pBuffDst);
 }
 
@@ -210,8 +210,8 @@ bool Directive_DW::OnPhaseSetupExprDict(Context &context, const Expr_Directive *
 
 bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckRegionReady()) return false;
-	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+	if (!context.CheckSegmentRegionReady()) return false;
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	for (auto pExprData : pExpr->GetOperands()) {
 		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
@@ -295,7 +295,7 @@ bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *p
 		ErrorLog::AddError(pExpr, "directive .ENDPCG needs no operands");
 		return false;
 	}
-	if (!context.CheckRegionReady()) return false;
+	if (!context.CheckSegmentRegionReady()) return false;
 	return true;
 }
 
@@ -459,8 +459,8 @@ bool Directive_MML::OnPhaseSetupExprDict(Context &context, const Expr_Directive 
 
 bool Directive_MML::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckRegionReady()) return false;
-	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+	if (!context.CheckSegmentRegionReady()) return false;
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	Handler handler(pBuffDst);
 	MmlParser parser(handler);
 	parser.Reset();
@@ -548,7 +548,7 @@ bool Directive_PCG::OnPhaseSetupExprDict(Context &context, const Expr_Directive 
 
 bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckRegionReady()) return false;
+	if (!context.CheckSegmentRegionReady()) return false;
 	return true;
 }
 

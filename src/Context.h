@@ -78,8 +78,8 @@ public:
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
 	inline void SelectInternalSegment() { _pSegmentCur = _segmentOwner[2]; }
-	inline Binary &GetBuffer() { return _pSegmentCur->GetBuffer(); }
-	inline const Binary &GetBuffer() const { return _pSegmentCur->GetBuffer(); }
+	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
+	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
 	inline UInt32 GetAddress() const { return _pSegmentCur->GetAddress(); }
 	inline void ForwardAddress(UInt32 bytes) { _pSegmentCur->ForwardAddress(bytes); }
@@ -93,7 +93,7 @@ public:
 	inline const ExprDict &GetExprDictGlobal() const { return *_exprDictStack.front(); }
 	inline MacroDict &GetMacroDict() { return _macroDict; }
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
-	inline bool CheckRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
+	inline bool CheckSegmentRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	bool ParseFile();
 	bool Prepare();

@@ -9,6 +9,7 @@
 Region::Region(UInt16 addrTop) :
 	_cntRef(1), _addrTop(addrTop), _pRegionsIngredient(new RegionOwner())
 {
+	_buff.reserve(4096);
 }
 
 Region::Region(const Region &region) :
