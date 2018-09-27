@@ -407,6 +407,12 @@ bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *
 	return pExpr->GetExprIncluded()->OnPhaseGenerate(context, pBuffDst);
 }
 
+bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+									  FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+{
+	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
+}
+
 //-----------------------------------------------------------------------------
 // Directive_ISEG
 //-----------------------------------------------------------------------------
