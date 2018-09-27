@@ -75,7 +75,7 @@ int main(int argc, const char *argv[])
 		if (cmdLine.IsSet("print-hexdump-l") || (upperCaseFlag = cmdLine.IsSet("print-hexdump-u"))) {
 			String fileNameOut = cmdLine.GetString("output", "");
 			FormatDump().Write(fileNameOut.c_str(), *pRegionOwner);
-			::printf("%s was created\n", fileNameOut.c_str());
+			if (!fileNameOut.empty()) ::printf("%s was created\n", fileNameOut.c_str());
 		} else {
 			String fileNameOut = cmdLine.GetString("output", context.MakeFileNameOut(".cjr").c_str());
 			FormatCJR format(context.GetFileNameJR());
