@@ -82,7 +82,7 @@ bool Expr::OnPhaseSetupExprDict(Context &context)
 	return true;
 }
 
-bool Expr::OnPhaseGenerate(Context &context) const
+bool Expr::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	// nothing to do
 	return true;
@@ -272,11 +272,11 @@ bool Expr_Root::OnPhaseSetupExprDict(Context &context)
 	return rtn;
 }
 
-bool Expr_Root::OnPhaseGenerate(Context &context) const
+bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	context.ResetSegment();
 	for (auto pExpr : GetChildren()) {
-		if (!pExpr->OnPhaseGenerate(context)) return false;
+		if (!pExpr->OnPhaseGenerate(context, pBuffDst)) return false;
 	}
 	return true;
 }
@@ -564,7 +564,7 @@ bool Expr_SymbolDef::OnPhaseSetupExprDict(Context &context)
 	return true;
 }
 
-bool Expr_SymbolDef::OnPhaseGenerate(Context &context) const
+bool Expr_SymbolDef::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	// nothing to do
 	return true;
@@ -718,14 +718,15 @@ bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 	return rtn;
 }
 
-bool Expr_Instruction::OnPhaseGenerate(Context &context) const
+bool Expr_Instruction::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {
-		rtn = Generator::GetInstance().Generate(context, this);
+		if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+		rtn = Generator::GetInstance().Generate(context, this, *pBuffDst);
 	} else {
 		for (auto pExpr : *_pExprsExpanded) {
-			if (!(rtn = pExpr->OnPhaseGenerate(context))) break;
+			if (!(rtn = pExpr->OnPhaseGenerate(context, pBuffDst))) break;
 		}
 	}
 	return rtn;
@@ -804,9 +805,10 @@ bool Expr_Directive::OnPhaseSetupExprDict(Context &context)
 	return _pDirective->OnPhaseSetupExprDict(context, this);
 }
 
-bool Expr_Directive::OnPhaseGenerate(Context &context) const
+bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
-	return _pDirective->OnPhaseGenerate(context, this, context.GetBuffer());
+	if (pBuffDst == nullptr) pBuffDst = &context.GetBuffer();
+	return _pDirective->OnPhaseGenerate(context, this, *pBuffDst);
 }
 
 bool Expr_Directive::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const

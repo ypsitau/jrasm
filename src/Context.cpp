@@ -39,7 +39,7 @@ bool Context::Prepare()
 RegionOwner *Context::Generate(size_t bytesGapToJoin, UInt8 dataFiller)
 {
 	SetPhase(PHASE_Generate);
-	if (!_pExprRoot->OnPhaseGenerate(*this)) return nullptr;
+	if (!_pExprRoot->OnPhaseGenerate(*this, nullptr)) return nullptr;
 	return GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
 }
 

@@ -141,7 +141,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context) const;
+	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual Expr *Clone() const = 0;
@@ -193,7 +193,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context) const;
+	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -342,7 +342,7 @@ public:
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context) const;
+	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -391,7 +391,7 @@ public:
 	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context) const;
+	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -421,7 +421,7 @@ public:
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context) const;
+	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;

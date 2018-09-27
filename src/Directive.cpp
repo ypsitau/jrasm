@@ -396,7 +396,7 @@ bool Directive_INCLUDE::OnPhaseSetupExprDict(Context &context, const Expr_Direct
 
 bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary &buffDst) const
 {
-	return pExpr->GetExprIncluded()->OnPhaseGenerate(context);
+	return pExpr->GetExprIncluded()->OnPhaseGenerate(context, &buffDst);
 }
 
 //-----------------------------------------------------------------------------
