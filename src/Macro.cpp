@@ -26,13 +26,13 @@ void MacroDict::Assign(Macro *pMacro)
 	insert(std::make_pair(pMacro->GetSymbol(), pMacro));
 }
 
-bool MacroDict::IsAssigned(const char *label) const
+bool MacroDict::IsAssigned(const char *symbol) const
 {
-	return find(label) != end();
+	return find(symbol) != end();
 }
 
-const Macro *MacroDict::Lookup(const char *label) const
+const Macro *MacroDict::Lookup(const char *symbol) const
 {
-	const_iterator iter = find(label);
+	const_iterator iter = find(symbol);
 	return (iter == end())? nullptr : iter->second;
 }

@@ -298,5 +298,5 @@
     2252 52 53     
     2254 54 55     
     2256 56 57     
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

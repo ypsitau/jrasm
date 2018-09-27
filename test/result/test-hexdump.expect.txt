@@ -198,5 +198,5 @@
     3f1b 0c 0d     
     3f1d 0e 0f     
     3f1f 10        .db  0x10
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

@@ -148,5 +148,5 @@
     2126 26 27     
     2128 28 29     .db  0x28,0x29,0x2a,0x2b
     212a 2a 2b     
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

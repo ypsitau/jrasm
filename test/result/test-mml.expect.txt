@@ -152,5 +152,5 @@
     2220 18 18     
     2222 18 11     
     2224 00        .db  0x00
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

@@ -68,20 +68,20 @@ void Context::PopLocalExprDict()
 	ExprDict::Delete(pExprDict);
 }
 
-Context::LabelInfoOwner *Context::MakeLabelInfoOwner()
+Context::SymbolInfoOwner *Context::MakeSymbolInfoOwner()
 {
-	std::unique_ptr<LabelInfoOwner> pLabelInfoOwner(new LabelInfoOwner());
+	std::unique_ptr<SymbolInfoOwner> pSymbolInfoOwner(new SymbolInfoOwner());
 	for (auto iter : GetExprDictGlobal()) {
-		const String &label = iter.first;
+		const String &symbol = iter.first;
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));
 		if (!pExprResolved.IsNull() && pExprResolved->IsTypeNumber()) {
 			UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
-			pLabelInfoOwner->push_back(new LabelInfo(num, label));
+			pSymbolInfoOwner->push_back(new SymbolInfo(num, symbol));
 		}
 	}
-	pLabelInfoOwner->SortByNumber();
-	return pLabelInfoOwner.release();
+	pSymbolInfoOwner->SortByNumber();
+	return pSymbolInfoOwner.release();
 }
 
 void Context::StartToResolve()
@@ -101,31 +101,31 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 }
 
 //-----------------------------------------------------------------------------
-// Context::LabelInfoList
+// Context::SymbolInfoList
 //-----------------------------------------------------------------------------
-size_t Context::LabelInfoList::GetLabelLenMax(const_iterator ppLabelInfo, const_iterator ppLabelInfoEnd)
+size_t Context::SymbolInfoList::GetSymbolLenMax(const_iterator ppSymbolInfo, const_iterator ppSymbolInfoEnd)
 {
-	size_t labelLenMax = 0;
-	for ( ; ppLabelInfo != ppLabelInfoEnd; ppLabelInfo++) {
-		const LabelInfo *pLabelInfo = *ppLabelInfo;
-		size_t labelLen = ::strlen(pLabelInfo->GetLabel());
-		if (labelLenMax < labelLen) labelLenMax = labelLen;
+	size_t symbolLenMax = 0;
+	for ( ; ppSymbolInfo != ppSymbolInfoEnd; ppSymbolInfo++) {
+		const SymbolInfo *pSymbolInfo = *ppSymbolInfo;
+		size_t symbolLen = ::strlen(pSymbolInfo->GetSymbol());
+		if (symbolLenMax < symbolLen) symbolLenMax = symbolLen;
 	}
-	return labelLenMax;
+	return symbolLenMax;
 }
 
 //-----------------------------------------------------------------------------
-// Context::LabelInfoOwner
+// Context::SymbolInfoOwner
 //-----------------------------------------------------------------------------
-Context::LabelInfoOwner::~LabelInfoOwner()
+Context::SymbolInfoOwner::~SymbolInfoOwner()
 {
 	Clear();
 }
 
-void Context::LabelInfoOwner::Clear()
+void Context::SymbolInfoOwner::Clear()
 {
-	for (auto pLabelInfo : *this) {
-		delete pLabelInfo;
+	for (auto pSymbolInfo : *this) {
+		delete pSymbolInfo;
 	}
 	clear();
 }

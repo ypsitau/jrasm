@@ -21,7 +21,7 @@ label_100e:
     101a 10 0e     .dw  label_100e
     101c cd ef     .dw  Label_cdef
     101e cd ef     .dw  LABEL_CDEF
-[Label List]
+[Symbol List]
 1000  label_1000
 1001  label_1001
 1003  label_1003

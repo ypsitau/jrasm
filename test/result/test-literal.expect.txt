@@ -144,7 +144,7 @@ label7:
     1101 aa ff     
     1103 20        
 label8:
-[Label List]
+[Symbol List]
 1000  label1
 100e  label2
 101a  label3

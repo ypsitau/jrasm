@@ -27,16 +27,16 @@ Expr::~Expr()
 {
 }
 
-bool Expr::IsTypeLabelDef(const char *label) const
+bool Expr::IsTypeSymbolDef(const char *symbol) const
 {
-	return IsTypeLabelDef() &&
-		::strcasecmp(dynamic_cast<const Expr_LabelDef *>(this)->GetLabel(), label) == 0;
+	return IsTypeSymbolDef() &&
+		::strcasecmp(dynamic_cast<const Expr_SymbolDef *>(this)->GetSymbol(), symbol) == 0;
 }
 
-bool Expr::IsTypeLabelRef(const char *label) const
+bool Expr::IsTypeSymbolRef(const char *symbol) const
 {
-	return IsTypeLabelRef() &&
-		::strcasecmp(dynamic_cast<const Expr_LabelRef *>(this)->GetLabel(), label) == 0;
+	return IsTypeSymbolRef() &&
+		::strcasecmp(dynamic_cast<const Expr_SymbolRef *>(this)->GetSymbol(), symbol) == 0;
 }
 
 bool Expr::IsTypeBinOp(const Operator *pOperator) const
@@ -125,11 +125,11 @@ void Expr::DumpDisasmHelper(UInt32 addr, const Binary &buff, const char *strCode
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
-Expr_LabelDef *ExprList::SeekLabelDefToAssoc()
+Expr_SymbolDef *ExprList::SeekSymbolDefToAssoc()
 {
-	if (empty() || !back()->IsTypeLabelDef()) return nullptr;
-	Expr_LabelDef *pExprLabelDef = dynamic_cast<Expr_LabelDef *>(back());
-	return pExprLabelDef->IsAssigned()? nullptr : pExprLabelDef;
+	if (empty() || !back()->IsTypeSymbolDef()) return nullptr;
+	Expr_SymbolDef *pExprSymbolDef = dynamic_cast<Expr_SymbolDef *>(back());
+	return pExprSymbolDef->IsAssigned()? nullptr : pExprSymbolDef;
 }
 
 String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
@@ -195,22 +195,22 @@ ExprDict::~ExprDict()
 	}
 }
 
-void ExprDict::Assign(const String &label, Expr *pExpr, bool forceGlobalFlag)
+void ExprDict::Assign(const String &symbol, Expr *pExpr, bool forceGlobalFlag)
 {
 	ExprDict *pExprDict = forceGlobalFlag? GetGlobal() : this;
-	pExprDict->insert(std::make_pair(label, pExpr));
+	pExprDict->insert(std::make_pair(symbol, pExpr));
 }
 
-bool ExprDict::IsAssigned(const char *label) const
+bool ExprDict::IsAssigned(const char *symbol) const
 {
-	return find(label) != end();
+	return find(symbol) != end();
 }
 
-const Expr *ExprDict::Lookup(const char *label) const
+const Expr *ExprDict::Lookup(const char *symbol) const
 {
-	const_iterator iter = find(label);
+	const_iterator iter = find(symbol);
 	if (iter != end()) return iter->second;
-	return _pExprDictParent.IsNull()? nullptr : _pExprDictParent->Lookup(label);
+	return _pExprDictParent.IsNull()? nullptr : _pExprDictParent->Lookup(symbol);
 }
 
 ExprDict *ExprDict::GetGlobal()
@@ -538,45 +538,45 @@ Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_LabelDef
+// Expr_SymbolDef
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_LabelDef::TYPE = Expr::TYPE_LabelDef;
+const Expr::Type Expr_SymbolDef::TYPE = Expr::TYPE_SymbolDef;
 
-bool Expr_LabelDef::OnPhaseDeclareMacro(Context &context)
+bool Expr_SymbolDef::OnPhaseDeclareMacro(Context &context)
 {
 	return IsAssigned()? GetAssigned()->OnPhaseDeclareMacro(context) : true;
 }
 
-bool Expr_LabelDef::OnPhaseSetupExprDict(Context &context)
+bool Expr_SymbolDef::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
-	if (_pExprDict->IsAssigned(GetLabel())) {
-		ErrorLog::AddError(this, "duplicated definition of label: %s", GetLabel());
+	if (_pExprDict->IsAssigned(GetSymbol())) {
+		ErrorLog::AddError(this, "duplicated definition of symbol: %s", GetSymbol());
 		return false;
 	}
 	if (IsAssigned()) {
-		_pExprDict->Assign(GetLabel(), GetAssigned()->Reference(), _forceGlobalFlag);
+		_pExprDict->Assign(GetSymbol(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
 		AutoPtr<Expr> pExpr(new Expr_Number(context.GetAddress()));
 		pExpr->DeriveSourceInfo(this);
-		_pExprDict->Assign(GetLabel(), pExpr.release(), _forceGlobalFlag);
+		_pExprDict->Assign(GetSymbol(), pExpr.release(), _forceGlobalFlag);
 	}
 	return true;
 }
 
-bool Expr_LabelDef::OnPhaseGenerate(Context &context) const
+bool Expr_SymbolDef::OnPhaseGenerate(Context &context) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
+bool Expr_SymbolDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
 		return GetAssigned()->OnPhaseDisasm(context, fp, upperCaseFlag, nColsPerLine);
 	}
 	//String str = ComposeSource(upperCaseFlag);
-	String str = MakeSource(_label.c_str(), _forceGlobalFlag);
+	String str = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	if (IsAssigned()) {
 		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
 		str += GetAssigned()->ComposeSource(upperCaseFlag);
@@ -585,24 +585,24 @@ bool Expr_LabelDef::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag
 	return true;
 }
 
-Expr *Expr_LabelDef::Resolve(Context &context) const
+Expr *Expr_SymbolDef::Resolve(Context &context) const
 {
 	return Reference();
 }
 
-Expr *Expr_LabelDef::Clone() const
+Expr *Expr_SymbolDef::Clone() const
 {
-	return new Expr_LabelDef(*this);
+	return new Expr_SymbolDef(*this);
 }
 
-Expr *Expr_LabelDef::Substitute(const ExprDict &exprDict) const
+Expr *Expr_SymbolDef::Substitute(const ExprDict &exprDict) const
 {
 	return Clone();
 }
 
-String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
+String Expr_SymbolDef::ComposeSource(bool upperCaseFlag) const
 {
-	String str = MakeSource(_label.c_str(), _forceGlobalFlag);
+	String str = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 #if 0
 	const int nColsPerLine = 3; //**********************
 	if (IsAssigned()) {
@@ -613,60 +613,60 @@ String Expr_LabelDef::ComposeSource(bool upperCaseFlag) const
 	return str;
 }
 
-String Expr_LabelDef::MakeSource(const char *label, bool forceGlobalFlag)
+String Expr_SymbolDef::MakeSource(const char *symbol, bool forceGlobalFlag)
 {
 	String str;
-	str = label;
+	str = symbol;
 	str += forceGlobalFlag? "::" : ":";
 	return str;
 }
 
 //-----------------------------------------------------------------------------
-// Expr_LabelRef
+// Expr_SymbolRef
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_LabelRef::TYPE = Expr::TYPE_LabelRef;
+const Expr::Type Expr_SymbolRef::TYPE = Expr::TYPE_SymbolRef;
 
-Expr *Expr_LabelRef::Resolve(Context &context) const
+Expr *Expr_SymbolRef::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
-	if (Generator::GetInstance().IsRegisterSymbol(GetLabel())) return Reference();
+	if (Generator::GetInstance().IsRegisterSymbol(GetSymbol())) return Reference();
 	if (!context.IsPhase(Context::PHASE_Generate)) {
 		AutoPtr<Expr> pExprRtn(new Expr_Number(0));
 		pExprRtn->DeriveSourceInfo(this);
 		return pExprRtn.release();
 	}
 	//::printf("ref: %p\n", _pExprDict.get());
-	const Expr *pExpr = _pExprDict->Lookup(GetLabel());
+	const Expr *pExpr = _pExprDict->Lookup(GetSymbol());
 	if (pExpr == nullptr) {
-		ErrorLog::AddError(this, "undefined label: %s", GetLabel());
+		ErrorLog::AddError(this, "undefined symbol: %s", GetSymbol());
 		return nullptr;
 	}
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
 	if (!pExprResolved->IsTypeNumber()) {
-		ErrorLog::AddError(this, "label %s is associated with something but number", GetLabel());
+		ErrorLog::AddError(this, "symbol %s is associated with something but number", GetSymbol());
 		return nullptr;
 	}
 	return pExprResolved.release();
 }
 
-Expr *Expr_LabelRef::Clone() const
+Expr *Expr_SymbolRef::Clone() const
 {
-	return new Expr_LabelRef(*this);
+	return new Expr_SymbolRef(*this);
 }
 
-Expr *Expr_LabelRef::Substitute(const ExprDict &exprDict) const
+Expr *Expr_SymbolRef::Substitute(const ExprDict &exprDict) const
 {
-	const Expr *pExpr = exprDict.Lookup(GetLabel());
+	const Expr *pExpr = exprDict.Lookup(GetSymbol());
 	return (pExpr == nullptr)? Clone() : pExpr->Clone();
 }
 
-String Expr_LabelRef::ComposeSource(bool upperCaseFlag) const
+String Expr_SymbolRef::ComposeSource(bool upperCaseFlag) const
 {
-	if (Generator::GetInstance().IsRegisterSymbol(_label.c_str())) {
-		return upperCaseFlag? ToUpper(_label.c_str()) : ToLower(_label.c_str());
+	if (Generator::GetInstance().IsRegisterSymbol(_symbol.c_str())) {
+		return upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str());
 	}
-	return _label;
+	return _symbol;
 }
 
 //-----------------------------------------------------------------------------
@@ -886,11 +886,11 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
-		if (!pExpr->IsTypeLabelRef()) {
+		if (!pExpr->IsTypeSymbolRef()) {
 			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
 			return false;
 		}
-		paramNames.push_back(dynamic_cast<const Expr_LabelRef *>(pExpr)->GetLabel());
+		paramNames.push_back(dynamic_cast<const Expr_SymbolRef *>(pExpr)->GetSymbol());
 	}
 	context.GetMacroDict().Assign(pMacro.release());
 	return true;
@@ -899,13 +899,13 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 bool Expr_MacroDecl::OnPhaseDisasm(Context &context, FILE *fp, bool upperCaseFlag, size_t nColsPerLine) const
 {
 #if 0
-	String str = Expr_LabelDef::MakeSource(_symbol.c_str(), _forceGlobalFlag);
+	String str = Expr_SymbolDef::MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
 	str += ComposeSource(upperCaseFlag);
 	::fprintf(fp, "%s\n", str.c_str());
 	String paddingLeft = MakePadding(9 + 3 * nColsPerLine + 1);
 	for (auto pExpr : GetMacroBody()->GetChildren()) {
-		if (pExpr->IsTypeLabelDef()) {
+		if (pExpr->IsTypeSymbolDef()) {
 			::fprintf(fp, "%s\n", pExpr->ComposeSource(upperCaseFlag).c_str());
 		} else {
 			::fprintf(fp, "%s%s\n", paddingLeft.c_str(), pExpr->ComposeSource(upperCaseFlag).c_str());

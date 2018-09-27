@@ -254,5 +254,5 @@
     21fa fa fb     
     21fc fc fd     
     21fe fe ff     
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

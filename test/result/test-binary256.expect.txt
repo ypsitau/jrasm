@@ -126,5 +126,5 @@
     20fa fa fb     
     20fc fc fd     
     20fe fe ff     
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

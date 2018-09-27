@@ -46,5 +46,5 @@ addr1:
     1041 10 41     .dw  addr1
 addr2:
     1043 10 43     .dw  addr2
-[Label List]
+[Symbol List]
 0020  external_val

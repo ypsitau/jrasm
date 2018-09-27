@@ -14,8 +14,8 @@ const char *strOption = R"**(available options:
 --print-disasm-u   -D       prints disassembler dump in upper case
 --print-hexdump-l  -x       prints hex dump in lower case
 --print-hexdump-u  -X       prints hex dump in upper case
---print-list-l     -l       prints label list in lower case
---print-list-u     -L       prints label list in upper case
+--print-list-l     -l       prints symbol list in lower case
+--print-list-u     -L       prints symbol list in upper case
 --print-memory-l   -m       prints memory image in lower case
 --print-memory-u   -M       prints memory image in upper case
 --verbose          -v       verbose mode
@@ -86,13 +86,13 @@ int main(int argc, const char *argv[])
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-list-l") || (upperCaseFlag = cmdLine.IsSet("print-list-u"))) {
 		const char *format = upperCaseFlag? "%04X  %s\n" : "%04x  %s\n";
-		std::unique_ptr<Context::LabelInfoOwner> pLabelInfoOwner(context.MakeLabelInfoOwner());
-		::printf("[Label List]\n");
-		if (pLabelInfoOwner->empty()) {
-			::printf("(no label)\n");
+		std::unique_ptr<Context::SymbolInfoOwner> pSymbolInfoOwner(context.MakeSymbolInfoOwner());
+		::printf("[Symbol List]\n");
+		if (pSymbolInfoOwner->empty()) {
+			::printf("(no symbol)\n");
 		} else {
-			for (auto pLabelInfo : *pLabelInfoOwner) {
-				::printf(format, pLabelInfo->GetNumber(), pLabelInfo->GetLabel());
+			for (auto pSymbolInfo : *pSymbolInfoOwner) {
+				::printf(format, pSymbolInfo->GetNumber(), pSymbolInfo->GetSymbol());
 			}
 		}
 	}

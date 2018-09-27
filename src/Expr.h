@@ -9,7 +9,7 @@
 class Directive;
 class ExprOwner;
 class Expr;
-class Expr_LabelDef;
+class Expr_SymbolDef;
 
 //-----------------------------------------------------------------------------
 // ExprDict
@@ -27,9 +27,9 @@ private:
 	~ExprDict();
 public:
 	inline ExprDict *GetParent() { return _pExprDictParent.get(); }
-	void Assign(const String &label, Expr *pExpr, bool forceGlobalFlag);
-	bool IsAssigned(const char *label) const;
-	const Expr *Lookup(const char *label) const;
+	void Assign(const String &symbol, Expr *pExpr, bool forceGlobalFlag);
+	bool IsAssigned(const char *symbol) const;
+	const Expr *Lookup(const char *symbol) const;
 	ExprDict *GetGlobal();
 	inline const ExprDict *GetGlobal() const {
 		return const_cast<ExprDict *>(this)->GetGlobal();
@@ -41,7 +41,7 @@ public:
 //-----------------------------------------------------------------------------
 class ExprList : public std::vector<Expr *> {
 public:
-	Expr_LabelDef *SeekLabelDefToAssoc();
+	Expr_SymbolDef *SeekSymbolDefToAssoc();
 	String ComposeSource(bool upperCaseFlag, const char *sep) const;
 	void Print(bool upperCaseFlag) const;
 };
@@ -77,8 +77,8 @@ public:
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Brace,
-		TYPE_LabelDef,
-		TYPE_LabelRef,
+		TYPE_SymbolDef,
+		TYPE_SymbolRef,
 		TYPE_Instruction,
 		TYPE_Directive,
 		TYPE_MacroBody,
@@ -109,8 +109,8 @@ public:
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
 	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
-	inline bool IsTypeLabelDef() const { return IsType(TYPE_LabelDef); }
-	inline bool IsTypeLabelRef() const { return IsType(TYPE_LabelRef); }
+	inline bool IsTypeSymbolDef() const { return IsType(TYPE_SymbolDef); }
+	inline bool IsTypeSymbolRef() const { return IsType(TYPE_SymbolRef); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
 	inline bool IsTypeMacroBody() const { return IsType(TYPE_MacroBody); }
@@ -132,8 +132,8 @@ public:
 	inline int GetLineNo() const { return _lineNo; }
 	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }
 	inline const ExprDict *GetExprDict() const { return _pExprDict.get(); }
-	bool IsTypeLabelDef(const char *label) const;
-	bool IsTypeLabelRef(const char *label) const;
+	bool IsTypeSymbolDef(const char *symbol) const;
+	bool IsTypeSymbolRef(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	void AddChild(Expr *pExpr);
 	void Print() const;
@@ -319,27 +319,27 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_LabelDef
+// Expr_SymbolDef
 //-----------------------------------------------------------------------------
-class Expr_LabelDef : public Expr {
+class Expr_SymbolDef : public Expr {
 private:
-	String _label;
+	String _symbol;
 	bool _forceGlobalFlag;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_LabelDef(const String &label, bool forceGlobalFlag) :
-		Expr(TYPE), _label(label), _forceGlobalFlag(forceGlobalFlag) {}
-	inline Expr_LabelDef(const Expr_LabelDef &expr) :
-		Expr(expr), _label(expr._label), _forceGlobalFlag(expr._forceGlobalFlag) {}
+	inline Expr_SymbolDef(const String &symbol, bool forceGlobalFlag) :
+		Expr(TYPE), _symbol(symbol), _forceGlobalFlag(forceGlobalFlag) {}
+	inline Expr_SymbolDef(const Expr_SymbolDef &expr) :
+		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
 	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
 	inline Expr *GetAssigned() { return GetChildren().back(); }
 	inline const Expr *GetAssigned() const { return GetChildren().back(); }
 	inline bool IsAssigned() const { return !GetChildren().empty(); }
-	inline const char *GetLabel() const { return _label.c_str(); }
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline bool GetForceGlobalFlag() const { return _forceGlobalFlag; }
-	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
-	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
+	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
+	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context) const;
@@ -348,23 +348,23 @@ public:
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
-	static String MakeSource(const char *label, bool forceGlobalFlag);
+	static String MakeSource(const char *symbol, bool forceGlobalFlag);
 };
 
 //-----------------------------------------------------------------------------
-// Expr_LabelRef
+// Expr_SymbolRef
 //-----------------------------------------------------------------------------
-class Expr_LabelRef : public Expr {
+class Expr_SymbolRef : public Expr {
 private:
-	String _label;
+	String _symbol;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_LabelRef(const String &label) : Expr(TYPE), _label(label) {}
-	inline Expr_LabelRef(const Expr_LabelRef &expr) : Expr(expr), _label(expr._label) {}
-	inline const char *GetLabel() const { return _label.c_str(); }
-	inline bool MatchCase(const char *label) const { return ::strcmp(_label.c_str(), label) == 0; }
-	inline bool MatchICase(const char *label) const { return ::strcasecmp(_label.c_str(), label) == 0; }
+	inline Expr_SymbolRef(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
+	inline Expr_SymbolRef(const Expr_SymbolRef &expr) : Expr(expr), _symbol(expr._symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
+	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -455,14 +455,14 @@ private:
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroDecl(const Expr_LabelDef *pExprLabelDef) :
-		Expr(TYPE), _symbol(pExprLabelDef->GetLabel()),
-		_forceGlobalFlag(pExprLabelDef->GetForceGlobalFlag()), _pExprMacroBody(new Expr_MacroBody()) {}
+	inline Expr_MacroDecl(const Expr_SymbolDef *pExprSymbolDef) :
+		Expr(TYPE), _symbol(pExprSymbolDef->GetSymbol()),
+		_forceGlobalFlag(pExprSymbolDef->GetForceGlobalFlag()), _pExprMacroBody(new Expr_MacroBody()) {}
 	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag),
 		_pExprMacroBody(dynamic_cast<Expr_MacroBody *>(expr._pExprMacroBody->Clone())) {}
-	inline const char *GetLabel() const {
-		return dynamic_cast<Expr_LabelRef *>(GetChildren().front())->GetLabel();
+	inline const char *GetSymbol() const {
+		return dynamic_cast<Expr_SymbolRef *>(GetChildren().front())->GetSymbol();
 	}
 	inline Expr_MacroBody *GetMacroBody() { return _pExprMacroBody.get(); }
 	inline const Expr_MacroBody *GetMacroBody() const { return _pExprMacroBody.get(); }

@@ -36,7 +36,7 @@ Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 			return new Expr_BinOp(
 				Operator::Add, new Expr_Number(numL + numR), pExprBinOp->GetRight()->Reference());
 		}
-	} else if (pExprL->IsTypeLabelRef() && pExprR->IsTypeNumber()) {
+	} else if (pExprL->IsTypeSymbolRef() && pExprR->IsTypeNumber()) {
 		return new Expr_BinOp(Operator::Add, pExprR.release(), pExprL.release());
 	}
 	return new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release());

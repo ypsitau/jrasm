@@ -128,5 +128,5 @@ label1:
     10fb 20 84     bra  label1
     10fd 20 82     bra  label1
     10ff 20 80     bra  label1
-[Label List]
+[Symbol List]
 1081  label1

@@ -47,7 +47,7 @@ label3:            .equ 0xabcd
     102e 10 2b     .dw  label2
     1030 ab cd     .dw  label3
     1032 87 65     .dw  label4
-[Label List]
+[Symbol List]
 1000  label1
 1001  label2
 1016  func1

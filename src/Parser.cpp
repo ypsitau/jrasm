@@ -35,23 +35,23 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			_stat = STAT_LabelDef;
+			_stat = STAT_SymbolDef;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Directive;
 		}
 		break;
 	}
-	case STAT_LabelDef: {
+	case STAT_SymbolDef: {
 		bool forceGlobalFlag = false;
 		if (pToken->IsType(TOKEN_Colon) || (forceGlobalFlag = pToken->IsType(TOKEN_ColonColon))) {
-			AutoPtr<Expr> pExpr(new Expr_LabelDef(_pTokenPrev->GetString(), forceGlobalFlag));
+			AutoPtr<Expr> pExpr(new Expr_SymbolDef(_pTokenPrev->GetString(), forceGlobalFlag));
 			SetExprSourceInfo(pExpr.get(), _pTokenPrev.get());
 			_pExprStack->back()->GetChildren().push_back(pExpr.release());
 			_stat = STAT_Directive;
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
 		} else {
-			AddError("invalid format of label");
+			AddError("invalid format of symbol");
 			return false;
 		}
 		break;
@@ -162,7 +162,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 				AutoPtr<Token> pToken(_tokenStack.Pop());
 				AutoPtr<Expr> pExpr;
 				if (pToken->IsType(TOKEN_Symbol)) {
-					pExpr.reset(new Expr_LabelRef(pToken->GetStringSTL()));
+					pExpr.reset(new Expr_SymbolRef(pToken->GetStringSTL()));
 				} else if (pToken->IsType(TOKEN_Number)) {
 					pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
 				} else if (pToken->IsType(TOKEN_String)) {

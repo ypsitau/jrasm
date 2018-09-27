@@ -35,5 +35,5 @@
     1048 6e 00     jmp  x
     104a 6e 12     jmp  x+0x12
     104c 7e 12 34  jmp  0x1234
-[Label List]
-(no label)
+[Symbol List]
+(no symbol)

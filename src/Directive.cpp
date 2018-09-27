@@ -100,9 +100,9 @@ void DirectiveDict::Assign(const Directive *pDirective)
 	insert(std::make_pair(pDirective->GetSymbol(), pDirective));
 }
 
-const Directive *DirectiveDict::Lookup(const char *label) const
+const Directive *DirectiveDict::Lookup(const char *symbol) const
 {
-	const_iterator iter = find(label);
+	const_iterator iter = find(symbol);
 	return (iter == end())? nullptr : iter->second;
 }
 
@@ -302,14 +302,14 @@ bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *p
 //-----------------------------------------------------------------------------
 bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
-	if (pExprLabelDef == nullptr) {
-		pParser->AddError("directive .EQU must be preceded by a label");
+	Expr_SymbolDef *pExprSymbolDef = exprStack.back()->GetChildren().SeekSymbolDefToAssoc();
+	if (pExprSymbolDef == nullptr) {
+		pParser->AddError("directive .EQU must be preceded by a symbol");
 		return false;
 	}
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprLabelDef->SetAssigned(pExpr->Reference());	// associate it to the preceding label
+	pExprSymbolDef->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr.release());
 	return true;
 }
@@ -423,14 +423,14 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
-	if (pExprLabelDef == nullptr) {
-		pParser->AddError("directive .MACRO must be preceded by a label");
+	Expr_SymbolDef *pExprSymbolDef = exprStack.back()->GetChildren().SeekSymbolDefToAssoc();
+	if (pExprSymbolDef == nullptr) {
+		pParser->AddError("directive .MACRO must be preceded by a symbol");
 		return false;
 	}
-	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprLabelDef));
+	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprSymbolDef));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprLabelDef->SetAssigned(pExpr->Reference());				// associate it to the preceding label
+	pExprSymbolDef->SetAssigned(pExpr->Reference());				// associate it to the preceding symbol
 	exprStack.push_back(pExpr->GetMacroBody()->Reference());	// for directives in the body
 	exprStack.push_back(pExpr.release());						// for operands
 	return true;
@@ -555,8 +555,8 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 #if 0
-	Expr_LabelDef *pExprLabelDef = exprStack.back()->GetChildren().SeekLabelDefToAssoc();
-	if (pExprLabelDef != nullptr) {
+	Expr_SymbolDef *pExprSymbolDef = exprStack.back()->GetChildren().SeekSymbolDefToAssoc();
+	if (pExprSymbolDef != nullptr) {
 
 	}
 #endif

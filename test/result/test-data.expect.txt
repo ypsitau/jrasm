@@ -405,7 +405,7 @@ label5:
     131d 3c fe     
     131f 3c ff     
 label6:
-[Label List]
+[Symbol List]
 1000  label1
 1100  label2
 110b  label3

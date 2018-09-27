@@ -25,35 +25,35 @@ public:
 		PHASE_Generate,
 	};
 public:
-	class LabelInfo {
+	class SymbolInfo {
 	public:
 		struct LessThan_Number {
-			inline bool operator()(const LabelInfo *pLabelInfo1, const LabelInfo *pLabelInfo2) const {
-				return pLabelInfo1->GetNumber() < pLabelInfo2->GetNumber();
+			inline bool operator()(const SymbolInfo *pSymbolInfo1, const SymbolInfo *pSymbolInfo2) const {
+				return pSymbolInfo1->GetNumber() < pSymbolInfo2->GetNumber();
 			}
 		};
-		struct LessThan_Label {
-			inline bool operator()(const LabelInfo *pLabelInfo1, const LabelInfo *pLabelInfo2) const {
-				return ::strcmp(pLabelInfo1->GetLabel(), pLabelInfo2->GetLabel()) < 0;
+		struct LessThan_Symbol {
+			inline bool operator()(const SymbolInfo *pSymbolInfo1, const SymbolInfo *pSymbolInfo2) const {
+				return ::strcmp(pSymbolInfo1->GetSymbol(), pSymbolInfo2->GetSymbol()) < 0;
 			}
 		};
 	private:
 		UInt32 _num;
-		String _label;
+		String _symbol;
 	public:
-		inline LabelInfo(UInt32 num, const String &label) : _num(num), _label(label) {}
+		inline SymbolInfo(UInt32 num, const String &symbol) : _num(num), _symbol(symbol) {}
 		inline UInt16 GetNumber() const { return _num; }
-		inline const char *GetLabel() const { return _label.c_str(); }
+		inline const char *GetSymbol() const { return _symbol.c_str(); }
 	};
-	class LabelInfoList : public std::vector<LabelInfo *> {
+	class SymbolInfoList : public std::vector<SymbolInfo *> {
 	public:
-		void SortByNumber() { std::sort(begin(), end(), LabelInfo::LessThan_Number()); }
-		void SortByLabel() { std::sort(begin(), end(), LabelInfo::LessThan_Label()); }
-		static size_t GetLabelLenMax(const_iterator ppLabelInfo, const_iterator ppLabelInfoEnd);
+		void SortByNumber() { std::sort(begin(), end(), SymbolInfo::LessThan_Number()); }
+		void SortBySymbol() { std::sort(begin(), end(), SymbolInfo::LessThan_Symbol()); }
+		static size_t GetSymbolLenMax(const_iterator ppSymbolInfo, const_iterator ppSymbolInfoEnd);
 	};
-	class LabelInfoOwner : public LabelInfoList {
+	class SymbolInfoOwner : public SymbolInfoList {
 	public:
-		~LabelInfoOwner();
+		~SymbolInfoOwner();
 		void Clear();
 	};
 private:
@@ -102,7 +102,7 @@ public:
 	void StartRegion(UInt32 addr);
 	void PushLocalExprDict();
 	void PopLocalExprDict();
-	LabelInfoOwner *MakeLabelInfoOwner();
+	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
 };
