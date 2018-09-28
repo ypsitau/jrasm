@@ -7,17 +7,17 @@
 // Expr
 //-----------------------------------------------------------------------------
 Expr::Expr(Type type) :
-	_cntRef(1), _type(type), _pExprChildren2(new ExprOwner()), _lineNo(0)
+	_cntRef(1), _type(type), _pExprChildren(new ExprOwner()), _lineNo(0)
 {
 }
 
 Expr::Expr(Type type, ExprOwner *pExprChildren) :
-	_cntRef(1), _type(type), _pExprChildren2(pExprChildren), _lineNo(0)
+	_cntRef(1), _type(type), _pExprChildren(pExprChildren), _lineNo(0)
 {
 }
 
 Expr::Expr(const Expr &expr) :
-	_cntRef(1), _type(expr._type), _pExprChildren2(expr._pExprChildren2->Clone()),
+	_cntRef(1), _type(expr._type), _pExprChildren(expr._pExprChildren->Clone()),
 	_pFileNameSrc(expr._pFileNameSrc->Reference()), _lineNo(expr._lineNo)
 {
 	// don't copy _pExprDict, which should be different for each Expr instance.
