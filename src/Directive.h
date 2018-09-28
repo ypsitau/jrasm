@@ -128,7 +128,9 @@ public:
 class Directive_ENDP : public Directive {
 public:
 	inline Directive_ENDP() : Directive(".ENDP") {}
-	virtual bool OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const;
+	//virtual bool OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -192,6 +194,8 @@ public:
 	inline Directive_MACRO() : Directive(".MACRO", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -233,6 +237,8 @@ public:
 	inline Directive_PCG() : Directive(".PCG", false) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -240,9 +246,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_PROC : public Directive {
 public:
-	inline Directive_PROC() : Directive(".PROC") {}
+	inline Directive_PROC() : Directive(".PROC", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const;
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 #endif

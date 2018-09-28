@@ -270,7 +270,7 @@ bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	Expr::Delete(exprStack.back());
-	exprStack.pop_back();	// remove the EXPR_Macro instance from the stack
+	exprStack.pop_back();	// remove the Expr_Directive instance from the stack
 	exprStack.push_back(pExpr.release());
 	return true;
 }
@@ -288,18 +288,28 @@ bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_ENDP
 //-----------------------------------------------------------------------------
-bool Directive_ENDP::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ENDP::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+{
+	if (!exprStack.back()->IsTypeDirective(Directive::PROC)) {
+		pParser->AddError("no matching .PROC directive");
+		return false;
+	}
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	Expr::Delete(exprStack.back());
+	exprStack.pop_back();	// remove the Expr_Directive instance from the stack
+	exprStack.push_back(pExpr.release());
+	return true;
+}
+
+bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .ENDP needs no operands");
 		return false;
 	}
-	if (!context.DoesExistLocalExprDict()) {
-		ErrorLog::AddError(pExpr, "no matching .PROC directive");
-		return false;
-	}
-	context.PopLocalExprDict();
 	return true;
 }
 
@@ -477,6 +487,13 @@ bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive
 	return true;
 }
 
+bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+									DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	// suppress disasm dump
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
@@ -581,6 +598,13 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 	return true;
 }
 
+bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+								  DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	// suppress disasm dump
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_PROC
 //-----------------------------------------------------------------------------
@@ -589,7 +613,8 @@ bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	exprStack.push_back(pExpr.release());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
 	return true;
 }
 
@@ -601,5 +626,18 @@ bool Directive_PROC::OnPhaseAssignSymbol(Context &context, const Expr_Directive 
 		return false;
 	}
 	context.PushLocalExprDict();
-	return true;
+	bool rtn = const_cast<Expr_Directive *>(pExpr)->GetExprChildren().OnPhaseAssignSymbol(context);
+	context.PopLocalExprDict();
+	return rtn;
+}
+
+bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+{
+	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
+}
+
+bool Directive_PROC::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 }
