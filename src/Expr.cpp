@@ -75,11 +75,11 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 		GetExprChildren().OnPhaseExpandMacro(context);
 }
 
-bool Expr::OnPhaseSetupExprDict(Context &context)
+bool Expr::OnPhaseAssignSymbol(Context &context)
 {
 	_pExprDict.reset(context.GetExprDictCurrent().Reference());
-	return GetExprOperands().OnPhaseSetupExprDict(context) &&
-		GetExprChildren().OnPhaseSetupExprDict(context);
+	return GetExprOperands().OnPhaseAssignSymbol(context) &&
+		GetExprChildren().OnPhaseAssignSymbol(context);
 }
 
 bool Expr::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
@@ -138,10 +138,10 @@ bool ExprList::OnPhaseExpandMacro(Context &context)
 	return true;
 }
 
-bool ExprList::OnPhaseSetupExprDict(Context &context)
+bool ExprList::OnPhaseAssignSymbol(Context &context)
 {
 	for (auto pExpr : *this) {
-		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
+		if (!pExpr->OnPhaseAssignSymbol(context)) return false;
 	}
 	return true;
 }
@@ -529,9 +529,9 @@ bool Expr_Label::OnPhaseDeclareMacro(Context &context)
 }
 #endif
 
-bool Expr_Label::OnPhaseSetupExprDict(Context &context)
+bool Expr_Label::OnPhaseAssignSymbol(Context &context)
 {
-	if (!Expr::OnPhaseSetupExprDict(context)) return false;
+	if (!Expr::OnPhaseAssignSymbol(context)) return false;
 	if (_pExprDict->IsAssigned(GetSymbol())) {
 		ErrorLog::AddError(this, "duplicated definition of symbol: %s", GetSymbol());
 		return false;
@@ -678,9 +678,9 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 	return true;
 }
 
-bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
+bool Expr_Instruction::OnPhaseAssignSymbol(Context &context)
 {
-	if (!Expr::OnPhaseSetupExprDict(context)) return false;
+	if (!Expr::OnPhaseAssignSymbol(context)) return false;
 	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {
 		rtn = Generator::GetInstance().ForwardAddress(context, this);
@@ -688,7 +688,7 @@ bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 		context.PushLocalExprDict();	// .PROC
 		for (auto pExpr : *_pExprsExpanded) {
 			//pExpr->Print();
-			if (!(rtn = pExpr->OnPhaseSetupExprDict(context))) break;
+			if (!(rtn = pExpr->OnPhaseAssignSymbol(context))) break;
 			//::printf("%p\n", pExpr->GetExprDict());
 		}
 		context.PopLocalExprDict();		// .ENDP
@@ -781,10 +781,10 @@ bool Expr_Directive::OnPhaseExpandMacro(Context &context)
 	return _pDirective->OnPhaseExpandMacro(context, this);
 }
 
-bool Expr_Directive::OnPhaseSetupExprDict(Context &context)
+bool Expr_Directive::OnPhaseAssignSymbol(Context &context)
 {
-	if (!Expr::OnPhaseSetupExprDict(context)) return false;
-	return _pDirective->OnPhaseSetupExprDict(context, this);
+	if (!Expr::OnPhaseAssignSymbol(context)) return false;
+	return _pDirective->OnPhaseAssignSymbol(context, this);
 }
 
 bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
@@ -854,7 +854,7 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	return true;
 }
 
-bool Expr_MacroDecl::OnPhaseSetupExprDict(Context &context)
+bool Expr_MacroDecl::OnPhaseAssignSymbol(Context &context)
 {
 	// suppress evaluation of children
 	return true;

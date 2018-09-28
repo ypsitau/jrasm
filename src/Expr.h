@@ -47,7 +47,7 @@ public:
 	bool OnPhaseInclude(Context &context);
 	bool OnPhaseDeclareMacro(Context &context);
 	bool OnPhaseExpandMacro(Context &context);
-	bool OnPhaseSetupExprDict(Context &context);
+	bool OnPhaseAssignSymbol(Context &context);
 	bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	void Print(bool upperCaseFlag) const;
@@ -148,7 +148,7 @@ public:
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupExprDict(Context &context);
+	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const = 0;
@@ -341,7 +341,7 @@ public:
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
 	//virtual bool OnPhaseDeclareMacro(Context &context);
-	virtual bool OnPhaseSetupExprDict(Context &context);
+	virtual bool OnPhaseAssignSymbol(Context &context);
 	//virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
@@ -389,7 +389,7 @@ public:
 		_pExprsExpanded(expr._pExprsExpanded.IsNull()? nullptr : expr._pExprsExpanded->Clone()) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupExprDict(Context &context);
+	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
@@ -426,7 +426,7 @@ public:
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupExprDict(Context &context);
+	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
@@ -451,7 +451,7 @@ public:
 	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
 	virtual bool OnPhaseDeclareMacro(Context &context);
-	virtual bool OnPhaseSetupExprDict(Context &context);
+	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;

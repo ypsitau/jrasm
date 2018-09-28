@@ -31,9 +31,9 @@ bool Context::Prepare()
 	if (!_pExprRoot->OnPhaseDeclareMacro(*this)) return false;
 	SetPhase(PHASE_ExpandMacro);
 	if (!_pExprRoot->OnPhaseExpandMacro(*this)) return false;
-	SetPhase(PHASE_SetupExprDict);
+	SetPhase(PHASE_AssignSymbol);
 	ResetSegment();
-	if (!_pExprRoot->OnPhaseSetupExprDict(*this)) return false;
+	if (!_pExprRoot->OnPhaseAssignSymbol(*this)) return false;
 	return true;
 }
 
