@@ -10,9 +10,7 @@ const Directive *Directive::CSEG		= nullptr;
 const Directive *Directive::DB			= nullptr;
 const Directive *Directive::DSEG		= nullptr;
 const Directive *Directive::DW			= nullptr;
-const Directive *Directive::ENDM		= nullptr;
-const Directive *Directive::ENDP		= nullptr;
-const Directive *Directive::ENDPCG		= nullptr;
+const Directive *Directive::END			= nullptr;
 const Directive *Directive::EQU			= nullptr;
 const Directive *Directive::FILENAME_JR	= nullptr;
 const Directive *Directive::INCLUDE		= nullptr;
@@ -35,9 +33,7 @@ void Directive::Initialize()
 	_directiveDict.Assign(DB			= new Directive_DB());
 	_directiveDict.Assign(DSEG			= new Directive_DSEG());
 	_directiveDict.Assign(DW			= new Directive_DW());
-	_directiveDict.Assign(ENDM			= new Directive_ENDM());
-	_directiveDict.Assign(ENDP			= new Directive_ENDP());
-	_directiveDict.Assign(ENDPCG		= new Directive_ENDPCG());
+	_directiveDict.Assign(END			= new Directive_END());
 	_directiveDict.Assign(EQU			= new Directive_EQU());
 	_directiveDict.Assign(FILENAME_JR	= new Directive_FILENAME_JR());
 	_directiveDict.Assign(INCLUDE		= new Directive_INCLUDE());
@@ -258,12 +254,14 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 }
 
 //-----------------------------------------------------------------------------
-// Directive_ENDM
+// Directive_END
 //-----------------------------------------------------------------------------
-bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	if (!exprStack.back()->IsTypeDirective(Directive::MACRO)) {
-		pParser->AddError("no matching .MACRO directive");
+	if (!exprStack.back()->IsTypeDirective(Directive::MACRO) &&
+		!exprStack.back()->IsTypeDirective(Directive::PROC) &&
+		!exprStack.back()->IsTypeDirective(Directive::PCG)) {
+		pParser->AddError("no matching directive");
 		return false;
 	}
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
@@ -275,55 +273,13 @@ bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	return true;
 }
 
-bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+bool Directive_END::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ENDM needs no operands");
+		ErrorLog::AddError(pExpr, "directive .END needs no operands");
 		return false;
 	}
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Directive_ENDP
-//-----------------------------------------------------------------------------
-bool Directive_ENDP::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
-{
-	if (!exprStack.back()->IsTypeDirective(Directive::PROC)) {
-		pParser->AddError("no matching .PROC directive");
-		return false;
-	}
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
-	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	Expr::Delete(exprStack.back());
-	exprStack.pop_back();	// remove the Expr_Directive instance from the stack
-	exprStack.push_back(pExpr.release());
-	return true;
-}
-
-bool Directive_ENDP::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
-	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ENDP needs no operands");
-		return false;
-	}
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Directive_ENDPCG
-//-----------------------------------------------------------------------------
-bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
-	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ENDPCG needs no operands");
-		return false;
-	}
-	if (!context.CheckSegmentRegionReady()) return false;
 	return true;
 }
 

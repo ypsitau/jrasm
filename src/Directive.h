@@ -35,9 +35,7 @@ public:
 	static const Directive *DB;
 	static const Directive *DSEG;
 	static const Directive *DW;
-	static const Directive *ENDM;
-	static const Directive *ENDP;
-	static const Directive *ENDPCG;
+	static const Directive *END;
 	static const Directive *EQU;
 	static const Directive *FILENAME_JR;
 	static const Directive *INCLUDE;
@@ -113,32 +111,12 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_ENDM
+// Directive_END
 //-----------------------------------------------------------------------------
-class Directive_ENDM : public Directive {
+class Directive_END : public Directive {
 public:
-	inline Directive_ENDM() : Directive(".ENDM") {}
+	inline Directive_END() : Directive(".END") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
-};
-
-//-----------------------------------------------------------------------------
-// Directive_ENDP
-//-----------------------------------------------------------------------------
-class Directive_ENDP : public Directive {
-public:
-	inline Directive_ENDP() : Directive(".ENDP") {}
-	//virtual bool OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const;
-	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
-	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
-};
-
-//-----------------------------------------------------------------------------
-// Directive_ENDPCG
-//-----------------------------------------------------------------------------
-class Directive_ENDPCG : public Directive {
-public:
-	inline Directive_ENDPCG() : Directive(".ENDPCG") {}
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 

@@ -12,7 +12,7 @@ macro1:
 	ldaa	{arg+external_val}
 	ldaa	[x+arg+external_val]
 	ldaa	[arg+external_val]
-	.endm
+	.end
 
 macro2:
 	.macro	arg1, arg2
@@ -24,12 +24,12 @@ macro2:
 	ldaa	{arg1+arg2+external_val}
 	ldaa	[x+arg1+arg2+external_val]
 	ldaa	[arg1+arg2+external_val]
-	.endm
+	.end
 
 macro3:	
 	.macro	arg
 	ldaa	arg
-	.endm
+	.end
 
 macro4:
 	.macro
@@ -39,7 +39,7 @@ addr1:
 	.dw		addr1
 addr2:
 	.dw		addr2
-	.endm
+	.end
 	
 	macro1	8
 	macro2	3, 4

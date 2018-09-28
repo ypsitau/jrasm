@@ -32,7 +32,7 @@ label3:
 	.dw		label2
 	.dw		label3
 	.dw		label4
-	.endp
+	.end
 	
 ;;; -----------------------------
 func2:	
@@ -48,7 +48,7 @@ label3:
 	.dw		label2
 	.dw		label3
 	.dw		label4
-	.endp
+	.end
 
 ;;; -----------------------------
 func3:	
@@ -64,5 +64,5 @@ label3:
 	.dw		label2
 	.dw		label3
 	.dw		label4
-	.endp
+	.end
 	
