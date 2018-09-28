@@ -646,7 +646,7 @@ Expr *Expr_SymbolRef::Resolve(Context &context) const
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
 	if (!pExprResolved->IsTypeNumber()) {
-		ErrorLog::AddError(this, "symbol %s is associated with something but number", GetSymbol());
+		ErrorLog::AddError(this, "symbol %s must be associated with a number", GetSymbol());
 		return nullptr;
 	}
 	return pExprResolved.release();
