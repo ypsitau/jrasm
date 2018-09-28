@@ -152,6 +152,7 @@ A string literal can contain escape characters listed below:
 - `\r`
 - `\n`
 
+
 ### Number
 
 The format of number literal is as follows:
@@ -159,6 +160,7 @@ The format of number literal is as follows:
 - Decimal number ... Begins with `1` to `9` and cosists of digit characters (e.g. `123`).
 - Hexadecimal number ... Begins with `0x` and consists of digit and `A` to `F` characters (e.g. `0x3a22`).
 - Octal number ... Begins with `0` and consts of `0` to `7` characters (e.g. `0327`).
+
 
 ### Symbol
 
@@ -173,6 +175,7 @@ A symbol is case insensitive.
 This means that you can describe an instruction `LDAA` with a symbol `LDAA`, `ldaa`, `Ldaa`, `LdAA` and so on.
 Also, when you define a label named `Label1`, it can be referred to as `label1`, `LABEL1`, `LaBel1`
 and anything like that.
+
 
 ### Bit-Pattern
 
@@ -205,7 +208,7 @@ It could be used to put some data sequence in the middle of program code like fo
         .CSEG
         LDX     Hello
         .DSEG
-Hello:  "Hello"
+Hello:  .DB     "Hello"
         .CSEG
         LDAA    [X]
         ; ... any jobs ...
@@ -264,10 +267,10 @@ Example:
 You can specify more than one `.ORG` directive in a program.
 
 
-### .PROC and .ENDP
+### .PROC
 
-You can localize labels by using `.PROC` and `.ENDP` directives.
-Any labels that appear in these directives are hidden from outside.
+You can localize labels by surrounding codes with `.PROC` and `.END` directives.
+Any labels that appear between these directives are hidden from outside.
 It's possible to specify the same symbol for the global and the local labels,
 which are dealt with as different ones.
 
@@ -279,13 +282,13 @@ label2: .EQU    0x2222
 label1: .EQU    0x1234   ; not visible from outside
         .DW     label1   ; 0x1234
         .DW     label2   ; 0x2222
-        .ENDP
+        .END
 
         .PROC
 label1: .EQU    0x5678   ; not visible from outside
         .DW     label1   ; 0x5678
         .DW     label2   ; 0x2222
-        .ENDP
+        .END
 
         .DW     label    ; 0x1111
         .DW     label2   ; 0x2222
@@ -299,10 +302,33 @@ label1:  .EQU    0x1234   ; not visible from outside
 label2:: .EQU    0x5678   ; visible from outside
          .DW     label1   ; 0x1234
          .DW     label2   ; 0x5678
-         .ENDP
+         .END
 
          .DW     label2   ; 0x5678
 ```
+
+
+### .MACRO
+
+Directive `.MACRO` defines a macro, a sequence of instructions and directives that is bound to a specific symbol.
+You can expand the sequence anywhere in the code by specifying the symbol.
+
+A macro consists of a label that represents the macro name
+and a code sequence surrounded by `.MACRO` and `.END` directives.
+
+```
+mul4:   .MACRO
+        shla
+        shla
+        .END
+```
+
+
+```
+        mul4
+```
+
+
 
 
 ## Instructions
