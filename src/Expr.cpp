@@ -34,10 +34,10 @@ bool Expr::IsTypeLabel(const char *symbol) const
 		::strcasecmp(dynamic_cast<const Expr_Label *>(this)->GetSymbol(), symbol) == 0;
 }
 
-bool Expr::IsTypeSymbolRef(const char *symbol) const
+bool Expr::IsTypeSymbol(const char *symbol) const
 {
-	return IsTypeSymbolRef() &&
-		::strcasecmp(dynamic_cast<const Expr_SymbolRef *>(this)->GetSymbol(), symbol) == 0;
+	return IsTypeSymbol() &&
+		::strcasecmp(dynamic_cast<const Expr_Symbol *>(this)->GetSymbol(), symbol) == 0;
 }
 
 bool Expr::IsTypeBinOp(const Operator *pOperator) const
@@ -596,11 +596,11 @@ String Expr_Label::MakeSource(const char *symbol, bool forceGlobalFlag)
 }
 
 //-----------------------------------------------------------------------------
-// Expr_SymbolRef
+// Expr_Symbol
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_SymbolRef::TYPE = Expr::TYPE_SymbolRef;
+const Expr::Type Expr_Symbol::TYPE = Expr::TYPE_Symbol;
 
-Expr *Expr_SymbolRef::Resolve(Context &context) const
+Expr *Expr_Symbol::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetSymbol())) return Reference();
@@ -624,18 +624,18 @@ Expr *Expr_SymbolRef::Resolve(Context &context) const
 	return pExprResolved.release();
 }
 
-Expr *Expr_SymbolRef::Clone() const
+Expr *Expr_Symbol::Clone() const
 {
-	return new Expr_SymbolRef(*this);
+	return new Expr_Symbol(*this);
 }
 
-Expr *Expr_SymbolRef::Substitute(const ExprDict &exprDict) const
+Expr *Expr_Symbol::Substitute(const ExprDict &exprDict) const
 {
 	const Expr *pExpr = exprDict.Lookup(GetSymbol());
 	return (pExpr == nullptr)? Clone() : pExpr->Clone();
 }
 
-String Expr_SymbolRef::ComposeSource(bool upperCaseFlag) const
+String Expr_Symbol::ComposeSource(bool upperCaseFlag) const
 {
 	if (Generator::GetInstance().IsRegisterSymbol(_symbol.c_str())) {
 		return upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str());
@@ -835,11 +835,11 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
-		if (!pExpr->IsTypeSymbolRef()) {
+		if (!pExpr->IsTypeSymbol()) {
 			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
 			return false;
 		}
-		paramNames.push_back(dynamic_cast<const Expr_SymbolRef *>(pExpr)->GetSymbol());
+		paramNames.push_back(dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol());
 	}
 	context.GetMacroDict().Assign(pMacro.release());
 	return true;

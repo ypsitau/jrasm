@@ -467,11 +467,11 @@ bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
-		if (!pExpr->IsTypeSymbolRef()) {
+		if (!pExpr->IsTypeSymbol()) {
 			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
 			return false;
 		}
-		paramNames.push_back(dynamic_cast<const Expr_SymbolRef *>(pExpr)->GetSymbol());
+		paramNames.push_back(dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol());
 	}
 	context.GetMacroDict().Assign(pMacro.release());
 #endif

@@ -85,7 +85,7 @@ public:
 		TYPE_Bracket,
 		TYPE_Brace,
 		TYPE_Label,
-		TYPE_SymbolRef,
+		TYPE_Symbol,
 		TYPE_Instruction,
 		TYPE_Directive,
 		TYPE_MacroDecl,
@@ -117,7 +117,7 @@ public:
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
 	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
 	inline bool IsTypeLabel() const { return IsType(TYPE_Label); }
-	inline bool IsTypeSymbolRef() const { return IsType(TYPE_SymbolRef); }
+	inline bool IsTypeSymbol() const { return IsType(TYPE_Symbol); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
 	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
@@ -141,7 +141,7 @@ public:
 	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }
 	inline const ExprDict *GetExprDict() const { return _pExprDict.get(); }
 	bool IsTypeLabel(const char *symbol) const;
-	bool IsTypeSymbolRef(const char *symbol) const;
+	bool IsTypeSymbol(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	bool IsTypeDirective(const Directive *pDirective) const;
 	void Print() const;
@@ -352,16 +352,16 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_SymbolRef
+// Expr_Symbol
 //-----------------------------------------------------------------------------
-class Expr_SymbolRef : public Expr {
+class Expr_Symbol : public Expr {
 private:
 	String _symbol;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_SymbolRef(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
-	inline Expr_SymbolRef(const Expr_SymbolRef &expr) : Expr(expr), _symbol(expr._symbol) {}
+	inline Expr_Symbol(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
+	inline Expr_Symbol(const Expr_Symbol &expr) : Expr(expr), _symbol(expr._symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }

@@ -303,8 +303,8 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 		// OP b ... _accName is "b"
 		if (exprOperands.size() != 1) return RESULT_Rejected;
 		const Expr *pExpr = exprOperands.front();
-		if (!pExpr->IsTypeSymbolRef()) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_SymbolRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExpr->IsTypeSymbol()) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	// This rule was determined to be applied.
 	if (pBuffDst != nullptr) {
@@ -384,8 +384,8 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		// OP b,data8 ... _accName is "b"
 		if (exprOperands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = exprOperands.front();
-		if (!pExpr->IsTypeSymbolRef()) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_SymbolRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExpr->IsTypeSymbol()) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
@@ -442,8 +442,8 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		// OP b,(addr8) ... _accName is "b"
 		if (exprOperands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = exprOperands.front();
-		if (!pExprLast->IsTypeSymbolRef()) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_SymbolRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExprLast->IsTypeSymbol()) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
@@ -485,8 +485,8 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		// OP b,[x+data8] ... _accName is "b"
 		if (exprOperands.size() != 2) return RESULT_Rejected;
 		const Expr *pExprLast = exprOperands.front();
-		if (!pExprLast->IsTypeSymbolRef()) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_SymbolRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExprLast->IsTypeSymbol()) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
@@ -498,12 +498,12 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	if (exprList.front()->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
 		// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
-		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeSymbolRef("x")) {
+		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
 			return RESULT_Rejected;
 		}
 		// This rule was determined to be applied.
 		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
-	} else if (exprList.front()->IsTypeSymbolRef("x")) {
+	} else if (exprList.front()->IsTypeSymbol("x")) {
 		num = 0;
 	} else {
 		return RESULT_Rejected;
@@ -532,12 +532,12 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	if (pExprLast->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprLast.get());
 		// If operand was specified in x+data16, it has been modified to data16+x in resolving process.
-		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeSymbolRef("x")) {
+		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
 			return RESULT_Rejected;
 		}
 		// This rule was determined to be applied.
 		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
-	} else if (pExprLast->IsTypeSymbolRef("x")) {
+	} else if (pExprLast->IsTypeSymbol("x")) {
 		num = 0;
 	} else {
 		return RESULT_Rejected;
@@ -566,8 +566,8 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		// OP b,[addr16] ... _accName is "b"
 		if (exprOperands.size() != 2) return RESULT_Rejected;
 		const Expr *pExpr = exprOperands.front();
-		if (!pExpr->IsTypeSymbolRef()) return RESULT_Rejected;
-		if (!dynamic_cast<const Expr_SymbolRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
+		if (!pExpr->IsTypeSymbol()) return RESULT_Rejected;
+		if (!dynamic_cast<const Expr_Symbol *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
