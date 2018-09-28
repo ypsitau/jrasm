@@ -459,6 +459,25 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
+bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+{
+#if 0
+	const ExprList &operands = pExpr->GetExprOperands();
+	AutoPtr<Macro> pMacro(new Macro(pExpr->GetSymbol(), pExpr->GetExprChildren().Reference()));
+	StringList &paramNames = pMacro->GetParamNames();
+	paramNames.reserve(operands.size());
+	for (auto pExpr : operands) {
+		if (!pExpr->IsTypeSymbolRef()) {
+			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
+			return false;
+		}
+		paramNames.push_back(dynamic_cast<const Expr_SymbolRef *>(pExpr)->GetSymbol());
+	}
+	context.GetMacroDict().Assign(pMacro.release());
+#endif
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------

@@ -188,6 +188,7 @@ class Directive_MACRO : public Directive {
 public:
 	inline Directive_MACRO() : Directive(".MACRO") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
+	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------
