@@ -44,6 +44,12 @@ class ExprList : public std::vector<Expr *> {
 public:
 	Expr_SymbolDef *SeekSymbolDefToAssoc();
 	String ComposeSource(bool upperCaseFlag, const char *sep) const;
+	bool OnPhaseInclude(Context &context);
+	bool OnPhaseDeclareMacro(Context &context);
+	bool OnPhaseExpandMacro(Context &context);
+	bool OnPhaseSetupExprDict(Context &context);
+	bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
+	bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	void Print(bool upperCaseFlag) const;
 };
 

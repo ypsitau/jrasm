@@ -113,6 +113,54 @@ String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
 	return rtn;
 }
 
+bool ExprList::OnPhaseInclude(Context &context)
+{
+	for (auto pExpr : *this) {
+		if (!pExpr->OnPhaseInclude(context)) return false;
+	}
+	return true;
+}
+
+bool ExprList::OnPhaseDeclareMacro(Context &context)
+{
+	for (auto pExpr : *this) {
+		if (!pExpr->OnPhaseDeclareMacro(context)) return false;
+	}
+	return true;
+}
+
+bool ExprList::OnPhaseExpandMacro(Context &context)
+{
+	for (auto pExpr : *this) {
+		if (!pExpr->OnPhaseExpandMacro(context)) return false;
+	}
+	return true;
+}
+
+bool ExprList::OnPhaseSetupExprDict(Context &context)
+{
+	for (auto pExpr : *this) {
+		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
+	}
+	return true;
+}
+
+bool ExprList::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
+{
+	for (auto pExpr : *this) {
+		if (!pExpr->OnPhaseGenerate(context, pBuffDst)) return false;
+	}
+	return true;
+}
+
+bool ExprList::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	for (auto pExpr : *this) {
+		if (!pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
+	}
+	return true;
+}
+
 void ExprList::Print(bool upperCaseFlag) const
 {
 	for (auto pExpr : *this) {
