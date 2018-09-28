@@ -543,22 +543,25 @@ bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
-bool Directive_PCG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
 	return true;
 }
 
 bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckSegmentRegionReady()) return false;
-	return true;
+	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
 }
 
 bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
-								  DisasmDumper &disasmDumper, int indentLevelCode) const
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	// suppress disasm dump
-	return true;
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 }
 
 //-----------------------------------------------------------------------------
