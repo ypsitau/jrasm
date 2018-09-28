@@ -44,6 +44,7 @@ public:
 	static const Directive *MML;
 	static const Directive *ORG;
 	static const Directive *PCG;
+	static const Directive *PCG_ORG;
 	static const Directive *PROC;
 private:
 	static DirectiveDict _directiveDict;
@@ -218,6 +219,15 @@ public:
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_PCG_ORG
+//-----------------------------------------------------------------------------
+class Directive_PCG_ORG : public Directive {
+public:
+	inline Directive_PCG_ORG() : Directive(".PCG.ORG", false) {}
+	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
 //-----------------------------------------------------------------------------

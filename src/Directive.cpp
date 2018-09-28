@@ -19,6 +19,7 @@ const Directive *Directive::MACRO		= nullptr;
 const Directive *Directive::MML			= nullptr;
 const Directive *Directive::ORG			= nullptr;
 const Directive *Directive::PCG			= nullptr;
+const Directive *Directive::PCG_ORG		= nullptr;
 const Directive *Directive::PROC		= nullptr;
 
 DirectiveDict Directive::_directiveDict;
@@ -42,6 +43,7 @@ void Directive::Initialize()
 	_directiveDict.Assign(MML			= new Directive_MML());
 	_directiveDict.Assign(ORG			= new Directive_ORG());
 	_directiveDict.Assign(PCG			= new Directive_PCG());
+	_directiveDict.Assign(PCG_ORG		= new Directive_PCG_ORG());
 	_directiveDict.Assign(PROC			= new Directive_PROC());
 }
 
@@ -580,6 +582,8 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
 	do {
+		// segmentation error when resolve is called.
+
 		context.StartToResolve();
 		AutoPtr<Expr> pExprOperand(exprOperands[1]->Resolve(context));
 		if (pExprOperand.IsNull()) return false;
@@ -632,6 +636,51 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_PCG_ORG
+//-----------------------------------------------------------------------------
+bool Directive_PCG_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+{
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() != 2) {
+		ErrorLog::AddError(pExpr, "directive .PCG.ORG takes two operands");
+		return false;
+	}
+	UInt32 num = 0;
+	do {
+		Expr *pExprOperand = exprOperands[0];
+		if (!pExprOperand->IsTypeSymbol()) {
+			ErrorLog::AddError(pExpr, "directive .PCG.ORG takes a symbol value as its first operand");
+			return false;
+		}
+		const char *symbol = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
+		if (::strcasecmp(symbol, "cram") == 0) {
+			
+		} else if (::strcasecmp(symbol, "user") == 0) {
+
+		} else {
+			ErrorLog::AddError(pExpr, "the first operand takes cram or user");
+			return false;
+		}
+	} while (0);
+	do {
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand(exprOperands[1]->Resolve(context));
+		if (pExprOperand.IsNull()) return false;
+		if (!pExprOperand->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, "directive .PCG.ORG takes a number value as its second operand");
+			return false;
+		}
+		num = dynamic_cast<const Expr_Number *>(pExprOperand.get())->GetNumber();
+	} while (0);
+	if (num > 0xff) {
+		ErrorLog::AddError(pExpr, "address value exceeds 8-bit range");
+		return false;
+	}
+	//context.StartRegion(static_cast<UInt16>(num));
 	return true;
 }
 
