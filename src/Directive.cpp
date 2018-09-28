@@ -569,35 +569,37 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 		return false;
 	}
 	String symbol;
-	size_t width = 0, height = 0;
+	size_t wdChar = 0, htChar = 0;
+	const char *errMsg = "invalid operand for directive .PCG";
 	do {
-		context.StartToResolve();
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
-			ErrorLog::AddError(pExpr, "invalid operand for directive .PCG");
+			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
 	do {
 		context.StartToResolve();
-		Expr *pExprOperand = exprOperands[1];
+		AutoPtr<Expr> pExprOperand(exprOperands[1]->Resolve(context));
+		if (pExprOperand.IsNull()) return false;
 		if (!pExprOperand->IsTypeNumber()) {
-			ErrorLog::AddError(pExpr, "invalid operand for directive .PCG");
+			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		width = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+		wdChar = dynamic_cast<Expr_Number *>(pExprOperand.get())->GetNumber();
 	} while (0);
 	do {
 		context.StartToResolve();
-		Expr *pExprOperand = exprOperands[2];
+		AutoPtr<Expr> pExprOperand(exprOperands[2]->Resolve(context));
+		if (pExprOperand.IsNull()) return false;
 		if (!pExprOperand->IsTypeNumber()) {
-			ErrorLog::AddError(pExpr, "invalid operand for directive .PCG");
+			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		height = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+		htChar = dynamic_cast<Expr_Number *>(pExprOperand.get())->GetNumber();
 	} while (0);
-	Binary buffDst;
+	Binary buffOrg;
 	UInt32 bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
@@ -605,14 +607,25 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 			return false;
 		}
 		if (!Directive_DB::DoDirective(
-				context, dynamic_cast<Expr_Directive *>(pExprChild), &buffDst, &bytes)) return false;
+				context, dynamic_cast<Expr_Directive *>(pExprChild), &buffOrg, &bytes)) return false;
 	}
-	::printf("%s %zux%zu\n", symbol.c_str(), width, height);
-	::printf("%zu\n", buffDst.size());
-	for (auto data : buffDst) {
-		::printf(" %02x", static_cast<UInt8>(data));
+	size_t bytesExpected = wdChar * htChar * 8;
+	if (bytesExpected != buffOrg.size()) {
+		ErrorLog::AddError(pExpr, "stored data is %zu bytes, different from the expected %zu bytes",
+						   buffOrg.size(), bytesExpected);
+		return false;
 	}
-	::printf("\n");
+	for (size_t yChar = 0; yChar < htChar; yChar++) {
+		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
+		for (size_t xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
+			Binary buffDst;
+			Binary::iterator pDataOrg = pDataColOrg;
+			for (size_t i = 0; i < 8; i++, pDataOrg += wdChar) {
+				buffDst += *pDataOrg;
+			}
+                
+		}
+	}
 	return true;
 }
 
