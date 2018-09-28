@@ -522,10 +522,12 @@ Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Label::TYPE = Expr::TYPE_Label;
 
+#if 0
 bool Expr_Label::OnPhaseDeclareMacro(Context &context)
 {
 	return IsAssigned()? GetAssigned()->OnPhaseDeclareMacro(context) : true;
 }
+#endif
 
 bool Expr_Label::OnPhaseSetupExprDict(Context &context)
 {
@@ -544,11 +546,13 @@ bool Expr_Label::OnPhaseSetupExprDict(Context &context)
 	return true;
 }
 
+#if 0
 bool Expr_Label::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	// nothing to do
 	return true;
 }
+#endif
 
 bool Expr_Label::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
@@ -761,16 +765,19 @@ const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
 bool Expr_Directive::OnPhaseInclude(Context &context)
 {
+	if (!Expr::OnPhaseInclude(context)) return false;
 	return _pDirective->OnPhaseInclude(context, this);
 }
 
 bool Expr_Directive::OnPhaseDeclareMacro(Context &context)
 {
+	if (!Expr::OnPhaseDeclareMacro(context)) return false;
 	return _pDirective->OnPhaseDeclareMacro(context, this);
 }
 
 bool Expr_Directive::OnPhaseExpandMacro(Context &context)
 {
+	if (!Expr::OnPhaseExpandMacro(context)) return false;
 	return _pDirective->OnPhaseExpandMacro(context, this);
 }
 
@@ -782,11 +789,13 @@ bool Expr_Directive::OnPhaseSetupExprDict(Context &context)
 
 bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
+	if (!Expr::OnPhaseGenerate(context, pBuffDst)) return false;
 	return _pDirective->OnPhaseGenerate(context, this, pBuffDst);
 }
 
 bool Expr_Directive::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	if (!Expr::OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
 	return _pDirective->OnPhaseDisasm(context, this, disasmDumper, indentLevelCode);
 }
 

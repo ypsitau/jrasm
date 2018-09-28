@@ -340,9 +340,9 @@ public:
 	inline bool GetForceGlobalFlag() const { return _forceGlobalFlag; }
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
-	virtual bool OnPhaseDeclareMacro(Context &context);
+	//virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
+	//virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -404,9 +404,9 @@ public:
 class Expr_Directive : public Expr {
 private:
 	const Directive *_pDirective;
-	String _symbol;
-	bool _forceGlobalFlag;
-	AutoPtr<Expr> _pExprIncluded;	// only used by .INCLUDE
+	String _symbol;					// used by .MACRO
+	bool _forceGlobalFlag;			// used by .MACRO
+	AutoPtr<Expr> _pExprIncluded;	// used by .INCLUDE
 public:
 	static const Type TYPE;
 public:

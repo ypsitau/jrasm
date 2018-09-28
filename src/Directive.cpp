@@ -262,7 +262,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 //-----------------------------------------------------------------------------
 bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	if (!exprStack.back()->IsTypeMacroDecl()) {
+	if (!exprStack.back()->IsTypeDirective(Directive::MACRO)) {
 		pParser->AddError("no matching .MACRO directive");
 		return false;
 	}
@@ -451,8 +451,9 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 		pParser->AddError("directive .MACRO must be preceded by a label");
 		return false;
 	}
-	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprLabel));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Directive::MACRO));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	pExpr->SetSymbol(pExprLabel->GetSymbol(), pExprLabel->GetForceGlobalFlag());
 	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr->Reference());		// for children
 	exprStack.push_back(pExpr.release());			// for operands
@@ -461,20 +462,18 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 
 bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
 {
-#if 0
 	const ExprList &operands = pExpr->GetExprOperands();
 	AutoPtr<Macro> pMacro(new Macro(pExpr->GetSymbol(), pExpr->GetExprChildren().Reference()));
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
 		if (!pExpr->IsTypeSymbol()) {
-			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
+			ErrorLog::AddError(pExpr, "directive .MACRO takes a list of parameter names");
 			return false;
 		}
 		paramNames.push_back(dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol());
 	}
 	context.GetMacroDict().Assign(pMacro.release());
-#endif
 	return true;
 }
 
