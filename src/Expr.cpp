@@ -53,44 +53,39 @@ void Expr::Print() const
 
 bool Expr::OnPhaseInclude(Context &context)
 {
-	// nothing to do
-	return true;
+	return GetExprOperands().OnPhaseInclude(context) &&
+		GetExprChildren().OnPhaseInclude(context);
 }
 
 bool Expr::OnPhaseDeclareMacro(Context &context)
 {
-	// nothing to do
-	return true;
+	return GetExprOperands().OnPhaseDeclareMacro(context) &&
+		GetExprChildren().OnPhaseDeclareMacro(context);
 }
 
 bool Expr::OnPhaseExpandMacro(Context &context)
 {
-	// nothing to do
-	return true;
+	return GetExprOperands().OnPhaseExpandMacro(context) &&
+		GetExprChildren().OnPhaseExpandMacro(context);
 }
 
 bool Expr::OnPhaseSetupExprDict(Context &context)
 {
 	_pExprDict.reset(context.GetExprDictCurrent().Reference());
-	for (auto pExpr : GetExprOperands()) {
-		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
-	}
-	for (auto pExpr : GetExprChildren()) {
-		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
-	}
-	return true;
+	return GetExprOperands().OnPhaseSetupExprDict(context) &&
+		GetExprChildren().OnPhaseSetupExprDict(context);
 }
 
 bool Expr::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
-	// nothing to do
-	return true;
+	return GetExprOperands().OnPhaseGenerate(context, pBuffDst) &&
+		GetExprChildren().OnPhaseGenerate(context, pBuffDst);
 }
 
 bool Expr::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	// nothing to do
-	return true;
+	return GetExprOperands().OnPhaseDisasm(context, disasmDumper, indentLevelCode) &&
+		GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 }
 
 //-----------------------------------------------------------------------------
