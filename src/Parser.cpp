@@ -46,7 +46,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 		if (pToken->IsType(TOKEN_Colon) || (forceGlobalFlag = pToken->IsType(TOKEN_ColonColon))) {
 			AutoPtr<Expr> pExpr(new Expr_SymbolDef(_pTokenPrev->GetString(), forceGlobalFlag));
 			SetExprSourceInfo(pExpr.get(), _pTokenPrev.get());
-			_pExprStack->back()->GetChildren().push_back(pExpr.release());
+			_pExprStack->back()->GetExprChildren().push_back(pExpr.release());
 			_stat = STAT_Directive;
 		} else if (pToken->IsType(TOKEN_White)) {
 			// nothing to do
@@ -69,7 +69,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				}
 				AutoPtr<Expr> pExpr(new Expr_Instruction(pToken->GetStringSTL()));
 				SetExprSourceInfo(pExpr.get(), pToken.get());
-				_pExprStack->back()->GetChildren().push_back(pExpr->Reference());
+				_pExprStack->back()->GetExprChildren().push_back(pExpr->Reference());
 				_pExprStack->push_back(pExpr.release());
 			} else if (!pDirective->OnPhaseParse(this, *_pExprStack, pToken.get())) {
 				return false;
@@ -93,7 +93,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			if (!ParseByPrec(new Token(TOKEN_Empty))) return false;
 			//::printf("%s\n", _tokenStack.ToString().c_str());
 			if (_tokenStack.size() == 3 && _tokenStack[1]->IsType(TOKEN_Expr)) {
-				_pExprStack->back()->GetChildren().push_back(_tokenStack[1]->GetExpr()->Reference());
+				_pExprStack->back()->GetExprOperands().push_back(_tokenStack[1]->GetExpr()->Reference());
 			} else if (_tokenStack.size() == 2) {
 				// nothing to do as the stack has no tokens
 			} else {
@@ -108,7 +108,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				
 			} else if (pToken->IsType(TOKEN_BracketL)) {
 				AutoPtr<Expr> pExpr(new Expr_Bracket());
-				_pExprStack->back()->GetChildren().push_back(pExpr->Reference());
+				_pExprStack->back()->GetExprOperands().push_back(pExpr->Reference());
 				_pExprStack->push_back(pExpr.release());
 			} else if (pToken->IsType(TOKEN_BracketR)) {
 				if (!_pExprStack->back()->IsTypeBracket()) {
@@ -117,7 +117,7 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				_pExprStack->pop_back();
 			} else if (pToken->IsType(TOKEN_BraceL)) {
 				AutoPtr<Expr> pExpr(new Expr_Brace());
-				_pExprStack->back()->GetChildren().push_back(pExpr->Reference());
+				_pExprStack->back()->GetExprOperands().push_back(pExpr->Reference());
 				_pExprStack->push_back(pExpr.release());
 			} else if (pToken->IsType(TOKEN_BraceR)) {
 				if (!_pExprStack->back()->IsTypeBrace()) {

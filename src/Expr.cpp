@@ -7,17 +7,18 @@
 // Expr
 //-----------------------------------------------------------------------------
 Expr::Expr(Type type) :
-	_cntRef(1), _type(type), _pExprChildren(new ExprOwner()), _lineNo(0)
+	_cntRef(1), _type(type), _pExprOperands(new ExprOwner()), _pExprChildren(new ExprOwner()), _lineNo(0)
 {
 }
 
-Expr::Expr(Type type, ExprOwner *pExprChildren) :
-	_cntRef(1), _type(type), _pExprChildren(pExprChildren), _lineNo(0)
+Expr::Expr(Type type, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+	_cntRef(1), _type(type), _pExprOperands(pExprOperands), _pExprChildren(pExprChildren), _lineNo(0)
 {
 }
 
 Expr::Expr(const Expr &expr) :
-	_cntRef(1), _type(expr._type), _pExprChildren(expr._pExprChildren->Clone()),
+	_cntRef(1), _type(expr._type),
+	_pExprOperands(expr._pExprOperands->Clone()), _pExprChildren(expr._pExprChildren->Clone()),
 	_pFileNameSrc(expr._pFileNameSrc->Reference()), _lineNo(expr._lineNo)
 {
 	// don't copy _pExprDict, which should be different for each Expr instance.
@@ -71,7 +72,10 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 bool Expr::OnPhaseSetupExprDict(Context &context)
 {
 	_pExprDict.reset(context.GetExprDictCurrent().Reference());
-	for (auto pExpr : GetChildren()) {
+	for (auto pExpr : GetExprOperands()) {
+		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
+	}
+	for (auto pExpr : GetExprChildren()) {
 		if (!pExpr->OnPhaseSetupExprDict(context)) return false;
 	}
 	return true;
@@ -210,7 +214,7 @@ const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
 bool Expr_Root::OnPhaseInclude(Context &context)
 {
-	for (auto pExpr : GetChildren()) {
+	for (auto pExpr : GetExprChildren()) {
 		if (!pExpr->OnPhaseInclude(context)) return false;
 	}
 	return true;
@@ -218,7 +222,7 @@ bool Expr_Root::OnPhaseInclude(Context &context)
 
 bool Expr_Root::OnPhaseDeclareMacro(Context &context)
 {
-	for (auto pExpr : GetChildren()) {
+	for (auto pExpr : GetExprChildren()) {
 		if (!pExpr->OnPhaseDeclareMacro(context)) return false;
 	}
 	return true;
@@ -226,7 +230,7 @@ bool Expr_Root::OnPhaseDeclareMacro(Context &context)
 
 bool Expr_Root::OnPhaseExpandMacro(Context &context)
 {
-	for (auto pExpr : GetChildren()) {
+	for (auto pExpr : GetExprChildren()) {
 		if (!pExpr->OnPhaseExpandMacro(context)) return false;
 	}
 	return true;
@@ -240,7 +244,7 @@ bool Expr_Root::OnPhaseSetupExprDict(Context &context)
 
 bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
-	for (auto pExpr : GetChildren()) {
+	for (auto pExpr : GetExprChildren()) {
 		if (!pExpr->OnPhaseGenerate(context, pBuffDst)) return false;
 	}
 	return true;
@@ -248,7 +252,7 @@ bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 
 bool Expr_Root::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	for (auto pExpr : GetChildren()) {
+	for (auto pExpr : GetExprChildren()) {
 		if (!pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
 	}
 	return true;
@@ -266,7 +270,9 @@ Expr *Expr_Root::Clone() const
 
 Expr *Expr_Root::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Root(GetChildren().Substitute(exprDict)));
+	AutoPtr<Expr> pExprRtn(new Expr_Root(
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -298,7 +304,7 @@ Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
 
 String Expr_Group::ComposeSource(bool upperCaseFlag) const
 {
-	String str = GetChildren().ComposeSource(upperCaseFlag, "\n");
+	String str = GetExprChildren().ComposeSource(upperCaseFlag, "\n");
 	str += "\n";
 	return str;
 }
@@ -447,7 +453,10 @@ Expr *Expr_BinOp::Clone() const
 
 Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_BinOp(GetOperator(), GetChildren().Substitute(exprDict)));
+	AutoPtr<Expr> pExprRtn(new Expr_BinOp(
+							   GetOperator(),
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -461,7 +470,7 @@ String Expr_Bracket::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "[";
-	str += GetChildren().ComposeSource(upperCaseFlag, ",");
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	str += "]";
 	return str;
 }
@@ -470,10 +479,10 @@ Expr *Expr_Bracket::Resolve(Context &context) const
 {
 	AutoPtr<Expr_Bracket> pExprRtn(new Expr_Bracket());
 	pExprRtn->DeriveSourceInfo(this);
-	for (auto pExprChild : GetChildren()) {
-		AutoPtr<Expr> pExprChildResolved(pExprChild->Resolve(context));
-		if (pExprChildResolved.IsNull()) return nullptr;
-		pExprRtn->GetChildren().push_back(pExprChildResolved.release());
+	for (auto pExprOperand : GetExprOperands()) {
+		AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
+		if (pExprOperandResolved.IsNull()) return nullptr;
+		pExprRtn->GetExprOperands().push_back(pExprOperandResolved.release());
 	}
 	return pExprRtn.release();
 }
@@ -485,7 +494,9 @@ Expr *Expr_Bracket::Clone() const
 
 Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Bracket(GetChildren().Substitute(exprDict)));
+	AutoPtr<Expr> pExprRtn(new Expr_Bracket(
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -499,7 +510,7 @@ String Expr_Brace::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	str = "{";
-	str += GetChildren().ComposeSource(upperCaseFlag, ",");
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	str += "}";
 	return str;
 }
@@ -508,10 +519,10 @@ Expr *Expr_Brace::Resolve(Context &context) const
 {
 	AutoPtr<Expr_Brace> pExprRtn(new Expr_Brace());
 	pExprRtn->DeriveSourceInfo(this);
-	for (auto pExprChild : GetChildren()) {
-		AutoPtr<Expr> pExprChildResolved(pExprChild->Resolve(context));
-		if (pExprChildResolved.IsNull()) return nullptr;
-		pExprRtn->GetChildren().push_back(pExprChildResolved.release());
+	for (auto pExprOperand : GetExprOperands()) {
+		AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
+		if (pExprOperandResolved.IsNull()) return nullptr;
+		pExprRtn->GetExprOperands().push_back(pExprOperandResolved.release());
 	}
 	return pExprRtn.release();
 }
@@ -523,7 +534,9 @@ Expr *Expr_Brace::Clone() const
 
 Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Brace(GetChildren().Substitute(exprDict)));
+	AutoPtr<Expr> pExprRtn(new Expr_Brace(
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -672,7 +685,7 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 	if (pMacro == nullptr) return true;
 	AutoPtr<ExprDict> pExprDict(new ExprDict());
 	const StringList &paramNames = pMacro->GetParamNames();
-	const ExprList &exprList = GetOperands();
+	const ExprList &exprList = GetExprOperands();
 	StringList::const_iterator pParamName = paramNames.begin();
 	ExprList::const_iterator ppExpr = exprList.begin();
 	for ( ; pParamName != paramNames.end() && ppExpr != exprList.end(); pParamName++, ppExpr++) {
@@ -754,7 +767,10 @@ Expr *Expr_Instruction::Clone() const
 
 Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Instruction(GetSymbol(), GetChildren().Substitute(exprDict)));
+	AutoPtr<Expr> pExprRtn(new Expr_Instruction(
+							   GetSymbol(),
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -765,7 +781,7 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
-	str += GetChildren().ComposeSource(upperCaseFlag, ",");
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	return str;
 }
 
@@ -819,7 +835,10 @@ Expr *Expr_Directive::Clone() const
 
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Directive(GetDirective(), GetChildren().Substitute(exprDict)));
+	AutoPtr<Expr> pExprRtn(new Expr_Directive(
+							   GetDirective(),
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -831,7 +850,7 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 		(upperCaseFlag? ToUpper(symbol) : ToLower(symbol)).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
 	str += " ";
-	str += GetChildren().ComposeSource(upperCaseFlag, ",");
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	return str;
 }
 
@@ -842,8 +861,8 @@ const Expr::Type Expr_MacroDecl::TYPE = Expr::TYPE_MacroDecl;
 
 bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 {
-	const ExprList &operands = GetOperands();
-	AutoPtr<Macro> pMacro(new Macro(_symbol, GetGroup()->GetChildren().Reference()));
+	const ExprList &operands = GetExprOperands();
+	AutoPtr<Macro> pMacro(new Macro(_symbol, GetGroup()->GetExprChildren().Reference()));
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
@@ -881,6 +900,6 @@ String Expr_MacroDecl::ComposeSource(bool upperCaseFlag) const
 {
 	String str = upperCaseFlag? ".MACRO" : ".macro";
 	str += ' ';
-	str += GetChildren().ComposeSource(upperCaseFlag, ",");
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	return str;
 }

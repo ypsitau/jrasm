@@ -89,6 +89,7 @@ public:
 protected:
 	int _cntRef;
 	Type _type;
+	AutoPtr<ExprOwner> _pExprOperands;
 	AutoPtr<ExprOwner> _pExprChildren;
 	AutoPtr<ExprDict> _pExprDict;
 	AutoPtr<StringShared> _pFileNameSrc;
@@ -97,7 +98,7 @@ public:
 	DeclareReferenceAccessor(Expr);
 public:
 	Expr(Type type);
-	Expr(Type type, ExprOwner *pExprChildren);
+	Expr(Type type, ExprOwner *pExprOperands, ExprOwner *pExprChildren);
 	Expr(const Expr &expr);
 protected:
 	virtual ~Expr();
@@ -117,8 +118,10 @@ public:
 	inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
-	inline ExprOwner &GetChildren() { return *_pExprChildren; }
-	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
+	inline ExprOwner &GetExprOperands() { return *_pExprOperands; }
+	inline const ExprOwner &GetExprOperands() const { return *_pExprOperands; }
+	inline ExprOwner &GetExprChildren() { return *_pExprChildren; }
+	inline const ExprOwner &GetExprChildren() const { return *_pExprChildren; }
 	inline void SetSourceInfo(StringShared *pFileNameSrc, int lineNo) {
 		_pFileNameSrc.reset(pFileNameSrc), _lineNo = lineNo;
 	}
@@ -183,7 +186,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Root() : Expr(TYPE) {}
-	inline Expr_Root(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
+	inline Expr_Root(ExprOwner *pExprOperands, ExprOwner *pExprChildren) : Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Root(const Expr_Root &expr) : Expr(expr) {}
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
@@ -282,14 +285,14 @@ public:
 public:
 	inline Expr_BinOp(const Operator *pOperator, Expr *pExprL, Expr *pExprR) :
 			Expr(TYPE), _pOperator(pOperator) {
-		GetChildren().push_back(pExprL);
-		GetChildren().push_back(pExprR);
+		GetExprOperands().push_back(pExprL);
+		GetExprOperands().push_back(pExprR);
 	}
-	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprChildren) :			
-		Expr(TYPE, pExprChildren), _pOperator(pOperator) {}
+	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren), _pOperator(pOperator) {}
 	inline Expr_BinOp(const Expr_BinOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
-	inline const Expr *GetLeft() const { return GetChildren()[0]; }
-	inline const Expr *GetRight() const { return GetChildren()[1]; }
+	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
+	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -305,7 +308,8 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Bracket() : Expr(TYPE) {}
-	inline Expr_Bracket(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
+	inline Expr_Bracket(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Bracket(const Expr_Bracket &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -321,7 +325,8 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Brace() : Expr(TYPE) {}
-	inline Expr_Brace(ExprOwner *pExprChildren) : Expr(TYPE, pExprChildren) {}
+	inline Expr_Brace(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Brace(const Expr_Brace &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -343,10 +348,10 @@ public:
 		Expr(TYPE), _symbol(symbol), _forceGlobalFlag(forceGlobalFlag) {}
 	inline Expr_SymbolDef(const Expr_SymbolDef &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
-	inline void SetAssigned(Expr *pExprAssigned) { GetChildren().push_back(pExprAssigned); }
-	inline Expr *GetAssigned() { return GetChildren().back(); }
-	inline const Expr *GetAssigned() const { return GetChildren().back(); }
-	inline bool IsAssigned() const { return !GetChildren().empty(); }
+	inline void SetAssigned(Expr *pExprAssigned) { GetExprChildren().push_back(pExprAssigned); }
+	inline Expr *GetAssigned() { return GetExprChildren().back(); }
+	inline const Expr *GetAssigned() const { return GetExprChildren().back(); }
+	inline bool IsAssigned() const { return !GetExprChildren().empty(); }
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline bool GetForceGlobalFlag() const { return _forceGlobalFlag; }
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
@@ -393,13 +398,12 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
-	inline Expr_Instruction(const String &symbol, ExprOwner *pExprChildren) :
-		Expr(TYPE, pExprChildren), _symbol(symbol) {}
+	inline Expr_Instruction(const String &symbol, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren), _symbol(symbol) {}
 	inline Expr_Instruction(const Expr_Instruction &expr) :
 		Expr(expr), _symbol(expr._symbol),
 		_pExprsExpanded(expr._pExprsExpanded.IsNull()? nullptr : expr._pExprsExpanded->Clone()) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseSetupExprDict(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
@@ -421,11 +425,10 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Directive(const Directive *pDirective) : Expr(TYPE), _pDirective(pDirective) {}
-	inline Expr_Directive(const Directive *pDirective, ExprOwner *pExprChildren) :
-		Expr(TYPE, pExprChildren), _pDirective(pDirective) {}
+	inline Expr_Directive(const Directive *pDirective, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren), _pDirective(pDirective) {}
 	inline Expr_Directive(const Expr_Directive &expr) : Expr(expr), _pDirective(expr._pDirective) {}
 	inline const Directive *GetDirective() const { return _pDirective; }
-	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	inline void SetExprIncluded(Expr *pExprIncluded) { _pExprIncluded.reset(pExprIncluded); }
 	inline Expr *GetExprIncluded() const { return _pExprIncluded.get(); }
 	virtual bool OnPhaseInclude(Context &context);
@@ -457,12 +460,8 @@ public:
 	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag),
 		_pExprGroup(dynamic_cast<Expr_Group *>(expr._pExprGroup->Clone())) {}
-	inline const char *GetSymbol() const {
-		return dynamic_cast<Expr_SymbolRef *>(GetChildren().front())->GetSymbol();
-	}
 	inline Expr_Group *GetGroup() { return _pExprGroup.get(); }
 	inline const Expr_Group *GetGroup() const { return _pExprGroup.get(); }
-	inline const ExprOwner &GetOperands() const { return GetChildren(); }
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;

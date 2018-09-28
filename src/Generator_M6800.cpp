@@ -294,15 +294,15 @@ Generator_M6800::Rule::~Rule()
 Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (_accName.empty()) {
 		// OP .. _accName is empty
-		if (operands.size() != 0) return RESULT_Rejected;
+		if (exprOperands.size() != 0) return RESULT_Rejected;
 	} else {
 		// OP a ... _accName is "a"
 		// OP b ... _accName is "b"
-		if (operands.size() != 1) return RESULT_Rejected;
-		const Expr *pExpr = operands.front();
+		if (exprOperands.size() != 1) return RESULT_Rejected;
+		const Expr *pExpr = exprOperands.front();
 		if (!pExpr->IsTypeSymbolRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_SymbolRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
@@ -317,18 +317,18 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	// OP disp
-	if (operands.size() != 1) return RESULT_Rejected;
+	if (exprOperands.size() != 1) return RESULT_Rejected;
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	UInt32 num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
 	if (!context.IsPhase(Context::PHASE_Generate)) {
 		num = 0;
-	} else if (operands.back()->IsTypeNumber()) {
+	} else if (exprOperands.back()->IsTypeNumber()) {
 		if (num > 0xff) {
 			ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
 			return RESULT_Error;
@@ -361,9 +361,9 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	// OP
-	if (operands.size() != 0) return RESULT_Rejected;
+	if (exprOperands.size() != 0) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	if (pBuffDst != nullptr) {
 		*pBuffDst += _code;
@@ -375,20 +375,20 @@ Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
 Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (_accName.empty()) {
 		// OP data8 ... _accName is empty
-		if (operands.size() != 1) return RESULT_Rejected;
+		if (exprOperands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,data8 ... _accName is "a"
 		// OP b,data8 ... _accName is "b"
-		if (operands.size() != 2) return RESULT_Rejected;
-		const Expr *pExpr = operands.front();
+		if (exprOperands.size() != 2) return RESULT_Rejected;
+		const Expr *pExpr = exprOperands.front();
 		if (!pExpr->IsTypeSymbolRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_SymbolRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
@@ -408,11 +408,11 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	// OP data16
-	if (operands.size() != 1) return RESULT_Rejected;
+	if (exprOperands.size() != 1) return RESULT_Rejected;
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
@@ -433,24 +433,24 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (_accName.empty()) {
 		// OP (addr8) ... _accName is empty
-		if (operands.size() != 1) return RESULT_Rejected;
+		if (exprOperands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,(addr8) ... _accName is "a"
 		// OP b,(addr8) ... _accName is "b"
-		if (operands.size() != 2) return RESULT_Rejected;
-		const Expr *pExprLast = operands.front();
+		if (exprOperands.size() != 2) return RESULT_Rejected;
+		const Expr *pExprLast = exprOperands.front();
 		if (!pExprLast->IsTypeSymbolRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_SymbolRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBrace()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	ExprList &exprList = dynamic_cast<Expr_Brace *>(pExprLast.get())->GetChildren();
+	ExprList &exprList = dynamic_cast<Expr_Brace *>(pExprLast.get())->GetExprOperands();
 	const char *errMsg = "the format of direct addressing operand must be (addr8)";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);
@@ -476,23 +476,23 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (_accName.empty()) {
 		// OP [x+data8] ... _accName is empty
-		if (operands.size() != 1) return RESULT_Rejected;
+		if (exprOperands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,[x+data8] ... _accName is "a"
 		// OP b,[x+data8] ... _accName is "b"
-		if (operands.size() != 2) return RESULT_Rejected;
-		const Expr *pExprLast = operands.front();
+		if (exprOperands.size() != 2) return RESULT_Rejected;
+		const Expr *pExprLast = exprOperands.front();
 		if (!pExprLast->IsTypeSymbolRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_SymbolRef *>(pExprLast)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
-	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
+	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetExprOperands();
 	if (exprList.size() != 1) return RESULT_Rejected;
 	UInt32 num = 0;
 	if (exprList.front()->IsTypeBinOp()) {
@@ -523,10 +523,10 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	// OP x+data8
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	UInt32 num = 0;
 	if (pExprLast->IsTypeBinOp()) {
@@ -557,24 +557,24 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 	Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst)
 {
-	const ExprList &operands = pExpr->GetOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (_accName.empty()) {
 		// OP [addr16] ... _accName is empty
-		if (operands.size() != 1) return RESULT_Rejected;
+		if (exprOperands.size() != 1) return RESULT_Rejected;
 	} else {
 		// OP a,[addr16] ... _accName is "a"
 		// OP b,[addr16] ... _accName is "b"
-		if (operands.size() != 2) return RESULT_Rejected;
-		const Expr *pExpr = operands.front();
+		if (exprOperands.size() != 2) return RESULT_Rejected;
+		const Expr *pExpr = exprOperands.front();
 		if (!pExpr->IsTypeSymbolRef()) return RESULT_Rejected;
 		if (!dynamic_cast<const Expr_SymbolRef *>(pExpr)->MatchICase(_accName.c_str())) return RESULT_Rejected;
 	}
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetChildren();
+	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetExprOperands();
 	const char *errMsg = "the format of external addressing operand must be [addr16]";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);
