@@ -1,4 +1,8 @@
 external_val:      .equ 0x20
+macro1:            .macro arg
+macro2:            .macro arg1,arg2
+macro3:            .macro arg
+macro4:            .macro
                    macro1 8
     1000 86 08     | ldaa 8
     1002 96 08     | ldaa {8}

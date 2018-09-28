@@ -783,19 +783,22 @@ bool Expr_Directive::OnPhaseExpandMacro(Context &context)
 
 bool Expr_Directive::OnPhaseAssignSymbol(Context &context)
 {
-	if (!Expr::OnPhaseAssignSymbol(context)) return false;
+	if (_pDirective->GetChildrenEvalFlag() &&
+		!Expr::OnPhaseAssignSymbol(context)) return false;
 	return _pDirective->OnPhaseAssignSymbol(context, this);
 }
 
 bool Expr_Directive::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
-	if (!Expr::OnPhaseGenerate(context, pBuffDst)) return false;
+	if (_pDirective->GetChildrenEvalFlag() &&
+		!Expr::OnPhaseGenerate(context, pBuffDst)) return false;
 	return _pDirective->OnPhaseGenerate(context, this, pBuffDst);
 }
 
 bool Expr_Directive::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	if (!Expr::OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
+	if (_pDirective->GetChildrenEvalFlag() &&
+		!Expr::OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
 	return _pDirective->OnPhaseDisasm(context, this, disasmDumper, indentLevelCode);
 }
 
@@ -827,8 +830,10 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 	String str = JustifyLeft(
 		(upperCaseFlag? ToUpper(symbol) : ToLower(symbol)).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
-	str += " ";
-	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
+	if (!GetExprOperands().empty()) {
+		str += " ";
+		str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
+	}
 	return str;
 }
 

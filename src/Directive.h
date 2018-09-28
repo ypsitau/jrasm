@@ -29,6 +29,7 @@ public:
 class Directive {
 private:
 	String _symbol;
+	bool _childrenEvalFlag;
 public:
 	static const Directive *CSEG;
 	static const Directive *DB;
@@ -49,13 +50,15 @@ public:
 private:
 	static DirectiveDict _directiveDict;
 public:
-	inline Directive(const String &symbol) : _symbol(symbol) {}
+	inline Directive(const String &symbol, bool childrenEvalFlag = true) :
+		_symbol(symbol), _childrenEvalFlag(childrenEvalFlag) {}
 protected:
 	virtual ~Directive();
 public:
 	static void Initialize();
 	static const Directive *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline bool GetChildrenEvalFlag() const { return _childrenEvalFlag; }
 	inline bool IsIdentical(const Directive *pDirective) const { return this == pDirective; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
@@ -186,7 +189,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_MACRO : public Directive {
 public:
-	inline Directive_MACRO() : Directive(".MACRO") {}
+	inline Directive_MACRO() : Directive(".MACRO", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
 };
@@ -227,7 +230,7 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_PCG : public Directive {
 public:
-	inline Directive_PCG() : Directive(".PCG") {}
+	inline Directive_PCG() : Directive(".PCG", false) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
