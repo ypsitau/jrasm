@@ -338,9 +338,7 @@ public:
 	inline bool GetForceGlobalFlag() const { return _forceGlobalFlag; }
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
-	//virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
-	//virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;

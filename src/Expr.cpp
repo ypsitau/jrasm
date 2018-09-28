@@ -522,13 +522,6 @@ Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Label::TYPE = Expr::TYPE_Label;
 
-#if 0
-bool Expr_Label::OnPhaseDeclareMacro(Context &context)
-{
-	return IsAssigned()? GetAssigned()->OnPhaseDeclareMacro(context) : true;
-}
-#endif
-
 bool Expr_Label::OnPhaseAssignSymbol(Context &context)
 {
 	if (!Expr::OnPhaseAssignSymbol(context)) return false;
@@ -545,14 +538,6 @@ bool Expr_Label::OnPhaseAssignSymbol(Context &context)
 	}
 	return true;
 }
-
-#if 0
-bool Expr_Label::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
-{
-	// nothing to do
-	return true;
-}
-#endif
 
 bool Expr_Label::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
