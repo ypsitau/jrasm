@@ -322,14 +322,14 @@ bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *p
 //-----------------------------------------------------------------------------
 bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	Expr_SymbolDef *pExprSymbolDef = exprStack.back()->GetExprChildren().SeekSymbolDefToAssoc();
-	if (pExprSymbolDef == nullptr) {
+	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
+	if (pExprLabel == nullptr) {
 		pParser->AddError("directive .EQU must be preceded by a symbol");
 		return false;
 	}
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprSymbolDef->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
+	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr.release());
 	return true;
 }
@@ -446,16 +446,16 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	Expr_SymbolDef *pExprSymbolDef = exprStack.back()->GetExprChildren().SeekSymbolDefToAssoc();
-	if (pExprSymbolDef == nullptr) {
-		pParser->AddError("directive .MACRO must be preceded by a symbol");
+	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
+	if (pExprLabel == nullptr) {
+		pParser->AddError("directive .MACRO must be preceded by a label");
 		return false;
 	}
-	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprSymbolDef));
+	AutoPtr<Expr_MacroDecl> pExpr(new Expr_MacroDecl(pExprLabel));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExprSymbolDef->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
-	exprStack.push_back(pExpr->Reference());			// for children
-	exprStack.push_back(pExpr.release());				// for operands
+	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
 	return true;
 }
 

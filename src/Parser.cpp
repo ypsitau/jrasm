@@ -35,16 +35,16 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 	switch (_stat) {
 	case STAT_LineTop: {
 		if (pToken->IsType(TOKEN_Symbol)) {
-			_stat = STAT_SymbolDef;
+			_stat = STAT_Label;
 		} else if (pToken->IsType(TOKEN_White)) {
 			_stat = STAT_Directive;
 		}
 		break;
 	}
-	case STAT_SymbolDef: {
+	case STAT_Label: {
 		bool forceGlobalFlag = false;
 		if (pToken->IsType(TOKEN_Colon) || (forceGlobalFlag = pToken->IsType(TOKEN_ColonColon))) {
-			AutoPtr<Expr> pExpr(new Expr_SymbolDef(_pTokenPrev->GetString(), forceGlobalFlag));
+			AutoPtr<Expr> pExpr(new Expr_Label(_pTokenPrev->GetString(), forceGlobalFlag));
 			SetExprSourceInfo(pExpr.get(), _pTokenPrev.get());
 			_pExprStack->back()->GetExprChildren().push_back(pExpr.release());
 			_stat = STAT_Directive;

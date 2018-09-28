@@ -28,10 +28,10 @@ Expr::~Expr()
 {
 }
 
-bool Expr::IsTypeSymbolDef(const char *symbol) const
+bool Expr::IsTypeLabel(const char *symbol) const
 {
-	return IsTypeSymbolDef() &&
-		::strcasecmp(dynamic_cast<const Expr_SymbolDef *>(this)->GetSymbol(), symbol) == 0;
+	return IsTypeLabel() &&
+		::strcasecmp(dynamic_cast<const Expr_Label *>(this)->GetSymbol(), symbol) == 0;
 }
 
 bool Expr::IsTypeSymbolRef(const char *symbol) const
@@ -97,11 +97,11 @@ bool Expr::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int inden
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
-Expr_SymbolDef *ExprList::SeekSymbolDefToAssoc()
+Expr_Label *ExprList::SeekLabelToAssoc()
 {
-	if (empty() || !back()->IsTypeSymbolDef()) return nullptr;
-	Expr_SymbolDef *pExprSymbolDef = dynamic_cast<Expr_SymbolDef *>(back());
-	return pExprSymbolDef->IsAssigned()? nullptr : pExprSymbolDef;
+	if (empty() || !back()->IsTypeLabel()) return nullptr;
+	Expr_Label *pExprLabel = dynamic_cast<Expr_Label *>(back());
+	return pExprLabel->IsAssigned()? nullptr : pExprLabel;
 }
 
 String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
@@ -518,16 +518,16 @@ Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_SymbolDef
+// Expr_Label
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_SymbolDef::TYPE = Expr::TYPE_SymbolDef;
+const Expr::Type Expr_Label::TYPE = Expr::TYPE_Label;
 
-bool Expr_SymbolDef::OnPhaseDeclareMacro(Context &context)
+bool Expr_Label::OnPhaseDeclareMacro(Context &context)
 {
 	return IsAssigned()? GetAssigned()->OnPhaseDeclareMacro(context) : true;
 }
 
-bool Expr_SymbolDef::OnPhaseSetupExprDict(Context &context)
+bool Expr_Label::OnPhaseSetupExprDict(Context &context)
 {
 	if (!Expr::OnPhaseSetupExprDict(context)) return false;
 	if (_pExprDict->IsAssigned(GetSymbol())) {
@@ -544,13 +544,13 @@ bool Expr_SymbolDef::OnPhaseSetupExprDict(Context &context)
 	return true;
 }
 
-bool Expr_SymbolDef::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
+bool Expr_Label::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
+bool Expr_Label::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
 		return GetAssigned()->OnPhaseDisasm(context, disasmDumper, indentLevelCode);
@@ -566,28 +566,28 @@ bool Expr_SymbolDef::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper,
 	return true;
 }
 
-Expr *Expr_SymbolDef::Resolve(Context &context) const
+Expr *Expr_Label::Resolve(Context &context) const
 {
 	return Reference();
 }
 
-Expr *Expr_SymbolDef::Clone() const
+Expr *Expr_Label::Clone() const
 {
-	return new Expr_SymbolDef(*this);
+	return new Expr_Label(*this);
 }
 
-Expr *Expr_SymbolDef::Substitute(const ExprDict &exprDict) const
+Expr *Expr_Label::Substitute(const ExprDict &exprDict) const
 {
 	return Clone();
 }
 
-String Expr_SymbolDef::ComposeSource(bool upperCaseFlag) const
+String Expr_Label::ComposeSource(bool upperCaseFlag) const
 {
 	String str = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	return str;
 }
 
-String Expr_SymbolDef::MakeSource(const char *symbol, bool forceGlobalFlag)
+String Expr_Label::MakeSource(const char *symbol, bool forceGlobalFlag)
 {
 	String str;
 	str = symbol;

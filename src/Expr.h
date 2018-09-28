@@ -10,7 +10,7 @@
 class Directive;
 class ExprOwner;
 class Expr;
-class Expr_SymbolDef;
+class Expr_Label;
 
 //-----------------------------------------------------------------------------
 // ExprDict
@@ -42,7 +42,7 @@ public:
 //-----------------------------------------------------------------------------
 class ExprList : public std::vector<Expr *> {
 public:
-	Expr_SymbolDef *SeekSymbolDefToAssoc();
+	Expr_Label *SeekLabelToAssoc();
 	String ComposeSource(bool upperCaseFlag, const char *sep) const;
 	bool OnPhaseInclude(Context &context);
 	bool OnPhaseDeclareMacro(Context &context);
@@ -84,7 +84,7 @@ public:
 		TYPE_BinOp,
 		TYPE_Bracket,
 		TYPE_Brace,
-		TYPE_SymbolDef,
+		TYPE_Label,
 		TYPE_SymbolRef,
 		TYPE_Instruction,
 		TYPE_Directive,
@@ -116,7 +116,7 @@ public:
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
 	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
-	inline bool IsTypeSymbolDef() const { return IsType(TYPE_SymbolDef); }
+	inline bool IsTypeLabel() const { return IsType(TYPE_Label); }
 	inline bool IsTypeSymbolRef() const { return IsType(TYPE_SymbolRef); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
@@ -140,7 +140,7 @@ public:
 	inline int GetLineNo() const { return _lineNo; }
 	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }
 	inline const ExprDict *GetExprDict() const { return _pExprDict.get(); }
-	bool IsTypeSymbolDef(const char *symbol) const;
+	bool IsTypeLabel(const char *symbol) const;
 	bool IsTypeSymbolRef(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	bool IsTypeDirective(const Directive *pDirective) const;
@@ -319,18 +319,18 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_SymbolDef
+// Expr_Label
 //-----------------------------------------------------------------------------
-class Expr_SymbolDef : public Expr {
+class Expr_Label : public Expr {
 private:
 	String _symbol;
 	bool _forceGlobalFlag;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_SymbolDef(const String &symbol, bool forceGlobalFlag) :
+	inline Expr_Label(const String &symbol, bool forceGlobalFlag) :
 		Expr(TYPE), _symbol(symbol), _forceGlobalFlag(forceGlobalFlag) {}
-	inline Expr_SymbolDef(const Expr_SymbolDef &expr) :
+	inline Expr_Label(const Expr_Label &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
 	inline void SetAssigned(Expr *pExprAssigned) { GetExprChildren().push_back(pExprAssigned); }
 	inline Expr *GetAssigned() { return GetExprChildren().back(); }
@@ -445,9 +445,9 @@ private:
 public:
 	static const Type TYPE;
 public:
-	inline Expr_MacroDecl(const Expr_SymbolDef *pExprSymbolDef) :
-		Expr(TYPE), _symbol(pExprSymbolDef->GetSymbol()),
-		_forceGlobalFlag(pExprSymbolDef->GetForceGlobalFlag()) {}
+	inline Expr_MacroDecl(const Expr_Label *pExprLabel) :
+		Expr(TYPE), _symbol(pExprLabel->GetSymbol()),
+		_forceGlobalFlag(pExprLabel->GetForceGlobalFlag()) {}
 	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
 		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
 	virtual bool OnPhaseDeclareMacro(Context &context);
