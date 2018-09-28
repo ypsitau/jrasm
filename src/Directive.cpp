@@ -167,9 +167,9 @@ bool Directive_DB::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	UInt32 bytes = 0;
-	for (auto pExprData : pExpr->GetExprOperands()) {
+	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
-		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (pExprResolved->IsTypeNumber()) {
 			UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
@@ -236,9 +236,9 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 {
 	if (!context.CheckSegmentRegionReady()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
-	for (auto pExprData : pExpr->GetExprOperands()) {
+	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
-		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeNumber()) {
 			ErrorLog::AddError(pExpr, "elements of directive .DW must be number value");
@@ -493,9 +493,9 @@ bool Directive_MML::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 	Handler handler(pBuffDst);
 	MmlParser parser(handler);
 	parser.Reset();
-	for (auto pExprData : pExpr->GetExprOperands()) {
+	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
-		AutoPtr<Expr> pExprResolved(pExprData->Resolve(context));
+		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeString()) {
 			ErrorLog::AddError(pExpr, "elements of directive .MML must be string value");
