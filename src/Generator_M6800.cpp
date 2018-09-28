@@ -450,7 +450,7 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBrace()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	ExprList &exprList = dynamic_cast<Expr_Brace *>(pExprLast.get())->GetExprOperands();
+	ExprList &exprList = pExprLast->GetExprOperands();
 	const char *errMsg = "the format of direct addressing operand must be (addr8)";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);
@@ -492,7 +492,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
-	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetExprOperands();
+	ExprList &exprList = pExprLast->GetExprOperands();
 	if (exprList.size() != 1) return RESULT_Rejected;
 	UInt32 num = 0;
 	if (exprList.front()->IsTypeBinOp()) {
@@ -574,7 +574,7 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	ExprList &exprList = dynamic_cast<Expr_Bracket *>(pExprLast.get())->GetExprOperands();
+	ExprList &exprList = pExprLast->GetExprOperands();
 	const char *errMsg = "the format of external addressing operand must be [addr16]";
 	if (exprList.size() != 1) {
 		ErrorLog::AddError(pExpr, errMsg);
