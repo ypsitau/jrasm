@@ -129,8 +129,8 @@ const Directive *DirectiveDict::Lookup(const char *symbol) const
 //-----------------------------------------------------------------------------
 bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .CSEG needs no operands");
 		return false;
 	}
@@ -209,8 +209,8 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .DSEG needs no operands");
 		return false;
 	}
@@ -277,8 +277,8 @@ bool Directive_ENDM::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 
 bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .ENDM needs no operands");
 		return false;
 	}
@@ -290,8 +290,8 @@ bool Directive_ENDM::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 bool Directive_ENDP::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .ENDP needs no operands");
 		return false;
 	}
@@ -308,8 +308,8 @@ bool Directive_ENDP::OnPhaseAssignSymbol(Context &context, const Expr_Directive 
 //-----------------------------------------------------------------------------
 bool Directive_ENDPCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .ENDPCG needs no operands");
 		return false;
 	}
@@ -336,12 +336,12 @@ bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 
 Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (operands.size() != 1) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .EQU takes one operand");
 		return nullptr;
 	}
-	return operands.back()->Resolve(context);
+	return exprOperands.back()->Resolve(context);
 }
 
 //-----------------------------------------------------------------------------
@@ -349,13 +349,13 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (operands.size() != 1) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .FILENAME.JR takes one operand");
 		return false;
 	}
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeString()) {
 		ErrorLog::AddError(pExpr, "directive .FIENAME.JR takes a string value as its operand");
@@ -375,12 +375,12 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directi
 //-----------------------------------------------------------------------------
 bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (operands.size() != 1) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .INCLUDE takes one operand");
 		return false;
 	}
-	const Expr *pExprLast = operands.back();
+	const Expr *pExprLast = exprOperands.back();
 	if (!pExprLast->IsTypeString()) {
 		ErrorLog::AddError(pExpr, "directive .INCLUDE takes a string value as its operand");
 		return false;
@@ -427,8 +427,8 @@ bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pE
 //-----------------------------------------------------------------------------
 bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .ISEG needs no operands");
 		return false;
 	}
@@ -462,11 +462,11 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 
 bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
+	const ExprList &exprOperands = pExpr->GetExprOperands();
 	AutoPtr<Macro> pMacro(new Macro(pExpr->GetSymbol(), pExpr->GetExprChildren().Reference()));
 	StringList &paramNames = pMacro->GetParamNames();
-	paramNames.reserve(operands.size());
-	for (auto pExpr : operands) {
+	paramNames.reserve(exprOperands.size());
+	for (auto pExpr : exprOperands) {
 		if (!pExpr->IsTypeSymbol()) {
 			ErrorLog::AddError(pExpr, "directive .MACRO takes a list of parameter names");
 			return false;
@@ -541,13 +541,13 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 //-----------------------------------------------------------------------------
 bool Directive_ORG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (operands.size() != 1) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() != 1) {
 		ErrorLog::AddError(pExpr, "directive .ORG takes one operand");
 		return false;
 	}
 	context.StartToResolve();
-	AutoPtr<Expr> pExprLast(operands.back()->Resolve(context));
+	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeNumber()) {
 		ErrorLog::AddError(pExpr, "directive .ORG takes a number value as its operand");
@@ -595,8 +595,8 @@ bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 
 bool Directive_PROC::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
 {
-	const ExprList &operands = pExpr->GetExprOperands();
-	if (!operands.empty()) {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .PROC needs no operands");
 		return false;
 	}
