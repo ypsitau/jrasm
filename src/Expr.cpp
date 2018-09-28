@@ -46,6 +46,12 @@ bool Expr::IsTypeBinOp(const Operator *pOperator) const
 		dynamic_cast<const Expr_BinOp *>(this)->GetOperator()->IsIdentical(pOperator);
 }
 
+bool Expr::IsTypeDirective(const Directive *pDirective) const
+{
+	return IsTypeDirective() &&
+		dynamic_cast<const Expr_Directive *>(this)->GetDirective()->IsIdentical(pDirective);
+}
+
 void Expr::Print() const
 {
 	::printf("%s\n", ComposeSource(false).c_str());
@@ -578,13 +584,6 @@ Expr *Expr_SymbolDef::Substitute(const ExprDict &exprDict) const
 String Expr_SymbolDef::ComposeSource(bool upperCaseFlag) const
 {
 	String str = MakeSource(_symbol.c_str(), _forceGlobalFlag);
-#if 0
-	const int nColsPerLine = 3; //**********************
-	if (IsAssigned()) {
-		str = JustifyLeft(str.c_str(), 9 + 3 * nColsPerLine) + " ";
-		str += GetAssigned()->ComposeSource(upperCaseFlag);
-	}
-#endif
 	return str;
 }
 
@@ -682,13 +681,13 @@ bool Expr_Instruction::OnPhaseSetupExprDict(Context &context)
 	if (_pExprsExpanded.IsNull()) {
 		rtn = Generator::GetInstance().ForwardAddress(context, this);
 	} else {
-		context.PushLocalExprDict();	// .proc
+		context.PushLocalExprDict();	// .PROC
 		for (auto pExpr : *_pExprsExpanded) {
 			//pExpr->Print();
 			if (!(rtn = pExpr->OnPhaseSetupExprDict(context))) break;
 			//::printf("%p\n", pExpr->GetExprDict());
 		}
-		context.PopLocalExprDict();		// .endp
+		context.PopLocalExprDict();		// .ENDP
 	}
 	return rtn;
 }

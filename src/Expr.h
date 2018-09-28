@@ -143,6 +143,7 @@ public:
 	bool IsTypeSymbolDef(const char *symbol) const;
 	bool IsTypeSymbolRef(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
+	bool IsTypeDirective(const Directive *pDirective) const;
 	void Print() const;
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);

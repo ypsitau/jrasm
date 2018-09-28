@@ -56,6 +56,7 @@ public:
 	static void Initialize();
 	static const Directive *Lookup(const char *symbol);
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline bool IsIdentical(const Directive *pDirective) const { return this == pDirective; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const;
