@@ -88,7 +88,7 @@ public:
 		TYPE_SymbolRef,
 		TYPE_Instruction,
 		TYPE_Directive,
-		TYPE_Group,
+		//TYPE_Group,
 		TYPE_MacroDecl,
 	};
 public:
@@ -121,7 +121,7 @@ public:
 	inline bool IsTypeSymbolRef() const { return IsType(TYPE_SymbolRef); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
-	inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
+	//inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetExprOperands() { return *_pExprOperands; }
@@ -200,6 +200,7 @@ public:
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
 
+#if 0
 //-----------------------------------------------------------------------------
 // Expr_Group
 //-----------------------------------------------------------------------------
@@ -214,6 +215,7 @@ public:
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
+#endif
 
 //-----------------------------------------------------------------------------
 // Expr_Number
@@ -450,19 +452,17 @@ class Expr_MacroDecl : public Expr {
 private:
 	String _symbol;
 	bool _forceGlobalFlag;
-	AutoPtr<Expr_Group> _pExprGroup;
 public:
 	static const Type TYPE;
 public:
 	inline Expr_MacroDecl(const Expr_SymbolDef *pExprSymbolDef) :
 		Expr(TYPE), _symbol(pExprSymbolDef->GetSymbol()),
-		_forceGlobalFlag(pExprSymbolDef->GetForceGlobalFlag()), _pExprGroup(new Expr_Group()) {}
+		_forceGlobalFlag(pExprSymbolDef->GetForceGlobalFlag()) {}
 	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
-		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag),
-		_pExprGroup(dynamic_cast<Expr_Group *>(expr._pExprGroup->Clone())) {}
-	inline Expr_Group *GetGroup() { return _pExprGroup.get(); }
-	inline const Expr_Group *GetGroup() const { return _pExprGroup.get(); }
+		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
 	virtual bool OnPhaseDeclareMacro(Context &context);
+	virtual bool OnPhaseSetupExprDict(Context &context);
+	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;

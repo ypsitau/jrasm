@@ -279,6 +279,7 @@ String Expr_Root::ComposeSource(bool upperCaseFlag) const
 	return "";
 }
 
+#if 0
 //-----------------------------------------------------------------------------
 // Expr_Group
 //-----------------------------------------------------------------------------
@@ -305,6 +306,7 @@ String Expr_Group::ComposeSource(bool upperCaseFlag) const
 	str += "\n";
 	return str;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Expr_Number
@@ -859,7 +861,7 @@ const Expr::Type Expr_MacroDecl::TYPE = Expr::TYPE_MacroDecl;
 bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 {
 	const ExprList &operands = GetExprOperands();
-	AutoPtr<Macro> pMacro(new Macro(_symbol, GetGroup()->GetExprChildren().Reference()));
+	AutoPtr<Macro> pMacro(new Macro(_symbol, GetExprChildren().Reference()));
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(operands.size());
 	for (auto pExpr : operands) {
@@ -873,8 +875,21 @@ bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
 	return true;
 }
 
+bool Expr_MacroDecl::OnPhaseSetupExprDict(Context &context)
+{
+	// suppress evaluation of children
+	return true;
+}
+
+bool Expr_MacroDecl::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
+{
+	// suppress evaluation of children
+	return true;
+}
+
 bool Expr_MacroDecl::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	// suppress evaluation of children
 	return true;
 }
 
