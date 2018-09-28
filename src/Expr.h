@@ -88,7 +88,6 @@ public:
 		TYPE_Symbol,
 		TYPE_Instruction,
 		TYPE_Directive,
-		TYPE_MacroDecl,
 	};
 public:
 protected:
@@ -120,7 +119,6 @@ public:
 	inline bool IsTypeSymbol() const { return IsType(TYPE_Symbol); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
-	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetExprOperands() { return *_pExprOperands; }
 	inline const ExprOwner &GetExprOperands() const { return *_pExprOperands; }
@@ -426,31 +424,6 @@ public:
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseAssignSymbol(Context &context);
-	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
-	virtual Expr *Resolve(Context &context) const;
-	virtual Expr *Clone() const;
-	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
-};
-
-//-----------------------------------------------------------------------------
-// Expr_MacroDecl
-//-----------------------------------------------------------------------------
-class Expr_MacroDecl : public Expr {
-private:
-	String _symbol;
-	bool _forceGlobalFlag;
-public:
-	static const Type TYPE;
-public:
-	inline Expr_MacroDecl(const Expr_Label *pExprLabel) :
-		Expr(TYPE), _symbol(pExprLabel->GetSymbol()),
-		_forceGlobalFlag(pExprLabel->GetForceGlobalFlag()) {}
-	inline Expr_MacroDecl(const Expr_MacroDecl &expr) :
-		Expr(expr), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
-	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;

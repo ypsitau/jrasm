@@ -556,9 +556,6 @@ bool Expr_Label::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 
 bool Expr_Label::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	if (IsAssigned() && GetAssigned()->IsTypeMacroDecl()) {
-		return GetAssigned()->OnPhaseDisasm(context, disasmDumper, indentLevelCode);
-	}
 	String strLabel = MakeSource(_symbol.c_str(), _forceGlobalFlag);
 	if (IsAssigned()) {
 		disasmDumper.DumpLabelAndCode(
@@ -834,68 +831,5 @@ String Expr_Directive::ComposeSource(bool upperCaseFlag) const
 		str += " ";
 		str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	}
-	return str;
-}
-
-//-----------------------------------------------------------------------------
-// Expr_MacroDecl
-//-----------------------------------------------------------------------------
-const Expr::Type Expr_MacroDecl::TYPE = Expr::TYPE_MacroDecl;
-
-bool Expr_MacroDecl::OnPhaseDeclareMacro(Context &context)
-{
-	const ExprList &operands = GetExprOperands();
-	AutoPtr<Macro> pMacro(new Macro(_symbol, GetExprChildren().Reference()));
-	StringList &paramNames = pMacro->GetParamNames();
-	paramNames.reserve(operands.size());
-	for (auto pExpr : operands) {
-		if (!pExpr->IsTypeSymbol()) {
-			ErrorLog::AddError(this, "directive .MACRO takes a list of parameter names");
-			return false;
-		}
-		paramNames.push_back(dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol());
-	}
-	context.GetMacroDict().Assign(pMacro.release());
-	return true;
-}
-
-bool Expr_MacroDecl::OnPhaseAssignSymbol(Context &context)
-{
-	// suppress evaluation of children
-	return true;
-}
-
-bool Expr_MacroDecl::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
-{
-	// suppress evaluation of children
-	return true;
-}
-
-bool Expr_MacroDecl::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
-{
-	// suppress evaluation of children
-	return true;
-}
-
-Expr *Expr_MacroDecl::Resolve(Context &context) const
-{
-	return Reference();
-}
-
-Expr *Expr_MacroDecl::Clone() const
-{
-	return new Expr_MacroDecl(*this);
-}
-
-Expr *Expr_MacroDecl::Substitute(const ExprDict &exprDict) const
-{
-	return Clone();
-}
-
-String Expr_MacroDecl::ComposeSource(bool upperCaseFlag) const
-{
-	String str = upperCaseFlag? ".MACRO" : ".macro";
-	str += ' ';
-	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
 	return str;
 }
