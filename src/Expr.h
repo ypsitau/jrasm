@@ -88,7 +88,6 @@ public:
 		TYPE_SymbolRef,
 		TYPE_Instruction,
 		TYPE_Directive,
-		//TYPE_Group,
 		TYPE_MacroDecl,
 	};
 public:
@@ -121,7 +120,6 @@ public:
 	inline bool IsTypeSymbolRef() const { return IsType(TYPE_SymbolRef); }
 	inline bool IsTypeInstruction() const { return IsType(TYPE_Instruction); }
 	inline bool IsTypeDirective() const { return IsType(TYPE_Directive); }
-	//inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
 	inline ExprOwner &GetExprOperands() { return *_pExprOperands; }
@@ -199,23 +197,6 @@ public:
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
 	virtual String ComposeSource(bool upperCaseFlag) const;
 };
-
-#if 0
-//-----------------------------------------------------------------------------
-// Expr_Group
-//-----------------------------------------------------------------------------
-class Expr_Group : public Expr {
-public:
-	static const Type TYPE;
-public:
-	inline Expr_Group() : Expr(TYPE) {}
-	inline Expr_Group(const Expr_Group &expr) : Expr(expr) {}
-	virtual Expr *Resolve(Context &context) const;
-	virtual Expr *Clone() const;
-	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
-};
-#endif
 
 //-----------------------------------------------------------------------------
 // Expr_Number

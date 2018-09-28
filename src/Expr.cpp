@@ -279,35 +279,6 @@ String Expr_Root::ComposeSource(bool upperCaseFlag) const
 	return "";
 }
 
-#if 0
-//-----------------------------------------------------------------------------
-// Expr_Group
-//-----------------------------------------------------------------------------
-const Expr::Type Expr_Group::TYPE = Expr::TYPE_Group;
-
-Expr *Expr_Group::Resolve(Context &context) const
-{
-	return Reference();
-}
-
-Expr *Expr_Group::Clone() const
-{
-	return new Expr_Group(*this);
-}
-
-Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
-{
-	return Clone();
-}
-
-String Expr_Group::ComposeSource(bool upperCaseFlag) const
-{
-	String str = GetExprChildren().ComposeSource(upperCaseFlag, "\n");
-	str += "\n";
-	return str;
-}
-#endif
-
 //-----------------------------------------------------------------------------
 // Expr_Number
 //-----------------------------------------------------------------------------
