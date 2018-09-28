@@ -563,11 +563,21 @@ bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 
 bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-#if 0
-	for (auto pExprChild : pExpr->GetChildren()) {
-		
+	Binary buffDst;
+	UInt32 bytes = 0;
+	for (auto pExprChild : pExpr->GetExprChildren()) {
+		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
+			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCG");
+			return false;
+		}
+		if (!Directive_DB::DoDirective(
+				context, dynamic_cast<Expr_Directive *>(pExprChild), &buffDst, &bytes)) return false;
 	}
-#endif
+	::printf("%zu\n", buffDst.size());
+	for (auto data : buffDst) {
+		::printf(" %02x", static_cast<UInt8>(data));
+	}
+	::printf("\n");
 	return true;
 }
 
