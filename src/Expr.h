@@ -194,12 +194,6 @@ public:
 	inline Expr_Root() : Expr(TYPE) {}
 	inline Expr_Root(ExprOwner *pExprOperands, ExprOwner *pExprChildren) : Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Root(const Expr_Root &expr) : Expr(expr) {}
-	virtual bool OnPhaseInclude(Context &context);
-	virtual bool OnPhaseDeclareMacro(Context &context);
-	virtual bool OnPhaseExpandMacro(Context &context);
-	virtual bool OnPhaseSetupExprDict(Context &context);
-	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

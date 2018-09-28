@@ -255,52 +255,6 @@ void ExprDictOwner::Clear()
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
 
-bool Expr_Root::OnPhaseInclude(Context &context)
-{
-	for (auto pExpr : GetExprChildren()) {
-		if (!pExpr->OnPhaseInclude(context)) return false;
-	}
-	return true;
-}
-
-bool Expr_Root::OnPhaseDeclareMacro(Context &context)
-{
-	for (auto pExpr : GetExprChildren()) {
-		if (!pExpr->OnPhaseDeclareMacro(context)) return false;
-	}
-	return true;
-}
-
-bool Expr_Root::OnPhaseExpandMacro(Context &context)
-{
-	for (auto pExpr : GetExprChildren()) {
-		if (!pExpr->OnPhaseExpandMacro(context)) return false;
-	}
-	return true;
-}
-
-bool Expr_Root::OnPhaseSetupExprDict(Context &context)
-{
-	bool rtn = Expr::OnPhaseSetupExprDict(context);
-	return rtn;
-}
-
-bool Expr_Root::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
-{
-	for (auto pExpr : GetExprChildren()) {
-		if (!pExpr->OnPhaseGenerate(context, pBuffDst)) return false;
-	}
-	return true;
-}
-
-bool Expr_Root::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
-{
-	for (auto pExpr : GetExprChildren()) {
-		if (!pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
-	}
-	return true;
-}
-
 Expr *Expr_Root::Resolve(Context &context) const
 {
 	return Reference();
