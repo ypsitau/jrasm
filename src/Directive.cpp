@@ -65,19 +65,19 @@ bool Directive::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
 	return true;
 }
 
-bool Directive::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+bool Directive::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Directive::OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const
+bool Directive::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr) const
 {
 	// nothing to do
 	return true;
 }
 
-bool Directive::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	// nothing to do
 	return true;
@@ -123,7 +123,7 @@ const Directive *DirectiveDict::Lookup(const char *symbol) const
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
-bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -136,16 +136,17 @@ bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive 
 
 bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	return OnPhaseAssignSymbol(context, pExpr);
+	context.SelectCodeSegment();
+	return true;
 }
 
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
-bool Directive_DB::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	UInt32 bytes = 0;
-	if (!Generate(context, pExpr, nullptr, &bytes)) return false;
+	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
 	context.ForwardAddress(bytes);
 	return true;
 }
@@ -155,12 +156,12 @@ bool Directive_DB::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 	if (!context.CheckSegmentRegionReady()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	UInt32 bytes = 0;
-	if (!Generate(context, pExpr, pBuffDst, &bytes)) return false;
+	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
 	context.ForwardAddress(bytes);
 	return true;
 }
 
-bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst, UInt32 *pBytes)
+bool Directive_DB::DoDirective(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst, UInt32 *pBytes)
 {
 	UInt32 bytes = 0;
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
@@ -203,7 +204,7 @@ bool Directive_DB::Generate(Context &context, const Expr_Directive *pExpr, Binar
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
-bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -216,13 +217,14 @@ bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive 
 
 bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	return OnPhaseAssignSymbol(context, pExpr);
+	context.SelectDataSegment();
+	return true;
 }
 
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
-bool Directive_DW::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	context.ForwardAddress(static_cast<UInt32>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
@@ -361,17 +363,17 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) 
 	return true;
 }
 
-bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const
 {
 	return pExpr->GetExprIncluded()->OnPhaseDeclareMacro(context);
 }
 
-bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr) const
 {
 	return pExpr->GetExprIncluded()->OnPhaseExpandMacro(context);
 }
 
-bool Directive_INCLUDE::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	return pExpr->GetExprIncluded()->OnPhaseAssignSymbol(context);
 }
@@ -391,7 +393,7 @@ bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pE
 //-----------------------------------------------------------------------------
 // Directive_ISEG
 //-----------------------------------------------------------------------------
-bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -404,7 +406,8 @@ bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, const Expr_Directive 
 
 bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	return OnPhaseAssignSymbol(context, pExpr);
+	context.SelectInternalSegment();
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -426,7 +429,7 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
-bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	AutoPtr<Macro> pMacro(new Macro(pExpr->GetSymbol(), pExpr->GetExprChildren().Reference()));
@@ -453,7 +456,7 @@ bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
-bool Directive_MML::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	//Handler handler(nullptr);
 	return true;
@@ -512,7 +515,17 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
-bool Directive_ORG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_ORG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+{
+	return DoDirective(context, pExpr);
+}
+
+bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+{
+	return DoDirective(context, pExpr);
+}
+
+bool Directive_ORG::DoDirective(Context &context, const Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
@@ -535,11 +548,6 @@ bool Directive_ORG::OnPhaseAssignSymbol(Context &context, const Expr_Directive *
 	return true;
 }
 
-bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
-{
-	return OnPhaseAssignSymbol(context, pExpr);
-}
-
 //-----------------------------------------------------------------------------
 // Directive_PCG
 //-----------------------------------------------------------------------------
@@ -555,13 +563,18 @@ bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 
 bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
+#if 0
+	for (auto pExprChild : pExpr->GetChildren()) {
+		
+	}
+#endif
+	return true;
 }
 
 bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -577,7 +590,7 @@ bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	return true;
 }
 
-bool Directive_PROC::OnPhaseAssignSymbol(Context &context, const Expr_Directive *pExpr) const
+bool Directive_PROC::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -585,7 +598,7 @@ bool Directive_PROC::OnPhaseAssignSymbol(Context &context, const Expr_Directive 
 		return false;
 	}
 	context.PushLocalExprDict();
-	bool rtn = const_cast<Expr_Directive *>(pExpr)->GetExprChildren().OnPhaseAssignSymbol(context);
+	bool rtn = pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 	context.PopLocalExprDict();
 	return rtn;
 }
