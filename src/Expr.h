@@ -89,7 +89,7 @@ public:
 protected:
 	int _cntRef;
 	Type _type;
-	AutoPtr<ExprOwner> _pExprChildren;
+	AutoPtr<ExprOwner> _pExprChildren2;
 	AutoPtr<ExprDict> _pExprDict;
 	AutoPtr<StringShared> _pFileNameSrc;
 	int _lineNo;
@@ -117,8 +117,8 @@ public:
 	inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeMacroDecl() const { return IsType(TYPE_MacroDecl); }
 	inline Type GetType() const { return _type; }
-	inline ExprOwner &GetChildren() { return *_pExprChildren; }
-	inline const ExprOwner &GetChildren() const { return *_pExprChildren; }
+	inline ExprOwner &GetChildren() { return *_pExprChildren2; }
+	inline const ExprOwner &GetChildren() const { return *_pExprChildren2; }
 	inline void SetSourceInfo(StringShared *pFileNameSrc, int lineNo) {
 		_pFileNameSrc.reset(pFileNameSrc), _lineNo = lineNo;
 	}
@@ -136,7 +136,6 @@ public:
 	bool IsTypeSymbolDef(const char *symbol) const;
 	bool IsTypeSymbolRef(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
-	void AddChild(Expr *pExpr);
 	void Print() const;
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);

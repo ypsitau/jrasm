@@ -7,17 +7,17 @@
 // Expr
 //-----------------------------------------------------------------------------
 Expr::Expr(Type type) :
-	_cntRef(1), _type(type), _pExprChildren(new ExprOwner()), _lineNo(0)
+	_cntRef(1), _type(type), _pExprChildren2(new ExprOwner()), _lineNo(0)
 {
 }
 
 Expr::Expr(Type type, ExprOwner *pExprChildren) :
-	_cntRef(1), _type(type), _pExprChildren(pExprChildren), _lineNo(0)
+	_cntRef(1), _type(type), _pExprChildren2(pExprChildren), _lineNo(0)
 {
 }
 
 Expr::Expr(const Expr &expr) :
-	_cntRef(1), _type(expr._type), _pExprChildren(expr._pExprChildren->Clone()),
+	_cntRef(1), _type(expr._type), _pExprChildren2(expr._pExprChildren2->Clone()),
 	_pFileNameSrc(expr._pFileNameSrc->Reference()), _lineNo(expr._lineNo)
 {
 	// don't copy _pExprDict, which should be different for each Expr instance.
@@ -43,11 +43,6 @@ bool Expr::IsTypeBinOp(const Operator *pOperator) const
 {
 	return IsTypeBinOp() &&
 		dynamic_cast<const Expr_BinOp *>(this)->GetOperator()->IsIdentical(pOperator);
-}
-
-void Expr::AddChild(Expr *pExpr)
-{
-	_pExprChildren->push_back(pExpr);
 }
 
 void Expr::Print() const
@@ -478,7 +473,7 @@ Expr *Expr_Bracket::Resolve(Context &context) const
 	for (auto pExprChild : GetChildren()) {
 		AutoPtr<Expr> pExprChildResolved(pExprChild->Resolve(context));
 		if (pExprChildResolved.IsNull()) return nullptr;
-		pExprRtn->AddChild(pExprChildResolved.release());
+		pExprRtn->GetChildren().push_back(pExprChildResolved.release());
 	}
 	return pExprRtn.release();
 }
@@ -516,7 +511,7 @@ Expr *Expr_Brace::Resolve(Context &context) const
 	for (auto pExprChild : GetChildren()) {
 		AutoPtr<Expr> pExprChildResolved(pExprChild->Resolve(context));
 		if (pExprChildResolved.IsNull()) return nullptr;
-		pExprRtn->AddChild(pExprChildResolved.release());
+		pExprRtn->GetChildren().push_back(pExprChildResolved.release());
 	}
 	return pExprRtn.release();
 }
