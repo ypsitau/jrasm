@@ -563,6 +563,40 @@ bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 
 bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
+	const ExprOwner &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() < 3) {
+		ErrorLog::AddError(pExpr, "too few operands for directive .PCG");
+		return false;
+	}
+	String symbol;
+	size_t width = 0, height = 0;
+	do {
+		context.StartToResolve();
+		Expr *pExprOperand = exprOperands[0];
+		if (!pExprOperand->IsTypeSymbol()) {
+			ErrorLog::AddError(pExpr, "invalid operand for directive .PCG");
+			return false;
+		}
+		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
+	} while (0);
+	do {
+		context.StartToResolve();
+		Expr *pExprOperand = exprOperands[1];
+		if (!pExprOperand->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, "invalid operand for directive .PCG");
+			return false;
+		}
+		width = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+	} while (0);
+	do {
+		context.StartToResolve();
+		Expr *pExprOperand = exprOperands[2];
+		if (!pExprOperand->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, "invalid operand for directive .PCG");
+			return false;
+		}
+		height = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+	} while (0);
 	Binary buffDst;
 	UInt32 bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
@@ -573,6 +607,7 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 		if (!Directive_DB::DoDirective(
 				context, dynamic_cast<Expr_Directive *>(pExprChild), &buffDst, &bytes)) return false;
 	}
+	::printf("%s %zux%zu\n", symbol.c_str(), width, height);
 	::printf("%zu\n", buffDst.size());
 	for (auto data : buffDst) {
 		::printf(" %02x", static_cast<UInt8>(data));

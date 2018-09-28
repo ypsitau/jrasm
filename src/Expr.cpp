@@ -195,6 +195,18 @@ ExprOwner *ExprOwner::Clone() const
 	return pExprOwner.release();
 }
 
+ExprOwner *ExprOwner::Resolve(Context &context) const
+{
+	AutoPtr<ExprOwner> pExprOwner(new ExprOwner());
+	pExprOwner->reserve(size());
+	for (auto pExpr : *this) {
+		AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
+		if (pExprResolved.IsNull()) return nullptr;
+		pExprOwner->push_back(pExprResolved.release());
+	}
+	return pExprOwner.release();
+}
+
 ExprOwner *ExprOwner::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOwner(new ExprOwner());

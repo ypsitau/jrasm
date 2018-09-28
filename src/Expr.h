@@ -68,6 +68,7 @@ protected:
 public:
 	void Clear();
 	ExprOwner *Clone() const;
+	ExprOwner *Resolve(Context &context) const;
 	ExprOwner *Substitute(const ExprDict &exprDict) const;
 };
 
