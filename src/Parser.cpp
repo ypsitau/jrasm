@@ -61,8 +61,8 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			// nothing to do
 		} else if (pToken->IsType(TOKEN_Symbol)) {
 			const char *symbol = pToken->GetString();
-			const Directive *pDirective = Directive::Lookup(symbol);
-			if (pDirective == nullptr) {
+			const DirectiveFactory *pDirectiveFactory = Directive::LookupFactory(symbol);
+			if (pDirectiveFactory == nullptr) {
 				if (*symbol == '.') {
 					AddError("unknown directive: %s", symbol);
 					return false;
@@ -71,8 +71,11 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				SetExprSourceInfo(pExpr.get(), pToken.get());
 				_pExprStack->back()->GetExprChildren().push_back(pExpr->Reference());
 				_pExprStack->push_back(pExpr.release());
-			} else if (!pDirective->OnPhaseParse(this, *_pExprStack, pToken.get())) {
-				return false;
+			} else {
+				AutoPtr<Directive> pDirective(pDirectiveFactory->Create());
+				if (!pDirective->OnPhaseParse(this, *_pExprStack, pToken.get())) {
+					return false;
+				}
 			}
 			_tokenStack.Reset();
 			_stat = STAT_Operand;

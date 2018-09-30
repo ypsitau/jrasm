@@ -4,9 +4,13 @@
 #ifndef __DIRECTIVE_H__
 #define __DIRECTIVE_H__
 
-#include "Expr.h"
+#include "Common.h"
 #include "MmlParser.h"
 
+class DisasmDumper;
+class Expr;
+class Expr_Directive;
+class ExprStack;
 class Token;
 class Parser;
 class Context;
@@ -44,6 +48,9 @@ private:
 public:
 	inline DirectiveFactory(const String &symbol) : _symbol(symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline bool IsIdentical(const DirectiveFactory *pDirectiveFactory) const {
+		return this == pDirectiveFactory;
+	}
 	virtual Directive *Create() const = 0;
 	static const DirectiveFactory *Lookup(const char *symbol);
 };
@@ -53,53 +60,43 @@ public:
 //-----------------------------------------------------------------------------
 class Directive {
 private:
-	String _symbol;
+	int _cntRef;
+	const DirectiveFactory *_pDirectiveFactory;
 	bool _childrenEvalFlag;
 public:
-	static const Directive *CSEG;
-	static const Directive *DB;
-	static const Directive *DSEG;
-	static const Directive *DW;
-	static const Directive *END;
-	static const Directive *EQU;
-	static const Directive *FILENAME_JR;
-	static const Directive *INCLUDE;
-	static const Directive *ISEG;
-	static const Directive *MACRO;
-	static const Directive *MML;
-	static const Directive *ORG;
-	static const Directive *PCGDATA;
-	static const Directive *PCGPAGE;
-	static const Directive *SCOPE;
-	static const DirectiveFactory *_CSEG;
-	static const DirectiveFactory *_DB;
-	static const DirectiveFactory *_DSEG;
-	static const DirectiveFactory *_DW;
-	static const DirectiveFactory *_END;
-	static const DirectiveFactory *_EQU;
-	static const DirectiveFactory *_FILENAME_JR;
-	static const DirectiveFactory *_INCLUDE;
-	static const DirectiveFactory *_ISEG;
-	static const DirectiveFactory *_MACRO;
-	static const DirectiveFactory *_MML;
-	static const DirectiveFactory *_ORG;
-	static const DirectiveFactory *_PCGDATA;
-	static const DirectiveFactory *_PCGPAGE;
-	static const DirectiveFactory *_SCOPE;
+	static const DirectiveFactory *CSEG;
+	static const DirectiveFactory *DB;
+	static const DirectiveFactory *DSEG;
+	static const DirectiveFactory *DW;
+	static const DirectiveFactory *END;
+	static const DirectiveFactory *EQU;
+	static const DirectiveFactory *FILENAME_JR;
+	static const DirectiveFactory *INCLUDE;
+	static const DirectiveFactory *ISEG;
+	static const DirectiveFactory *MACRO;
+	static const DirectiveFactory *MML;
+	static const DirectiveFactory *ORG;
+	static const DirectiveFactory *PCGDATA;
+	static const DirectiveFactory *PCGPAGE;
+	static const DirectiveFactory *SCOPE;
 private:
 	static DirectiveDict _directiveDict;
 	static DirectiveFactoryDict _directiveFactoryDict;
 public:
-	inline Directive(const String &symbol, bool childrenEvalFlag = true) :
-		_symbol(symbol), _childrenEvalFlag(childrenEvalFlag) {}
+	DeclareReferenceAccessor(Directive);
+public:
+	inline Directive(const DirectiveFactory *pDirectiveFactory, bool childrenEvalFlag = true) :
+		_cntRef(1), _pDirectiveFactory(pDirectiveFactory), _childrenEvalFlag(childrenEvalFlag) {}
 protected:
 	virtual ~Directive();
 public:
 	static void Initialize();
-	static const Directive *Lookup(const char *symbol);
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline static const DirectiveFactory *LookupFactory(const char *symbol) {
+		return _directiveFactoryDict.Lookup(symbol);
+	}
+	inline const char *GetSymbol() const { return _pDirectiveFactory->GetSymbol(); }
 	inline bool GetChildrenEvalFlag() const { return _childrenEvalFlag; }
-	inline bool IsIdentical(const Directive *pDirective) const { return this == pDirective; }
+	inline const DirectiveFactory *GetDirectiveFactory() const { return _pDirectiveFactory; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const;
@@ -122,7 +119,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_CSEG() : Directive(".CSEG") {}
+	inline Directive_CSEG() : Directive(CSEG) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -138,7 +135,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_DB() : Directive(".DB") {}
+	inline Directive_DB() : Directive(DB) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 	static bool DoDirective(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst, UInt32 *pBytes);
@@ -155,7 +152,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_DSEG() : Directive(".DSEG") {}
+	inline Directive_DSEG() : Directive(DSEG) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -171,7 +168,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_DW() : Directive(".DW") {}
+	inline Directive_DW() : Directive(DW) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -187,7 +184,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_END() : Directive(".END") {}
+	inline Directive_END() : Directive(END) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -203,7 +200,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_EQU() : Directive(".EQU") {}
+	inline Directive_EQU() : Directive(EQU) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual Expr *Resolve(Context &context, const Expr_Directive *pExpr) const;
 };
@@ -215,11 +212,11 @@ class Directive_FILENAME_JR : public Directive {
 public:
 	class Factory : public DirectiveFactory {
 	public:
-		inline Factory() : DirectiveFactory(".FILENAME_JR") {}
+		inline Factory() : DirectiveFactory(".FILENAME.JR") {}
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_FILENAME_JR() : Directive(".FILENAME.JR") {}
+	inline Directive_FILENAME_JR() : Directive(FILENAME_JR) {}
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
@@ -234,7 +231,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_INCLUDE() : Directive(".INCLUDE") {}
+	inline Directive_INCLUDE() : Directive(INCLUDE) {}
 	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr) const;
@@ -255,7 +252,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_ISEG() : Directive(".ISEG") {}
+	inline Directive_ISEG() : Directive(ISEG) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -271,7 +268,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_MACRO() : Directive(".MACRO", false) {}
+	inline Directive_MACRO() : Directive(MACRO, false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
@@ -300,7 +297,7 @@ public:
 		inline UInt32 GetBytesSum() const { return _bytesSum; }
 	};
 public:
-	inline Directive_MML() : Directive(".MML") {}
+	inline Directive_MML() : Directive(MML) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -316,7 +313,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_ORG() : Directive(".ORG") {}
+	inline Directive_ORG() : Directive(ORG) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 	static bool DoDirective(Context &context, const Expr_Directive *pExpr);
@@ -333,7 +330,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_PCGDATA() : Directive(".PCGDATA", false) {}
+	inline Directive_PCGDATA() : Directive(PCGDATA, false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
@@ -351,7 +348,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_PCGPAGE() : Directive(".PCGPAGE", false) {}
+	inline Directive_PCGPAGE() : Directive(PCGPAGE, false) {}
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
@@ -366,7 +363,7 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	inline Directive_SCOPE() : Directive(".SCOPE", false) {}
+	inline Directive_SCOPE() : Directive(SCOPE, false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;

@@ -27,37 +27,21 @@ const DirectiveFactory *DirectiveFactoryDict::Lookup(const char *symbol) const
 DirectiveDict Directive::_directiveDict;
 DirectiveFactoryDict Directive::_directiveFactoryDict;
 
-const Directive *Directive::CSEG		= nullptr;
-const Directive *Directive::DB			= nullptr;
-const Directive *Directive::DSEG		= nullptr;
-const Directive *Directive::DW			= nullptr;
-const Directive *Directive::END			= nullptr;
-const Directive *Directive::EQU			= nullptr;
-const Directive *Directive::FILENAME_JR	= nullptr;
-const Directive *Directive::INCLUDE		= nullptr;
-const Directive *Directive::ISEG		= nullptr;
-const Directive *Directive::MACRO		= nullptr;
-const Directive *Directive::MML			= nullptr;
-const Directive *Directive::ORG			= nullptr;
-const Directive *Directive::PCGDATA		= nullptr;
-const Directive *Directive::PCGPAGE		= nullptr;
-const Directive *Directive::SCOPE		= nullptr;
-
-const DirectiveFactory *Directive::_CSEG		= nullptr;
-const DirectiveFactory *Directive::_DB			= nullptr;
-const DirectiveFactory *Directive::_DSEG		= nullptr;
-const DirectiveFactory *Directive::_DW			= nullptr;
-const DirectiveFactory *Directive::_END			= nullptr;
-const DirectiveFactory *Directive::_EQU			= nullptr;
-const DirectiveFactory *Directive::_FILENAME_JR	= nullptr;
-const DirectiveFactory *Directive::_INCLUDE		= nullptr;
-const DirectiveFactory *Directive::_ISEG		= nullptr;
-const DirectiveFactory *Directive::_MACRO		= nullptr;
-const DirectiveFactory *Directive::_MML			= nullptr;
-const DirectiveFactory *Directive::_ORG			= nullptr;
-const DirectiveFactory *Directive::_PCGDATA		= nullptr;
-const DirectiveFactory *Directive::_PCGPAGE		= nullptr;
-const DirectiveFactory *Directive::_SCOPE		= nullptr;
+const DirectiveFactory *Directive::CSEG			= nullptr;
+const DirectiveFactory *Directive::DB			= nullptr;
+const DirectiveFactory *Directive::DSEG			= nullptr;
+const DirectiveFactory *Directive::DW			= nullptr;
+const DirectiveFactory *Directive::END			= nullptr;
+const DirectiveFactory *Directive::EQU			= nullptr;
+const DirectiveFactory *Directive::FILENAME_JR	= nullptr;
+const DirectiveFactory *Directive::INCLUDE		= nullptr;
+const DirectiveFactory *Directive::ISEG			= nullptr;
+const DirectiveFactory *Directive::MACRO		= nullptr;
+const DirectiveFactory *Directive::MML			= nullptr;
+const DirectiveFactory *Directive::ORG			= nullptr;
+const DirectiveFactory *Directive::PCGDATA		= nullptr;
+const DirectiveFactory *Directive::PCGPAGE		= nullptr;
+const DirectiveFactory *Directive::SCOPE		= nullptr;
 
 Directive::~Directive()
 {
@@ -65,47 +49,26 @@ Directive::~Directive()
 
 void Directive::Initialize()
 {
-	_directiveDict.Assign(CSEG			= new Directive_CSEG());
-	_directiveDict.Assign(DB			= new Directive_DB());
-	_directiveDict.Assign(DSEG			= new Directive_DSEG());
-	_directiveDict.Assign(DW			= new Directive_DW());
-	_directiveDict.Assign(END			= new Directive_END());
-	_directiveDict.Assign(EQU			= new Directive_EQU());
-	_directiveDict.Assign(FILENAME_JR	= new Directive_FILENAME_JR());
-	_directiveDict.Assign(INCLUDE		= new Directive_INCLUDE());
-	_directiveDict.Assign(ISEG			= new Directive_ISEG());
-	_directiveDict.Assign(MACRO			= new Directive_MACRO());
-	_directiveDict.Assign(MML			= new Directive_MML());
-	_directiveDict.Assign(ORG			= new Directive_ORG());
-	_directiveDict.Assign(PCGDATA		= new Directive_PCGDATA());
-	_directiveDict.Assign(PCGPAGE		= new Directive_PCGPAGE());
-	_directiveDict.Assign(SCOPE			= new Directive_SCOPE());
-
-	_directiveFactoryDict.Assign(_CSEG			= new Directive_CSEG::Factory());
-	_directiveFactoryDict.Assign(_DB			= new Directive_DB::Factory());
-	_directiveFactoryDict.Assign(_DSEG			= new Directive_DSEG::Factory());
-	_directiveFactoryDict.Assign(_DW			= new Directive_DW::Factory());
-	_directiveFactoryDict.Assign(_END			= new Directive_END::Factory());
-	_directiveFactoryDict.Assign(_EQU			= new Directive_EQU::Factory());
-	_directiveFactoryDict.Assign(_FILENAME_JR	= new Directive_FILENAME_JR::Factory());
-	_directiveFactoryDict.Assign(_INCLUDE		= new Directive_INCLUDE::Factory());
-	_directiveFactoryDict.Assign(_ISEG			= new Directive_ISEG::Factory());
-	_directiveFactoryDict.Assign(_MACRO			= new Directive_MACRO::Factory());
-	_directiveFactoryDict.Assign(_MML			= new Directive_MML::Factory());
-	_directiveFactoryDict.Assign(_ORG			= new Directive_ORG::Factory());
-	_directiveFactoryDict.Assign(_PCGDATA		= new Directive_PCGDATA::Factory());
-	_directiveFactoryDict.Assign(_PCGPAGE		= new Directive_PCGPAGE::Factory());
-	_directiveFactoryDict.Assign(_SCOPE			= new Directive_SCOPE::Factory());
-}
-
-const Directive *Directive::Lookup(const char *symbol)
-{
-	return _directiveDict.Lookup(symbol);
+	_directiveFactoryDict.Assign(CSEG			= new Directive_CSEG::Factory());
+	_directiveFactoryDict.Assign(DB				= new Directive_DB::Factory());
+	_directiveFactoryDict.Assign(DSEG			= new Directive_DSEG::Factory());
+	_directiveFactoryDict.Assign(DW				= new Directive_DW::Factory());
+	_directiveFactoryDict.Assign(END			= new Directive_END::Factory());
+	_directiveFactoryDict.Assign(EQU			= new Directive_EQU::Factory());
+	_directiveFactoryDict.Assign(FILENAME_JR	= new Directive_FILENAME_JR::Factory());
+	_directiveFactoryDict.Assign(INCLUDE		= new Directive_INCLUDE::Factory());
+	_directiveFactoryDict.Assign(ISEG			= new Directive_ISEG::Factory());
+	_directiveFactoryDict.Assign(MACRO			= new Directive_MACRO::Factory());
+	_directiveFactoryDict.Assign(MML			= new Directive_MML::Factory());
+	_directiveFactoryDict.Assign(ORG			= new Directive_ORG::Factory());
+	_directiveFactoryDict.Assign(PCGDATA		= new Directive_PCGDATA::Factory());
+	_directiveFactoryDict.Assign(PCGPAGE		= new Directive_PCGPAGE::Factory());
+	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
 }
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr.release());
@@ -344,7 +307,7 @@ bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 		pParser->AddError("no matching directive");
 		return false;
 	}
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	Expr::Delete(exprStack.back());
@@ -378,7 +341,7 @@ bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 		pParser->AddError("directive .EQU must be preceded by a symbol");
 		return false;
 	}
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr.release());
@@ -523,7 +486,7 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 		pParser->AddError("directive .MACRO must be preceded by a label");
 		return false;
 	}
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Directive::MACRO));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	pExpr->SetSymbol(pExprLabel->GetSymbol(), pExprLabel->GetForceGlobalFlag());
 	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
@@ -671,7 +634,7 @@ Directive *Directive_PCGDATA::Factory::Create() const
 
 bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr->Reference());		// for children
@@ -815,7 +778,7 @@ Directive *Directive_SCOPE::Factory::Create() const
 
 bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr->Reference());		// for children

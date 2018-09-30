@@ -46,10 +46,10 @@ bool Expr::IsTypeBinOp(const Operator *pOperator) const
 		dynamic_cast<const Expr_BinOp *>(this)->GetOperator()->IsIdentical(pOperator);
 }
 
-bool Expr::IsTypeDirective(const Directive *pDirective) const
+bool Expr::IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const
 {
-	return IsTypeDirective() &&
-		dynamic_cast<const Expr_Directive *>(this)->GetDirective()->IsIdentical(pDirective);
+	return IsTypeDirective() && dynamic_cast<const Expr_Directive *>(this)->
+		GetDirective()->GetDirectiveFactory()->IsIdentical(pDirectiveFactory);
 }
 
 void Expr::Print() const
@@ -811,7 +811,7 @@ Expr *Expr_Directive::Clone() const
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<Expr> pExprRtn(new Expr_Directive(
-							   GetDirective(),
+							   GetDirective()->Reference(),
 							   GetExprOperands().Substitute(exprDict),
 							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);

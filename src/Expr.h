@@ -4,10 +4,10 @@
 #ifndef __EXPR_H__
 #define __EXPR_H__
 
+#include "Directive.h"
 #include "Operator.h"
 #include "DisasmDumper.h"
 
-class Directive;
 class ExprOwner;
 class Expr;
 class Expr_Label;
@@ -142,7 +142,7 @@ public:
 	bool IsTypeLabel(const char *symbol) const;
 	bool IsTypeSymbol(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
-	bool IsTypeDirective(const Directive *pDirective) const;
+	bool IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const;
 	void Print() const;
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
@@ -400,20 +400,21 @@ public:
 //-----------------------------------------------------------------------------
 class Expr_Directive : public Expr {
 private:
-	const Directive *_pDirective;
+	AutoPtr<Directive> _pDirective;
 	String _symbol;					// used by .MACRO
 	bool _forceGlobalFlag;			// used by .MACRO
 	AutoPtr<Expr> _pExprIncluded;	// used by .INCLUDE
 public:
 	static const Type TYPE;
 public:
-	inline Expr_Directive(const Directive *pDirective) :
+	inline Expr_Directive(Directive *pDirective) :
 		Expr(TYPE), _pDirective(pDirective), _forceGlobalFlag(false) {}
-	inline Expr_Directive(const Directive *pDirective, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+	inline Expr_Directive(Directive *pDirective, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren), _pDirective(pDirective), _forceGlobalFlag(false) {}
 	inline Expr_Directive(const Expr_Directive &expr) :
-		Expr(expr), _pDirective(expr._pDirective), _symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
-	inline const Directive *GetDirective() const { return _pDirective; }
+		Expr(expr), _pDirective(expr._pDirective->Reference()),
+		_symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
+	inline const Directive *GetDirective() const { return _pDirective.get(); }
 	inline void SetExprIncluded(Expr *pExprIncluded) { _pExprIncluded.reset(pExprIncluded); }
 	inline Expr *GetExprIncluded() const { return _pExprIncluded.get(); }
 	inline void SetSymbol(const String &symbol, bool forceGlobalFlag) {
