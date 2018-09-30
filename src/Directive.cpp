@@ -20,7 +20,7 @@ const Directive *Directive::MML			= nullptr;
 const Directive *Directive::ORG			= nullptr;
 const Directive *Directive::PCG			= nullptr;
 const Directive *Directive::PCG_ORG		= nullptr;
-const Directive *Directive::PROC		= nullptr;
+const Directive *Directive::SCOPE		= nullptr;
 
 DirectiveDict Directive::_directiveDict;
 
@@ -44,7 +44,7 @@ void Directive::Initialize()
 	_directiveDict.Assign(ORG			= new Directive_ORG());
 	_directiveDict.Assign(PCG			= new Directive_PCG());
 	_directiveDict.Assign(PCG_ORG		= new Directive_PCG_ORG());
-	_directiveDict.Assign(PROC			= new Directive_PROC());
+	_directiveDict.Assign(SCOPE			= new Directive_SCOPE());
 }
 
 const Directive *Directive::Lookup(const char *symbol)
@@ -263,7 +263,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	if (!exprStack.back()->IsTypeDirective(Directive::MACRO) &&
-		!exprStack.back()->IsTypeDirective(Directive::PROC) &&
+		!exprStack.back()->IsTypeDirective(Directive::SCOPE) &&
 		!exprStack.back()->IsTypeDirective(Directive::PCG)) {
 		pParser->AddError("no matching directive");
 		return false;
@@ -685,9 +685,9 @@ bool Directive_PCG_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *
 }
 
 //-----------------------------------------------------------------------------
-// Directive_PROC
+// Directive_SCOPE
 //-----------------------------------------------------------------------------
-bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -697,25 +697,25 @@ bool Directive_PROC::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, c
 	return true;
 }
 
-bool Directive_PROC::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .PROC needs no operands");
+		ErrorLog::AddError(pExpr, "directive .SCOPE needs no operands");
 		return false;
 	}
-	context.PushLocalExprDict();
+	context.BeginScope();
 	bool rtn = pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
-	context.PopLocalExprDict();
+	context.EndScope();
 	return rtn;
 }
 
-bool Directive_PROC::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+bool Directive_SCOPE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
 }
 
-bool Directive_PROC::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+bool Directive_SCOPE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);

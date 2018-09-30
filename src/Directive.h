@@ -45,7 +45,7 @@ public:
 	static const Directive *ORG;
 	static const Directive *PCG;
 	static const Directive *PCG_ORG;
-	static const Directive *PROC;
+	static const Directive *SCOPE;
 private:
 	static DirectiveDict _directiveDict;
 public:
@@ -231,11 +231,11 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_PROC
+// Directive_SCOPE
 //-----------------------------------------------------------------------------
-class Directive_PROC : public Directive {
+class Directive_SCOPE : public Directive {
 public:
-	inline Directive_PROC() : Directive(".PROC", false) {}
+	inline Directive_SCOPE() : Directive(".SCOPE", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;

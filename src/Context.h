@@ -104,8 +104,8 @@ public:
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
 	void StartRegion(UInt32 addr);
-	void PushLocalExprDict();
-	void PopLocalExprDict();
+	void BeginScope();
+	void EndScope();
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);

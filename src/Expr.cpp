@@ -679,13 +679,13 @@ bool Expr_Instruction::OnPhaseAssignSymbol(Context &context)
 	if (_pExprsExpanded.IsNull()) {
 		rtn = Generator::GetInstance().ForwardAddress(context, this);
 	} else {
-		context.PushLocalExprDict();	// .PROC
+		context.BeginScope();
 		for (auto pExpr : *_pExprsExpanded) {
 			//pExpr->Print();
 			if (!(rtn = pExpr->OnPhaseAssignSymbol(context))) break;
 			//::printf("%p\n", pExpr->GetExprDict());
 		}
-		context.PopLocalExprDict();		// .ENDP
+		context.EndScope();
 	}
 	return rtn;
 }

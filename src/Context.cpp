@@ -59,13 +59,13 @@ void Context::StartRegion(UInt32 addr)
 	_pSegmentCur->SetAddress(addr);
 }
 
-void Context::PushLocalExprDict()
+void Context::BeginScope()
 {
 	ExprDict *pExprDict = new ExprDict(_exprDictStack.back()->Reference());
 	_exprDictStack.push_back(pExprDict);
 }
 
-void Context::PopLocalExprDict()
+void Context::EndScope()
 {
 	ExprDict *pExprDict = _exprDictStack.back();
 	_exprDictStack.pop_back();
