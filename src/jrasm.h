@@ -21,6 +21,7 @@
 #include "Macro.h"
 #include "MmlParser.h"
 #include "Parser.h"
+#include "PCGData.h"
 #include "PCGPage.h"
 #include "PCGPattern.h"
 #include "Region.h"
