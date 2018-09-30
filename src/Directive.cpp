@@ -66,7 +66,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
 }
 
-bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -75,25 +75,25 @@ bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const 
 	return true;
 }
 
-bool Directive::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
+bool Directive::OnPhaseInclude(Context &context, Expr_Directive *pExpr)
 {
 	// nothing to do
 	return true;
 }
 
-bool Directive::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const
+bool Directive::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr)
 {
 	// nothing to do
 	return true;
 }
 
-bool Directive::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr) const
+bool Directive::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr)
 {
 	// nothing to do
 	return true;
 }
 
-bool Directive::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	// nothing to do
 	return true;
@@ -144,7 +144,7 @@ Directive *Directive_CSEG::Factory::Create() const
 	return new Directive_CSEG();
 }
 
-bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -169,7 +169,7 @@ Directive *Directive_DB::Factory::Create() const
 	return new Directive_DB();
 }
 
-bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	UInt32 bytes = 0;
 	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
@@ -235,7 +235,7 @@ Directive *Directive_DSEG::Factory::Create() const
 	return new Directive_DSEG();
 }
 
-bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -260,7 +260,7 @@ Directive *Directive_DW::Factory::Create() const
 	return new Directive_DW();
 }
 
-bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	context.ForwardAddress(static_cast<UInt32>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
@@ -299,7 +299,7 @@ Directive *Directive_END::Factory::Create() const
 	return new Directive_END();
 }
 
-bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	if (!exprStack.back()->IsTypeDirective(Directive::MACRO) &&
 		!exprStack.back()->IsTypeDirective(Directive::SCOPE) &&
@@ -334,7 +334,7 @@ Directive *Directive_EQU::Factory::Create() const
 	return new Directive_EQU();
 }
 
-bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
 	if (pExprLabel == nullptr) {
@@ -397,7 +397,7 @@ Directive *Directive_INCLUDE::Factory::Create() const
 	return new Directive_INCLUDE();
 }
 
-bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
@@ -419,17 +419,17 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) 
 	return true;
 }
 
-bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr)
 {
 	return pExpr->GetExprIncluded()->OnPhaseDeclareMacro(context);
 }
 
-bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr)
 {
 	return pExpr->GetExprIncluded()->OnPhaseExpandMacro(context);
 }
 
-bool Directive_INCLUDE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_INCLUDE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	return pExpr->GetExprIncluded()->OnPhaseAssignSymbol(context);
 }
@@ -454,7 +454,7 @@ Directive *Directive_ISEG::Factory::Create() const
 	return new Directive_ISEG();
 }
 
-bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
@@ -479,7 +479,7 @@ Directive *Directive_MACRO::Factory::Create() const
 	return new Directive_MACRO();
 }
 
-bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
 	if (pExprLabel == nullptr) {
@@ -495,7 +495,7 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
-bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr) const
+bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	AutoPtr<Macro> pMacro(new Macro(pExpr->GetSymbol(), pExpr->GetExprChildren().Reference()));
@@ -527,7 +527,7 @@ Directive *Directive_MML::Factory::Create() const
 	return new Directive_MML();
 }
 
-bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	//Handler handler(nullptr);
 	return true;
@@ -591,7 +591,7 @@ Directive *Directive_ORG::Factory::Create() const
 	return new Directive_ORG();
 }
 
-bool Directive_ORG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_ORG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	return DoDirective(context, pExpr);
 }
@@ -632,7 +632,7 @@ Directive *Directive_PCGDATA::Factory::Create() const
 	return new Directive_PCGDATA();
 }
 
-bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -776,7 +776,7 @@ Directive *Directive_SCOPE::Factory::Create() const
 	return new Directive_SCOPE();
 }
 
-bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -786,7 +786,7 @@ bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
-bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
+bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
