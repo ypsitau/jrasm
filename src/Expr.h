@@ -401,7 +401,6 @@ public:
 class Expr_Directive : public Expr {
 private:
 	AutoPtr<Directive> _pDirective;
-	//AutoPtr<Expr> _pExprIncluded;	// used by .INCLUDE
 public:
 	static const Type TYPE;
 public:
@@ -412,8 +411,6 @@ public:
 	inline Expr_Directive(const Expr_Directive &expr) :
 		Expr(expr), _pDirective(expr._pDirective->Reference()) {}
 	inline const Directive *GetDirective() const { return _pDirective.get(); }
-	//inline void SetExprIncluded(Expr *pExprIncluded) { _pExprIncluded.reset(pExprIncluded); }
-	//inline Expr *GetExprIncluded() const { return _pExprIncluded.get(); }
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
