@@ -18,17 +18,6 @@ class Directive;
 class DirectiveFactory;
 
 //-----------------------------------------------------------------------------
-// DirectiveDict
-//-----------------------------------------------------------------------------
-class DirectiveDict : public std::map<String, const Directive *, LessThan_StringICase> {
-public:
-	inline DirectiveDict() {}
-public:
-	void Assign(const Directive *pDirective);
-	const Directive *Lookup(const char *symbol) const;
-};
-
-//-----------------------------------------------------------------------------
 // DirectiveFactoryDict
 //-----------------------------------------------------------------------------
 class DirectiveFactoryDict : public std::map<String, const DirectiveFactory *, LessThan_StringICase> {
@@ -80,7 +69,6 @@ public:
 	static const DirectiveFactory *PCGPAGE;
 	static const DirectiveFactory *SCOPE;
 private:
-	static DirectiveDict _directiveDict;
 	static DirectiveFactoryDict _directiveFactoryDict;
 public:
 	DeclareReferenceAccessor(Directive);

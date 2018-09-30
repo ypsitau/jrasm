@@ -24,7 +24,6 @@ const DirectiveFactory *DirectiveFactoryDict::Lookup(const char *symbol) const
 //-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
-DirectiveDict Directive::_directiveDict;
 DirectiveFactoryDict Directive::_directiveFactoryDict;
 
 const DirectiveFactory *Directive::CSEG			= nullptr;
@@ -120,20 +119,6 @@ bool Directive::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 Expr *Directive::Resolve(Context &context, const Expr_Directive *pExpr) const
 {
 	return pExpr->Reference();
-}
-
-//-----------------------------------------------------------------------------
-// DirectiveDict
-//-----------------------------------------------------------------------------
-void DirectiveDict::Assign(const Directive *pDirective)
-{
-	insert(std::make_pair(pDirective->GetSymbol(), pDirective));
-}
-
-const Directive *DirectiveDict::Lookup(const char *symbol) const
-{
-	const_iterator iter = find(symbol);
-	return (iter == end())? nullptr : iter->second;
 }
 
 //-----------------------------------------------------------------------------
