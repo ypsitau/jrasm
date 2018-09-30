@@ -71,6 +71,21 @@ public:
 	static const Directive *PCGDATA;
 	static const Directive *PCGPAGE;
 	static const Directive *SCOPE;
+	static const DirectiveFactory *_CSEG;
+	static const DirectiveFactory *_DB;
+	static const DirectiveFactory *_DSEG;
+	static const DirectiveFactory *_DW;
+	static const DirectiveFactory *_END;
+	static const DirectiveFactory *_EQU;
+	static const DirectiveFactory *_FILENAME_JR;
+	static const DirectiveFactory *_INCLUDE;
+	static const DirectiveFactory *_ISEG;
+	static const DirectiveFactory *_MACRO;
+	static const DirectiveFactory *_MML;
+	static const DirectiveFactory *_ORG;
+	static const DirectiveFactory *_PCGDATA;
+	static const DirectiveFactory *_PCGPAGE;
+	static const DirectiveFactory *_SCOPE;
 private:
 	static DirectiveDict _directiveDict;
 	static DirectiveFactoryDict _directiveFactoryDict;

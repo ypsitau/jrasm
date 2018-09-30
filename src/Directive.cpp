@@ -43,6 +43,22 @@ const Directive *Directive::PCGDATA		= nullptr;
 const Directive *Directive::PCGPAGE		= nullptr;
 const Directive *Directive::SCOPE		= nullptr;
 
+const DirectiveFactory *Directive::_CSEG		= nullptr;
+const DirectiveFactory *Directive::_DB			= nullptr;
+const DirectiveFactory *Directive::_DSEG		= nullptr;
+const DirectiveFactory *Directive::_DW			= nullptr;
+const DirectiveFactory *Directive::_END			= nullptr;
+const DirectiveFactory *Directive::_EQU			= nullptr;
+const DirectiveFactory *Directive::_FILENAME_JR	= nullptr;
+const DirectiveFactory *Directive::_INCLUDE		= nullptr;
+const DirectiveFactory *Directive::_ISEG		= nullptr;
+const DirectiveFactory *Directive::_MACRO		= nullptr;
+const DirectiveFactory *Directive::_MML			= nullptr;
+const DirectiveFactory *Directive::_ORG			= nullptr;
+const DirectiveFactory *Directive::_PCGDATA		= nullptr;
+const DirectiveFactory *Directive::_PCGPAGE		= nullptr;
+const DirectiveFactory *Directive::_SCOPE		= nullptr;
+
 Directive::~Directive()
 {
 }
@@ -64,6 +80,22 @@ void Directive::Initialize()
 	_directiveDict.Assign(PCGDATA		= new Directive_PCGDATA());
 	_directiveDict.Assign(PCGPAGE		= new Directive_PCGPAGE());
 	_directiveDict.Assign(SCOPE			= new Directive_SCOPE());
+
+	_directiveFactoryDict.Assign(_CSEG			= new Directive_CSEG::Factory());
+	_directiveFactoryDict.Assign(_DB			= new Directive_DB::Factory());
+	_directiveFactoryDict.Assign(_DSEG			= new Directive_DSEG::Factory());
+	_directiveFactoryDict.Assign(_DW			= new Directive_DW::Factory());
+	_directiveFactoryDict.Assign(_END			= new Directive_END::Factory());
+	_directiveFactoryDict.Assign(_EQU			= new Directive_EQU::Factory());
+	_directiveFactoryDict.Assign(_FILENAME_JR	= new Directive_FILENAME_JR::Factory());
+	_directiveFactoryDict.Assign(_INCLUDE		= new Directive_INCLUDE::Factory());
+	_directiveFactoryDict.Assign(_ISEG			= new Directive_ISEG::Factory());
+	_directiveFactoryDict.Assign(_MACRO			= new Directive_MACRO::Factory());
+	_directiveFactoryDict.Assign(_MML			= new Directive_MML::Factory());
+	_directiveFactoryDict.Assign(_ORG			= new Directive_ORG::Factory());
+	_directiveFactoryDict.Assign(_PCGDATA		= new Directive_PCGDATA::Factory());
+	_directiveFactoryDict.Assign(_PCGPAGE		= new Directive_PCGPAGE::Factory());
+	_directiveFactoryDict.Assign(_SCOPE			= new Directive_SCOPE::Factory());
 }
 
 const Directive *Directive::Lookup(const char *symbol)
