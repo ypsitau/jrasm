@@ -647,26 +647,20 @@ bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
 	do {
-		// segmentation error when resolve is called.
-
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand(exprOperands[1]->Resolve(context));
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = exprOperands[1];
 		if (!pExprOperand->IsTypeNumber()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		wdChar = dynamic_cast<Expr_Number *>(pExprOperand.get())->GetNumber();
+		wdChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
 	do {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand(exprOperands[2]->Resolve(context));
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = exprOperands[1];
 		if (!pExprOperand->IsTypeNumber()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		htChar = dynamic_cast<Expr_Number *>(pExprOperand.get())->GetNumber();
+		htChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
 	Binary buffOrg;
 	UInt32 bytes = 0;
