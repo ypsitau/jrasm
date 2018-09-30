@@ -20,7 +20,7 @@ label4:
 	
 ;;; -----------------------------
 func1:
-	.proc
+	.scope
 label1:
 	nop
 label2:	
@@ -36,7 +36,7 @@ label3:
 	
 ;;; -----------------------------
 func2:	
-	.proc
+	.scope
 label1:	
 	nop
 label2:	
@@ -52,7 +52,7 @@ label3:
 
 ;;; -----------------------------
 func3:	
-	.proc
+	.scope
 label1:	
 	nop
 label2:	

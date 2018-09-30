@@ -17,8 +17,8 @@ caseNames="$caseNames literal"
 caseNames="$caseNames macro"
 caseNames="$caseNames mml"
 caseNames="$caseNames operand"
-caseNames="$caseNames proc"
 caseNames="$caseNames rel"
+caseNames="$caseNames scope"
 caseNames="$caseNames segment"
 
 #if [ $# = 1 ] ; then
