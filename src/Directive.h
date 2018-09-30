@@ -6,6 +6,7 @@
 
 #include "Common.h"
 #include "MmlParser.h"
+#include "PCGData.h"
 #include "PCGPage.h"
 
 class DisasmDumper;
@@ -329,7 +330,7 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
-
+	AutoPtr<PCGData> _pPCGData;
 public:
 	inline Directive_PCGDATA() : Directive(PCGDATA) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
