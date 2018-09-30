@@ -19,7 +19,7 @@ Expr::Expr(Type type, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 Expr::Expr(const Expr &expr) :
 	_cntRef(1), _type(expr._type),
 	_pExprOperands(expr._pExprOperands->Clone()), _pExprChildren(expr._pExprChildren->Clone()),
-	_pFileNameSrc(expr._pFileNameSrc->Reference()), _lineNo(expr._lineNo)
+	_pPathNameSrc(expr._pPathNameSrc->Reference()), _lineNo(expr._lineNo)
 {
 	// don't copy _pExprDict, which should be different for each Expr instance.
 }

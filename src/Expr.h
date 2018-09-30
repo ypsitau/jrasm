@@ -97,7 +97,7 @@ protected:
 	AutoPtr<ExprOwner> _pExprOperands;
 	AutoPtr<ExprOwner> _pExprChildren;
 	AutoPtr<ExprDict> _pExprDict;
-	AutoPtr<StringShared> _pFileNameSrc;
+	AutoPtr<StringShared> _pPathNameSrc;
 	int _lineNo;
 public:
 	DeclareReferenceAccessor(Expr);
@@ -125,16 +125,16 @@ public:
 	inline const ExprOwner &GetExprOperands() const { return *_pExprOperands; }
 	inline ExprOwner &GetExprChildren() { return *_pExprChildren; }
 	inline const ExprOwner &GetExprChildren() const { return *_pExprChildren; }
-	inline void SetSourceInfo(StringShared *pFileNameSrc, int lineNo) {
-		_pFileNameSrc.reset(pFileNameSrc), _lineNo = lineNo;
+	inline void SetSourceInfo(StringShared *pPathNameSrc, int lineNo) {
+		_pPathNameSrc.reset(pPathNameSrc), _lineNo = lineNo;
 	}
-	inline bool HasSourceInfo() const { return !_pFileNameSrc.IsNull(); }
+	inline bool HasSourceInfo() const { return !_pPathNameSrc.IsNull(); }
 	inline void DeriveSourceInfo(const Expr *pExpr) {
-		_pFileNameSrc.reset(pExpr->_pFileNameSrc->Reference());
+		_pPathNameSrc.reset(pExpr->_pPathNameSrc->Reference());
 		_lineNo = pExpr->_lineNo;
 	}
-	inline const char *GetFileNameSrc() const {
-		return _pFileNameSrc.IsNull()? "" : _pFileNameSrc->GetString();
+	inline const char *GetPathNameSrc() const {
+		return _pPathNameSrc.IsNull()? "" : _pPathNameSrc->GetString();
 	}
 	inline int GetLineNo() const { return _lineNo; }
 	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }

@@ -395,7 +395,9 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr *pExpr)
 		return false;
 	}
 	const char *fileNameIncluded = dynamic_cast<const Expr_String *>(pExprLast)->GetString();
-	String pathNameIncluded = JoinPathName(context.GetDirNameSrc(), fileNameIncluded);
+	String dirName;
+	::SplitFileName(pExpr->GetPathNameSrc(), &dirName, nullptr);
+	String pathNameIncluded = JoinPathName(dirName.c_str(), fileNameIncluded);
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
 	AutoPtr<Expr> pExprRoot(parser.GetRoot()->Reference());

@@ -12,7 +12,7 @@ void ErrorLog::AddError(const Expr *pExpr, const char *format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	_instance.AddErrorV(pExpr->GetFileNameSrc(), pExpr->GetLineNo(), format, ap);
+	_instance.AddErrorV(pExpr->GetPathNameSrc(), pExpr->GetLineNo(), format, ap);
 }
 
 void ErrorLog::AddError(const char *format, ...)
