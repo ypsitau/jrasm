@@ -21,6 +21,8 @@
 #include "Macro.h"
 #include "MmlParser.h"
 #include "Parser.h"
+#include "PCGData.h"
+#include "PCGPage.h"
 #include "Region.h"
 #include "Segment.h"
 #include "Token.h"
