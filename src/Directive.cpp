@@ -4,8 +4,29 @@
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
+// DirectiveFactory
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// DirectiveFactoryDict
+//-----------------------------------------------------------------------------
+void DirectiveFactoryDict::Assign(const DirectiveFactory *pDirectiveFactory)
+{
+	insert(std::make_pair(pDirectiveFactory->GetSymbol(), pDirectiveFactory));
+}
+
+const DirectiveFactory *DirectiveFactoryDict::Lookup(const char *symbol) const
+{
+	const_iterator iter = find(symbol);
+	return (iter == end())? nullptr : iter->second;
+}
+
+//-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
+DirectiveDict Directive::_directiveDict;
+DirectiveFactoryDict Directive::_directiveFactoryDict;
+
 const Directive *Directive::CSEG		= nullptr;
 const Directive *Directive::DB			= nullptr;
 const Directive *Directive::DSEG		= nullptr;
@@ -21,8 +42,6 @@ const Directive *Directive::ORG			= nullptr;
 const Directive *Directive::PCGDATA		= nullptr;
 const Directive *Directive::PCGPAGE		= nullptr;
 const Directive *Directive::SCOPE		= nullptr;
-
-DirectiveDict Directive::_directiveDict;
 
 Directive::~Directive()
 {
@@ -125,7 +144,7 @@ const Directive *DirectiveDict::Lookup(const char *symbol) const
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
-Directive *Directive_CSEG::FactoryEx::Create() const
+Directive *Directive_CSEG::Factory::Create() const
 {
 	return new Directive_CSEG();
 }
@@ -150,7 +169,7 @@ bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
-Directive *Directive_DB::FactoryEx::Create() const
+Directive *Directive_DB::Factory::Create() const
 {
 	return new Directive_DB();
 }
@@ -216,7 +235,7 @@ bool Directive_DB::DoDirective(Context &context, const Expr_Directive *pExpr, Bi
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
-Directive *Directive_DSEG::FactoryEx::Create() const
+Directive *Directive_DSEG::Factory::Create() const
 {
 	return new Directive_DSEG();
 }
@@ -241,7 +260,7 @@ bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
-Directive *Directive_DW::FactoryEx::Create() const
+Directive *Directive_DW::Factory::Create() const
 {
 	return new Directive_DW();
 }
@@ -280,7 +299,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 //-----------------------------------------------------------------------------
 // Directive_END
 //-----------------------------------------------------------------------------
-Directive *Directive_END::FactoryEx::Create() const
+Directive *Directive_END::Factory::Create() const
 {
 	return new Directive_END();
 }
@@ -315,7 +334,7 @@ bool Directive_END::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
-Directive *Directive_EQU::FactoryEx::Create() const
+Directive *Directive_EQU::Factory::Create() const
 {
 	return new Directive_EQU();
 }
@@ -347,7 +366,7 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 // Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
-Directive *Directive_FILENAME_JR::FactoryEx::Create() const
+Directive *Directive_FILENAME_JR::Factory::Create() const
 {
 	return new Directive_FILENAME_JR();
 }
@@ -378,7 +397,7 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directi
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
-Directive *Directive_INCLUDE::FactoryEx::Create() const
+Directive *Directive_INCLUDE::Factory::Create() const
 {
 	return new Directive_INCLUDE();
 }
@@ -435,7 +454,7 @@ bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pE
 //-----------------------------------------------------------------------------
 // Directive_ISEG
 //-----------------------------------------------------------------------------
-Directive *Directive_ISEG::FactoryEx::Create() const
+Directive *Directive_ISEG::Factory::Create() const
 {
 	return new Directive_ISEG();
 }
@@ -460,7 +479,7 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
-Directive *Directive_MACRO::FactoryEx::Create() const
+Directive *Directive_MACRO::Factory::Create() const
 {
 	return new Directive_MACRO();
 }
@@ -508,7 +527,7 @@ bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
-Directive *Directive_MML::FactoryEx::Create() const
+Directive *Directive_MML::Factory::Create() const
 {
 	return new Directive_MML();
 }
@@ -572,7 +591,7 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
-Directive *Directive_ORG::FactoryEx::Create() const
+Directive *Directive_ORG::Factory::Create() const
 {
 	return new Directive_ORG();
 }
@@ -613,7 +632,7 @@ bool Directive_ORG::DoDirective(Context &context, const Expr_Directive *pExpr)
 //-----------------------------------------------------------------------------
 // Directive_PCGDATA
 //-----------------------------------------------------------------------------
-Directive *Directive_PCGDATA::FactoryEx::Create() const
+Directive *Directive_PCGDATA::Factory::Create() const
 {
 	return new Directive_PCGDATA();
 }
@@ -707,7 +726,7 @@ bool Directive_PCGDATA::OnPhaseDisasm(Context &context, const Expr_Directive *pE
 //-----------------------------------------------------------------------------
 // Directive_PCGPAGE
 //-----------------------------------------------------------------------------
-Directive *Directive_PCGPAGE::FactoryEx::Create() const
+Directive *Directive_PCGPAGE::Factory::Create() const
 {
 	return new Directive_PCGPAGE();
 }
@@ -757,7 +776,7 @@ bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr_Directive *
 //-----------------------------------------------------------------------------
 // Directive_SCOPE
 //-----------------------------------------------------------------------------
-Directive *Directive_SCOPE::FactoryEx::Create() const
+Directive *Directive_SCOPE::Factory::Create() const
 {
 	return new Directive_SCOPE();
 }

@@ -11,6 +11,7 @@ class Token;
 class Parser;
 class Context;
 class Directive;
+class DirectiveFactory;
 
 //-----------------------------------------------------------------------------
 // DirectiveDict
@@ -24,17 +25,33 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// DirectiveFactoryDict
+//-----------------------------------------------------------------------------
+class DirectiveFactoryDict : public std::map<String, const DirectiveFactory *, LessThan_StringICase> {
+public:
+	inline DirectiveFactoryDict() {}
+public:
+	void Assign(const DirectiveFactory *pDirectiveFactory);
+	const DirectiveFactory *Lookup(const char *symbol) const;
+};
+
+//-----------------------------------------------------------------------------
+// DirectiveFactory
+//-----------------------------------------------------------------------------
+class DirectiveFactory {
+private:
+	String _symbol;
+public:
+	inline DirectiveFactory(const String &symbol) : _symbol(symbol) {}
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	virtual Directive *Create() const = 0;
+	static const DirectiveFactory *Lookup(const char *symbol);
+};
+
+//-----------------------------------------------------------------------------
 // Directive
 //-----------------------------------------------------------------------------
 class Directive {
-public:
-	class Factory {
-	private:
-		String _symbol;
-	public:
-		inline Factory(const String &symbol) : _symbol(symbol) {}
-		virtual Directive *Create() const = 0;
-	};
 private:
 	String _symbol;
 	bool _childrenEvalFlag;
@@ -56,6 +73,7 @@ public:
 	static const Directive *SCOPE;
 private:
 	static DirectiveDict _directiveDict;
+	static DirectiveFactoryDict _directiveFactoryDict;
 public:
 	inline Directive(const String &symbol, bool childrenEvalFlag = true) :
 		_symbol(symbol), _childrenEvalFlag(childrenEvalFlag) {}
@@ -83,9 +101,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_CSEG : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".CSEG") {}
+		inline Factory() : DirectiveFactory(".CSEG") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -99,9 +117,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DB : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".DB") {}
+		inline Factory() : DirectiveFactory(".DB") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -116,9 +134,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DSEG : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".DSEG") {}
+		inline Factory() : DirectiveFactory(".DSEG") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -132,9 +150,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DW : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".DW") {}
+		inline Factory() : DirectiveFactory(".DW") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -148,9 +166,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_END : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".END") {}
+		inline Factory() : DirectiveFactory(".END") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -164,9 +182,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_EQU : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".EQU") {}
+		inline Factory() : DirectiveFactory(".EQU") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -180,9 +198,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_FILENAME_JR : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".FILENAME_JR") {}
+		inline Factory() : DirectiveFactory(".FILENAME_JR") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -195,9 +213,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_INCLUDE : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".INCLUDE") {}
+		inline Factory() : DirectiveFactory(".INCLUDE") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -216,9 +234,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_ISEG : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".ISEG") {}
+		inline Factory() : DirectiveFactory(".ISEG") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -232,9 +250,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_MACRO : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".MACRO") {}
+		inline Factory() : DirectiveFactory(".MACRO") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -250,9 +268,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_MML : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".MML") {}
+		inline Factory() : DirectiveFactory(".MML") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -277,9 +295,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_ORG : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".ORG") {}
+		inline Factory() : DirectiveFactory(".ORG") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -294,9 +312,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_PCGDATA : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".PCGDATA") {}
+		inline Factory() : DirectiveFactory(".PCGDATA") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -312,9 +330,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_PCGPAGE : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".PCGPAGE") {}
+		inline Factory() : DirectiveFactory(".PCGPAGE") {}
 		virtual Directive *Create() const;
 	};
 public:
@@ -327,9 +345,9 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_SCOPE : public Directive {
 public:
-	class FactoryEx : public Factory {
+	class Factory : public DirectiveFactory {
 	public:
-		inline FactoryEx() : Factory(".SCOPE") {}
+		inline Factory() : DirectiveFactory(".SCOPE") {}
 		virtual Directive *Create() const;
 	};
 public:
