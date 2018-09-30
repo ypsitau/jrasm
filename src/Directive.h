@@ -230,6 +230,8 @@ public:
 		inline Factory() : DirectiveFactory(".INCLUDE") {}
 		virtual Directive *Create() const;
 	};
+private:
+	AutoPtr<Expr> _pExprIncluded;
 public:
 	inline Directive_INCLUDE() : Directive(INCLUDE) {}
 	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr);

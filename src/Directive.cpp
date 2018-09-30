@@ -415,35 +415,35 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr)
 	if (!parser.ParseFile()) return false;
 	AutoPtr<Expr> pExprRoot(parser.GetRoot()->Reference());
 	if (!pExprRoot->OnPhaseInclude(context)) return false;
-	pExpr->SetExprIncluded(pExprRoot.release());
+	_pExprIncluded.reset(pExprRoot.release());
 	return true;
 }
 
 bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr)
 {
-	return pExpr->GetExprIncluded()->OnPhaseDeclareMacro(context);
+	return _pExprIncluded->OnPhaseDeclareMacro(context);
 }
 
 bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, Expr_Directive *pExpr)
 {
-	return pExpr->GetExprIncluded()->OnPhaseExpandMacro(context);
+	return _pExprIncluded->OnPhaseExpandMacro(context);
 }
 
 bool Directive_INCLUDE::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr)
 {
-	return pExpr->GetExprIncluded()->OnPhaseAssignSymbol(context);
+	return _pExprIncluded->OnPhaseAssignSymbol(context);
 }
 
 bool Directive_INCLUDE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
-	return pExpr->GetExprIncluded()->OnPhaseGenerate(context, pBuffDst);
+	return _pExprIncluded->OnPhaseGenerate(context, pBuffDst);
 }
 
 bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 									  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	return pExpr->GetExprIncluded()->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+	return _pExprIncluded->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
 //-----------------------------------------------------------------------------
