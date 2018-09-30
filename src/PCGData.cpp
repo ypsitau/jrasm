@@ -6,3 +6,31 @@
 //-----------------------------------------------------------------------------
 // PCGData
 //-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// PCGDataList
+//-----------------------------------------------------------------------------
+const PCGData *PCGDataList::FindSameData(const Binary &data) const
+{
+	for (auto pPCGData : *this) {
+		if (pPCGData->HasSameData(data)) return pPCGData;
+	}
+	return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// PCGDataOwner
+//-----------------------------------------------------------------------------
+PCGDataOwner::~PCGDataOwner()
+{
+	Clear();
+}
+
+void PCGDataOwner::Clear()
+{
+	for (auto pPCGData : *this) {
+		PCGData::Delete(pPCGData);
+	}
+	clear();
+}
+

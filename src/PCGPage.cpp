@@ -6,3 +6,29 @@
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
+const PCGData *PCGPage::NewPCGData(const Binary &binary)
+{
+	AutoPtr<PCGData> pPCGData(new PCGData(_pcgType,_charCodeCur, binary));
+	_pcgDataOwner.push_back(pPCGData->Reference());
+	return pPCGData.release();
+}
+
+//-----------------------------------------------------------------------------
+// PCGPageList
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// PCGPageOwner
+//-----------------------------------------------------------------------------
+PCGPageOwner::~PCGPageOwner()
+{
+	Clear();
+}
+
+void PCGPageOwner::Clear()
+{
+	for (auto pPCGPage : *this) {
+		delete pPCGPage;
+	}
+	clear();
+}
