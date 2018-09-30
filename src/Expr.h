@@ -401,26 +401,25 @@ public:
 class Expr_Directive : public Expr {
 private:
 	AutoPtr<Directive> _pDirective;
-	String _symbol;					// used by .MACRO
-	bool _forceGlobalFlag;			// used by .MACRO
+	//String _symbol;					// used by .MACRO
+	//bool _forceGlobalFlag;			// used by .MACRO
 	AutoPtr<Expr> _pExprIncluded;	// used by .INCLUDE
 public:
 	static const Type TYPE;
 public:
 	inline Expr_Directive(Directive *pDirective) :
-		Expr(TYPE), _pDirective(pDirective), _forceGlobalFlag(false) {}
+		Expr(TYPE), _pDirective(pDirective) {}
 	inline Expr_Directive(Directive *pDirective, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
-		Expr(TYPE, pExprOperands, pExprChildren), _pDirective(pDirective), _forceGlobalFlag(false) {}
+		Expr(TYPE, pExprOperands, pExprChildren), _pDirective(pDirective) {}
 	inline Expr_Directive(const Expr_Directive &expr) :
-		Expr(expr), _pDirective(expr._pDirective->Reference()),
-		_symbol(expr._symbol), _forceGlobalFlag(expr._forceGlobalFlag) {}
+		Expr(expr), _pDirective(expr._pDirective->Reference()) {}
 	inline const Directive *GetDirective() const { return _pDirective.get(); }
 	inline void SetExprIncluded(Expr *pExprIncluded) { _pExprIncluded.reset(pExprIncluded); }
 	inline Expr *GetExprIncluded() const { return _pExprIncluded.get(); }
-	inline void SetSymbol(const String &symbol, bool forceGlobalFlag) {
-		_symbol = symbol, _forceGlobalFlag = forceGlobalFlag;
-	}
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	//inline void SetSymbol(const String &symbol, bool forceGlobalFlag) {
+	//	_symbol = symbol, _forceGlobalFlag = forceGlobalFlag;
+	//}
+	//inline const char *GetSymbol() const { return _symbol.c_str(); }
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);

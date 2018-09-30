@@ -267,6 +267,9 @@ public:
 		inline Factory() : DirectiveFactory(".MACRO") {}
 		virtual Directive *Create() const;
 	};
+private:
+	String _symbol;
+	bool _forceGlobalFlag;
 public:
 	inline Directive_MACRO() : Directive(MACRO, false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);

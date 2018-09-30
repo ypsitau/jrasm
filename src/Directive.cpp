@@ -488,7 +488,8 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	}
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	pExpr->SetSymbol(pExprLabel->GetSymbol(), pExprLabel->GetForceGlobalFlag());
+	_symbol = pExprLabel->GetSymbol();
+	_forceGlobalFlag = pExprLabel->GetForceGlobalFlag();
 	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr->Reference());		// for children
 	exprStack.push_back(pExpr.release());			// for operands
@@ -498,7 +499,7 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, Expr_Directive *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
-	AutoPtr<Macro> pMacro(new Macro(pExpr->GetSymbol(), pExpr->GetExprChildren().Reference()));
+	AutoPtr<Macro> pMacro(new Macro(_symbol, pExpr->GetExprChildren().Reference()));
 	StringList &paramNames = pMacro->GetParamNames();
 	paramNames.reserve(exprOperands.size());
 	for (auto pExpr : exprOperands) {
