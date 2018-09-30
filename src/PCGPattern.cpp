@@ -1,36 +1,35 @@
 //=============================================================================
-// PCGData.h
+// PCGPattern.h
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// PCGData
+// PCGPattern
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// PCGDataList
+// PCGPatternList
 //-----------------------------------------------------------------------------
-const PCGData *PCGDataList::FindSameData(const Binary &data) const
+const PCGPattern *PCGPatternList::FindSamePattern(const Binary &pattern) const
 {
-	for (auto pPCGData : *this) {
-		if (pPCGData->HasSameData(data)) return pPCGData;
+	for (auto pPCGPattern : *this) {
+		if (pPCGPattern->HasSamePattern(pattern)) return pPCGPattern;
 	}
 	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
-// PCGDataOwner
+// PCGPatternOwner
 //-----------------------------------------------------------------------------
-PCGDataOwner::~PCGDataOwner()
+PCGPatternOwner::~PCGPatternOwner()
 {
 	Clear();
 }
 
-void PCGDataOwner::Clear()
+void PCGPatternOwner::Clear()
 {
-	for (auto pPCGData : *this) {
-		PCGData::Delete(pPCGData);
+	for (auto pPCGPattern : *this) {
+		PCGPattern::Delete(pPCGPattern);
 	}
 	clear();
 }
-

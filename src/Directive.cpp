@@ -286,9 +286,7 @@ Directive *Directive_END::Factory::Create() const
 
 bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
-	if (!exprStack.back()->IsTypeDirective(Directive::MACRO) &&
-		!exprStack.back()->IsTypeDirective(Directive::SCOPE) &&
-		!exprStack.back()->IsTypeDirective(Directive::PCGDATA)) {
+	if (!exprStack.back()->IsGrouping()) {
 		pParser->AddError("no matching directive");
 		return false;
 	}
@@ -630,7 +628,7 @@ bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() < 3) {
@@ -700,10 +698,16 @@ bool Directive_PCGDATA::OnPhaseGenerate(Context &context, const Expr *pExpr, Bin
 	return true;
 }
 
+bool Directive_PCGDATA::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	return true;
+}
+
 bool Directive_PCGDATA::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	return true;
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 }
 
 //-----------------------------------------------------------------------------
@@ -714,14 +718,25 @@ Directive *Directive_PCGPAGE::Factory::Create() const
 	return new Directive_PCGPAGE();
 }
 
-bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+{
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
+	return true;
+}
+
+bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 2) {
 		ErrorLog::AddError(pExpr, "directive .PCGPAGE takes two operands");
 		return false;
 	}
-	UInt32 num = 0;
+	PCGType pcgType = PCGTYPE_None;
+	int charCodeStart = 0;
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -746,14 +761,27 @@ bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Bin
 			ErrorLog::AddError(pExpr, "directive .PCGPAGE takes a number value as its second operand");
 			return false;
 		}
-		num = dynamic_cast<const Expr_Number *>(pExprOperand.get())->GetNumber();
+		charCodeStart = dynamic_cast<const Expr_Number *>(pExprOperand.get())->GetNumber();
 	} while (0);
-	if (num > 0xff) {
+	if (charCodeStart > 0xff) {
 		ErrorLog::AddError(pExpr, "address value exceeds 8-bit range");
 		return false;
 	}
-	//context.StartRegion(static_cast<UInt16>(num));
+	_pPCGPage.reset(new PCGPage(pcgType, charCodeStart));
 	return true;
+}
+
+bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	return true;
+}
+
+bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
+									  DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
+	//return _pExprIncluded->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -793,7 +821,7 @@ bool Directive_SCOPE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binar
 }
 
 bool Directive_SCOPE::OnPhaseDisasm(Context &context, const Expr *pExpr,
-								   DisasmDumper &disasmDumper, int indentLevelCode) const
+									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 }

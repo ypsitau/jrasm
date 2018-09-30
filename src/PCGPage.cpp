@@ -6,11 +6,12 @@
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
-const PCGData *PCGPage::NewPCGData(const Binary &binary)
+const PCGPattern *PCGPage::AddPCGPattern(const Binary &binary)
 {
-	AutoPtr<PCGData> pPCGData(new PCGData(_pcgType,_charCodeCur, binary));
-	_pcgDataOwner.push_back(pPCGData->Reference());
-	return pPCGData.release();
+	AutoPtr<PCGPattern> pPCGPattern(new PCGPattern(_pcgType, _charCodeCur, binary));
+	_charCodeCur++;
+	_pcgPatternOwner.push_back(pPCGPattern->Reference());
+	return pPCGPattern.release();
 }
 
 //-----------------------------------------------------------------------------
@@ -28,7 +29,7 @@ PCGPageOwner::~PCGPageOwner()
 void PCGPageOwner::Clear()
 {
 	for (auto pPCGPage : *this) {
-		delete pPCGPage;
+		PCGPage::Delete(pPCGPage);
 	}
 	clear();
 }

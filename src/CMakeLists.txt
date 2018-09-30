@@ -20,8 +20,8 @@ add_executable(jrasm
 	MmlParser.cpp
 	Operator.cpp
 	Parser.cpp
-	PCGData.cpp
 	PCGPage.cpp
+	PCGPattern.cpp
 	Region.cpp
 	Segment.cpp
 	Token.cpp

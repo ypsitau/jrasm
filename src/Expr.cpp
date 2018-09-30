@@ -52,6 +52,11 @@ bool Expr::IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const
 		GetDirective()->GetDirectiveFactory()->IsIdentical(pDirectiveFactory);
 }
 
+bool Expr::IsGrouping() const
+{
+	return IsTypeDirective() && dynamic_cast<const Expr_Directive *>(this)->GetDirective()->GetGroupingFlag();
+}
+
 void Expr::Print() const
 {
 	::printf("%s\n", ComposeSource(false).c_str());

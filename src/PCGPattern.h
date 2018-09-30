@@ -1,8 +1,8 @@
 //=============================================================================
-// PCGData.h
+// PCGPattern.h
 //=============================================================================
-#ifndef __PCGDATA_H__
-#define __PCGDATA_H__
+#ifndef __PCGPATTERN_H__
+#define __PCGPATTERN_H__
 
 #include "Common.h"
 
@@ -10,47 +10,48 @@
 // PCGType
 //-----------------------------------------------------------------------------
 enum PCGType {
+	PCGTYPE_None,
 	PCGTYPE_User,
 	PCGTYPE_CRAM,
 };
 
 //-----------------------------------------------------------------------------
-// PCGData
+// PCGPattern
 //-----------------------------------------------------------------------------
-class PCGData {
+class PCGPattern {
 private:
 	int _cntRef;
 	PCGType _pcgType;
 	int _charCode;
-	Binary _data;
+	Binary _pattern;
 public:
-	DeclareReferenceAccessor(PCGData);
+	DeclareReferenceAccessor(PCGPattern);
 public:
-	inline PCGData(PCGType pcgType, int charCode, const Binary &data) :
-		_cntRef(1), _pcgType(pcgType), _charCode(charCode), _data(data) {}
+	inline PCGPattern(PCGType pcgType, int charCode, const Binary &pattern) :
+		_cntRef(1), _pcgType(pcgType), _charCode(charCode), _pattern(pattern) {}
 private:
-	inline ~PCGData() {}
+	inline ~PCGPattern() {}
 public:
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCode() const { return _charCode; }
-	inline bool HasSameData(const Binary &data) { return _data == data; }
-	inline const Binary &GetData() const { return _data; }
+	inline bool HasSamePattern(const Binary &pattern) { return _pattern == pattern; }
+	inline const Binary &GetPattern() const { return _pattern; }
 };
 
 //-----------------------------------------------------------------------------
-// PCGDataList
+// PCGPatternList
 //-----------------------------------------------------------------------------
-class PCGDataList : public std::vector<PCGData *> {
+class PCGPatternList : public std::vector<PCGPattern *> {
 public:
-	const PCGData *FindSameData(const Binary &data) const;
+	const PCGPattern *FindSamePattern(const Binary &pattern) const;
 };
 
 //-----------------------------------------------------------------------------
-// PCGDataOwner
+// PCGPatternOwner
 //-----------------------------------------------------------------------------
-class PCGDataOwner : public PCGDataList {
+class PCGPatternOwner : public PCGPatternList {
 public:
-	~PCGDataOwner();
+	~PCGPatternOwner();
 	void Clear();
 };
 

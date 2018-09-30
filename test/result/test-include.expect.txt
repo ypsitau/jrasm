@@ -1,8 +1,19 @@
+    1000 b0 00     .dw  0xb000
+    1002 b0 01     .dw  0xb001
+    1004 b0 02     .dw  0xb002
                    .include "test-include/include1.asm"
-    1000 00 01     | .dw  0x0001
+    1006 00 01     | .dw  0x0001
                    .include "test-include/include2.asm"
-    1002 00 02     | .dw  0x0002
+    1008 00 02     | .dw  0x0002
                    .include "test-include/include3.asm"
-    1004 00 03     | .dw  0x0003
+    100a 00 03     | .dw  0x0003
+                   .include "test-include/include4.asm"
+                   | .include "include5.asm"
+    100c 00 05     | | .dw  0x0005
+                   | .include "subdir/include6.asm"
+    100e 00 06     | | .dw  0x0006
+    1010 f0 00     .dw  0xf000
+    1012 f0 01     .dw  0xf001
+    1014 f0 02     .dw  0xf002
 [Symbol List]
 (no symbol)

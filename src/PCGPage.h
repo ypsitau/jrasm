@@ -4,24 +4,29 @@
 #ifndef __PCGPAGE_H__
 #define __PCGPAGE_H__
 
-#include "PCGData.h"
+#include "PCGPattern.h"
 
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
 class PCGPage {
-public:
 private:
+	int _cntRef;
 	PCGType _pcgType;
 	int _charCodeStart;
 	int _charCodeCur;
-	PCGDataOwner _pcgDataOwner;
+	PCGPatternOwner _pcgPatternOwner;
+public:
+	DeclareReferenceAccessor(PCGPage);
 public:
 	inline PCGPage(PCGType pcgType, int charCodeStart) :
-		_pcgType(pcgType), _charCodeStart(charCodeStart), _charCodeCur(charCodeStart) {}
+		_cntRef(1), _pcgType(pcgType), _charCodeStart(charCodeStart), _charCodeCur(charCodeStart) {}
+private:
+	inline ~PCGPage() {}
+public:
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCodeStart() const { return _charCodeStart; }
-	const PCGData *NewPCGData(const Binary &binary);
+	const PCGPattern *AddPCGPattern(const Binary &pattern);
 };
 
 //-----------------------------------------------------------------------------
