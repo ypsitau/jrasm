@@ -7,6 +7,7 @@
 #include "Segment.h"
 #include "Expr.h"
 #include "Macro.h"
+#include "PCGPage.h"
 
 class Parser;
 
@@ -66,6 +67,7 @@ private:
 	Phase _phaseCur;
 	ExprDictStack _exprDictStack;
 	MacroDict _macroDict;
+	PCGPageOwner _pcgPageOwner;
 	AutoPtr<Expr> _pExprRoot;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
@@ -95,6 +97,8 @@ public:
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
 	inline bool CheckSegmentRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
+	inline PCGPageOwner &GetPCGPageOwner() { return _pcgPageOwner; }
+	inline const PCGPageOwner &GetPCGPageOwner() const { return _pcgPageOwner; }
 	bool ParseFile();
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
