@@ -27,6 +27,14 @@ public:
 // Directive
 //-----------------------------------------------------------------------------
 class Directive {
+public:
+	class Factory {
+	private:
+		String _symbol;
+	public:
+		inline Factory(const String &symbol) : _symbol(symbol) {}
+		virtual Directive *Create() const = 0;
+	};
 private:
 	String _symbol;
 	bool _childrenEvalFlag;
@@ -43,8 +51,8 @@ public:
 	static const Directive *MACRO;
 	static const Directive *MML;
 	static const Directive *ORG;
-	static const Directive *PCG;
-	static const Directive *PCG_ORG;
+	static const Directive *PCGDATA;
+	static const Directive *PCGPAGE;
 	static const Directive *SCOPE;
 private:
 	static DirectiveDict _directiveDict;
@@ -75,6 +83,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_CSEG : public Directive {
 public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".CSEG") {}
+		virtual Directive *Create() const;
+	};
+public:
 	inline Directive_CSEG() : Directive(".CSEG") {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
@@ -84,6 +98,12 @@ public:
 // Directive_DB
 //-----------------------------------------------------------------------------
 class Directive_DB : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".DB") {}
+		virtual Directive *Create() const;
+	};
 public:
 	inline Directive_DB() : Directive(".DB") {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
@@ -96,6 +116,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_DSEG : public Directive {
 public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".DSEG") {}
+		virtual Directive *Create() const;
+	};
+public:
 	inline Directive_DSEG() : Directive(".DSEG") {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
@@ -105,6 +131,12 @@ public:
 // Directive_DW
 //-----------------------------------------------------------------------------
 class Directive_DW : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".DW") {}
+		virtual Directive *Create() const;
+	};
 public:
 	inline Directive_DW() : Directive(".DW") {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
@@ -116,6 +148,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_END : public Directive {
 public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".END") {}
+		virtual Directive *Create() const;
+	};
+public:
 	inline Directive_END() : Directive(".END") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
@@ -125,6 +163,12 @@ public:
 // Directive_EQU
 //-----------------------------------------------------------------------------
 class Directive_EQU : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".EQU") {}
+		virtual Directive *Create() const;
+	};
 public:
 	inline Directive_EQU() : Directive(".EQU") {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
@@ -136,6 +180,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_FILENAME_JR : public Directive {
 public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".FILENAME_JR") {}
+		virtual Directive *Create() const;
+	};
+public:
 	inline Directive_FILENAME_JR() : Directive(".FILENAME.JR") {}
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
@@ -144,6 +194,12 @@ public:
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
 class Directive_INCLUDE : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".INCLUDE") {}
+		virtual Directive *Create() const;
+	};
 public:
 	inline Directive_INCLUDE() : Directive(".INCLUDE") {}
 	virtual bool OnPhaseInclude(Context &context, Expr_Directive *pExpr) const;
@@ -160,6 +216,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_ISEG : public Directive {
 public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".ISEG") {}
+		virtual Directive *Create() const;
+	};
+public:
 	inline Directive_ISEG() : Directive(".ISEG") {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
@@ -169,6 +231,12 @@ public:
 // Directive_MACRO
 //-----------------------------------------------------------------------------
 class Directive_MACRO : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".MACRO") {}
+		virtual Directive *Create() const;
+	};
 public:
 	inline Directive_MACRO() : Directive(".MACRO", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
@@ -181,6 +249,12 @@ public:
 // Directive_MML
 //-----------------------------------------------------------------------------
 class Directive_MML : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".MML") {}
+		virtual Directive *Create() const;
+	};
 public:
 	class Handler : public MmlParser::Handler {
 	private:
@@ -203,6 +277,12 @@ public:
 //-----------------------------------------------------------------------------
 class Directive_ORG : public Directive {
 public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".ORG") {}
+		virtual Directive *Create() const;
+	};
+public:
 	inline Directive_ORG() : Directive(".ORG") {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
@@ -210,11 +290,17 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_PCG
+// Directive_PCGDATA
 //-----------------------------------------------------------------------------
-class Directive_PCG : public Directive {
+class Directive_PCGDATA : public Directive {
 public:
-	inline Directive_PCG() : Directive(".PCG", false) {}
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".PCGDATA") {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_PCGDATA() : Directive(".PCGDATA", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
@@ -222,11 +308,17 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_PCG_ORG
+// Directive_PCGPAGE
 //-----------------------------------------------------------------------------
-class Directive_PCG_ORG : public Directive {
+class Directive_PCGPAGE : public Directive {
 public:
-	inline Directive_PCG_ORG() : Directive(".PCG.ORG", false) {}
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".PCGPAGE") {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_PCGPAGE() : Directive(".PCGPAGE", false) {}
 	virtual bool OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const;
 };
 
@@ -234,6 +326,12 @@ public:
 // Directive_SCOPE
 //-----------------------------------------------------------------------------
 class Directive_SCOPE : public Directive {
+public:
+	class FactoryEx : public Factory {
+	public:
+		inline FactoryEx() : Factory(".SCOPE") {}
+		virtual Directive *Create() const;
+	};
 public:
 	inline Directive_SCOPE() : Directive(".SCOPE", false) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const;

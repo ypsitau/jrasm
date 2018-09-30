@@ -18,8 +18,8 @@ const Directive *Directive::ISEG		= nullptr;
 const Directive *Directive::MACRO		= nullptr;
 const Directive *Directive::MML			= nullptr;
 const Directive *Directive::ORG			= nullptr;
-const Directive *Directive::PCG			= nullptr;
-const Directive *Directive::PCG_ORG		= nullptr;
+const Directive *Directive::PCGDATA		= nullptr;
+const Directive *Directive::PCGPAGE		= nullptr;
 const Directive *Directive::SCOPE		= nullptr;
 
 DirectiveDict Directive::_directiveDict;
@@ -42,8 +42,8 @@ void Directive::Initialize()
 	_directiveDict.Assign(MACRO			= new Directive_MACRO());
 	_directiveDict.Assign(MML			= new Directive_MML());
 	_directiveDict.Assign(ORG			= new Directive_ORG());
-	_directiveDict.Assign(PCG			= new Directive_PCG());
-	_directiveDict.Assign(PCG_ORG		= new Directive_PCG_ORG());
+	_directiveDict.Assign(PCGDATA		= new Directive_PCGDATA());
+	_directiveDict.Assign(PCGPAGE		= new Directive_PCGPAGE());
 	_directiveDict.Assign(SCOPE			= new Directive_SCOPE());
 }
 
@@ -125,6 +125,11 @@ const Directive *DirectiveDict::Lookup(const char *symbol) const
 //-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
+Directive *Directive_CSEG::FactoryEx::Create() const
+{
+	return new Directive_CSEG();
+}
+
 bool Directive_CSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
@@ -145,6 +150,11 @@ bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
+Directive *Directive_DB::FactoryEx::Create() const
+{
+	return new Directive_DB();
+}
+
 bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	UInt32 bytes = 0;
@@ -206,6 +216,11 @@ bool Directive_DB::DoDirective(Context &context, const Expr_Directive *pExpr, Bi
 //-----------------------------------------------------------------------------
 // Directive_DSEG
 //-----------------------------------------------------------------------------
+Directive *Directive_DSEG::FactoryEx::Create() const
+{
+	return new Directive_DSEG();
+}
+
 bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
@@ -226,6 +241,11 @@ bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
+Directive *Directive_DW::FactoryEx::Create() const
+{
+	return new Directive_DW();
+}
+
 bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	context.ForwardAddress(static_cast<UInt32>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
@@ -260,11 +280,16 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr
 //-----------------------------------------------------------------------------
 // Directive_END
 //-----------------------------------------------------------------------------
+Directive *Directive_END::FactoryEx::Create() const
+{
+	return new Directive_END();
+}
+
 bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	if (!exprStack.back()->IsTypeDirective(Directive::MACRO) &&
 		!exprStack.back()->IsTypeDirective(Directive::SCOPE) &&
-		!exprStack.back()->IsTypeDirective(Directive::PCG)) {
+		!exprStack.back()->IsTypeDirective(Directive::PCGDATA)) {
 		pParser->AddError("no matching directive");
 		return false;
 	}
@@ -290,6 +315,11 @@ bool Directive_END::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_EQU
 //-----------------------------------------------------------------------------
+Directive *Directive_EQU::FactoryEx::Create() const
+{
+	return new Directive_EQU();
+}
+
 bool Directive_EQU::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
@@ -317,6 +347,11 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr_Directive *pExpr) cons
 //-----------------------------------------------------------------------------
 // Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
+Directive *Directive_FILENAME_JR::FactoryEx::Create() const
+{
+	return new Directive_FILENAME_JR();
+}
+
 bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
@@ -343,6 +378,11 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr_Directi
 //-----------------------------------------------------------------------------
 // Directive_INCLUDE
 //-----------------------------------------------------------------------------
+Directive *Directive_INCLUDE::FactoryEx::Create() const
+{
+	return new Directive_INCLUDE();
+}
+
 bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
@@ -395,6 +435,11 @@ bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr_Directive *pE
 //-----------------------------------------------------------------------------
 // Directive_ISEG
 //-----------------------------------------------------------------------------
+Directive *Directive_ISEG::FactoryEx::Create() const
+{
+	return new Directive_ISEG();
+}
+
 bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
@@ -415,6 +460,11 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr_Directive *pEx
 //-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
+Directive *Directive_MACRO::FactoryEx::Create() const
+{
+	return new Directive_MACRO();
+}
+
 bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
@@ -458,6 +508,11 @@ bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr_Directive *pExp
 //-----------------------------------------------------------------------------
 // Directive_MML
 //-----------------------------------------------------------------------------
+Directive *Directive_MML::FactoryEx::Create() const
+{
+	return new Directive_MML();
+}
+
 bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	//Handler handler(nullptr);
@@ -517,6 +572,11 @@ void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
 //-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
+Directive *Directive_ORG::FactoryEx::Create() const
+{
+	return new Directive_ORG();
+}
+
 bool Directive_ORG::OnPhaseAssignSymbol(Context &context, Expr_Directive *pExpr) const
 {
 	return DoDirective(context, pExpr);
@@ -551,9 +611,14 @@ bool Directive_ORG::DoDirective(Context &context, const Expr_Directive *pExpr)
 }
 
 //-----------------------------------------------------------------------------
-// Directive_PCG
+// Directive_PCGDATA
 //-----------------------------------------------------------------------------
-bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
+Directive *Directive_PCGDATA::FactoryEx::Create() const
+{
+	return new Directive_PCGDATA();
+}
+
+bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -563,16 +628,16 @@ bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 	return true;
 }
 
-bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+bool Directive_PCGDATA::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() < 3) {
-		ErrorLog::AddError(pExpr, "too few operands for directive .PCG");
+		ErrorLog::AddError(pExpr, "too few operands for directive .PCGDATA");
 		return false;
 	}
 	String symbol;
 	size_t wdChar = 0, htChar = 0;
-	const char *errMsg = "invalid operand for directive .PCG";
+	const char *errMsg = "invalid operand for directive .PCGDATA";
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -607,7 +672,7 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 	UInt32 bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
-			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCG");
+			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCGDATA");
 			return false;
 		}
 		if (!Directive_DB::DoDirective(
@@ -633,27 +698,32 @@ bool Directive_PCG::OnPhaseGenerate(Context &context, const Expr_Directive *pExp
 	return true;
 }
 
-bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
+bool Directive_PCGDATA::OnPhaseDisasm(Context &context, const Expr_Directive *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// Directive_PCG_ORG
+// Directive_PCGPAGE
 //-----------------------------------------------------------------------------
-bool Directive_PCG_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
+Directive *Directive_PCGPAGE::FactoryEx::Create() const
+{
+	return new Directive_PCGPAGE();
+}
+
+bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr_Directive *pExpr, Binary *pBuffDst) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 2) {
-		ErrorLog::AddError(pExpr, "directive .PCG.ORG takes two operands");
+		ErrorLog::AddError(pExpr, "directive .PCGPAGE takes two operands");
 		return false;
 	}
 	UInt32 num = 0;
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
-			ErrorLog::AddError(pExpr, "directive .PCG.ORG takes a symbol value as its first operand");
+			ErrorLog::AddError(pExpr, "directive .PCGPAGE takes a symbol value as its first operand");
 			return false;
 		}
 		const char *symbol = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
@@ -671,7 +741,7 @@ bool Directive_PCG_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *
 		AutoPtr<Expr> pExprOperand(exprOperands[1]->Resolve(context));
 		if (pExprOperand.IsNull()) return false;
 		if (!pExprOperand->IsTypeNumber()) {
-			ErrorLog::AddError(pExpr, "directive .PCG.ORG takes a number value as its second operand");
+			ErrorLog::AddError(pExpr, "directive .PCGPAGE takes a number value as its second operand");
 			return false;
 		}
 		num = dynamic_cast<const Expr_Number *>(pExprOperand.get())->GetNumber();
@@ -687,6 +757,11 @@ bool Directive_PCG_ORG::OnPhaseGenerate(Context &context, const Expr_Directive *
 //-----------------------------------------------------------------------------
 // Directive_SCOPE
 //-----------------------------------------------------------------------------
+Directive *Directive_SCOPE::FactoryEx::Create() const
+{
+	return new Directive_SCOPE();
+}
+
 bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken) const
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(this));
