@@ -32,6 +32,7 @@ public:
 		pExpr->SetSourceInfo(_tokenizer.GetPathNameSrcShared()->Reference(), pToken->GetLineNo());
 	}
 	bool ParseFile();
+	bool ParseString(const char *str);
 	void AddError(const char *format, ...) const;
 	void AddErrorV(const char *format, va_list ap) const;
 public:

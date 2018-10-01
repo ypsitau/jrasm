@@ -6,6 +6,8 @@
 
 #include "PCGPattern.h"
 
+class Expr;
+
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
@@ -16,6 +18,7 @@ private:
 	PCGType _pcgType;
 	int _charCodeStart;
 	PCGPatternOwner _pcgPatternOwner;
+	static const char *_asmCodeForStore;
 public:
 	DeclareReferenceAccessor(PCGPage);
 public:
@@ -29,6 +32,7 @@ public:
 	inline int GetCharCodeCur() const { return _charCodeStart + static_cast<int>(_pcgPatternOwner.size()); }
 	inline const PCGPatternOwner &GetPCGPatternOwner() const { return _pcgPatternOwner; }
 	const PCGPattern *AddPCGPattern(const Binary &buff);
+	Expr *GenerateExpr(const char *pathNameSrc) const;
 };
 
 //-----------------------------------------------------------------------------

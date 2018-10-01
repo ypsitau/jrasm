@@ -29,6 +29,17 @@ bool Parser::ParseFile()
 	return !ErrorLog::HasError();
 }
 
+bool Parser::ParseString(const char *str)
+{
+	const char *p = str;
+	for (;;) {
+		char ch = *p++;
+		if (!FeedChar(ch)) break;
+		if (ch == '\0') break;
+	}
+	return !ErrorLog::HasError();
+}
+
 bool Parser::FeedToken(AutoPtr<Token> pToken)
 {
 	//::printf("%s\n", pToken->ToString().c_str());
