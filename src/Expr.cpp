@@ -608,18 +608,16 @@ const Expr::Type Expr_Symbol::TYPE = Expr::TYPE_Symbol;
 bool Expr_Symbol::OnPhaseAssignSymbol(Context &context)
 {
 	if (!Expr::OnPhaseAssignSymbol(context)) return false;
-#if 0
 	if (_symbol == "$") {
-		AutoPtr<Expr> pExprRtn(new Expr_Number(context.GetAddress()));
-		pExprRtn->DeriveSourceInfo(this);
-		return pExprRtn.release();
+		_pExprAssigned.reset(new Expr_Number(context.GetAddress()));
+		_pExprAssigned->DeriveSourceInfo(this);
 	}
-#endif
 	return true;
 }
 
 Expr *Expr_Symbol::Resolve(Context &context) const
 {
+	if (!_pExprAssigned.IsNull()) return _pExprAssigned->Reference();
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetSymbol())) return Reference();
 	if (!context.IsPhase(Context::PHASE_Generate)) {
