@@ -74,7 +74,7 @@ bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const 
 	return true;
 }
 
-bool Directive::OnPhaseInclude(Context &context, Expr *pExpr)
+bool Directive::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	// nothing to do
 	return true;
@@ -381,7 +381,7 @@ Directive *Directive_INCLUDE::Factory::Create() const
 	return new Directive_INCLUDE();
 }
 
-bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr *pExpr)
+bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
@@ -400,7 +400,7 @@ bool Directive_INCLUDE::OnPhaseInclude(Context &context, Expr *pExpr)
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
 	AutoPtr<Expr> pExprRoot(parser.GetRoot()->Reference());
-	if (!pExprRoot->OnPhaseInclude(context)) return false;
+	if (!pExprRoot->OnPhasePreprocess(context)) return false;
 	_pExprIncluded.reset(pExprRoot.release());
 	return true;
 }
@@ -629,7 +629,7 @@ bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseInclude(Context &context, Expr *pExpr)
+bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	const char *errMsg = "directive syntax: .PCGDATA symbol,width,height";
@@ -722,7 +722,7 @@ bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	return true;
 }
 
-bool Directive_PCGPAGE::OnPhaseInclude(Context &context, Expr *pExpr)
+bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::PCGDATA) && !pExprChild->IsTypeDirective(Directive::END)) {

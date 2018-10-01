@@ -26,7 +26,7 @@ bool Context::Prepare()
 	if (!parser.ParseFile()) return false;
 	_pExprRoot.reset(parser.GetRoot()->Reference());
 	SetPhase(PHASE_Include);
-	if (!_pExprRoot->OnPhaseInclude(*this)) return false;
+	if (!_pExprRoot->OnPhasePreprocess(*this)) return false;
 	SetPhase(PHASE_DeclareMacro);
 	if (!_pExprRoot->OnPhaseDeclareMacro(*this)) return false;
 	SetPhase(PHASE_ExpandMacro);

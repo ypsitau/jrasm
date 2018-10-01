@@ -62,10 +62,10 @@ void Expr::Print() const
 	::printf("%s\n", ComposeSource(false).c_str());
 }
 
-bool Expr::OnPhaseInclude(Context &context)
+bool Expr::OnPhasePreprocess(Context &context)
 {
-	return GetExprOperands().OnPhaseInclude(context) &&
-		GetExprChildren().OnPhaseInclude(context);
+	return GetExprOperands().OnPhasePreprocess(context) &&
+		GetExprChildren().OnPhasePreprocess(context);
 }
 
 bool Expr::OnPhaseDeclareMacro(Context &context)
@@ -119,10 +119,10 @@ String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
 	return rtn;
 }
 
-bool ExprList::OnPhaseInclude(Context &context)
+bool ExprList::OnPhasePreprocess(Context &context)
 {
 	for (auto pExpr : *this) {
-		if (!pExpr->OnPhaseInclude(context)) return false;
+		if (!pExpr->OnPhasePreprocess(context)) return false;
 	}
 	return true;
 }
@@ -764,9 +764,9 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
-bool Expr_Directive::OnPhaseInclude(Context &context)
+bool Expr_Directive::OnPhasePreprocess(Context &context)
 {
-	return _pDirective->OnPhaseInclude(context, this) && Expr::OnPhaseInclude(context);
+	return _pDirective->OnPhasePreprocess(context, this) && Expr::OnPhasePreprocess(context);
 }
 
 bool Expr_Directive::OnPhaseDeclareMacro(Context &context)

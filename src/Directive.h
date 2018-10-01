@@ -93,7 +93,7 @@ public:
 	inline bool GetGroupingFlag() const { return _pDirectiveFactory->GetGroupingFlag(); }
 	inline const DirectiveFactory *GetDirectiveFactory() const { return _pDirectiveFactory; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
-	virtual bool OnPhaseInclude(Context &context, Expr *pExpr);
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
@@ -229,7 +229,7 @@ private:
 	AutoPtr<Expr> _pExprIncluded;
 public:
 	inline Directive_INCLUDE() : Directive(INCLUDE) {}
-	virtual bool OnPhaseInclude(Context &context, Expr *pExpr);
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
@@ -334,7 +334,7 @@ private:
 public:
 	inline Directive_PCGDATA() : Directive(PCGDATA) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
-	virtual bool OnPhaseInclude(Context &context, Expr *pExpr);
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
@@ -358,7 +358,7 @@ public:
 	inline PCGPage *GetPCGPage() { return _pPCGPage.get(); }
 	inline const PCGPage *GetPCGPage() const { return _pPCGPage.get(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
-	virtual bool OnPhaseInclude(Context &context, Expr *pExpr);
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;

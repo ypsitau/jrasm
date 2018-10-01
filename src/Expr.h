@@ -44,7 +44,7 @@ class ExprList : public std::vector<Expr *> {
 public:
 	Expr_Label *SeekLabelToAssoc();
 	String ComposeSource(bool upperCaseFlag, const char *sep) const;
-	bool OnPhaseInclude(Context &context);
+	bool OnPhasePreprocess(Context &context);
 	bool OnPhaseDeclareMacro(Context &context);
 	bool OnPhaseExpandMacro(Context &context);
 	bool OnPhaseAssignSymbol(Context &context);
@@ -145,7 +145,7 @@ public:
 	bool IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const;
 	bool IsGrouping() const;
 	void Print() const;
-	virtual bool OnPhaseInclude(Context &context);
+	virtual bool OnPhasePreprocess(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
@@ -413,7 +413,7 @@ public:
 		Expr(expr), _pDirective(expr._pDirective->Reference()) {}
 	inline Directive *GetDirective() { return _pDirective.get(); }
 	inline const Directive *GetDirective() const { return _pDirective.get(); }
-	virtual bool OnPhaseInclude(Context &context);
+	virtual bool OnPhasePreprocess(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
