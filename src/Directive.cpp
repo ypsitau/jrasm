@@ -631,13 +631,13 @@ bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
-	if (exprOperands.size() < 3) {
-		ErrorLog::AddError(pExpr, "too few operands for directive .PCGDATA");
+	const char *errMsg = "directive syntax: .PCGDATA symbol,width,height";
+	if (exprOperands.size() != 3) {
+		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
 	String symbol;
 	size_t wdChar = 0, htChar = 0;
-	const char *errMsg = "invalid operand for directive .PCGDATA";
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -729,44 +729,52 @@ bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 			return false;
 		}
 	}
+	const char *errMsg = "directive syntax: .PCGPAGE symbol,[CRAM|USER],charcode";
 	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (exprOperands.size() != 2) {
-		ErrorLog::AddError(pExpr, "directive .PCGPAGE takes two operands");
+	if (exprOperands.size() != 3) {
+		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
+	String symbol;
 	PCGType pcgType = PCGTYPE_None;
 	int charCodeStart = 0;
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
-			ErrorLog::AddError(pExpr, "directive .PCGPAGE takes a symbol value as its first operand");
+			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		const char *symbol = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
-		if (::strcasecmp(symbol, "cram") == 0) {
-			
-		} else if (::strcasecmp(symbol, "user") == 0) {
-
+		symbol = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
+	} while (0);
+	do {
+		Expr *pExprOperand = exprOperands[1];
+		if (!pExprOperand->IsTypeSymbol()) {
+			ErrorLog::AddError(pExpr, errMsg);
+			return false;
+		}
+		const char *symbolType = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
+		if (::strcasecmp(symbolType, "cram") == 0) {
+			pcgType = PCGTYPE_CRAM;
+		} else if (::strcasecmp(symbolType, "user") == 0) {
+			pcgType = PCGTYPE_User;
 		} else {
-			ErrorLog::AddError(pExpr, "the first operand takes cram or user");
+			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
 	} while (0);
 	do {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand(exprOperands[1]->Resolve(context));
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = exprOperands[2];
 		if (!pExprOperand->IsTypeNumber()) {
-			ErrorLog::AddError(pExpr, "directive .PCGPAGE takes a number value as its second operand");
+			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		charCodeStart = dynamic_cast<const Expr_Number *>(pExprOperand.get())->GetNumber();
+		charCodeStart = dynamic_cast<const Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
 	if (charCodeStart > 0xff) {
 		ErrorLog::AddError(pExpr, "address value exceeds 8-bit range");
 		return false;
 	}
-	_pPCGPage.reset(new PCGPage(pcgType, charCodeStart));
+	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
 	context.SetPCGPageCur(_pPCGPage->Reference());
 	return true;
 }
