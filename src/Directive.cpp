@@ -293,6 +293,7 @@ bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	
 	Expr::Delete(exprStack.back());
 	exprStack.pop_back();	// remove the Expr_Directive instance from the stack
 	exprStack.push_back(pExpr.release());
@@ -776,6 +777,8 @@ bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 	}
 	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
 	context.SetPCGPageCur(_pPCGPage->Reference());
+	_pExprGenerated.reset(_pPCGPage->GenerateExpr(""));
+	_pExprGenerated->GetExprChildren().Print(false);
 	return true;
 }
 

@@ -170,7 +170,9 @@ bool ExprList::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int i
 void ExprList::Print(bool upperCaseFlag) const
 {
 	for (auto pExpr : *this) {
-		::printf("%s\n", pExpr->ComposeSource(upperCaseFlag).c_str());
+		::printf("%s%s\n", pExpr->IsTypeLabel()? "" : "        ",
+				 pExpr->ComposeSource(upperCaseFlag).c_str());
+		pExpr->GetExprChildren().Print(upperCaseFlag);
 	}
 }
 

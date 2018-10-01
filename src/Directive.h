@@ -351,6 +351,7 @@ public:
 	};
 private:
 	AutoPtr<PCGPage> _pPCGPage;
+	AutoPtr<Expr> _pExprGenerated;
 public:
 	inline Directive_PCGPAGE() : Directive(PCGPAGE) {}
 	inline void SetPCGPage(PCGPage *pPCGPage) { _pPCGPage.reset(pPCGPage); }
