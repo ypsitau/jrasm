@@ -699,13 +699,17 @@ bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
 
 bool Directive_PCGDATA::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
-	// nothing to do
+#if 0
+	_pExprGenerated.reset(_pPCGData->GenerateExpr(pExpr->GetPathNameSrc()));
+	_pExprGenerated->GetExprChildren().Print(false);
+	return _pExprGenerated->OnPhaseAssignMacro(context);
+#endif
 	return true;
 }
 
 bool Directive_PCGDATA::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 {
-	// nothing to do
+	//return _pExprGenerated->OnPhaseExpandMacro(context);
 	return true;
 }
 
@@ -789,24 +793,19 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	}
 	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
 	context.SetPCGPageCur(_pPCGPage->Reference());
-
-	// the following code must be done when .end appears.
-	_pExprGenerated.reset(_pPCGPage->GenerateExpr(""));
-	_pExprGenerated->GetExprChildren().Print(false);
-
 	return true;
 }
 
 bool Directive_PCGPAGE::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
-	// nothing to do
-	return true;
+	_pExprGenerated.reset(_pPCGPage->GenerateExpr(pExpr->GetPathNameSrc()));
+	//_pExprGenerated->GetExprChildren().Print(false);
+	return _pExprGenerated->OnPhaseAssignMacro(context);
 }
 
 bool Directive_PCGPAGE::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 {
-	// nothing to do
-	return true;
+	return _pExprGenerated->OnPhaseExpandMacro(context);
 }
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
@@ -821,6 +820,7 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 	const char *symbol = upperCaseFlag? ".DB" : ".db";
 	const char *formatData = upperCaseFlag? "0x%02X" : "0x%02x";
 	String strHead = JustifyLeft(symbol, Generator::GetInstance().GetInstNameLenMax()) + " ";
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	for (auto pPCGPattern : _pPCGPage->GetPCGPatternOwner()) {
 		const Binary &buff = pPCGPattern->GetBuffer();
 		String strData;
@@ -831,7 +831,7 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 			strData += str;
 		}
 		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,
-									 (strHead + strData).c_str(), indentLevelCode);
+									 (strHead + strData).c_str(), indentLevelCode + 1);
 		context.ForwardAddress(static_cast<UInt32>(buff.size()));
 	}
 	return true;

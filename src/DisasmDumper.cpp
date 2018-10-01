@@ -42,34 +42,38 @@ void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *
 	const char *formatHead = _upperCaseFlag? "    %04X%s  %s%s\n" : "    %04x%s  %s%s\n";
 	const char *formatFollow = _upperCaseFlag? "    %04X%s\n" : "    %04x%s\n";
 	String indentCode = MakePadding(indentLevelCode, "| ");
-	String str;
+	String strRow;
 	size_t iCol = 0;
 	size_t iLine = 0;
 	size_t nColsFold = (buff.size() <= _nColsPerLine)? _nColsPerLine : _nColsPerLine / 2 * 2;
 	for (auto data : buff) {
-		char buff[16];
-		::sprintf_s(buff, formatData, static_cast<UInt8>(data));
-		str += buff;
+		char strData[16];
+		::sprintf_s(strData, formatData, static_cast<UInt8>(data));
+		strRow += strData;
 		iCol++;
 		if (iCol == nColsFold) {
+			strRow = JustifyLeft(strRow.c_str(), 3 * _nColsPerLine);
 			if (iLine == 0) {
-				::fprintf(_fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str(),
-						  indentCode.c_str(), strCode);
+				::fprintf(_fp, formatHead, addr, strRow.c_str(), indentCode.c_str(), strCode);
+			} else if (!indentCode.empty()) {
+				::fprintf(_fp, formatHead, addr, strRow.c_str(), indentCode.c_str(), "");
 			} else {
-				::fprintf(_fp, formatFollow, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str());
+				::fprintf(_fp, formatFollow, addr, strRow.c_str());
 			}
-			str.clear();
+			strRow.clear();
 			addr += static_cast<UInt32>(iCol);
 			iCol = 0;
 			iLine++;
 		}
 	}
 	if (iCol > 0) {
+		strRow = JustifyLeft(strRow.c_str(), 3 * _nColsPerLine);
 		if (iLine == 0) {
-			::fprintf(_fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str(),
-					  indentCode.c_str(), strCode);
+			::fprintf(_fp, formatHead, addr, strRow.c_str(), indentCode.c_str(), strCode);
+		} else if (!indentCode.empty()) {
+			::fprintf(_fp, formatHead, addr, strRow.c_str(), indentCode.c_str(), "");
 		} else {
-			::fprintf(_fp, formatFollow, addr, JustifyLeft(str.c_str(), 3 * _nColsPerLine).c_str());
+			::fprintf(_fp, formatFollow, addr, strRow.c_str());
 		}
 	}
 }

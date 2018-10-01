@@ -331,6 +331,7 @@ public:
 	};
 private:
 	AutoPtr<PCGData> _pPCGData;
+	AutoPtr<Expr> _pExprGenerated;
 public:
 	inline Directive_PCGDATA() : Directive(PCGDATA) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
