@@ -25,10 +25,10 @@ bool Context::Prepare()
 	Parser parser(_pathNameSrc);
 	if (!parser.ParseFile()) return false;
 	_pExprRoot.reset(parser.GetRoot()->Reference());
-	SetPhase(PHASE_Include);
+	SetPhase(PHASE_Preprocess);
 	if (!_pExprRoot->OnPhasePreprocess(*this)) return false;
-	SetPhase(PHASE_DeclareMacro);
-	if (!_pExprRoot->OnPhaseDeclareMacro(*this)) return false;
+	SetPhase(PHASE_AssignMacro);
+	if (!_pExprRoot->OnPhaseAssignMacro(*this)) return false;
 	SetPhase(PHASE_ExpandMacro);
 	if (!_pExprRoot->OnPhaseExpandMacro(*this)) return false;
 	SetPhase(PHASE_AssignSymbol);

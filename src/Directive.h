@@ -94,7 +94,7 @@ public:
 	inline const DirectiveFactory *GetDirectiveFactory() const { return _pDirectiveFactory; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
-	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
@@ -230,7 +230,7 @@ private:
 public:
 	inline Directive_INCLUDE() : Directive(INCLUDE) {}
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
-	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
@@ -270,7 +270,7 @@ private:
 public:
 	inline Directive_MACRO() : Directive(MACRO) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
-	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
@@ -335,7 +335,7 @@ public:
 	inline Directive_PCGDATA() : Directive(PCGDATA) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
-	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
@@ -361,7 +361,7 @@ public:
 	inline const PCGPage *GetPCGPage() const { return _pPCGPage.get(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
-	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,

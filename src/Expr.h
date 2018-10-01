@@ -45,7 +45,7 @@ public:
 	Expr_Label *SeekLabelToAssoc();
 	String ComposeSource(bool upperCaseFlag, const char *sep) const;
 	bool OnPhasePreprocess(Context &context);
-	bool OnPhaseDeclareMacro(Context &context);
+	bool OnPhaseAssignMacro(Context &context);
 	bool OnPhaseExpandMacro(Context &context);
 	bool OnPhaseAssignSymbol(Context &context);
 	bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
@@ -146,7 +146,7 @@ public:
 	bool IsGrouping() const;
 	void Print() const;
 	virtual bool OnPhasePreprocess(Context &context);
-	virtual bool OnPhaseDeclareMacro(Context &context);
+	virtual bool OnPhaseAssignMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
@@ -414,7 +414,7 @@ public:
 	inline Directive *GetDirective() { return _pDirective.get(); }
 	inline const Directive *GetDirective() const { return _pDirective.get(); }
 	virtual bool OnPhasePreprocess(Context &context);
-	virtual bool OnPhaseDeclareMacro(Context &context);
+	virtual bool OnPhaseAssignMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;

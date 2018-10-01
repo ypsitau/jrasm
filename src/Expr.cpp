@@ -68,10 +68,10 @@ bool Expr::OnPhasePreprocess(Context &context)
 		GetExprChildren().OnPhasePreprocess(context);
 }
 
-bool Expr::OnPhaseDeclareMacro(Context &context)
+bool Expr::OnPhaseAssignMacro(Context &context)
 {
-	return GetExprOperands().OnPhaseDeclareMacro(context) &&
-		GetExprChildren().OnPhaseDeclareMacro(context);
+	return GetExprOperands().OnPhaseAssignMacro(context) &&
+		GetExprChildren().OnPhaseAssignMacro(context);
 }
 
 bool Expr::OnPhaseExpandMacro(Context &context)
@@ -127,10 +127,10 @@ bool ExprList::OnPhasePreprocess(Context &context)
 	return true;
 }
 
-bool ExprList::OnPhaseDeclareMacro(Context &context)
+bool ExprList::OnPhaseAssignMacro(Context &context)
 {
 	for (auto pExpr : *this) {
-		if (!pExpr->OnPhaseDeclareMacro(context)) return false;
+		if (!pExpr->OnPhaseAssignMacro(context)) return false;
 	}
 	return true;
 }
@@ -769,9 +769,9 @@ bool Expr_Directive::OnPhasePreprocess(Context &context)
 	return _pDirective->OnPhasePreprocess(context, this) && Expr::OnPhasePreprocess(context);
 }
 
-bool Expr_Directive::OnPhaseDeclareMacro(Context &context)
+bool Expr_Directive::OnPhaseAssignMacro(Context &context)
 {
-	return _pDirective->OnPhaseDeclareMacro(context, this) && Expr::OnPhaseDeclareMacro(context);
+	return _pDirective->OnPhaseAssignMacro(context, this) && Expr::OnPhaseAssignMacro(context);
 }
 
 bool Expr_Directive::OnPhaseExpandMacro(Context &context)

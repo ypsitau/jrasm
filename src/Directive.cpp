@@ -80,7 +80,7 @@ bool Directive::OnPhasePreprocess(Context &context, Expr *pExpr)
 	return true;
 }
 
-bool Directive::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	// nothing to do
 	return true;
@@ -405,9 +405,9 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	return true;
 }
 
-bool Directive_INCLUDE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive_INCLUDE::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
-	return _pExprIncluded->OnPhaseDeclareMacro(context);
+	return _pExprIncluded->OnPhaseAssignMacro(context);
 }
 
 bool Directive_INCLUDE::OnPhaseExpandMacro(Context &context, Expr *pExpr)
@@ -482,7 +482,7 @@ bool Directive_MACRO::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
-bool Directive_MACRO::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive_MACRO::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	AutoPtr<Macro> pMacro(new Macro(_symbol, pExpr->GetExprChildren().Reference()));
@@ -697,7 +697,7 @@ bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive_PCGDATA::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	// nothing to do
 	return true;
@@ -797,7 +797,7 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	return true;
 }
 
-bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive_PCGPAGE::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	// nothing to do
 	return true;
