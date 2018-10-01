@@ -363,6 +363,7 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
+	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

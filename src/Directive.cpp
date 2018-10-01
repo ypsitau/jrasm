@@ -701,6 +701,7 @@ bool Directive_PCGDATA::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 #if 0
 	_pExprGenerated.reset(_pPCGData->GenerateExpr(pExpr->GetPathNameSrc()));
+	if (_pExprGenerated.IsNull()) return false;
 	_pExprGenerated->GetExprChildren().Print(false);
 	return _pExprGenerated->OnPhaseAssignMacro(context);
 #endif
@@ -799,6 +800,7 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 bool Directive_PCGPAGE::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	_pExprGenerated.reset(_pPCGPage->GenerateExpr(pExpr->GetPathNameSrc()));
+	if (_pExprGenerated.IsNull()) return false;
 	//_pExprGenerated->GetExprChildren().Print(false);
 	return _pExprGenerated->OnPhaseAssignMacro(context);
 }

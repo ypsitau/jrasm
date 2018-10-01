@@ -605,6 +605,19 @@ String Expr_Label::MakeSource(const char *symbol, bool forceGlobalFlag)
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Symbol::TYPE = Expr::TYPE_Symbol;
 
+bool Expr_Symbol::OnPhaseAssignSymbol(Context &context)
+{
+	if (!Expr::OnPhaseAssignSymbol(context)) return false;
+#if 0
+	if (_symbol == "$") {
+		AutoPtr<Expr> pExprRtn(new Expr_Number(context.GetAddress()));
+		pExprRtn->DeriveSourceInfo(this);
+		return pExprRtn.release();
+	}
+#endif
+	return true;
+}
+
 Expr *Expr_Symbol::Resolve(Context &context) const
 {
 	if (context.CheckCircularReference(this)) return nullptr;
@@ -614,7 +627,6 @@ Expr *Expr_Symbol::Resolve(Context &context) const
 		pExprRtn->DeriveSourceInfo(this);
 		return pExprRtn.release();
 	}
-	//::printf("ref: %p\n", _pExprDict.get());
 	const Expr *pExpr = _pExprDict->Lookup(GetSymbol());
 	if (pExpr == nullptr) {
 		ErrorLog::AddError(this, "undefined symbol: %s", GetSymbol());

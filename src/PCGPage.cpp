@@ -20,8 +20,7 @@ Expr *PCGPage::GenerateExpr(const char *pathNameSrc) const
 	UInt16 srcAddrStart = 0;
 	UInt16 dstAddrStart = 0xd000 + _charCodeStart * 8;
 	UInt16 dstAddrEnd = 0xd000 + GetCharCodeCur() * 8;
-	::sprintf_s(asmCode, _asmCodeTmpl,
-				_symbol.c_str(), dstAddrEnd, srcAddrStart, dstAddrStart);
+	::sprintf_s(asmCode, _asmCodeTmpl, GetSymbol(), srcAddrStart, dstAddrStart, dstAddrEnd);
 	Parser parser(pathNameSrc);
 	if (!parser.ParseString(asmCode)) return nullptr;
 	return parser.GetRoot()->Reference();
@@ -29,6 +28,10 @@ Expr *PCGPage::GenerateExpr(const char *pathNameSrc) const
 
 const char *PCGPage::_asmCodeTmpl = R"**(pcgpage.%s.store:
         .macro
+        ldx     0x%04x
+        stx     [ptrsrc]
+        ldx     0x%04x
+        stx     [ptrdst]
 loop:
         ldx     [ptrsrc]
         ldaa    [x]
@@ -41,8 +44,8 @@ loop:
         cpx     0x%04x
         bne     loop
         bra     done
-ptrsrc: .dw     0x%04x
-ptrdst: .dw     0x%04x
+ptrsrc: .dw     0x0000
+ptrdst: .dw     0x0000
 done:
         .end
 )**";
