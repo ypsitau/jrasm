@@ -683,6 +683,19 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
+	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
+	int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
+	if (pcgType == PCGTYPE_CRAM) {
+		if (charCodeCur < 0 || charCodeCur > 255) {
+			ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
+			return false;
+		}
+	} else { // pcgType == PCGTYPE_User
+		if (charCodeCur < 32 || charCodeCur > 95) {
+			ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
+			return false;
+		}
+	}
 	for (size_t yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (size_t xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
@@ -787,6 +800,17 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 			return false;
 		}
 		charCodeStart = dynamic_cast<const Expr_Number *>(pExprOperand)->GetNumber();
+		if (pcgType == PCGTYPE_CRAM) {
+			if (charCodeStart < 0 || charCodeStart > 255) {
+				ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
+				return false;
+			}
+		} else { // pcgType == PCGTYPE_User
+			if (charCodeStart < 32 || charCodeStart > 95) {
+				ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
+				return false;
+			}
+		}
 	} while (0);
 	if (charCodeStart > 0xff) {
 		ErrorLog::AddError(pExpr, "address value exceeds 8-bit range");
@@ -808,6 +832,11 @@ bool Directive_PCGPAGE::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 bool Directive_PCGPAGE::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 {
 	return _pExprGenerated->OnPhaseExpandMacro(context);
+}
+
+bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	return _pExprGenerated->OnPhaseAssignSymbol(context);
 }
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const

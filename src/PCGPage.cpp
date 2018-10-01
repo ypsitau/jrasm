@@ -17,18 +17,36 @@ const PCGPattern *PCGPage::AddPCGPattern(const Binary &buff)
 Expr *PCGPage::GenerateExpr(const char *pathNameSrc) const
 {
 	char asmCode[1024];
-	UInt16 srcAddrStart = 0;
-	UInt16 dstAddrStart = 0xd000 + _charCodeStart * 8;
-	UInt16 dstAddrEnd = 0xd000 + GetCharCodeCur() * 8;
-	::sprintf_s(asmCode, _asmCodeTmpl, GetSymbol(), srcAddrStart, dstAddrStart, dstAddrEnd);
+	const char *asmCodeTmpl = "";
+	UInt16 dstAddrStart = 0x0000;
+	UInt16 dstAddrEnd = 0x0000;
+	if (_pcgType == PCGTYPE_CRAM) {
+		asmCodeTmpl = _asmCodeTmpl1;
+		dstAddrStart = 0xd000 + _charCodeStart * 8;
+		dstAddrEnd = 0xd000 + GetCharCodeCur() * 8;
+	} else if (_charCodeStart < 0x40 && GetCharCodeCur() <= 0x40) { // _pcgType == PCGTYPE_User
+		asmCodeTmpl = _asmCodeTmpl1;
+		dstAddrStart = 0xc000 + (_charCodeStart - 0x20) * 8;
+		dstAddrEnd = 0xc000 + (GetCharCodeCur() - 0x20) * 8;
+	} else if (_charCodeStart < 0x40 && GetCharCodeCur() > 0x40) { // _pcgType == PCGTYPE_User
+		asmCodeTmpl = _asmCodeTmpl2;
+		dstAddrStart = 0xc000 + (_charCodeStart - 0x20) * 8;
+		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 0x40) * 8;
+	} else { // _charCodeStart >= 0x40 && _pcgType == PCGTYPE_User
+		asmCodeTmpl = _asmCodeTmpl1;
+		dstAddrStart = 0xc400 + (_charCodeStart - 0x40) * 8;
+		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 0x40) * 8;
+	}
+	::sprintf_s(asmCode, _asmCodeTmpl1, GetSymbol(), GetSymbol(), GetSymbol(), dstAddrStart, dstAddrEnd);
 	Parser parser(pathNameSrc);
 	if (!parser.ParseString(asmCode)) return nullptr;
 	return parser.GetRoot()->Reference();
 }
 
-const char *PCGPage::_asmCodeTmpl = R"**(pcgpage.%s.store:
+const char *PCGPage::_asmCodeTmpl1 = R"**(pcgpage.%s.src:
+pcgpage.%s.store:
         .macro
-        ldx     0x%04x
+        ldx     pcgpage.%s.src
         stx     [ptrsrc]
         ldx     0x%04x
         stx     [ptrdst]
@@ -45,7 +63,46 @@ ptrdst: .equ    $+1
         stx     [ptrdst]
         cpx     0x%04x
         bne     loop
+        .end
+)**";
 
+const char *PCGPage::_asmCodeTmpl2 = R"**(pcgpage.%s.src
+pcgpage.%s.store:
+        .macro
+        ldx     pcgpage.%s.src
+        stx     [ptrsrc1]
+        ldx     0x%04x
+        stx     [ptrdst1]
+loop1:
+ptrsrc1:.equ    $+1
+        ldx     0x0000
+        ldaa    [x]
+        inx
+        stx     [ptrsrc1]
+ptrdst1:.equ    $+1
+        ldx     0x0000
+        staa    [x]
+        inx
+        stx     [ptrdst1]
+        cpx     0xc100
+        bne     loop1
+        ldx     [ptrsrc1]
+        stx     [ptrsrc2]
+        ldx     0xc400
+        stx     [ptrdst2]
+loop2:
+ptrsrc2:.equ    $+1
+        ldx     0x0000
+        ldaa    [x]
+        inx
+        stx     [ptrsrc2]
+ptrdst2:.equ    $+1
+        ldx     0x0000
+        staa    [x]
+        inx
+        stx     [ptrdst2]
+        cpx     0x%04x
+        bne     loop2
         .end
 )**";
 

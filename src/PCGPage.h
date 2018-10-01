@@ -18,7 +18,8 @@ private:
 	PCGType _pcgType;
 	int _charCodeStart;
 	PCGPatternOwner _pcgPatternOwner;
-	static const char *_asmCodeTmpl;
+	static const char *_asmCodeTmpl1;
+	static const char *_asmCodeTmpl2;
 public:
 	DeclareReferenceAccessor(PCGPage);
 public:
