@@ -6,6 +6,8 @@
 
 #include "PCGPattern.h"
 
+class Expr;
+
 //-----------------------------------------------------------------------------
 // PCGData
 //-----------------------------------------------------------------------------
@@ -16,12 +18,15 @@ private:
 	//size_t _wdChar;
 	//size_t _htChar;
 	//PCGPatternOwner _pcgPatternOwner;
+	static const char *_asmCodeTmpl;
 public:
 	DeclareReferenceAccessor(PCGData);
 public:
 	inline PCGData() : _cntRef(1) {}
 private:
 	inline ~PCGData() {}
+public:
+	Expr *GenerateExpr(const char *pathNameSrc) const;
 };
 
 #endif

@@ -18,7 +18,7 @@ private:
 	PCGType _pcgType;
 	int _charCodeStart;
 	PCGPatternOwner _pcgPatternOwner;
-	static const char *_asmCodeForStore;
+	static const char *_asmCodeTmpl;
 public:
 	DeclareReferenceAccessor(PCGPage);
 public:
