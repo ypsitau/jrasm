@@ -629,7 +629,7 @@ bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive_PCGDATA::OnPhaseInclude(Context &context, Expr *pExpr)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	const char *errMsg = "directive syntax: .PCGDATA symbol,width,height";
@@ -722,7 +722,7 @@ bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	return true;
 }
 
-bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+bool Directive_PCGPAGE::OnPhaseInclude(Context &context, Expr *pExpr)
 {
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::PCGDATA) && !pExprChild->IsTypeDirective(Directive::END)) {
