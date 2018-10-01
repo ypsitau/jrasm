@@ -45,6 +45,7 @@ ptrdst: .equ    $+1
         stx     [ptrdst]
         cpx     0x%04x
         bne     loop
+
         .end
 )**";
 

@@ -1,4 +1,6 @@
 external_val:      .equ 0x20
+                   macro0
+                   macro0
                    macro1 8
     1000 86 08     | ldaa 8
     1002 96 08     | ldaa {8}
@@ -46,5 +48,22 @@ addr1:             |
     1041 10 41     | .dw  addr1
 addr2:             | 
     1043 10 43     | .dw  addr2
+                   macro5 0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
+    1045 00 00     | .dw  0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
+    1047 11 11     | 
+    1049 22 22     | 
+    104b 33 33     | 
+    104d 44 44     | 
+    104f 55 55     | 
+    1051 66 66     | 
+    1053 77 77     | 
+    1055 88 88     | 
+    1057 99 99     | 
+    1059 aa aa     | 
+    105b bb bb     | 
+    105d cc cc     | 
+    105f dd dd     | 
+    1061 ee ee     | 
+    1063 ff ff     | 
 [Symbol List]
 0020  external_val

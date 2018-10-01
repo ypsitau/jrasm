@@ -38,7 +38,7 @@ const DirectiveFactory *Directive::ISEG			= nullptr;
 const DirectiveFactory *Directive::MACRO		= nullptr;
 const DirectiveFactory *Directive::MML			= nullptr;
 const DirectiveFactory *Directive::ORG			= nullptr;
-const DirectiveFactory *Directive::PCGDATA		= nullptr;
+const DirectiveFactory *Directive::PCG			= nullptr;
 const DirectiveFactory *Directive::PCGPAGE		= nullptr;
 const DirectiveFactory *Directive::SCOPE		= nullptr;
 
@@ -60,7 +60,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(MACRO			= new Directive_MACRO::Factory());
 	_directiveFactoryDict.Assign(MML			= new Directive_MML::Factory());
 	_directiveFactoryDict.Assign(ORG			= new Directive_ORG::Factory());
-	_directiveFactoryDict.Assign(PCGDATA		= new Directive_PCGDATA::Factory());
+	_directiveFactoryDict.Assign(PCG			= new Directive_PCG::Factory());
 	_directiveFactoryDict.Assign(PCGPAGE		= new Directive_PCGPAGE::Factory());
 	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
 }
@@ -612,14 +612,14 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 }
 
 //-----------------------------------------------------------------------------
-// Directive_PCGDATA
+// Directive_PCG
 //-----------------------------------------------------------------------------
-Directive *Directive_PCGDATA::Factory::Create() const
+Directive *Directive_PCG::Factory::Create() const
 {
-	return new Directive_PCGDATA();
+	return new Directive_PCG();
 }
 
-bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
@@ -629,10 +629,10 @@ bool Directive_PCGDATA::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
+bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
-	const char *errMsg = "directive syntax: .PCGDATA symbol,width,height";
+	const char *errMsg = "directive syntax: .PCG symbol,width,height";
 	if (exprOperands.size() != 3) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
@@ -667,7 +667,7 @@ bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
 	UInt32 bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
-			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCGDATA");
+			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCG");
 			return false;
 		}
 		if (!Directive_DB::DoDirective(
@@ -697,7 +697,7 @@ bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseAssignMacro(Context &context, Expr *pExpr)
+bool Directive_PCG::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 #if 0
 	_pExprGenerated.reset(_pPCGData->GenerateExpr(pExpr->GetPathNameSrc()));
@@ -708,13 +708,13 @@ bool Directive_PCGDATA::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseExpandMacro(Context &context, Expr *pExpr)
+bool Directive_PCG::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 {
 	//return _pExprGenerated->OnPhaseExpandMacro(context);
 	return true;
 }
 
-bool Directive_PCGDATA::OnPhaseDisasm(Context &context, const Expr *pExpr,
+bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	// suppress disasm dump
@@ -742,8 +742,8 @@ bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	for (auto pExprChild : pExpr->GetExprChildren()) {
-		if (!pExprChild->IsTypeDirective(Directive::PCGDATA) && !pExprChild->IsTypeDirective(Directive::END)) {
-			ErrorLog::AddError(pExprChild, "only .PCGDATA directive can be stored in .PCGPAGE");
+		if (!pExprChild->IsTypeDirective(Directive::PCG) && !pExprChild->IsTypeDirective(Directive::END)) {
+			ErrorLog::AddError(pExprChild, "only .PCG directive can be stored in .PCGPAGE");
 			return false;
 		}
 	}

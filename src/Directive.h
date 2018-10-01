@@ -71,7 +71,7 @@ public:
 	static const DirectiveFactory *MACRO;
 	static const DirectiveFactory *MML;
 	static const DirectiveFactory *ORG;
-	static const DirectiveFactory *PCGDATA;
+	static const DirectiveFactory *PCG;
 	static const DirectiveFactory *PCGPAGE;
 	static const DirectiveFactory *SCOPE;
 private:
@@ -320,20 +320,20 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_PCGDATA
+// Directive_PCG
 //-----------------------------------------------------------------------------
-class Directive_PCGDATA : public Directive {
+class Directive_PCG : public Directive {
 public:
 	class Factory : public DirectiveFactory {
 	public:
-		inline Factory() : DirectiveFactory(".PCGDATA", false, true) {}
+		inline Factory() : DirectiveFactory(".PCG", false, true) {}
 		virtual Directive *Create() const;
 	};
 private:
 	AutoPtr<PCGData> _pPCGData;
 	AutoPtr<Expr> _pExprGenerated;
 public:
-	inline Directive_PCGDATA() : Directive(PCGDATA) {}
+	inline Directive_PCG() : Directive(PCG) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
