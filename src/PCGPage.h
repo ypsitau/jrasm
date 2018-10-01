@@ -4,7 +4,7 @@
 #ifndef __PCGPAGE_H__
 #define __PCGPAGE_H__
 
-#include "PCGPattern.h"
+#include "PCGChar.h"
 
 class Expr;
 
@@ -17,7 +17,7 @@ private:
 	String _symbol;
 	PCGType _pcgType;
 	int _charCodeStart;
-	PCGPatternOwner _pcgPatternOwner;
+	PCGCharOwner _pcgCharOwner;
 	static const char *_asmCodeTmpl1;
 	static const char *_asmCodeTmpl2;
 public:
@@ -31,9 +31,9 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCodeStart() const { return _charCodeStart; }
-	inline int GetCharCodeCur() const { return _charCodeStart + static_cast<int>(_pcgPatternOwner.size()); }
-	inline const PCGPatternOwner &GetPCGPatternOwner() const { return _pcgPatternOwner; }
-	PCGPattern *CreatePCGPattern(const Binary &buff);
+	inline int GetCharCodeCur() const { return _charCodeStart + static_cast<int>(_pcgCharOwner.size()); }
+	inline const PCGCharOwner &GetPCGCharOwner() const { return _pcgCharOwner; }
+	PCGChar *CreatePCGChar(const Binary &buff);
 	Expr *ComposeExpr() const;
 };
 

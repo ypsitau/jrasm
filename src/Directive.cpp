@@ -705,7 +705,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 			for (size_t i = 0; i < 8; i++, pDataOrg += wdChar) {
 				buffDst += *pDataOrg;
 			}
-			_pPCGData->AddPCGPattern(context.GetPCGPageCur()->CreatePCGPattern(buffDst));
+			_pPCGData->AddPCGChar(context.GetPCGPageCur()->CreatePCGChar(buffDst));
 		}
 	}
 	return true;
@@ -850,8 +850,8 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 	const char *formatData = upperCaseFlag? "0x%02X" : "0x%02x";
 	String strHead = JustifyLeft(symbol, Generator::GetInstance().GetInstNameLenMax()) + " ";
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	for (auto pPCGPattern : _pPCGPage->GetPCGPatternOwner()) {
-		const Binary &buff = pPCGPattern->GetBuffer();
+	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
+		const Binary &buff = pPCGChar->GetBuffer();
 		String strData;
 		for (auto data : buff) {
 			char str[64];

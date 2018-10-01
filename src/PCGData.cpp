@@ -15,8 +15,8 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += str;
 		asmCode += "        .macro\n";
 		size_t iCol = 0, iRow = 0;
-		for (auto pPCGPattern : _pcgPatternOwner) {
-			::sprintf_s(str, "        ldaa    0x%02x\n", pPCGPattern->GetCharCode());
+		for (auto pPCGChar : _pcgCharOwner) {
+			::sprintf_s(str, "        ldaa    0x%02x\n", pPCGChar->GetCharCode());
 			asmCode += str;
 			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
 			asmCode += str;
@@ -35,7 +35,7 @@ Expr *PCGData::ComposeExpr() const
 		size_t iCol = 0, iRow = 0;
 		::sprintf_s(str, "        ldaa    0x%02x\n", 0x00);
 		asmCode += str;
-		for (size_t i = 0; i < _pcgPatternOwner.size(); i++) {
+		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
 			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
 			asmCode += str;
 			iCol++;
@@ -54,7 +54,7 @@ Expr *PCGData::ComposeExpr() const
 		size_t iCol = 0, iRow = 0;
 		::sprintf_s(str, "        ldaa    foreground+background*8\n");
 		asmCode += str;
-		for (size_t i = 0; i < _pcgPatternOwner.size(); i++) {
+		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
 			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
 			asmCode += str;
 			iCol++;

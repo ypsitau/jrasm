@@ -3,17 +3,16 @@
 //=============================================================================
 #include "stdafx.h"
 
-
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
-PCGPattern *PCGPage::CreatePCGPattern(const Binary &buff)
+PCGChar *PCGPage::CreatePCGChar(const Binary &buff)
 {
-	const PCGPattern *pPCGPatternFound = _pcgPatternOwner.FindSamePattern(buff);
-	if (pPCGPatternFound != nullptr) return pPCGPatternFound->Reference();
-	AutoPtr<PCGPattern> pPCGPattern(new PCGPattern(_pcgType, GetCharCodeCur(), buff));
-	_pcgPatternOwner.push_back(pPCGPattern->Reference());
-	return pPCGPattern.release();
+	const PCGChar *pPCGCharFound = _pcgCharOwner.FindSamePattern(buff);
+	if (pPCGCharFound != nullptr) return pPCGCharFound->Reference();
+	AutoPtr<PCGChar> pPCGChar(new PCGChar(_pcgType, GetCharCodeCur(), buff));
+	_pcgCharOwner.push_back(pPCGChar->Reference());
+	return pPCGChar.release();
 }
 
 Expr *PCGPage::ComposeExpr() const

@@ -4,7 +4,7 @@
 #ifndef __PCGDATA_H__
 #define __PCGDATA_H__
 
-#include "PCGPattern.h"
+#include "PCGChar.h"
 
 class Expr;
 
@@ -17,7 +17,7 @@ private:
 	String _symbol;
 	size_t _wdChar;
 	size_t _htChar;
-	PCGPatternOwner _pcgPatternOwner;
+	PCGCharOwner _pcgCharOwner;
 public:
 	DeclareReferenceAccessor(PCGData);
 public:
@@ -29,7 +29,7 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline size_t GetWdChar() const { return _wdChar; }
 	inline size_t GetHtChar() const { return _htChar; }
-	inline void AddPCGPattern(PCGPattern *pPCGPattern) { _pcgPatternOwner.push_back(pPCGPattern); }
+	inline void AddPCGChar(PCGChar *pPCGChar) { _pcgCharOwner.push_back(pPCGChar); }
 	Expr *ComposeExpr() const;
 };
 

@@ -1,8 +1,8 @@
 //=============================================================================
-// PCGPattern.h
+// PCGChar.h
 //=============================================================================
-#ifndef __PCGPATTERN_H__
-#define __PCGPATTERN_H__
+#ifndef __PCGCHAR_H__
+#define __PCGCHAR_H__
 
 #include "Common.h"
 
@@ -16,21 +16,21 @@ enum PCGType {
 };
 
 //-----------------------------------------------------------------------------
-// PCGPattern
+// PCGChar
 //-----------------------------------------------------------------------------
-class PCGPattern {
+class PCGChar {
 private:
 	int _cntRef;
 	PCGType _pcgType;
 	int _charCode;
 	Binary _buff;
 public:
-	DeclareReferenceAccessor(PCGPattern);
+	DeclareReferenceAccessor(PCGChar);
 public:
-	inline PCGPattern(PCGType pcgType, int charCode, const Binary &buff) :
+	inline PCGChar(PCGType pcgType, int charCode, const Binary &buff) :
 		_cntRef(1), _pcgType(pcgType), _charCode(charCode), _buff(buff) {}
 private:
-	inline ~PCGPattern() {}
+	inline ~PCGChar() {}
 public:
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCode() const { return _charCode; }
@@ -39,19 +39,19 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// PCGPatternList
+// PCGCharList
 //-----------------------------------------------------------------------------
-class PCGPatternList : public std::vector<PCGPattern *> {
+class PCGCharList : public std::vector<PCGChar *> {
 public:
-	const PCGPattern *FindSamePattern(const Binary &buff) const;
+	const PCGChar *FindSamePattern(const Binary &buff) const;
 };
 
 //-----------------------------------------------------------------------------
-// PCGPatternOwner
+// PCGCharOwner
 //-----------------------------------------------------------------------------
-class PCGPatternOwner : public PCGPatternList {
+class PCGCharOwner : public PCGCharList {
 public:
-	~PCGPatternOwner();
+	~PCGCharOwner();
 	void Clear();
 };
 

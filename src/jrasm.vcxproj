@@ -164,9 +164,9 @@
     <ClInclude Include="MmlParser.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PCGChar.h" />
     <ClInclude Include="PCGData.h" />
     <ClInclude Include="PCGPage.h" />
-    <ClInclude Include="PCGPattern.h" />
     <ClInclude Include="Region.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="stdafx.h" />
@@ -190,9 +190,9 @@
     <ClCompile Include="MmlParser.cpp" />
     <ClCompile Include="Operator.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClInclude Include="PCGChar.cpp" />
     <ClInclude Include="PCGData.cpp" />
     <ClInclude Include="PCGPage.cpp" />
-    <ClInclude Include="PCGPattern.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="stdafx.cpp">
