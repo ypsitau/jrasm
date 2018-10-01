@@ -561,12 +561,12 @@ bool Expr_Label::OnPhaseAssignSymbol(Context &context)
 bool Expr_Label::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	String strLabel = MakeSource(_symbol.c_str(), _forceGlobalFlag);
-	if (IsAssigned()) {
+	if (!IsAssigned()) {
+		disasmDumper.DumpLabel(strLabel.c_str(), indentLevelCode);
+	} else if (GetAssigned()->IsTypeDirective(Directive::EQU)) {
 		disasmDumper.DumpLabelAndCode(
 			strLabel.c_str(),
 			GetAssigned()->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	} else {
-		disasmDumper.DumpLabel(strLabel.c_str(), indentLevelCode);
 	}
 	return true;
 }
@@ -764,8 +764,10 @@ String Expr_Instruction::ComposeSource(bool upperCaseFlag) const
 	String str = JustifyLeft(
 		(upperCaseFlag? ToUpper(_symbol.c_str()) : ToLower(_symbol.c_str())).c_str(),
 		Generator::GetInstance().GetInstNameLenMax());
-	str += " ";
-	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
+	if (!GetExprOperands().empty()) {
+		str += " ";
+		str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
+	}
 	return str;
 }
 

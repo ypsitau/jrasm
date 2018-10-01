@@ -1,5 +1,5 @@
     1000 20 7f     bra  label1
-    1002 01        nop  
+    1002 01        nop 
     1003 20 7c     bra  label1
     1005 20 7a     bra  label1
     1007 20 78     bra  label1

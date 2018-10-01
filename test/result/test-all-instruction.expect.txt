@@ -1,5 +1,5 @@
 start:
-    1000 1b        aba  
+    1000 1b        aba 
 after_aba:
     1001 89 12     adc  a,0x12
 after_adc_a_imm:
@@ -105,9 +105,9 @@ after_asl_b:
 after_asl_idx:
     1071 78 12 34  asl  [0x1234]
 after_asl_ext:
-    1074 48        asla 
+    1074 48        asla
 after_asla:
-    1075 58        aslb 
+    1075 58        aslb
 after_aslb:
     1076 47        asr  a
 after_asr_a:
@@ -117,9 +117,9 @@ after_asr_b:
 after_asr_idx:
     107a 77 12 34  asr  [0x1234]
 after_asr_ext:
-    107d 47        asra 
+    107d 47        asra
 after_asra:
-    107e 57        asrb 
+    107e 57        asrb
 after_asrb:
     107f 24 12     bcc  0x12
 after_bcc_imm:
@@ -185,11 +185,11 @@ after_bsr_imm:
 after_bvc_imm:
     10c1 29 12     bvs  0x12
 after_bvs_imm:
-    10c3 11        cba  
+    10c3 11        cba 
 after_cba:
-    10c4 0c        clc  
+    10c4 0c        clc 
 after_clc:
-    10c5 0e        cli  
+    10c5 0e        cli 
 after_cli:
     10c6 4f        clr  a
 after_clr_a:
@@ -199,11 +199,11 @@ after_clr_b:
 after_clr_idx:
     10ca 7f 12 34  clr  [0x1234]
 after_clr_ext:
-    10cd 4f        clra 
+    10cd 4f        clra
 after_clra:
-    10ce 5f        clrb 
+    10ce 5f        clrb
 after_clrb:
-    10cf 0a        clv  
+    10cf 0a        clv 
 after_clv:
     10d0 81 12     cmp  a,0x12
 after_cmp_a_imm:
@@ -245,9 +245,9 @@ after_com_b:
 after_com_idx:
     10f8 73 12 34  com  [0x1234]
 after_com_ext:
-    10fb 43        coma 
+    10fb 43        coma
 after_coma:
-    10fc 53        comb 
+    10fc 53        comb
 after_comb:
     10fd 9c 12     cpx  {0x12}
 after_cpx_dir:
@@ -257,7 +257,7 @@ after_cpx_idx:
 after_cpx_imm:
     1104 bc 12 34  cpx  [0x1234]
 after_cpx_ext:
-    1107 19        daa  
+    1107 19        daa 
 after_daa:
     1108 4a        dec  a
 after_dec_a:
@@ -267,13 +267,13 @@ after_dec_b:
 after_dec_idx:
     110c 7a 12 34  dec  [0x1234]
 after_dec_ext:
-    110f 4a        deca 
+    110f 4a        deca
 after_deca:
-    1110 5a        decb 
+    1110 5a        decb
 after_decb:
-    1111 34        des  
+    1111 34        des 
 after_des:
-    1112 09        dex  
+    1112 09        dex 
 after_dex:
     1113 88 12     eor  a,0x12
 after_eor_a_imm:
@@ -315,13 +315,13 @@ after_inc_b:
 after_inc_idx:
     113b 7c 12 34  inc  [0x1234]
 after_inc_ext:
-    113e 4c        inca 
+    113e 4c        inca
 after_inca:
-    113f 5c        incb 
+    113f 5c        incb
 after_incb:
-    1140 31        ins  
+    1140 31        ins 
 after_ins:
-    1141 08        inx  
+    1141 08        inx 
 after_inx:
     1142 6e 12     jmp  x+0x12
 after_jmp_idx:
@@ -387,9 +387,9 @@ after_lsr_b:
 after_lsr_idx:
     1188 74 12 34  lsr  [0x1234]
 after_lsr_ext:
-    118b 44        lsra 
+    118b 44        lsra
 after_lsra:
-    118c 54        lsrb 
+    118c 54        lsrb
 after_lsrb:
     118d 40        neg  a
 after_neg_a:
@@ -399,11 +399,11 @@ after_neg_b:
 after_neg_idx:
     1191 70 12 34  neg  [0x1234]
 after_neg_ext:
-    1194 40        nega 
+    1194 40        nega
 after_nega:
-    1195 50        negb 
+    1195 50        negb
 after_negb:
-    1196 01        nop  
+    1196 01        nop 
 after_nop:
     1197 8a 12     ora  a,0x12
 after_ora_a_imm:
@@ -441,17 +441,17 @@ after_orab_ext:
 after_psh_a:
     11bc 37        psh  b
 after_psh_b:
-    11bd 36        psha 
+    11bd 36        psha
 after_psha:
-    11be 37        pshb 
+    11be 37        pshb
 after_pshb:
     11bf 32        pul  a
 after_pul_a:
     11c0 33        pul  b
 after_pul_b:
-    11c1 32        pula 
+    11c1 32        pula
 after_pula:
-    11c2 33        pulb 
+    11c2 33        pulb
 after_pulb:
     11c3 49        rol  a
 after_rol_a:
@@ -461,9 +461,9 @@ after_rol_b:
 after_rol_idx:
     11c7 79 12 34  rol  [0x1234]
 after_rol_ext:
-    11ca 49        rola 
+    11ca 49        rola
 after_rola:
-    11cb 59        rolb 
+    11cb 59        rolb
 after_rolb:
     11cc 46        ror  a
 after_ror_a:
@@ -473,15 +473,15 @@ after_ror_b:
 after_ror_idx:
     11d0 76 12 34  ror  [0x1234]
 after_ror_ext:
-    11d3 46        rora 
+    11d3 46        rora
 after_rora:
-    11d4 56        rorb 
+    11d4 56        rorb
 after_rorb:
-    11d5 3b        rti  
+    11d5 3b        rti 
 after_rti:
-    11d6 39        rts  
+    11d6 39        rts 
 after_rts:
-    11d7 10        sba  
+    11d7 10        sba 
 after_sba:
     11d8 82 12     sbc  a,0x12
 after_sbc_a_imm:
@@ -515,11 +515,11 @@ after_sbcb_dir:
 after_sbcb_idx:
     11f9 f2 12 34  sbcb [0x1234]
 after_sbcb_ext:
-    11fc 0d        sec  
+    11fc 0d        sec 
 after_sec:
-    11fd 0f        sei  
+    11fd 0f        sei 
 after_sei:
-    11fe 0b        sev  
+    11fe 0b        sev 
 after_sev:
     11ff 97 12     sta  a,{0x12}
 after_sta_a_dir:
@@ -589,13 +589,13 @@ after_subb_dir:
 after_subb_idx:
     124a f0 12 34  subb [0x1234]
 after_subb_ext:
-    124d 3f        swi  
+    124d 3f        swi 
 after_swi:
-    124e 16        tab  
+    124e 16        tab 
 after_tab:
-    124f 06        tap  
+    124f 06        tap 
 after_tap:
-    1250 07        tpa  
+    1250 07        tpa 
 after_tpa:
     1251 4d        tst  a
 after_tst_a:
@@ -605,15 +605,15 @@ after_tst_b:
 after_tst_idx:
     1255 7d 12 34  tst  [0x1234]
 after_tst_ext:
-    1258 4d        tsta 
+    1258 4d        tsta
 after_tsta:
-    1259 5d        tstb 
+    1259 5d        tstb
 after_tstb:
-    125a 30        tsx  
+    125a 30        tsx 
 after_tsx:
-    125b 35        txs  
+    125b 35        txs 
 after_txs:
-    125c 3e        wai  
+    125c 3e        wai 
 after_wai:
 [Symbol List]
 1000  start

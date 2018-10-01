@@ -10,7 +10,7 @@ label6:
 label7:
     1009 ce 10 00  ldx  label4
 label8:            .equ label6
-    100c 01        nop  
+    100c 01        nop 
     100d ce 10 03  ldx  label5
     1010 ce 10 06  ldx  label6
     1013 ce 10 09  ldx  label7

@@ -25,3 +25,12 @@ label_100e:
 			.dw		label_100e
 			.dw		Label_cdef
 			.dw		LABEL_CDEF
+
+macro1:		.macro
+label1:		.equ	$
+			.dw		label1
+			.end
+
+			macro1
+			macro1
+			macro1

@@ -355,13 +355,12 @@ public:
 class Expr_Symbol : public Expr {
 private:
 	String _symbol;
-	AutoPtr<Expr> _pExprAssigned;
+	AutoPtr<Expr> _pExprAssigned;	// not cloned
 public:
 	static const Type TYPE;
 public:
 	inline Expr_Symbol(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
-	inline Expr_Symbol(const Expr_Symbol &expr) : Expr(expr), _symbol(expr._symbol),
-		_pExprAssigned(Expr::Reference(expr._pExprAssigned.get())) {}
+	inline Expr_Symbol(const Expr_Symbol &expr) : Expr(expr), _symbol(expr._symbol) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline bool MatchCase(const char *symbol) const { return ::strcmp(_symbol.c_str(), symbol) == 0; }
 	inline bool MatchICase(const char *symbol) const { return ::strcasecmp(_symbol.c_str(), symbol) == 0; }
