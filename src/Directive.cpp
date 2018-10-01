@@ -777,8 +777,11 @@ bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 	}
 	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
 	context.SetPCGPageCur(_pPCGPage->Reference());
+
+	// the following code must be done when .end appears.
 	_pExprGenerated.reset(_pPCGPage->GenerateExpr(""));
 	_pExprGenerated->GetExprChildren().Print(false);
+
 	return true;
 }
 
