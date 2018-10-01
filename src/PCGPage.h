@@ -33,7 +33,7 @@ public:
 	inline int GetCharCodeStart() const { return _charCodeStart; }
 	inline int GetCharCodeCur() const { return _charCodeStart + static_cast<int>(_pcgPatternOwner.size()); }
 	inline const PCGPatternOwner &GetPCGPatternOwner() const { return _pcgPatternOwner; }
-	const PCGPattern *AddPCGPattern(const Binary &buff);
+	PCGPattern *CreatePCGPattern(const Binary &buff);
 	Expr *ComposeExpr() const;
 };
 
