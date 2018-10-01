@@ -678,6 +678,10 @@ bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 						   buffOrg.size(), bytesExpected);
 		return false;
 	}
+	if (context.GetPCGPageCur() == nullptr) {
+		ErrorLog::AddError(pExpr, ".pcgpage is not declared");
+		return false;
+	}
 	for (size_t yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (size_t xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
@@ -686,22 +690,17 @@ bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 			for (size_t i = 0; i < 8; i++, pDataOrg += wdChar) {
 				buffDst += *pDataOrg;
 			}
-                
+			context.GetPCGPageCur()->AddPCGPattern(buffDst);
 		}
 	}
-	return true;
-}
-
-bool Directive_PCGDATA::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
-{
 	return true;
 }
 
 bool Directive_PCGDATA::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
+	// suppress disasm dump
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -762,6 +761,7 @@ bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 		return false;
 	}
 	_pPCGPage.reset(new PCGPage(pcgType, charCodeStart));
+	context.SetPCGPageCur(_pPCGPage->Reference());
 	return true;
 }
 
@@ -773,9 +773,24 @@ bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Bin
 bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
-	//return _pExprIncluded->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+	bool upperCaseFlag = disasmDumper.GetUpperCaseFlag();
+	const char *symbol = upperCaseFlag? ".DB" : ".db";
+	const char *formatData = upperCaseFlag? "0x%02X" : "0x%02x";
+	String strHead = JustifyLeft(symbol, Generator::GetInstance().GetInstNameLenMax()) + " ";
+	for (auto pPCGPattern : _pPCGPage->GetPCGPatternOwner()) {
+		const Binary &buff = pPCGPattern->GetBuffer();
+		String strData;
+		for (auto data : buff) {
+			char str[64];
+			if (!strData.empty()) strData += ",";
+			::sprintf(str, formatData, static_cast<UInt8>(data));
+			strData += str;
+		}
+		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,
+									 (strHead + strData).c_str(), indentLevelCode);
+		context.ForwardAddress(static_cast<UInt32>(buff.size()));
+	}
+	return true;
 }
 
 //-----------------------------------------------------------------------------

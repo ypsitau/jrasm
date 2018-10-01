@@ -67,8 +67,8 @@ private:
 	Phase _phaseCur;
 	ExprDictStack _exprDictStack;
 	MacroDict _macroDict;
-	PCGPageOwner _pcgPageOwner;
 	AutoPtr<Expr> _pExprRoot;
+	AutoPtr<PCGPage> _pPCGPageCur;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);
@@ -97,8 +97,8 @@ public:
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
 	inline bool CheckSegmentRegionReady() const { return _pSegmentCur->CheckRegionReady(); }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
-	inline PCGPageOwner &GetPCGPageOwner() { return _pcgPageOwner; }
-	inline const PCGPageOwner &GetPCGPageOwner() const { return _pcgPageOwner; }
+	inline void SetPCGPageCur(PCGPage *pPCGPage) { _pPCGPageCur.reset(pPCGPage); }
+	inline PCGPage *GetPCGPageCur() { return _pPCGPageCur.get(); }
 	bool ParseFile();
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);

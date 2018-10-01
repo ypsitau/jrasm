@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
-const PCGPattern *PCGPage::AddPCGPattern(const Binary &binary)
+const PCGPattern *PCGPage::AddPCGPattern(const Binary &buff)
 {
-	AutoPtr<PCGPattern> pPCGPattern(new PCGPattern(_pcgType, _charCodeCur, binary));
+	AutoPtr<PCGPattern> pPCGPattern(new PCGPattern(_pcgType, _charCodeCur, buff));
 	_charCodeCur++;
 	_pcgPatternOwner.push_back(pPCGPattern->Reference());
 	return pPCGPattern.release();

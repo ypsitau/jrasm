@@ -411,6 +411,7 @@ public:
 		Expr(TYPE, pExprOperands, pExprChildren), _pDirective(pDirective) {}
 	inline Expr_Directive(const Expr_Directive &expr) :
 		Expr(expr), _pDirective(expr._pDirective->Reference()) {}
+	inline Directive *GetDirective() { return _pDirective.get(); }
 	inline const Directive *GetDirective() const { return _pDirective.get(); }
 	virtual bool OnPhaseInclude(Context &context);
 	virtual bool OnPhaseDeclareMacro(Context &context);

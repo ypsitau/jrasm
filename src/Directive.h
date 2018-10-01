@@ -11,13 +11,13 @@
 
 class DisasmDumper;
 class Expr;
-class Expr_Directive;
 class ExprStack;
 class Token;
 class Parser;
 class Context;
 class Directive;
 class DirectiveFactory;
+class Directive_PCGPAGE;
 
 //-----------------------------------------------------------------------------
 // DirectiveFactoryDict
@@ -335,7 +335,6 @@ public:
 	inline Directive_PCGDATA() : Directive(PCGDATA) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
-	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };

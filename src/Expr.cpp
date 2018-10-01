@@ -764,20 +764,17 @@ const Expr::Type Expr_Directive::TYPE = Expr::TYPE_Directive;
 
 bool Expr_Directive::OnPhaseInclude(Context &context)
 {
-	if (!Expr::OnPhaseInclude(context)) return false;
-	return _pDirective->OnPhaseInclude(context, this);
+	return _pDirective->OnPhaseInclude(context, this) && Expr::OnPhaseInclude(context);
 }
 
 bool Expr_Directive::OnPhaseDeclareMacro(Context &context)
 {
-	if (!Expr::OnPhaseDeclareMacro(context)) return false;
-	return _pDirective->OnPhaseDeclareMacro(context, this);
+	return _pDirective->OnPhaseDeclareMacro(context, this) && Expr::OnPhaseDeclareMacro(context);
 }
 
 bool Expr_Directive::OnPhaseExpandMacro(Context &context)
 {
-	if (!Expr::OnPhaseExpandMacro(context)) return false;
-	return _pDirective->OnPhaseExpandMacro(context, this);
+	return _pDirective->OnPhaseExpandMacro(context, this) && Expr::OnPhaseExpandMacro(context);
 }
 
 bool Expr_Directive::OnPhaseAssignSymbol(Context &context)

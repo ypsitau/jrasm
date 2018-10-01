@@ -26,7 +26,8 @@ private:
 public:
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCodeStart() const { return _charCodeStart; }
-	const PCGPattern *AddPCGPattern(const Binary &pattern);
+	inline const PCGPatternOwner &GetPCGPatternOwner() const { return _pcgPatternOwner; }
+	const PCGPattern *AddPCGPattern(const Binary &buff);
 };
 
 //-----------------------------------------------------------------------------
