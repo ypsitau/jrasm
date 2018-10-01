@@ -335,6 +335,8 @@ public:
 	inline Directive_PCGDATA() : Directive(PCGDATA) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
+	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
@@ -359,6 +361,8 @@ public:
 	inline const PCGPage *GetPCGPage() const { return _pPCGPage.get(); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
+	virtual bool OnPhaseDeclareMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;

@@ -697,6 +697,18 @@ bool Directive_PCGDATA::OnPhasePreprocess(Context &context, Expr *pExpr)
 	return true;
 }
 
+bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+{
+	// nothing to do
+	return true;
+}
+
+bool Directive_PCGDATA::OnPhaseExpandMacro(Context &context, Expr *pExpr)
+{
+	// nothing to do
+	return true;
+}
+
 bool Directive_PCGDATA::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
@@ -782,6 +794,18 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	_pExprGenerated.reset(_pPCGPage->GenerateExpr(""));
 	_pExprGenerated->GetExprChildren().Print(false);
 
+	return true;
+}
+
+bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
+{
+	// nothing to do
+	return true;
+}
+
+bool Directive_PCGPAGE::OnPhaseExpandMacro(Context &context, Expr *pExpr)
+{
+	// nothing to do
 	return true;
 }
 

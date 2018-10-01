@@ -9,7 +9,7 @@
 Expr *PCGData::GenerateExpr(const char *pathNameSrc) const
 {
 	char asmCode[1024];
-	::sprintf_s(asmCode, _asmCodeTmpl);
+	::sprintf_s(asmCode, _asmCodeTmpl, GetSymbol());
 	Parser parser(pathNameSrc);
 	if (!parser.ParseString(asmCode)) return nullptr;
 	return parser.GetRoot()->Reference();
