@@ -69,6 +69,7 @@ private:
 	MacroDict _macroDict;
 	AutoPtr<Expr> _pExprRoot;
 	AutoPtr<PCGPage> _pPCGPageCur;
+	PCGCharOwner _pcgCharsBuiltIn;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
 	Context(const String &pathNameSrc);
@@ -99,6 +100,7 @@ public:
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	inline void SetPCGPageCur(PCGPage *pPCGPage) { _pPCGPageCur.reset(pPCGPage); }
 	inline PCGPage *GetPCGPageCur() { return _pPCGPageCur.get(); }
+	inline const PCGCharOwner &GetPCGCharsBuiltIn() const { return _pcgCharsBuiltIn; }
 	bool ParseFile();
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);

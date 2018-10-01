@@ -698,9 +698,7 @@ bool Expr_Instruction::OnPhaseAssignSymbol(Context &context)
 	} else {
 		context.BeginScope();
 		for (auto pExpr : *_pExprsExpanded) {
-			//pExpr->Print();
 			if (!(rtn = pExpr->OnPhaseAssignSymbol(context))) break;
-			//::printf("%p\n", pExpr->GetExprDict());
 		}
 		context.EndScope();
 	}

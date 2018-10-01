@@ -638,6 +638,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		return false;
 	}
 	String symbol;
+	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
 	size_t wdChar = 0, htChar = 0;
 	do {
 		Expr *pExprOperand = exprOperands[0];
@@ -656,14 +657,14 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		wdChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
 	do {
-		Expr *pExprOperand = exprOperands[1];
+		Expr *pExprOperand = exprOperands[2];
 		if (!pExprOperand->IsTypeNumber()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
 		htChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
-	_pPCGData.reset(new PCGData(symbol, wdChar, htChar));
+	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar));
 	Binary buffOrg;
 	UInt32 bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
@@ -684,7 +685,6 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
-	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
 	int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
 	if (pcgType == PCGTYPE_CRAM) {
 		if (charCodeCur < 0 || charCodeCur > 255) {
@@ -705,7 +705,12 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 			for (size_t i = 0; i < 8; i++, pDataOrg += wdChar) {
 				buffDst += *pDataOrg;
 			}
-			_pPCGData->AddPCGChar(context.GetPCGPageCur()->CreatePCGChar(buffDst));
+			const PCGChar *pPCGChar = context.GetPCGCharsBuiltIn().FindSamePattern(buffDst);
+			if (pPCGChar == nullptr) {
+				_pPCGData->AddPCGChar(context.GetPCGPageCur()->CreatePCGChar(buffDst));
+			} else {
+				_pPCGData->AddPCGChar(pPCGChar->Reference());
+			}
 		}
 	}
 	return true;
