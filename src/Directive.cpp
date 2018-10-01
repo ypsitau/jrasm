@@ -679,7 +679,7 @@ bool Directive_PCGDATA::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 		return false;
 	}
 	if (context.GetPCGPageCur() == nullptr) {
-		ErrorLog::AddError(pExpr, ".pcgpage is not declared");
+		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
 	for (size_t yChar = 0; yChar < htChar; yChar++) {
@@ -723,6 +723,12 @@ bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 
 bool Directive_PCGPAGE::OnPhaseDeclareMacro(Context &context, Expr *pExpr)
 {
+	for (auto pExprChild : pExpr->GetExprChildren()) {
+		if (!pExprChild->IsTypeDirective(Directive::PCGDATA) && !pExprChild->IsTypeDirective(Directive::END)) {
+			ErrorLog::AddError(pExprChild, "only .PCGDATA directive can be stored in .PCGPAGE");
+			return false;
+		}
+	}
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 2) {
 		ErrorLog::AddError(pExpr, "directive .PCGPAGE takes two operands");
