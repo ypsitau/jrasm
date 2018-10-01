@@ -6,11 +6,11 @@
 //-----------------------------------------------------------------------------
 // PCGData
 //-----------------------------------------------------------------------------
-Expr *PCGData::GenerateExpr(const char *pathNameSrc) const
+Expr *PCGData::ComposeExpr() const
 {
 	char asmCode[1024];
 	::sprintf_s(asmCode, _asmCodeTmpl, GetSymbol());
-	Parser parser(pathNameSrc);
+	Parser parser("***PCGData.cpp***");
 	if (!parser.ParseString(asmCode)) return nullptr;
 	return parser.GetRoot()->Reference();
 }

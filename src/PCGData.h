@@ -29,7 +29,7 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline size_t GetWdChar() const { return _wdChar; }
 	inline size_t GetHtChar() const { return _htChar; }
-	Expr *GenerateExpr(const char *pathNameSrc) const;
+	Expr *ComposeExpr() const;
 };
 
 #endif

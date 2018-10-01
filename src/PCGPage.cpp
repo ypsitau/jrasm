@@ -14,7 +14,7 @@ const PCGPattern *PCGPage::AddPCGPattern(const Binary &buff)
 	return pPCGPattern.release();
 }
 
-Expr *PCGPage::GenerateExpr(const char *pathNameSrc) const
+Expr *PCGPage::ComposeExpr() const
 {
 	char asmCode[1024];
 	const char *asmCodeTmpl = "";
@@ -24,21 +24,21 @@ Expr *PCGPage::GenerateExpr(const char *pathNameSrc) const
 		asmCodeTmpl = _asmCodeTmpl1;
 		dstAddrStart = 0xd000 + _charCodeStart * 8;
 		dstAddrEnd = 0xd000 + GetCharCodeCur() * 8;
-	} else if (_charCodeStart < 0x40 && GetCharCodeCur() <= 0x40) { // _pcgType == PCGTYPE_User
+	} else if (_charCodeStart < 64 && GetCharCodeCur() <= 64) { // _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl1;
-		dstAddrStart = 0xc000 + (_charCodeStart - 0x20) * 8;
-		dstAddrEnd = 0xc000 + (GetCharCodeCur() - 0x20) * 8;
-	} else if (_charCodeStart < 0x40 && GetCharCodeCur() > 0x40) { // _pcgType == PCGTYPE_User
+		dstAddrStart = 0xc000 + (_charCodeStart - 32) * 8;
+		dstAddrEnd = 0xc000 + (GetCharCodeCur() - 32) * 8;
+	} else if (_charCodeStart < 64 && GetCharCodeCur() > 64) { // _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl2;
-		dstAddrStart = 0xc000 + (_charCodeStart - 0x20) * 8;
-		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 0x40) * 8;
-	} else { // _charCodeStart >= 0x40 && _pcgType == PCGTYPE_User
+		dstAddrStart = 0xc000 + (_charCodeStart - 32) * 8;
+		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 64) * 8;
+	} else { // _charCodeStart >= 64 && _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl1;
-		dstAddrStart = 0xc400 + (_charCodeStart - 0x40) * 8;
-		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 0x40) * 8;
+		dstAddrStart = 0xc400 + (_charCodeStart - 64) * 8;
+		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 64) * 8;
 	}
-	::sprintf_s(asmCode, _asmCodeTmpl1, GetSymbol(), GetSymbol(), GetSymbol(), dstAddrStart, dstAddrEnd);
-	Parser parser(pathNameSrc);
+	::sprintf_s(asmCode, asmCodeTmpl, GetSymbol(), GetSymbol(), GetSymbol(), dstAddrStart, dstAddrEnd);
+	Parser parser("***PCGPage.cpp***");
 	if (!parser.ParseString(asmCode)) return nullptr;
 	return parser.GetRoot()->Reference();
 }
@@ -66,7 +66,7 @@ ptrdst: .equ    $+1
         .end
 )**";
 
-const char *PCGPage::_asmCodeTmpl2 = R"**(pcgpage.%s.src
+const char *PCGPage::_asmCodeTmpl2 = R"**(pcgpage.%s.src:
 pcgpage.%s.store:
         .macro
         ldx     pcgpage.%s.src
