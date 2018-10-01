@@ -33,20 +33,18 @@ const char *PCGPage::_asmCodeTmpl = R"**(pcgpage.%s.store:
         ldx     0x%04x
         stx     [ptrdst]
 loop:
-        ldx     [ptrsrc]
+ptrsrc: .equ    $+1
+        ldx     0x0000
         ldaa    [x]
         inx
         stx     [ptrsrc]
-        ldx     [ptrdst]
+ptrdst: .equ    $+1
+        ldx     0x0000
         staa    [x]
         inx
         stx     [ptrdst]
         cpx     0x%04x
         bne     loop
-        bra     done
-ptrsrc: .dw     0x0000
-ptrdst: .dw     0x0000
-done:
         .end
 )**";
 
