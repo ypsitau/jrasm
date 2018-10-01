@@ -10,10 +10,10 @@
 //-----------------------------------------------------------------------------
 // PCGPatternList
 //-----------------------------------------------------------------------------
-const PCGPattern *PCGPatternList::FindSamePattern(const Binary &pattern) const
+const PCGPattern *PCGPatternList::FindSamePattern(const Binary &buff) const
 {
 	for (auto pPCGPattern : *this) {
-		if (pPCGPattern->HasSamePattern(pattern)) return pPCGPattern;
+		if (pPCGPattern->HasSamePattern(buff)) return pPCGPattern;
 	}
 	return nullptr;
 }

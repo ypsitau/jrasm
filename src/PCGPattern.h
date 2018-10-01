@@ -43,7 +43,7 @@ public:
 //-----------------------------------------------------------------------------
 class PCGPatternList : public std::vector<PCGPattern *> {
 public:
-	const PCGPattern *FindSamePattern(const Binary &pattern) const;
+	const PCGPattern *FindSamePattern(const Binary &buff) const;
 };
 
 //-----------------------------------------------------------------------------
