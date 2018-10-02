@@ -844,6 +844,11 @@ bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
+	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
+		const Binary &buff = pPCGChar->GetBuffer();
+		*pBuffDst += buff;
+		context.ForwardAddress(static_cast<UInt32>(buff.size()));
+	}
 	return true;
 }
 
