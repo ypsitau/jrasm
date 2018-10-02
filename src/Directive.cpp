@@ -861,7 +861,7 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 		for (auto data : buff) {
 			char str[64];
 			if (!strData.empty()) strData += ",";
-			::sprintf(str, formatData, static_cast<UInt8>(data));
+			::sprintf_s(str, formatData, static_cast<UInt8>(data));
 			strData += str;
 		}
 		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,

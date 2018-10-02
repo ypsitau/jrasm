@@ -99,7 +99,7 @@ String MakeQuotedString(const String &str, char chBorder)
 			strDst += "\\\\";
 		} else if (ch < 0x20 || ch >= 0x7f) {
 			char tmp[16];
-			::sprintf(tmp, "\\x%02x", static_cast<UInt8>(ch));
+			::sprintf_s(tmp, "\\x%02x", static_cast<UInt8>(ch));
 			strDst += tmp;
 		} else {
 			strDst += ch;
