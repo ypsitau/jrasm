@@ -4,9 +4,6 @@
 #ifndef __JRASM_H__
 #define __JRASM_H__
 
-#define JRASM_VERSION 			"0.0.3"
-#define JRASM_COPYRIGHT_YEAR	"2018"
-
 #include "Common.h"
 #include "CommandLine.h"
 #include "Context.h"
@@ -28,5 +25,6 @@
 #include "Segment.h"
 #include "Token.h"
 #include "Tokenizer.h"
+#include "Version.h"
 
 #endif
