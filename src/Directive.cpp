@@ -268,8 +268,8 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 			ErrorLog::AddError(pExpr, "an element value of directive .DW exceeds 16-bit range");
 			return false;
 		}
-		(*pBuffDst) += static_cast<UInt8>(num >> 8);
-		(*pBuffDst) += static_cast<UInt8>(num);
+		*pBuffDst += static_cast<UInt8>(num >> 8);
+		*pBuffDst += static_cast<UInt8>(num);
 	}
 	size_t bytes = pExpr->GetExprOperands().size() * sizeof(UInt16);
 	context.ForwardAddress(static_cast<UInt32>(bytes));
@@ -844,6 +844,8 @@ bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
+	if (!context.CheckSegmentRegionReady()) return false;
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
 		const Binary &buff = pPCGChar->GetBuffer();
 		*pBuffDst += buff;
