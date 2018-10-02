@@ -692,7 +692,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 			return false;
 		}
 	} else { // pcgType == PCGTYPE_User
-		if (charCodeCur < 32 || charCodeCur > 95) {
+		if (charCodeCur < 0 || charCodeCur > 63) {
 			ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
 			return false;
 		}
@@ -809,16 +809,13 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 				return false;
 			}
 		} else { // pcgType == PCGTYPE_User
-			if (charCodeStart < 32 || charCodeStart > 95) {
+			charCodeStart -= 32;
+			if (charCodeStart < 0 || charCodeStart > 63) {
 				ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
 				return false;
 			}
 		}
 	} while (0);
-	if (charCodeStart > 0xff) {
-		ErrorLog::AddError(pExpr, "address value exceeds 8-bit range");
-		return false;
-	}
 	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
 	context.SetPCGPageCur(_pPCGPage->Reference());
 	return true;
