@@ -190,9 +190,9 @@
     <ClCompile Include="MmlParser.cpp" />
     <ClCompile Include="Operator.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClInclude Include="PCGChar.cpp" />
-    <ClInclude Include="PCGData.cpp" />
-    <ClInclude Include="PCGPage.cpp" />
+    <ClCompile Include="PCGChar.cpp" />
+    <ClCompile Include="PCGData.cpp" />
+    <ClCompile Include="PCGPage.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="stdafx.cpp">
