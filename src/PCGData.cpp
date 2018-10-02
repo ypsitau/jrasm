@@ -10,7 +10,7 @@ Expr *PCGData::ComposeExpr() const
 {
 	String asmCode;
 	char str[256];
-	do {
+	do { // create pcg.SYMBOL.put macro
 		::sprintf_s(str, "pcg.%s.put:\n", GetSymbol());
 		asmCode += str;
 		asmCode += "        .macro\n";
@@ -43,13 +43,13 @@ Expr *PCGData::ComposeExpr() const
 		}
 		asmCode += "        .end\n";
 	} while (0);
-	do {
+	do { // create pcg.SYMBOL.erase macro
 		::sprintf_s(str, "pcg.%s.erase:\n", GetSymbol());
 		asmCode += str;
 		asmCode += "        .macro\n";
-		size_t iCol = 0, iRow = 0;
 		::sprintf_s(str, "        clra\n");
 		asmCode += str;
+		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
 			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
 			asmCode += str;
@@ -61,18 +61,37 @@ Expr *PCGData::ComposeExpr() const
 		}
 		asmCode += "        .end\n";
 	} while (0);
-	do {
+	do { // create pcg.SYMBOL.putattr macro
 		::sprintf_s(str, "pcg.%s.putattr:\n", GetSymbol());
 		asmCode += str;
 		::sprintf_s(str, "        .macro foreground,background\n");
 		asmCode += str;
-		size_t iCol = 0, iRow = 0;
 		if (_pcgType == PCGTYPE_CRAM) {
 			::sprintf_s(str, "        ldaa    foreground+background*8\n");
 		} else { // _pcgType == PCGTYPE_User
 			::sprintf_s(str, "        ldaa    0x40+foreground+background*8\n");
 		}
 		asmCode += str;
+		size_t iCol = 0, iRow = 0;
+		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
+			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
+			asmCode += str;
+			iCol++;
+			if (iCol == _wdChar) {
+				iCol = 0;
+				iRow++;
+			}
+		}
+		asmCode += "        .end\n";
+	} while (0);
+	do { // create pcg.SYMBOL.eraseattr macro
+		::sprintf_s(str, "pcg.%s.eraseattr:\n", GetSymbol());
+		asmCode += str;
+		::sprintf_s(str, "        .macro foreground,background\n");
+		asmCode += str;
+		::sprintf_s(str, "        ldaa    foreground+background*8\n");
+		asmCode += str;
+		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
 			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
 			asmCode += str;
