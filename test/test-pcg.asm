@@ -1,10 +1,15 @@
 	.org	0x1000
 	
 	pcgpage.circles.store
-	;pcgpage.circles.store
-	;; pcg.circle.put
-	;; pcg.circle.putattr 7,0
-	;; pcg.circle.erase
+
+	pcg.circle1x1.put
+	pcg.dblcircle1x1.put
+	pcg.circle2x2.put
+	pcg.dblcircle2x2.put
+	pcg.chkcircle2x2.put
+	pcg.blank2x1.put
+	;pcg.circle1x1.putattr 7,0
+	;pcg.circle1x1.erase
 	
 	.pcgpage circles,user,60
 	
@@ -79,7 +84,7 @@
 	.db		b"................"
 	.end
 	
-	.pcg	check_circle2x2,2,2
+	.pcg	chkcircle2x2,2,2
 	.db		b".....######....."
 	.db		b"...##...#####..."
 	.db		b"..#.....######.."
