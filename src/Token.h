@@ -36,6 +36,21 @@ extern const TokenInfo TOKEN_BraceR;
 extern const TokenInfo TOKEN_EOL;
 extern const TokenInfo TOKEN_White;
 
+extern const TokenInfo TOKEN_Eq;
+extern const TokenInfo TOKEN_Lt;
+extern const TokenInfo TOKEN_Gt;
+extern const TokenInfo TOKEN_Amp;
+extern const TokenInfo TOKEN_VBar;
+extern const TokenInfo TOKEN_Hat;
+extern const TokenInfo TOKEN_Percent;
+extern const TokenInfo TOKEN_EqEq;
+extern const TokenInfo TOKEN_LtLt;
+extern const TokenInfo TOKEN_GtGt;
+extern const TokenInfo TOKEN_AmpAmp;
+extern const TokenInfo TOKEN_VBarVBar;
+extern const TokenInfo TOKEN_ParenL;
+extern const TokenInfo TOKEN_ParenR;
+
 //-----------------------------------------------------------------------------
 // Token
 //-----------------------------------------------------------------------------

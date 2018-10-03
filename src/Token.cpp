@@ -26,6 +26,21 @@ const TokenInfo TOKEN_BraceR =			{  0, "BraceR",			"}"		};
 const TokenInfo TOKEN_EOL =				{  0, "EOL",			"[EOL]"	};
 const TokenInfo TOKEN_White =			{  0, "White",			"[Whi]"	};
 
+const TokenInfo TOKEN_Eq =				{  0, "Eq",				"="		};
+const TokenInfo TOKEN_Lt =				{  0, "Lt",				"<"		};
+const TokenInfo TOKEN_Gt =				{  0, "Gt",				">"		};
+const TokenInfo TOKEN_Amp =				{  0, "Amp",			"&"		};
+const TokenInfo TOKEN_VBar =			{  0, "VBar",			"|"		};
+const TokenInfo TOKEN_Hat =				{  0, "Hat",			"^"		};
+const TokenInfo TOKEN_Percent =			{  0, "Percent",		"%"		};
+const TokenInfo TOKEN_EqEq =			{  0, "EqEq",			"=="	};
+const TokenInfo TOKEN_LtLt =			{  0, "LtLt",			"<<"	};
+const TokenInfo TOKEN_GtGt =			{  0, "GtGt",			">>"	};
+const TokenInfo TOKEN_AmpAmp =			{  0, "AmpAmp",			"&&"	};
+const TokenInfo TOKEN_VBarVBar =		{  0, "VBarVBar",		"||"	};
+const TokenInfo TOKEN_ParenL =			{  0, "ParenL",			"("		};
+const TokenInfo TOKEN_ParenR =			{  0, "ParenR",			")"		};
+
 //-----------------------------------------------------------------------------
 // Token
 //-----------------------------------------------------------------------------
