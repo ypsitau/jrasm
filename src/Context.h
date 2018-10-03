@@ -77,7 +77,6 @@ public:
 	inline const char *GetDirNameSrc() const { return _dirNameSrc.c_str(); }
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
 	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
-	inline String MakeFileNameOut(const char *extName) const { return _fileBaseNameSrc + extName; }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
 	inline void SelectInternalSegment() { _pSegmentCur = _segmentOwner[2]; }
@@ -108,6 +107,7 @@ public:
 	void StartRegion(UInt32 addr);
 	void BeginScope();
 	void EndScope();
+	String MakeFileNameOut(const char *extName) const;
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);

@@ -74,6 +74,12 @@ void Context::EndScope()
 	ExprDict::Delete(pExprDict);
 }
 
+String Context::MakeFileNameOut(const char *extName) const
+{
+	if (_fileBaseNameSrc == "-") return String("output") + extName;
+	return _fileBaseNameSrc + extName;
+}
+
 Context::SymbolInfoOwner *Context::MakeSymbolInfoOwner()
 {
 	std::unique_ptr<SymbolInfoOwner> pSymbolInfoOwner(new SymbolInfoOwner());

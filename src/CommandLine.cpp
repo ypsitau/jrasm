@@ -49,10 +49,7 @@ bool CommandLine::Parse(int &argc, const char *argv[], String &strErr)
 				}
 			} else {
 				char keyShort = arg[1];
-				if (keyShort == '\0') {
-					strErr = "invalid argument";
-					return false;
-				}
+				if (keyShort == '\0') break;
 				InfoMapByKeyShort::iterator iter = _infoMapByKeyShort.find(keyShort);
 				pInfo = (iter == _infoMapByKeyShort.end())? nullptr : &iter->second;
 				if (pInfo == nullptr) {
