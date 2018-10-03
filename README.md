@@ -317,16 +317,35 @@ A macro consists of a label that represents the macro name
 and a code sequence surrounded by `.MACRO` and `.END` directives.
 
 ```
-mul4:   .MACRO
-        shla
-        shla
+mul4_a: .MACRO  ; A macro to multiply A-accumulator's value by four
+        ASLA
+        ASLA
         .END
+
+        mul4_a  ; Expands the macro
 ```
 
+When directive `.MACRO` is called with some arguments, the created macro can take values and expressions as its arguments. When the macro is expanded, a symbol that matches argument name will be replaced with the value passed to that argument. You can pass not only immediate value to an argument but other addressing expression like index and external memory.
+ There's no limit on the number of arguments.
 
 ```
-        mul4
+mul4:   .MACRO target ; A macro to multiply a value in memory by four
+        LDAA    target
+        ASLA
+        ASLA
+        STAA    target
+        .END
+
+        mul4    {0x09}    ; DIRECT addressing
+        mul4    [X+0x03]  ; INDEX addressing
+        mul4    [foo]     ; EXTERNAL addressing
 ```
+
+Since the code in a macro is implicitly surrounded by `.SCOPE`, any labels that are defined within it are hidden from outside.
+
+
+### .PCGPAGE and .PCG
+
 
 
 
