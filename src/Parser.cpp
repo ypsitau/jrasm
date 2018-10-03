@@ -15,7 +15,9 @@ Parser::Parser(const String &pathNameSrc) :
 bool Parser::ParseFile()
 {
 	FILE *fp = nullptr;
-	if (::fopen_s(&fp, GetPathNameSrc(), "rt") != 0) {
+	if (::strcmp(GetPathNameSrc(), "-") == 0) {
+		fp = stdin;
+	} else if (::fopen_s(&fp, GetPathNameSrc(), "rt") != 0) {
 		ErrorLog::AddError("failed to open file: %s\n", GetPathNameSrc());
 		return false;
 	}
@@ -25,7 +27,7 @@ bool Parser::ParseFile()
 		if (!FeedChar(ch)) break;
 		if (ch == '\0') break;
 	}
-	::fclose(fp);
+	if (fp != stdin) ::fclose(fp);
 	return !ErrorLog::HasError();
 }
 
