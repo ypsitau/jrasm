@@ -16,12 +16,29 @@ struct TokenInfo {
 	bool IsIdentical(const TokenInfo &tokenInfo) const { return this == &tokenInfo; }
 };
 
-extern const TokenInfo TOKEN_Empty;		// for parser
-extern const TokenInfo TOKEN_Expr;		// for parser
+extern const TokenInfo TOKEN_Expr;		// for parsing
+extern const TokenInfo TOKEN_Empty;		// for parsing
+extern const TokenInfo TOKEN_Eq;
+extern const TokenInfo TOKEN_VBarVBar;
+extern const TokenInfo TOKEN_AmpAmp;
+extern const TokenInfo TOKEN_VBar;
+extern const TokenInfo TOKEN_Hat;
+extern const TokenInfo TOKEN_Amp;
+extern const TokenInfo TOKEN_EqEq;
+extern const TokenInfo TOKEN_NotEq;
+extern const TokenInfo TOKEN_Lt;
+extern const TokenInfo TOKEN_LtEq;
+extern const TokenInfo TOKEN_Gt;
+extern const TokenInfo TOKEN_GtEq;
+extern const TokenInfo TOKEN_LtLt;
+extern const TokenInfo TOKEN_GtGt;
 extern const TokenInfo TOKEN_Plus;
 extern const TokenInfo TOKEN_Minus;
 extern const TokenInfo TOKEN_Asterisk;
 extern const TokenInfo TOKEN_Slash;
+extern const TokenInfo TOKEN_Percent;
+extern const TokenInfo TOKEN_ParenL;
+extern const TokenInfo TOKEN_ParenR;
 extern const TokenInfo TOKEN_Number;
 extern const TokenInfo TOKEN_Symbol;
 extern const TokenInfo TOKEN_String;
@@ -35,21 +52,6 @@ extern const TokenInfo TOKEN_BraceL;
 extern const TokenInfo TOKEN_BraceR;
 extern const TokenInfo TOKEN_EOL;
 extern const TokenInfo TOKEN_White;
-
-extern const TokenInfo TOKEN_Eq;
-extern const TokenInfo TOKEN_Lt;
-extern const TokenInfo TOKEN_Gt;
-extern const TokenInfo TOKEN_Amp;
-extern const TokenInfo TOKEN_VBar;
-extern const TokenInfo TOKEN_Hat;
-extern const TokenInfo TOKEN_Percent;
-extern const TokenInfo TOKEN_EqEq;
-extern const TokenInfo TOKEN_LtLt;
-extern const TokenInfo TOKEN_GtGt;
-extern const TokenInfo TOKEN_AmpAmp;
-extern const TokenInfo TOKEN_VBarVBar;
-extern const TokenInfo TOKEN_ParenL;
-extern const TokenInfo TOKEN_ParenR;
 
 //-----------------------------------------------------------------------------
 // Token
