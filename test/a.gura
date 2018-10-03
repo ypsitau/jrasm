@@ -1,0 +1,12 @@
+#!/usr/bin/env gura
+
+src = Rb'''
+    .org 0x1000
+    ldaa 0
+	rts
+'''
+repeat (100) {
+	os.redirect(src, sys.stdout) {
+		os.exec('jrasm', '-d', '-')
+	}
+}
