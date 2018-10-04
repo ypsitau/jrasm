@@ -147,6 +147,7 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_BlockComment;
 			Pushback();
 		}
+		break;
 	}
 	case STAT_Minus: {
 		if (ch == '0') {
