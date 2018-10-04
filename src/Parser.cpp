@@ -209,8 +209,36 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 					pExpr.reset(new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release()));
 				} else if (pToken2->IsType(TOKEN_Slash)) {
 					pExpr.reset(new Expr_BinOp(Operator::Div, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Percent)) {
+					pExpr.reset(new Expr_BinOp(Operator::Mod, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_VBarVBar)) {
+					pExpr.reset(new Expr_BinOp(Operator::LogicOr, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_AmpAmp)) {
+					pExpr.reset(new Expr_BinOp(Operator::LogicAnd, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_VBar)) {
+					pExpr.reset(new Expr_BinOp(Operator::Or, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Hat)) {
+					pExpr.reset(new Expr_BinOp(Operator::Xor, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Amp)) {
+					pExpr.reset(new Expr_BinOp(Operator::And, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_EqEq)) {
+					pExpr.reset(new Expr_BinOp(Operator::Eq, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_BangEq)) {
+					pExpr.reset(new Expr_BinOp(Operator::NotEq, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Lt)) {
+					pExpr.reset(new Expr_BinOp(Operator::Lt, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_LtEq)) {
+					pExpr.reset(new Expr_BinOp(Operator::Le, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_Gt)) {
+					pExpr.reset(new Expr_BinOp(Operator::Gt, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_GtEq)) {
+					pExpr.reset(new Expr_BinOp(Operator::Ge, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_LtLt)) {
+					pExpr.reset(new Expr_BinOp(Operator::ShiftL, pExprL.release(), pExprR.release()));
+				} else if (pToken2->IsType(TOKEN_GtGt)) {
+					pExpr.reset(new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release()));
 				} else {
-					AddError("syntax error");
+					AddError("unsupported binary operator: %s", pToken2->GetSymbol());
 					return false;
 				}
 				SetExprSourceInfo(pExpr.get(), pToken1.get());

@@ -75,6 +75,8 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_GreaterThan;
 		} else if (ch == '!') {
 			_stat = STAT_Bang;
+		} else if (ch == '^') {
+			rtn = FeedToken(TOKEN_Hat);
 		} else if (ch == ',') {
 			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
