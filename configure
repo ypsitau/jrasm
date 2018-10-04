@@ -1,2 +1,2 @@
 #!/bin/sh
-cmake `dirname $0`/jrasm $*
+cmake `dirname $0`/src $*
