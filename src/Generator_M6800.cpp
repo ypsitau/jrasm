@@ -333,7 +333,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	} else {
 		num -= context.GetAddress() + bytes;
 	}
-	if (num > 127 && num < -128) {
+	if (num < -128 || num > 127) {
 		ErrorLog::AddError(pExpr, "displacement value exeeds the range between -128 and 127");
 		return RESULT_Error;
 	}
@@ -380,7 +380,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
-	if (num > 0xff) {
+	if (num < -0x80 || num > 0xff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
 		return RESULT_Error;
 	}
@@ -404,7 +404,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
 	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
-	if (num > 0xffff) {
+	if (num < -0x8000 || num > 0xffff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 		return RESULT_Error;
 	}
@@ -448,7 +448,7 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		return RESULT_Error;
 	}
 	Number num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
-	if (num > 0xff) {
+	if (num < -0x80 || num > 0xff) {
 		ErrorLog::AddError(pExpr, "direct address value exceeds 8-bit range");
 		return RESULT_Error;
 	}
@@ -495,7 +495,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	} else {
 		return RESULT_Rejected;
 	}
-	if (num > 0xff) {
+	if (num < -0x80 || num > 0xff) {
 		ErrorLog::AddError(pExpr, "external address value exceeds 8-bit range");
 		return RESULT_Error;
 	}
@@ -529,7 +529,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	} else {
 		return RESULT_Rejected;
 	}
-	if (num > 0xff) {
+	if (num < -0x80 || num > 0xff) {
 		ErrorLog::AddError(pExpr, "external address value exceeds 8-bit range");
 		return RESULT_Error;
 	}
@@ -572,7 +572,7 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		return RESULT_Error;
 	}
 	Number num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
-	if (num > 0xffff) {
+	if (num < -0x8000 || num > 0xffff) {
 		ErrorLog::AddError(pExpr, "external address value exceeds 16-bit range");
 		return RESULT_Error;
 	}
