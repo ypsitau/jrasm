@@ -329,26 +329,13 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (!context.IsPhase(Context::PHASE_Generate)) {
 		num = 0;
 	} else if (exprOperands.back()->IsTypeNumber()) {
-		if (num > 0xff) {
-			ErrorLog::AddError(pExpr, "displacement value exceeds 8-bit range");
-			return RESULT_Error;
-		}
+		// nothing to do
 	} else {
-		Number addrCur = context.GetAddress() + bytes;
-		if (num < addrCur) {
-			num = addrCur - num;
-			if (num > 0x80) {
-				ErrorLog::AddError(pExpr, "displacement value exeeds the range between -128 and 127");
-				return RESULT_Error;
-			}
-			num = -static_cast<Int32>(num);
-		} else {
-			num = num - addrCur;
-			if (num > 0x7f) {
-				ErrorLog::AddError(pExpr, "displacement value exceeds the range between -128 and 127");
-				return RESULT_Error;
-			}
-		}
+		num -= context.GetAddress() + bytes;
+	}
+	if (num > 127 && num < -128) {
+		ErrorLog::AddError(pExpr, "displacement value exeeds the range between -128 and 127");
+		return RESULT_Error;
 	}
 	if (pBuffDst != nullptr) {
 		*pBuffDst += _code;
