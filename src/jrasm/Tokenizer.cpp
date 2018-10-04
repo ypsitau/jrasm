@@ -62,7 +62,7 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_DecNumber;
 			Pushback();
 		} else if (ch == ';') {
-			_stat = STAT_Comment;
+			_stat = STAT_LineComment;
 		} else if (ch == '-') {
 			_stat = STAT_Minus;
 		} else if (ch == ':') {
@@ -79,6 +79,8 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_GreaterThan;
 		} else if (ch == '!') {
 			_stat = STAT_Bang;
+		} else if (ch == '/') {
+			_stat = STAT_Slash;
 		} else if (ch == '^') {
 			rtn = FeedToken(TOKEN_Hat);
 		} else if (ch == ',') {
@@ -87,8 +89,6 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_Plus);
 		} else if (ch == '*') {
 			rtn = FeedToken(TOKEN_Asterisk);
-		} else if (ch == '/') {
-			rtn = FeedToken(TOKEN_Slash);
 		} else if (ch == '%') {
 			rtn = FeedToken(TOKEN_Percent);
 		} else if (ch == '(') {
@@ -123,7 +123,7 @@ bool Tokenizer::FeedChar(char ch)
 		}
 		break;
 	}
-	case STAT_Comment: {
+	case STAT_LineComment: {
 		if (IsEOF(ch) || IsEOL(ch)) {
 			rtn = FeedToken(TOKEN_EOL);
 			_stat = STAT_LineTop;
@@ -131,6 +131,22 @@ bool Tokenizer::FeedChar(char ch)
 			// nothing to do
 		}
 		break;
+	}
+	case STAT_BlockComment: {
+		if (ch == '*') {
+			_stat = STAT_BlockComment_Asterisk;
+		} else {
+			// nothing to do
+		}
+		break;
+	}
+	case STAT_BlockComment_Asterisk: {
+		if (ch == '/') {
+			_stat = STAT_Neutral;
+		} else {
+			_stat = STAT_BlockComment;
+			Pushback();
+		}
 	}
 	case STAT_Minus: {
 		if (ch == '0') {
@@ -232,6 +248,18 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_Neutral;
 		} else {
 			rtn = FeedToken(TOKEN_Bang);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_Slash: {
+		if (ch == '*') {
+			_stat = STAT_BlockComment;
+		} else if (ch == '/') {
+			_stat = STAT_LineComment;
+		} else {
+			rtn = FeedToken(TOKEN_Slash);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
