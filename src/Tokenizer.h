@@ -69,7 +69,7 @@ private:
 	inline static bool IsDigit(char ch) { return ::isdigit(ch); }
 	bool FeedToken(const TokenInfo &tokenInfo);
 	bool FeedToken(const TokenInfo &tokenInfo, const String &str);
-	bool FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num);
+	bool FeedToken(const TokenInfo &tokenInfo, const String &str, Number num);
 };
 
 #endif

@@ -70,6 +70,8 @@ typedef uint16_t	UInt16;		// unsigned 16bit
 typedef uint32_t	UInt32;		// unsigned 32bit
 typedef uint64_t	UInt64;		// unsigned 64bit
 
+typedef Int32		Number;
+
 //-----------------------------------------------------------------------------
 // String
 //-----------------------------------------------------------------------------

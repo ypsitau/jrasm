@@ -36,7 +36,7 @@ void DisasmDumper::DumpLabelAndCode(const char *strLabel, const char *strCode, i
 			  indentCode.c_str(), strCode);
 }
 
-void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *strCode, int indentLevelCode)
+void DisasmDumper::DumpDataAndCode(Number addr, const Binary &buff, const char *strCode, int indentLevelCode)
 {
 	const char *formatData = _upperCaseFlag? " %02X" : " %02x";
 	const char *formatHead = _upperCaseFlag? "    %04X%s  %s%s\n" : "    %04x%s  %s%s\n";
@@ -61,7 +61,7 @@ void DisasmDumper::DumpDataAndCode(UInt32 addr, const Binary &buff, const char *
 				::fprintf(_fp, formatFollow, addr, strRow.c_str());
 			}
 			strRow.clear();
-			addr += static_cast<UInt32>(iCol);
+			addr += static_cast<Number>(iCol);
 			iCol = 0;
 			iLine++;
 		}

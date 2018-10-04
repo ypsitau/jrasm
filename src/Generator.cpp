@@ -31,7 +31,7 @@ bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary
 }
 
 void Generator::DumpDisasmHelper(
-	UInt32 addr, const Binary &buff, const char *strCode,
+	Number addr, const Binary &buff, const char *strCode,
 	FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax)
 {
 	const char *formatData = upperCaseFlag? " %02X" : " %02x";
@@ -48,7 +48,7 @@ void Generator::DumpDisasmHelper(
 			::fprintf(fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * nColsPerLineMax).c_str(),
 					  (iLine == 0)? strCode : "");
 			str.clear();
-			addr += static_cast<UInt32>(iCol);
+			addr += static_cast<Number>(iCol);
 			iCol = 0;
 			iLine++;
 		}

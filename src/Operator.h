@@ -4,7 +4,7 @@
 #ifndef __OPERATOR_H__
 #define __OPERATOR_H__
 
-#include "Common.h"
+#include "Token.h"
 
 class Expr;
 class Context;
@@ -33,13 +33,17 @@ public:
 	static const Operator *ShiftL;
 	static const Operator *ShiftR;
 private:
-	String _symbol;
+	const TokenInfo &_tokenInfo;
 public:
-	inline Operator(const String &symbol) : _symbol(symbol) {}
+	inline Operator(const TokenInfo &tokenInfo) : _tokenInfo(tokenInfo) {}
 	static void Initialize();
-	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline const TokenInfo &GetTokenInfo() const { return _tokenInfo; }
+	inline const char *GetSymbol() const { return _tokenInfo.symbol; }
 	inline bool IsIdentical(const Operator *pOperator) const { return this == pOperator; }
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const = 0;
+	inline static Token::Precedence LookupPrec(const Operator *pOperator1, const Operator *pOperator2) {
+		return Token::LookupPrec(pOperator1->GetTokenInfo(), pOperator2->GetTokenInfo());
+	}
 };
 
 //-----------------------------------------------------------------------------
@@ -47,7 +51,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Add : public Operator {
 public:
-	inline Operator_Add() : Operator("+") {}
+	inline Operator_Add() : Operator(TOKEN_Plus) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -56,7 +60,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Sub : public Operator {
 public:
-	inline Operator_Sub() : Operator("-") {}
+	inline Operator_Sub() : Operator(TOKEN_Minus) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -65,7 +69,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Mul : public Operator {
 public:
-	inline Operator_Mul() : Operator("*") {}
+	inline Operator_Mul() : Operator(TOKEN_Asterisk) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -74,7 +78,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Div : public Operator {
 public:
-	inline Operator_Div() : Operator("/") {}
+	inline Operator_Div() : Operator(TOKEN_Slash) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -83,7 +87,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Mod : public Operator {
 public:
-	inline Operator_Mod() : Operator("%") {}
+	inline Operator_Mod() : Operator(TOKEN_Percent) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -92,7 +96,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_LogicOr : public Operator {
 public:
-	inline Operator_LogicOr() : Operator("||") {}
+	inline Operator_LogicOr() : Operator(TOKEN_VBarVBar) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -101,7 +105,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_LogicAnd : public Operator {
 public:
-	inline Operator_LogicAnd() : Operator("&&") {}
+	inline Operator_LogicAnd() : Operator(TOKEN_AmpAmp) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -110,7 +114,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Or : public Operator {
 public:
-	inline Operator_Or() : Operator("|") {}
+	inline Operator_Or() : Operator(TOKEN_VBar) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -119,7 +123,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Xor : public Operator {
 public:
-	inline Operator_Xor() : Operator("^") {}
+	inline Operator_Xor() : Operator(TOKEN_Hat) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -128,7 +132,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_And : public Operator {
 public:
-	inline Operator_And() : Operator("&") {}
+	inline Operator_And() : Operator(TOKEN_Amp) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -137,7 +141,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Eq : public Operator {
 public:
-	inline Operator_Eq() : Operator("==") {}
+	inline Operator_Eq() : Operator(TOKEN_EqEq) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -146,7 +150,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_NotEq : public Operator {
 public:
-	inline Operator_NotEq() : Operator("!=") {}
+	inline Operator_NotEq() : Operator(TOKEN_BangEq) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -155,7 +159,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Lt : public Operator {
 public:
-	inline Operator_Lt() : Operator("<") {}
+	inline Operator_Lt() : Operator(TOKEN_Lt) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -164,7 +168,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Le : public Operator {
 public:
-	inline Operator_Le() : Operator("<=") {}
+	inline Operator_Le() : Operator(TOKEN_LtEq) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -173,7 +177,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Gt : public Operator {
 public:
-	inline Operator_Gt() : Operator(">") {}
+	inline Operator_Gt() : Operator(TOKEN_Gt) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -182,7 +186,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_Ge : public Operator {
 public:
-	inline Operator_Ge() : Operator(">=") {}
+	inline Operator_Ge() : Operator(TOKEN_GtEq) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -191,7 +195,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_ShiftL : public Operator {
 public:
-	inline Operator_ShiftL() : Operator("<<") {}
+	inline Operator_ShiftL() : Operator(TOKEN_LtLt) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -200,7 +204,7 @@ public:
 //-----------------------------------------------------------------------------
 class Operator_ShiftR : public Operator {
 public:
-	inline Operator_ShiftR() : Operator(">>") {}
+	inline Operator_ShiftR() : Operator(TOKEN_GtGt) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 

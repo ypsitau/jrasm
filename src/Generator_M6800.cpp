@@ -325,7 +325,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	UInt32 num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
+	Number num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
 	if (!context.IsPhase(Context::PHASE_Generate)) {
 		num = 0;
 	} else if (exprOperands.back()->IsTypeNumber()) {
@@ -334,7 +334,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 			return RESULT_Error;
 		}
 	} else {
-		UInt32 addrCur = context.GetAddress() + bytes;
+		Number addrCur = context.GetAddress() + bytes;
 		if (num < addrCur) {
 			num = addrCur - num;
 			if (num > 0x80) {
@@ -392,7 +392,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
+	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
 		return RESULT_Error;
@@ -416,7 +416,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	if (pExprLast.IsNull()) return RESULT_Error;
 	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	UInt32 num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
+	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
 	if (num > 0xffff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 		return RESULT_Error;
@@ -460,7 +460,7 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
-	UInt32 num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
+	Number num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
 	if (num > 0xff) {
 		ErrorLog::AddError(pExpr, "direct address value exceeds 8-bit range");
 		return RESULT_Error;
@@ -494,7 +494,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	ExprList &exprList = pExprLast->GetExprOperands();
 	if (exprList.size() != 1) return RESULT_Rejected;
-	UInt32 num = 0;
+	Number num = 0;
 	if (exprList.front()->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
 		// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
@@ -528,7 +528,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	UInt32 num = 0;
+	Number num = 0;
 	if (pExprLast->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprLast.get());
 		// If operand was specified in x+data16, it has been modified to data16+x in resolving process.
@@ -584,7 +584,7 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
-	UInt32 num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
+	Number num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
 	if (num > 0xffff) {
 		ErrorLog::AddError(pExpr, "external address value exceeds 16-bit range");
 		return RESULT_Error;

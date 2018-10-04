@@ -205,14 +205,14 @@ public:
 class Expr_Number : public Expr {
 private:
 	String _str;
-	UInt32 _num;
+	Number _num;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_Number(UInt32 num) : Expr(TYPE), _num(num) {}
-	inline Expr_Number(const String &str, UInt32 num) : Expr(TYPE), _str(str), _num(num) {}
+	inline Expr_Number(Number num) : Expr(TYPE), _num(num) {}
+	inline Expr_Number(const String &str, Number num) : Expr(TYPE), _str(str), _num(num) {}
 	inline Expr_Number(const Expr_Number &expr) : Expr(expr), _str(expr._str), _num(expr._num) {}
-	inline UInt32 GetNumber() const { return _num; }
+	inline Number GetNumber() const { return _num; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

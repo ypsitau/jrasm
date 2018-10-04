@@ -39,10 +39,10 @@ public:
 			}
 		};
 	private:
-		UInt32 _num;
+		Number _num;
 		String _symbol;
 	public:
-		inline SymbolInfo(UInt32 num, const String &symbol) : _num(num), _symbol(symbol) {}
+		inline SymbolInfo(Number num, const String &symbol) : _num(num), _symbol(symbol) {}
 		inline UInt16 GetNumber() const { return _num; }
 		inline const char *GetSymbol() const { return _symbol.c_str(); }
 	};
@@ -83,8 +83,8 @@ public:
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
-	inline UInt32 GetAddress() const { return _pSegmentCur->GetAddress(); }
-	inline void ForwardAddress(UInt32 bytes) { _pSegmentCur->ForwardAddress(bytes); }
+	inline Number GetAddress() const { return _pSegmentCur->GetAddress(); }
+	inline void ForwardAddress(Number bytes) { _pSegmentCur->ForwardAddress(bytes); }
 	inline SegmentOwner &GetSegmentOwner() { return _segmentOwner; }
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
@@ -104,7 +104,7 @@ public:
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
-	void StartRegion(UInt32 addr);
+	void StartRegion(Number addr);
 	void BeginScope();
 	void EndScope();
 	String MakeFileNameOut(const char *extName) const;

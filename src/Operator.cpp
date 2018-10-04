@@ -53,14 +53,14 @@ void Operator::Initialize()
 Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL + numR);
 	} else if (pExprL->IsTypeBinOp(Operator::Add) && pExprR->IsTypeNumber()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprL.get());
 		if (pExprBinOp->GetLeft()->IsTypeNumber()) {
-			UInt32 numL = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
-			UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+			Number numL = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+			Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 			return new Expr_BinOp(
 				Operator::Add, new Expr_Number(numL + numR), pExprBinOp->GetRight()->Reference());
 		}
@@ -76,8 +76,8 @@ Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL - numR);
 	}
 	return new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release());
@@ -89,8 +89,8 @@ Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_Mul::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL * numR);
 	}
 	return new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release());
@@ -102,8 +102,8 @@ Expr *Operator_Mul::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_Div::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		if (numR == 0) numR = 1;
 		//if (numR == 0) {
 		//	ErrorLog::AddError("divided by zero");
@@ -120,8 +120,8 @@ Expr *Operator_Div::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_Mod::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		if (numR == 0) numR = 1;
 		return new Expr_Number(numL % numR);
 	}
@@ -134,8 +134,8 @@ Expr *Operator_Mod::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_LogicOr::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL || numR);
 	}
 	return new Expr_BinOp(Operator::LogicOr, pExprL.release(), pExprR.release());
@@ -147,8 +147,8 @@ Expr *Operator_LogicOr::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<
 Expr *Operator_LogicAnd::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL && numR);
 	}
 	return new Expr_BinOp(Operator::LogicAnd, pExprL.release(), pExprR.release());
@@ -160,8 +160,8 @@ Expr *Operator_LogicAnd::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr
 Expr *Operator_Or::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL | numR);
 	}
 	return new Expr_BinOp(Operator::Or, pExprL.release(), pExprR.release());
@@ -173,8 +173,8 @@ Expr *Operator_Or::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 Expr *Operator_Xor::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL ^ numR);
 	}
 	return new Expr_BinOp(Operator::Xor, pExprL.release(), pExprR.release());
@@ -186,8 +186,8 @@ Expr *Operator_Xor::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_And::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL & numR);
 	}
 	return new Expr_BinOp(Operator::And, pExprL.release(), pExprR.release());
@@ -199,8 +199,8 @@ Expr *Operator_And::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_Eq::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number((numL == numR)? 1 : 0);
 	}
 	return new Expr_BinOp(Operator::Eq, pExprL.release(), pExprR.release());
@@ -212,8 +212,8 @@ Expr *Operator_Eq::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 Expr *Operator_NotEq::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number((numL != numR)? 1 : 0);
 	}
 	return new Expr_BinOp(Operator::NotEq, pExprL.release(), pExprR.release());
@@ -225,8 +225,8 @@ Expr *Operator_NotEq::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Ex
 Expr *Operator_Lt::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number((numL < numR)? 1 : 0);
 	}
 	return new Expr_BinOp(Operator::Lt, pExprL.release(), pExprR.release());
@@ -238,8 +238,8 @@ Expr *Operator_Lt::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 Expr *Operator_Le::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number((numL <= numR)? 1 : 0);
 	}
 	return new Expr_BinOp(Operator::Le, pExprL.release(), pExprR.release());
@@ -251,8 +251,8 @@ Expr *Operator_Le::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 Expr *Operator_Gt::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number((numL > numR)? 1 : 0);
 	}
 	return new Expr_BinOp(Operator::Gt, pExprL.release(), pExprR.release());
@@ -264,8 +264,8 @@ Expr *Operator_Gt::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 Expr *Operator_Ge::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number((numL >= numR)? 1 : 0);
 	}
 	return new Expr_BinOp(Operator::Ge, pExprL.release(), pExprR.release());
@@ -277,8 +277,8 @@ Expr *Operator_Ge::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 Expr *Operator_ShiftL::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL << numR);
 	}
 	return new Expr_BinOp(Operator::ShiftL, pExprL.release(), pExprR.release());
@@ -290,8 +290,8 @@ Expr *Operator_ShiftL::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 Expr *Operator_ShiftR::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeNumber() && pExprR->IsTypeNumber()) {
-		UInt32 numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
-		UInt32 numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
+		Number numL = dynamic_cast<const Expr_Number *>(pExprL.get())->GetNumber();
+		Number numR = dynamic_cast<const Expr_Number *>(pExprR.get())->GetNumber();
 		return new Expr_Number(numL >> numR);
 	}
 	return new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release());

@@ -55,7 +55,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 
-void Context::StartRegion(UInt32 addr)
+void Context::StartRegion(Number addr)
 {
 	_pSegmentCur->AddRegion(new Region(addr));
 	_pSegmentCur->SetAddress(addr);
@@ -88,7 +88,7 @@ Context::SymbolInfoOwner *Context::MakeSymbolInfoOwner()
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));
 		if (!pExprResolved.IsNull() && pExprResolved->IsTypeNumber()) {
-			UInt32 num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
+			Number num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
 			pSymbolInfoOwner->push_back(new SymbolInfo(num, symbol));
 		}
 	}

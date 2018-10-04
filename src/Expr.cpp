@@ -426,9 +426,27 @@ const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
 String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
-	str = GetLeft()->ComposeSource(upperCaseFlag);
+	bool needParenFlagL = false;
+	bool needParenFlagR = false;
+	if (GetLeft()->IsTypeBinOp()) {
+		Token::Precedence prec = Operator::LookupPrec(
+			dynamic_cast<const Expr_BinOp *>(GetLeft())->GetOperator(),
+			GetOperator());
+		needParenFlagL = prec == (Token::PREC_LT);
+	}
+	if (GetRight()->IsTypeBinOp()) {
+		Token::Precedence prec = Operator::LookupPrec(
+			GetOperator(),
+			dynamic_cast<const Expr_BinOp *>(GetRight())->GetOperator());
+		needParenFlagR = prec == (Token::PREC_GT);
+	}
+	if (needParenFlagL) str += "(";
+	str += GetLeft()->ComposeSource(upperCaseFlag);
+	if (needParenFlagL) str += ")";
 	str += _pOperator->GetSymbol();
+	if (needParenFlagR) str += "(";
 	str += GetRight()->ComposeSource(upperCaseFlag);
+	if (needParenFlagR) str += ")";
 	return str;
 }
 
@@ -724,7 +742,7 @@ bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumpe
 	bool upperCaseFlag = disasmDumper.GetUpperCaseFlag();
 	if (_pExprsExpanded.IsNull()) {
 		Binary buffDst;
-		UInt32 addr = context.GetAddress();
+		Number addr = context.GetAddress();
 		if ((rtn = Generator::GetInstance().Generate(context, this, &buffDst))) {
 			disasmDumper.DumpDataAndCode(addr, buffDst, ComposeSource(upperCaseFlag).c_str(), indentLevelCode);
 		}

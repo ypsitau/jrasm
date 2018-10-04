@@ -373,7 +373,7 @@ bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str)
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str));
 }
 
-bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, UInt32 num)
+bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, Number num)
 {
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str, num));
 }

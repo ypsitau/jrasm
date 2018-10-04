@@ -70,7 +70,7 @@ private:
 	const TokenInfo *_pTokenInfo;
 	int _lineNo;
 	String _str;
-	UInt32 _num;
+	Number _num;
 	bool _validStrFlag;
 	AutoPtr<Expr> _pExpr;	// only valid for TOKEN_Expr
 private:
@@ -82,7 +82,7 @@ public:
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _num(0), _validStrFlag(false) {}
 	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(0), _validStrFlag(true) {}
-	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str, UInt32 num) :
+	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str, Number num) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(num), _validStrFlag(true) {}
 	inline Token(const TokenInfo &tokenInfo) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(0), _num(0), _validStrFlag(false) {}
@@ -97,14 +97,17 @@ public:
 	inline bool HasPrecedence() const { return GetCategory() != 0; }
 	inline bool IsType(const TokenInfo &tokenInfo) const { return _pTokenInfo->IsIdentical(tokenInfo); }
 	inline int GetLineNo() const { return _lineNo; }
-	inline UInt32 GetNumber() const { return _num; }
+	inline Number GetNumber() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
 	inline const Expr *GetExpr() const { return _pExpr.get(); }
 	inline bool MatchCase(const char *str) const { return ::strcmp(_str.c_str(), str) == 0; }
 	inline bool MatchICase(const char *str) const { return ::strcasecmp(_str.c_str(), str) == 0; }
-	inline static Precedence LookupPrec(const Token &tokenLeft, const Token &tokenRight) {
-		return _precMatrix[tokenLeft.GetCategory()][tokenRight.GetCategory()];
+	inline static Precedence LookupPrec(const TokenInfo &tokenInfoL, const TokenInfo &tokenInfoR) {
+		return _precMatrix[tokenInfoL.category][tokenInfoR.category];
+	}
+	inline static Precedence LookupPrec(const Token &tokenL, const Token &tokenR) {
+		return _precMatrix[tokenL.GetCategory()][tokenR.GetCategory()];
 	}
 	String ToString() const;
 };

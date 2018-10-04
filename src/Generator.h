@@ -29,7 +29,7 @@ public:
 	bool ForwardAddress(Context &context, const Expr_Instruction *pExpr) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const;
 	static void DumpDisasmHelper(
-		UInt32 addr, const Binary &buff, const char *strCode,
+		Number addr, const Binary &buff, const char *strCode,
 		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
 	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
 	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const = 0;
