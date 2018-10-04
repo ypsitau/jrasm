@@ -93,7 +93,6 @@ public:
 	inline bool GetGroupingFlag() const { return _pDirectiveFactory->GetGroupingFlag(); }
 	inline const DirectiveFactory *GetDirectiveFactory() const { return _pDirectiveFactory; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
-	virtual bool OnPhaseParse_End(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
