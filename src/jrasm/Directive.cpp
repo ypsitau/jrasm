@@ -892,18 +892,72 @@ bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
+bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
+{
+	const char *errMsg = "directive syntax: .SCOPE [a|b|x]*";
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	ExprOwner &exprChildren = pExpr->GetExprChildren();
+	for (auto pExprOperand : exprOperands) {
+		if (!pExprOperand->IsTypeSymbol()) {
+			ErrorLog::AddError(errMsg);
+			break;
+		}
+		const char *instStore = nullptr;
+		const char *instLoad = nullptr;
+		const char *labelName = nullptr;
+		const char *symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
+		if (::strcasecmp(symbol, "a") == 0) {
+			instStore = "staa";
+			instLoad = "ldaa";
+			labelName = "__restore_a";
+		} else if (::strcasecmp(symbol, "b") == 0) {
+			instStore = "stab";
+			instLoad = "ldab";
+			labelName = "__restore_b";
+		} else if (::strcasecmp(symbol, "x") == 0) {
+			instStore = "stx";
+			instLoad = "ldx";
+			labelName = "__restore_x";
+		} else {
+			ErrorLog::AddError(errMsg);
+			break;
+		}
+		do {
+			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
+			do {
+				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
+				pExprOperand->GetExprOperands().push_back(
+					new Expr_BinOp(
+						Operator::Add,
+						new Expr_Symbol(labelName),
+						new Expr_Number(1)));
+				pExprInst->GetExprOperands().push_back(pExprOperand.release());
+			} while (0);
+			exprChildren.insert(exprChildren.begin(), pExprInst.release());
+		} while (0);
+		do {
+			ExprOwner::iterator ppExpr = exprChildren.begin() + exprChildren.size() - 1;
+			AutoPtr<Expr> pExprLabel(new Expr_Label(labelName, false));
+			exprChildren.insert(ppExpr, pExprLabel.release());
+		} while (0);
+		do {
+			ExprOwner::iterator ppExpr = exprChildren.begin() + exprChildren.size() - 1;
+			AutoPtr<Expr> pExprInst(new Expr_Instruction(instLoad));
+			pExprInst->GetExprOperands().push_back(new Expr_Number(0));
+			exprChildren.insert(ppExpr, pExprInst.release());
+		} while (0);
+	}
+	return true;
+}
+
 bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .SCOPE needs no operands");
-		return false;
-	}
 	context.BeginScope();
 	bool rtn = pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 	context.EndScope();
 	return rtn;
 }
+
 
 bool Directive_SCOPE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {

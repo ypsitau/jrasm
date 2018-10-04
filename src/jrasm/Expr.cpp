@@ -11,6 +11,11 @@ Expr::Expr(Type type) :
 {
 }
 
+Expr::Expr(Type type, ExprOwner *pExprOperands) :
+	_cntRef(1), _type(type), _pExprOperands(pExprOperands), _pExprChildren(new ExprOwner()), _lineNo(0)
+{
+}
+
 Expr::Expr(Type type, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 	_cntRef(1), _type(type), _pExprOperands(pExprOperands), _pExprChildren(pExprChildren), _lineNo(0)
 {

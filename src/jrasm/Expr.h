@@ -103,6 +103,7 @@ public:
 	DeclareReferenceAccessor(Expr);
 public:
 	Expr(Type type);
+	Expr(Type type, ExprOwner *pExprOperands);
 	Expr(Type type, ExprOwner *pExprOperands, ExprOwner *pExprChildren);
 	Expr(const Expr &expr);
 protected:
@@ -191,7 +192,9 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Root() : Expr(TYPE) {}
-	inline Expr_Root(ExprOwner *pExprOperands, ExprOwner *pExprChildren) : Expr(TYPE, pExprOperands, pExprChildren) {}
+	inline Expr_Root(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
+	inline Expr_Root(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Root(const Expr_Root &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -272,6 +275,8 @@ public:
 		GetExprOperands().push_back(pExprL);
 		GetExprOperands().push_back(pExprR);
 	}
+	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprOperands) :
+		Expr(TYPE, pExprOperands), _pOperator(pOperator) {}
 	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren), _pOperator(pOperator) {}
 	inline Expr_BinOp(const Expr_BinOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
@@ -292,6 +297,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Bracket() : Expr(TYPE) {}
+	inline Expr_Bracket(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
 	inline Expr_Bracket(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Bracket(const Expr_Bracket &expr) : Expr(expr) {}
@@ -309,6 +315,7 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Brace() : Expr(TYPE) {}
+	inline Expr_Brace(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
 	inline Expr_Brace(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Brace(const Expr_Brace &expr) : Expr(expr) {}
@@ -382,6 +389,8 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_Instruction(const String &symbol) : Expr(TYPE), _symbol(symbol) {}
+	inline Expr_Instruction(const String &symbol, ExprOwner *pExprOperands) :
+		Expr(TYPE, pExprOperands), _symbol(symbol) {}
 	inline Expr_Instruction(const String &symbol, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren), _symbol(symbol) {}
 	inline Expr_Instruction(const Expr_Instruction &expr) :
@@ -409,6 +418,8 @@ public:
 public:
 	inline Expr_Directive(Directive *pDirective) :
 		Expr(TYPE), _pDirective(pDirective) {}
+	inline Expr_Directive(Directive *pDirective, ExprOwner *pExprOperands) :
+		Expr(TYPE, pExprOperands), _pDirective(pDirective) {}
 	inline Expr_Directive(Directive *pDirective, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren), _pDirective(pDirective) {}
 	inline Expr_Directive(const Expr_Directive &expr) :
