@@ -133,7 +133,10 @@ bool Tokenizer::FeedChar(char ch)
 		break;
 	}
 	case STAT_BlockComment: {
-		if (ch == '*') {
+		if (IsEOF(ch)) {
+			AddError("unclosed block comment");
+			rtn = false;
+		} else if (ch == '*') {
 			_stat = STAT_BlockComment_Asterisk;
 		} else {
 			// nothing to do
