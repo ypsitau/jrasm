@@ -63,6 +63,18 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_Comment;
 		} else if (ch == ':') {
 			_stat = STAT_Colon;
+		} else if (ch == '=') {
+			_stat = STAT_Equal;
+		} else if (ch == '|') {
+			_stat = STAT_VerticalBar;
+		} else if (ch == '&') {
+			_stat = STAT_Ampersand;
+		} else if (ch == '<') {
+			_stat = STAT_LessThan;
+		} else if (ch == '>') {
+			_stat = STAT_GreaterThan;
+		} else if (ch == '!') {
+			_stat = STAT_Bang;
 		} else if (ch == ',') {
 			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
@@ -73,6 +85,12 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_Asterisk);
 		} else if (ch == '/') {
 			rtn = FeedToken(TOKEN_Slash);
+		} else if (ch == '%') {
+			rtn = FeedToken(TOKEN_Percent);
+		} else if (ch == '(') {
+			rtn = FeedToken(TOKEN_ParenL);
+		} else if (ch == ')') {
+			rtn = FeedToken(TOKEN_ParenR);
 		} else if (ch == '[') {
 			rtn = FeedToken(TOKEN_BracketL);
 		} else if (ch == ']') {
@@ -116,6 +134,78 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_Neutral;
 		} else {
 			rtn = FeedToken(TOKEN_Colon);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_Equal: {
+		if (ch == '=') {
+			rtn = FeedToken(TOKEN_EqEq);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_Eq);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_VerticalBar: {
+		if (ch == '|') {
+			rtn = FeedToken(TOKEN_VBarVBar);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_VBar);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_Ampersand: {
+		if (ch == '&') {
+			rtn = FeedToken(TOKEN_AmpAmp);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_Amp);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_LessThan: {
+		if (ch == '=') {
+			rtn = FeedToken(TOKEN_LtEq);
+			_stat = STAT_Neutral;
+		} else if (ch == '<') {
+			rtn = FeedToken(TOKEN_LtLt);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_Lt);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_GreaterThan: {
+		if (ch == '=') {
+			rtn = FeedToken(TOKEN_GtEq);
+			_stat = STAT_Neutral;
+		} else if (ch == '>') {
+			rtn = FeedToken(TOKEN_GtGt);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_Gt);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_Bang: {
+		if (ch == '=') {
+			rtn = FeedToken(TOKEN_BangEq);
+			_stat = STAT_Neutral;
+		} else {
+			rtn = FeedToken(TOKEN_Bang);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
