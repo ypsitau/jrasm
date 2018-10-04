@@ -140,6 +140,29 @@ When you launch the program with a source file, it will generate a product in CJ
 that can be loaded to VJR-200, a JR-200 emulator.
 
 
+## Comment
+
+When a semicolon `;` or a pair of slash characters `//` appears, the following text until the end of the line
+is parsed as a line comment.
+
+You can also use a block comment by surrounding texts with `/*`and `*/`, which can contain multiple lines.
+
+```
+; line comment
+
+// another line comment
+        
+        ldaa    32    ; line comment
+
+        /* block comment
+           that
+           contains
+           multiple lines. */
+
+        .db     0x01,0x02,/* a comment inserted in a code */0x03,0x04
+```
+
+
 ## Literal
 
 ### String
