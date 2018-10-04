@@ -43,7 +43,7 @@ public:
 		String _symbol;
 	public:
 		inline SymbolInfo(Number num, const String &symbol) : _num(num), _symbol(symbol) {}
-		inline UInt16 GetNumber() const { return _num; }
+		inline Number GetNumber() const { return _num; }
 		inline const char *GetSymbol() const { return _symbol.c_str(); }
 	};
 	class SymbolInfoList : public std::vector<SymbolInfo *> {

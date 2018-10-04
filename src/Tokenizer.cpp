@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 Tokenizer::Tokenizer(Listener *pListener, const String &pathNameSrc) :
 	_stat(STAT_LineTop), _pListener(pListener),
-	_pPathNameSrc(new StringShared(pathNameSrc)), _num(0), _nLines(0),
+	_pPathNameSrc(new StringShared(pathNameSrc)), _numNegFlag(false), _num(0), _nLines(0),
 	_quotedType(QUOTEDTYPE_None)
 {
 }
@@ -50,17 +50,21 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_stat = STAT_Symbol;
 		} else if (ch == '0') {
+			_numNegFlag = false;
 			_num = 0;
 			_str.clear();
 			_str += ch;
 			_stat = STAT_DetectZero;
 		} else if (IsDigit(ch)) {
+			_numNegFlag = false;
 			_num = 0;
 			_str.clear();
 			_stat = STAT_DecNumber;
 			Pushback();
 		} else if (ch == ';') {
 			_stat = STAT_Comment;
+		} else if (ch == '-') {
+			_stat = STAT_Minus;
 		} else if (ch == ':') {
 			_stat = STAT_Colon;
 		} else if (ch == '=') {
@@ -81,8 +85,6 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
 			rtn = FeedToken(TOKEN_Plus);
-		} else if (ch == '-') {
-			rtn = FeedToken(TOKEN_Minus);
 		} else if (ch == '*') {
 			rtn = FeedToken(TOKEN_Asterisk);
 		} else if (ch == '/') {
@@ -127,6 +129,28 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_LineTop;
 		} else {
 			// nothing to do
+		}
+		break;
+	}
+	case STAT_Minus: {
+		if (ch == '0') {
+			_numNegFlag = true;
+			_num = 0;
+			_str.clear();
+			_str += '-';
+			_str += ch;
+			_stat = STAT_DetectZero;
+		} else if (IsDigit(ch)) {
+			_numNegFlag = true;
+			_num = 0;
+			_str.clear();
+			_str += '-';
+			_stat = STAT_DecNumber;
+			Pushback();
+		} else {
+			rtn = FeedToken(TOKEN_Minus);
+			_stat = STAT_Neutral;
+			Pushback();
 		}
 		break;
 	}
@@ -298,7 +322,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_stat = STAT_HexNumber;
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -309,7 +333,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = (_num << 1) + (ch - '0');
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -323,7 +347,7 @@ bool Tokenizer::FeedChar(char ch)
 			AddError("decimal number must not start with zero");
 			rtn = false;
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -334,7 +358,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = _num * 10 + (ch - '0');
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -351,7 +375,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = (_num << 4) + (ch - 'A' + 10);
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _num);
+			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}

@@ -20,6 +20,7 @@ public:
 		STAT_Neutral,
 		STAT_White,
 		STAT_Comment,
+		STAT_Minus,
 		STAT_Colon,
 		STAT_Equal,
 		STAT_VerticalBar,
@@ -47,7 +48,8 @@ private:
 	Stat _stat;
 	Listener *_pListener;
 	AutoPtr<StringShared> _pPathNameSrc;
-	UInt16 _num;
+	bool _numNegFlag;
+	Number _num;
 	String _str;
 	int _nLines;
 	char _quotedType;

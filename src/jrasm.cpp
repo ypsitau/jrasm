@@ -107,6 +107,7 @@ int main(int argc, const char *argv[])
 		size_t bytesGapToJoin = 128;
 		UInt8 dataFiller = 0x00;
 		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(bytesGapToJoin, dataFiller));
+		if (pRegionOwner.get() == nullptr) goto errorDone;
 		::printf("[Memory Image]\n");
 		for (auto pRegion : *pRegionOwner) {
 			::printf(formatRoot, pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
