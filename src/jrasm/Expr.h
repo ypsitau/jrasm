@@ -143,7 +143,7 @@ public:
 	bool IsTypeSymbol(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;
 	bool IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const;
-	bool IsGrouping() const;
+	bool IsGroupingDirective() const;
 	void Print() const;
 	virtual bool OnPhasePreprocess(Context &context);
 	virtual bool OnPhaseAssignMacro(Context &context);

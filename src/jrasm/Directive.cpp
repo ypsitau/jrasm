@@ -74,6 +74,12 @@ bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const 
 	return true;
 }
 
+bool Directive::OnPhaseParse_End(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+{
+	// nothing to do
+	return true;
+}
+
 bool Directive::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	// nothing to do
@@ -286,14 +292,15 @@ Directive *Directive_END::Factory::Create() const
 
 bool Directive_END::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
-	if (!exprStack.back()->IsGrouping()) {
+	if (!exprStack.back()->IsGroupingDirective()) {
 		pParser->AddError("no matching directive");
 		return false;
 	}
+	if (!dynamic_cast<Expr_Directive *>(exprStack.back())->GetDirective()->
+		OnPhaseParse_End(pParser, exprStack, pToken)) return false;
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	
 	Expr::Delete(exprStack.back());
 	exprStack.pop_back();	// remove the Expr_Directive instance from the stack
 	exprStack.push_back(pExpr.release());

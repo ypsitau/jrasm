@@ -52,7 +52,7 @@ bool Expr::IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const
 		GetDirective()->GetDirectiveFactory()->IsIdentical(pDirectiveFactory);
 }
 
-bool Expr::IsGrouping() const
+bool Expr::IsGroupingDirective() const
 {
 	return IsTypeDirective() && dynamic_cast<const Expr_Directive *>(this)->GetDirective()->GetGroupingFlag();
 }
