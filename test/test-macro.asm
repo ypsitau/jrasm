@@ -62,3 +62,23 @@ macro5:
 	macro4
 	macro4
 	macro5	0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
+macro6:	.macro
+	.end
+
+macro7:	.macro
+	macro6
+	.end
+
+macro8:	.macro
+	macro7
+	.end
+	
+macro9:	.macro
+	macro8
+	.end
+	
+macro10:.macro
+	macro9
+	.end
+	
+	macro10

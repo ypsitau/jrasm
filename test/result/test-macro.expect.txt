@@ -78,5 +78,15 @@ addr2:             |
     1061 ee ee     | 
     1063 ff ff     | 
                    | .end
+                   macro10
+                   | macro9
+                   | | macro8
+                   | | | macro7
+                   | | | | macro6
+                   | | | | | .end
+                   | | | | .end
+                   | | | .end
+                   | | .end
+                   | .end
 [Symbol List]
 0020  external_val

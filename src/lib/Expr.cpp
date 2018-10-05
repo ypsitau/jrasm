@@ -709,7 +709,7 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 		return false;
 	}
 	_pExprsExpanded.reset(pMacro->GetExprOwner().Substitute(*pExprDict));
-	return true;
+	return _pExprsExpanded->OnPhaseExpandMacro(context);
 }
 
 bool Expr_Instruction::OnPhaseAssignSymbol(Context &context)
