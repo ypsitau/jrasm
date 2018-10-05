@@ -32,7 +32,7 @@ Expr *PCGData::ComposeExpr() const
 				::sprintf_s(str, "        ldaa    0x%02x\n", pPCGChar->GetCharCode());
 				asmCode += str;
 			}
-			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
+			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -51,7 +51,7 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
+			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -74,7 +74,7 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
+			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -93,7 +93,7 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol + iRow * 0x20));
+			::sprintf_s(str, "        staa    [x+0x%02x]\n", static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {

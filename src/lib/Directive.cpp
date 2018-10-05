@@ -728,6 +728,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 	String symbol;
 	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
 	size_t wdChar = 0, htChar = 0;
+	size_t xStep = 1, yStep = 32;
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -752,7 +753,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		htChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
-	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar));
+	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, xStep, yStep));
 	Binary buffOrg;
 	Number bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
@@ -808,7 +809,6 @@ bool Directive_PCG::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	_pExprGenerated.reset(_pPCGData->ComposeExpr());
 	if (_pExprGenerated.IsNull()) return false;
-	//_pExprGenerated->GetExprChildren().Print(false);
 	return _pExprGenerated->OnPhaseAssignMacro(context);
 }
 
