@@ -480,6 +480,42 @@ Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 }
 
 //-----------------------------------------------------------------------------
+// Expr_Assign
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_Assign::TYPE = Expr::TYPE_Assign;
+
+String Expr_Assign::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str += GetLeft()->ComposeSource(upperCaseFlag);
+	str += "=";
+	str += GetRight()->ComposeSource(upperCaseFlag);
+	return str;
+}
+
+Expr *Expr_Assign::Resolve(Context &context) const
+{
+	AutoPtr<Expr> pExprL(GetLeft()->Clone());
+	AutoPtr<Expr> pExprR(GetRight()->Resolve(context));
+	if (pExprR.IsNull()) return nullptr;
+	return new Expr_Assign(pExprL.release(), pExprR.release());
+}
+
+Expr *Expr_Assign::Clone() const
+{
+	return new Expr_Assign(*this);
+}
+
+Expr *Expr_Assign::Substitute(const ExprDict &exprDict) const
+{
+	AutoPtr<Expr> pExprRtn(new Expr_Assign(
+							   GetExprOperands().Substitute(exprDict),
+							   GetExprChildren().Substitute(exprDict)));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
+}
+
+//-----------------------------------------------------------------------------
 // Expr_Bracket
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;

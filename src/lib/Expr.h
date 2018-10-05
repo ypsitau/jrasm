@@ -83,6 +83,7 @@ public:
 		TYPE_String,
 		TYPE_BitPattern,
 		TYPE_BinOp,
+		TYPE_Assign,
 		TYPE_Bracket,
 		TYPE_Brace,
 		TYPE_Label,
@@ -115,6 +116,7 @@ public:
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
+	inline bool IsTypeAssign() const { return IsType(TYPE_Assign); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
 	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
 	inline bool IsTypeLabel() const { return IsType(TYPE_Label); }
@@ -283,6 +285,29 @@ public:
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
 	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }
+	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
+	virtual Expr *Substitute(const ExprDict &exprDict) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_Assign
+//-----------------------------------------------------------------------------
+class Expr_Assign : public Expr {
+public:
+	static const Type TYPE;
+public:
+	inline Expr_Assign(Expr *pExprL, Expr *pExprR) : Expr(TYPE) {
+		GetExprOperands().push_back(pExprL);
+		GetExprOperands().push_back(pExprR);
+	}
+	inline Expr_Assign(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
+	inline Expr_Assign(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren) {}
+	inline Expr_Assign(const Expr_Assign &expr) : Expr(expr) {}
+	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
+	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
