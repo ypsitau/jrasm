@@ -53,6 +53,86 @@ label3:            | .equ 0xabcd
     1030 ab cd     | .dw  label3
     1032 87 65     | .dw  label4
                    | .end
+                   .scope a
+    1034 b7 10 3f  | staa [__scopesave_a+1]
+    1037 86 11     | ldaa 0x11
+    1039 c6 22     | ldab 0x22
+    103b ce 33 33  | ldx  0x3333
+__scopesave_a:     | 
+    103e 86 00     | ldaa 0x00
+                   | .end
+                   .scope b
+    1040 f7 10 4b  | stab [__scopesave_b+1]
+    1043 86 11     | ldaa 0x11
+    1045 c6 22     | ldab 0x22
+    1047 ce 33 33  | ldx  0x3333
+__scopesave_b:     | 
+    104a c6 00     | ldab 0x00
+                   | .end
+                   .scope x
+    104c ff 10 57  | stx  [__scopesave_x+1]
+    104f 86 11     | ldaa 0x11
+    1051 c6 22     | ldab 0x22
+    1053 ce 33 33  | ldx  0x3333
+__scopesave_x:     | 
+    1056 ce 00 00  | ldx  0x00
+                   | .end
+                   .scope a,b
+    1059 b7 10 67  | staa [__scopesave_a+1]
+    105c f7 10 69  | stab [__scopesave_b+1]
+    105f 86 11     | ldaa 0x11
+    1061 c6 22     | ldab 0x22
+    1063 ce 33 33  | ldx  0x3333
+__scopesave_a:     | 
+    1066 86 00     | ldaa 0x00
+__scopesave_b:     | 
+    1068 c6 00     | ldab 0x00
+                   | .end
+    106a 86 11     ldaa 0x11
+    106c c6 22     ldab 0x22
+    106e ce 33 33  ldx  0x3333
+                   .scope a,b,x
+    1071 b7 10 b0  | staa [__scopesave_a+1]
+    1074 f7 10 b2  | stab [__scopesave_b+1]
+    1077 ff 10 b4  | stx  [__scopesave_x+1]
+    107a 86 44     | ldaa 0x44
+    107c c6 55     | ldab 0x55
+    107e ce 66 66  | ldx  0x6666
+                   | .scope a,b,x
+    1081 b7 10 a9  | | staa [__scopesave_a+1]
+    1084 f7 10 ab  | | stab [__scopesave_b+1]
+    1087 ff 10 ad  | | stx  [__scopesave_x+1]
+    108a 86 77     | | ldaa 0x77
+    108c c6 88     | | ldab 0x88
+    108e ce 99 99  | | ldx  0x9999
+                   | | .scope a,b,x
+    1091 b7 10 a2  | | | staa [__scopesave_a+1]
+    1094 f7 10 a4  | | | stab [__scopesave_b+1]
+    1097 ff 10 a6  | | | stx  [__scopesave_x+1]
+    109a 86 aa     | | | ldaa 0xaa
+    109c c6 bb     | | | ldab 0xbb
+    109e ce cc cc  | | | ldx  0xcccc
+__scopesave_a:     | | | 
+    10a1 86 00     | | | ldaa 0x00
+__scopesave_b:     | | | 
+    10a3 c6 00     | | | ldab 0x00
+__scopesave_x:     | | | 
+    10a5 ce 00 00  | | | ldx  0x00
+                   | | | .end
+__scopesave_a:     | | 
+    10a8 86 00     | | ldaa 0x00
+__scopesave_b:     | | 
+    10aa c6 00     | | ldab 0x00
+__scopesave_x:     | | 
+    10ac ce 00 00  | | ldx  0x00
+                   | | .end
+__scopesave_a:     | 
+    10af 86 00     | ldaa 0x00
+__scopesave_b:     | 
+    10b1 c6 00     | ldab 0x00
+__scopesave_x:     | 
+    10b3 ce 00 00  | ldx  0x00
+                   | .end
 [Symbol List]
 1000  label1
 1001  label2

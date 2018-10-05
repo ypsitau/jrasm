@@ -164,7 +164,7 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const StringList &regNames) const
 {
 	ExprOwner &exprChildren = pExpr->GetExprChildren();
-	const char *errMsg = "directive syntax: .SCOPE [a|b|x]*";
+	size_t i = 0;
 	for (auto regName : regNames) {
 		const char *instStore = nullptr;
 		const char *instLoad = nullptr;
@@ -172,23 +172,23 @@ bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const String
 		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instStore = "staa";
 			instLoad = "ldaa";
-			labelName = "__scope_restore_a";
+			labelName = "__scopesave_a";
 		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
 			instStore = "stab";
 			instLoad = "ldab";
-			labelName = "__scope_restore_b";
+			labelName = "__scopesave_b";
 		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
 			instStore = "stx";
 			instLoad = "ldx";
-			labelName = "__scope_restore_x";
+			labelName = "__scopesave_x";
 		} else {
-			ErrorLog::AddError(errMsg);
+			ErrorLog::AddError("acceptable register names are: a, b, x");
 			break;
 		}
 		do {
 			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
 			pExprInst->DeriveSourceInfo(pExpr);
-			do {
+			do { // [__scopesave_X+1]
 				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
 				pExprOperand->GetExprOperands().push_back(
 					new Expr_BinOp(
@@ -197,7 +197,7 @@ bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const String
 						new Expr_Number("1", 1)));
 				pExprInst->GetExprOperands().push_back(pExprOperand.release());
 			} while (0);
-			exprChildren.insert(exprChildren.begin(), pExprInst.release());
+			exprChildren.insert(exprChildren.begin() + i, pExprInst.release());
 		} while (0);
 		do {
 			AutoPtr<Expr> pExprLabel(new Expr_Label(labelName, false));
@@ -210,6 +210,7 @@ bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const String
 			pExprInst->GetExprOperands().push_back(new Expr_Number(0));
 			exprChildren.push_back(pExprInst.release());
 		} while (0);
+		i++;
 	}
 	return true;
 }
