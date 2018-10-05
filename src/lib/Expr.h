@@ -264,6 +264,29 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Expr_Assign
+//-----------------------------------------------------------------------------
+class Expr_Assign : public Expr {
+public:
+	static const Type TYPE;
+public:
+	inline Expr_Assign(Expr *pExprL, Expr *pExprR) : Expr(TYPE) {
+		GetExprOperands().push_back(pExprL);
+		GetExprOperands().push_back(pExprR);
+	}
+	inline Expr_Assign(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
+	inline Expr_Assign(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren) {}
+	inline Expr_Assign(const Expr_Assign &expr) : Expr(expr) {}
+	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
+	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
+	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
+	virtual Expr *Substitute(const ExprDict &exprDict) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
 // Expr_BinOp
 //-----------------------------------------------------------------------------
 class Expr_BinOp : public Expr {
@@ -285,29 +308,6 @@ public:
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
 	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }
-	virtual Expr *Resolve(Context &context) const;
-	virtual Expr *Clone() const;
-	virtual Expr *Substitute(const ExprDict &exprDict) const;
-	virtual String ComposeSource(bool upperCaseFlag) const;
-};
-
-//-----------------------------------------------------------------------------
-// Expr_Assign
-//-----------------------------------------------------------------------------
-class Expr_Assign : public Expr {
-public:
-	static const Type TYPE;
-public:
-	inline Expr_Assign(Expr *pExprL, Expr *pExprR) : Expr(TYPE) {
-		GetExprOperands().push_back(pExprL);
-		GetExprOperands().push_back(pExprR);
-	}
-	inline Expr_Assign(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
-	inline Expr_Assign(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
-		Expr(TYPE, pExprOperands, pExprChildren) {}
-	inline Expr_Assign(const Expr_Assign &expr) : Expr(expr) {}
-	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
-	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

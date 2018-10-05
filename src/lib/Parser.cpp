@@ -198,7 +198,9 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 					AutoPtr<Expr> pExprL(pToken1->GetExpr()->Reference());
 					AutoPtr<Expr> pExprR(pToken3->GetExpr()->Reference());
 					AutoPtr<Expr> pExpr;
-					if (pToken2->IsType(TOKEN_Plus)) {
+					if (pToken2->IsType(TOKEN_Eq)) {
+						pExpr.reset(new Expr_Assign(pExprL.release(), pExprR.release()));
+					} else if (pToken2->IsType(TOKEN_Plus)) {
 						pExpr.reset(new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release()));
 					} else if (pToken2->IsType(TOKEN_Minus)) {
 						pExpr.reset(new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release()));
