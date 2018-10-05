@@ -1,8 +1,8 @@
 //=============================================================================
-// jrasm.h
+// jrasmcore.h
 //=============================================================================
-#ifndef __JRASM_H__
-#define __JRASM_H__
+#ifndef __JRASMCORE_H__
+#define __JRASMCORE_H__
 
 #include "Common.h"
 #include "CommandLine.h"
