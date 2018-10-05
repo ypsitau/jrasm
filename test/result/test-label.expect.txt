@@ -1,3 +1,4 @@
+                   .org 0x1000
 label_89ab:        .equ 0x89ab
 label_cdef:        .equ 0xcdef
 label_1000:

@@ -1,3 +1,4 @@
+                   .org 0x1000
 start:
     1000 1b        aba 
 after_aba:

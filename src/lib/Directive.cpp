@@ -144,6 +144,7 @@ bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary
 bool Directive_CSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	context.SelectCodeSegment();
 	return true;
 }
@@ -254,6 +255,7 @@ bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary
 bool Directive_DSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	context.SelectDataSegment();
 	return true;
 }
@@ -511,6 +513,7 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary
 bool Directive_ISEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	context.SelectInternalSegment();
 	return true;
 }
@@ -560,6 +563,7 @@ bool Directive_MACRO::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	// nothing to do
 	return true;
 }
 
@@ -660,6 +664,7 @@ bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 bool Directive_ORG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return DoDirective(context, pExpr);
 }
 
@@ -807,6 +812,7 @@ bool Directive_PCG::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
+	// nothing to do
 	return true;
 }
 

@@ -1,3 +1,4 @@
+                   .org 0x1000
     1000 20 7f     bra  label1
     1002 01        nop 
     1003 20 7c     bra  label1

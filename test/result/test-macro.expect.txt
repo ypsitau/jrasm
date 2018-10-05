@@ -1,3 +1,4 @@
+                   .org 0x1000
 external_val:      .equ 0x20
                    macro0
                    | .end
