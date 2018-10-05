@@ -107,12 +107,7 @@ bool Directive::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBu
 bool Directive::OnPhaseDisasm(Context &context, const Expr *pExpr,
 							  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	Binary buffDst;
-	Number addr = context.GetAddress();
-	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
-	disasmDumper.DumpDataAndCode(
-		addr, buffDst,
-		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	// nothing to do
 	return true;
 }
 
@@ -146,6 +141,13 @@ bool Directive_CSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary
 	return true;
 }
 
+bool Directive_CSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	context.SelectCodeSegment();
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_DB
 //-----------------------------------------------------------------------------
@@ -169,6 +171,18 @@ bool Directive_DB::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 	Number bytes = 0;
 	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
 	context.ForwardAddress(bytes);
+	return true;
+}
+
+bool Directive_DB::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								 DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	Binary buffDst;
+	Number addr = context.GetAddress();
+	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
+	disasmDumper.DumpDataAndCode(
+		addr, buffDst,
+		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 
@@ -237,6 +251,13 @@ bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary
 	return true;
 }
 
+bool Directive_DSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	context.SelectDataSegment();
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
@@ -276,6 +297,18 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 	return true;
 }
 
+bool Directive_DW::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								 DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	Binary buffDst;
+	Number addr = context.GetAddress();
+	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
+	disasmDumper.DumpDataAndCode(
+		addr, buffDst,
+		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_END
 //-----------------------------------------------------------------------------
@@ -306,6 +339,13 @@ bool Directive_END::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 		ErrorLog::AddError(pExpr, "directive .END needs no operands");
 		return false;
 	}
+	return true;
+}
+
+bool Directive_END::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								  DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 
@@ -341,6 +381,12 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr *pExpr) const
 	return exprOperands.back()->Resolve(context);
 }
 
+bool Directive_EQU::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								  DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_FILENAME_JR
 //-----------------------------------------------------------------------------
@@ -369,6 +415,12 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr *pExpr,
 		return false;
 	}
 	context.SetFileNameJR(fileNameJR);
+	return true;
+}
+
+bool Directive_FILENAME_JR::OnPhaseDisasm(Context &context, const Expr *pExpr,
+										  DisasmDumper &disasmDumper, int indentLevelCode) const
+{
 	return true;
 }
 
@@ -456,6 +508,13 @@ bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary
 	return true;
 }
 
+bool Directive_ISEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	context.SelectInternalSegment();
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Directive_MACRO
 //-----------------------------------------------------------------------------
@@ -501,7 +560,6 @@ bool Directive_MACRO::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	// suppress disasm dump
 	return true;
 }
 
@@ -547,6 +605,18 @@ bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 	return true;
 }
 
+bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								  DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	Binary buffDst;
+	Number addr = context.GetAddress();
+	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
+	disasmDumper.DumpDataAndCode(
+		addr, buffDst,
+		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return true;
+}
+
 void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int length)
 {
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
@@ -583,6 +653,12 @@ bool Directive_ORG::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 }
 
 bool Directive_ORG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	return DoDirective(context, pExpr);
+}
+
+bool Directive_ORG::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	return DoDirective(context, pExpr);
 }
@@ -725,14 +801,12 @@ bool Directive_PCG::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 
 bool Directive_PCG::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 {
-	//return _pExprGenerated->OnPhaseExpandMacro(context);
 	return true;
 }
 
 bool Directive_PCG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								   DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	// suppress disasm dump
 	return true;
 }
 
@@ -894,27 +968,37 @@ bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 
 bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
-	const char *errMsg = "directive syntax: .SCOPE [a|b|x]*";
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	ExprOwner &exprChildren = pExpr->GetExprChildren();
+	StringList regNames;
 	for (auto pExprOperand : exprOperands) {
 		if (!pExprOperand->IsTypeSymbol()) {
-			ErrorLog::AddError(errMsg);
-			break;
+			ErrorLog::AddError("only symbols are acceptable");
+			return false;
 		}
+		const char *regName = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
+		if (std::find(regNames.begin(), regNames.end(), regName) != regNames.end()) {
+			ErrorLog::AddError("duplicated register name");
+			return false;
+		}
+		regNames.push_back(regName);
+	}
+	AutoPtr<Expr> pExpr_end(exprChildren.back());	// remove .end directive
+	exprChildren.pop_back();
+	const char *errMsg = "directive syntax: .SCOPE [a|b|x]*";
+	for (auto regName : regNames) {
 		const char *instStore = nullptr;
 		const char *instLoad = nullptr;
 		const char *labelName = nullptr;
-		const char *symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
-		if (::strcasecmp(symbol, "a") == 0) {
+		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instStore = "staa";
 			instLoad = "ldaa";
 			labelName = "__restore_a";
-		} else if (::strcasecmp(symbol, "b") == 0) {
+		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
 			instStore = "stab";
 			instLoad = "ldab";
 			labelName = "__restore_b";
-		} else if (::strcasecmp(symbol, "x") == 0) {
+		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
 			instStore = "stx";
 			instLoad = "ldx";
 			labelName = "__restore_x";
@@ -924,29 +1008,31 @@ bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		do {
 			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
+			pExprInst->DeriveSourceInfo(pExpr);
 			do {
 				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
 				pExprOperand->GetExprOperands().push_back(
 					new Expr_BinOp(
 						Operator::Add,
 						new Expr_Symbol(labelName),
-						new Expr_Number(1)));
+						new Expr_Number("1", 1)));
 				pExprInst->GetExprOperands().push_back(pExprOperand.release());
 			} while (0);
 			exprChildren.insert(exprChildren.begin(), pExprInst.release());
 		} while (0);
 		do {
-			ExprOwner::iterator ppExpr = exprChildren.begin() + exprChildren.size() - 1;
 			AutoPtr<Expr> pExprLabel(new Expr_Label(labelName, false));
-			exprChildren.insert(ppExpr, pExprLabel.release());
+			pExprLabel->DeriveSourceInfo(pExpr);
+			exprChildren.push_back(pExprLabel.release());
 		} while (0);
 		do {
-			ExprOwner::iterator ppExpr = exprChildren.begin() + exprChildren.size() - 1;
 			AutoPtr<Expr> pExprInst(new Expr_Instruction(instLoad));
+			pExprInst->DeriveSourceInfo(pExpr);
 			pExprInst->GetExprOperands().push_back(new Expr_Number(0));
-			exprChildren.insert(ppExpr, pExprInst.release());
+			exprChildren.push_back(pExprInst.release());
 		} while (0);
 	}
+	exprChildren.push_back(pExpr_end.release());	// restore .end directive
 	return true;
 }
 
@@ -967,5 +1053,6 @@ bool Directive_SCOPE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binar
 bool Directive_SCOPE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }

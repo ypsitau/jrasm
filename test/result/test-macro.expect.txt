@@ -1,6 +1,8 @@
 external_val:      .equ 0x20
                    macro0
+                   | .end
                    macro0
+                   | .end
                    macro1 8
     1000 86 08     | ldaa 8
     1002 96 08     | ldaa {8}
@@ -10,6 +12,7 @@ external_val:      .equ 0x20
     100b 96 28     | ldaa {8+external_val}
     100d a6 28     | ldaa [x+8+external_val]
     100f b6 00 28  | ldaa [8+external_val]
+                   | .end
                    macro2 3,4
     1012 86 07     | ldaa 3+4
     1014 96 07     | ldaa {3+4}
@@ -19,14 +22,19 @@ external_val:      .equ 0x20
     101d 96 27     | ldaa {3+4+external_val}
     101f a6 27     | ldaa [x+3+4+external_val]
     1021 b6 00 27  | ldaa [3+4+external_val]
+                   | .end
                    macro3 0x22
     1024 86 22     | ldaa 0x22
+                   | .end
                    macro3 {0x22}
     1026 96 22     | ldaa {0x22}
+                   | .end
                    macro3 [x+0x22]
     1028 a6 22     | ldaa [x+0x22]
+                   | .end
                    macro3 [0x1234]
     102a b6 12 34  | ldaa [0x1234]
+                   | .end
                    macro4
     102d 10 31     | .dw  addr1
     102f 10 33     | .dw  addr2
@@ -34,6 +42,7 @@ addr1:             |
     1031 10 31     | .dw  addr1
 addr2:             | 
     1033 10 33     | .dw  addr2
+                   | .end
                    macro4
     1035 10 39     | .dw  addr1
     1037 10 3b     | .dw  addr2
@@ -41,6 +50,7 @@ addr1:             |
     1039 10 39     | .dw  addr1
 addr2:             | 
     103b 10 3b     | .dw  addr2
+                   | .end
                    macro4
     103d 10 41     | .dw  addr1
     103f 10 43     | .dw  addr2
@@ -48,6 +58,7 @@ addr1:             |
     1041 10 41     | .dw  addr1
 addr2:             | 
     1043 10 43     | .dw  addr2
+                   | .end
                    macro5 0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
     1045 00 00     | .dw  0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
     1047 11 11     | 
@@ -65,5 +76,6 @@ addr2:             |
     105f dd dd     | 
     1061 ee ee     | 
     1063 ff ff     | 
+                   | .end
 [Symbol List]
 0020  external_val

@@ -30,12 +30,15 @@ label_100e:
                    macro1
 label1:            | .equ $
     1026 10 26     | .dw  label1
+                   | .end
                    macro1
 label1:            | .equ $
     1028 10 28     | .dw  label1
+                   | .end
                    macro1
 label1:            | .equ $
     102a 10 2a     | .dw  label1
+                   | .end
 [Symbol List]
 1000  label_1000
 1001  label_1001
