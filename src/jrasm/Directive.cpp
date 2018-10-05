@@ -968,6 +968,7 @@ bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 
 bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
+	bool rtn = true;
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	ExprOwner &exprChildren = pExpr->GetExprChildren();
 	StringList regNames;
@@ -983,57 +984,11 @@ bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		regNames.push_back(regName);
 	}
-	AutoPtr<Expr> pExpr_end(exprChildren.back());	// remove .end directive
-	exprChildren.pop_back();
-	const char *errMsg = "directive syntax: .SCOPE [a|b|x]*";
-	for (auto regName : regNames) {
-		const char *instStore = nullptr;
-		const char *instLoad = nullptr;
-		const char *labelName = nullptr;
-		if (::strcasecmp(regName.c_str(), "a") == 0) {
-			instStore = "staa";
-			instLoad = "ldaa";
-			labelName = "__restore_a";
-		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
-			instStore = "stab";
-			instLoad = "ldab";
-			labelName = "__restore_b";
-		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
-			instStore = "stx";
-			instLoad = "ldx";
-			labelName = "__restore_x";
-		} else {
-			ErrorLog::AddError(errMsg);
-			break;
-		}
-		do {
-			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
-			pExprInst->DeriveSourceInfo(pExpr);
-			do {
-				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
-				pExprOperand->GetExprOperands().push_back(
-					new Expr_BinOp(
-						Operator::Add,
-						new Expr_Symbol(labelName),
-						new Expr_Number("1", 1)));
-				pExprInst->GetExprOperands().push_back(pExprOperand.release());
-			} while (0);
-			exprChildren.insert(exprChildren.begin(), pExprInst.release());
-		} while (0);
-		do {
-			AutoPtr<Expr> pExprLabel(new Expr_Label(labelName, false));
-			pExprLabel->DeriveSourceInfo(pExpr);
-			exprChildren.push_back(pExprLabel.release());
-		} while (0);
-		do {
-			AutoPtr<Expr> pExprInst(new Expr_Instruction(instLoad));
-			pExprInst->DeriveSourceInfo(pExpr);
-			pExprInst->GetExprOperands().push_back(new Expr_Number(0));
-			exprChildren.push_back(pExprInst.release());
-		} while (0);
-	}
+	AutoPtr<Expr> pExpr_end(exprChildren.back());
+	exprChildren.pop_back();						// remove .end directive
+	rtn = Generator::GetInstance().GenCodeScope(context, pExpr, regNames);
 	exprChildren.push_back(pExpr_end.release());	// restore .end directive
-	return true;
+	return rtn;
 }
 
 bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)

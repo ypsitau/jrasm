@@ -161,6 +161,59 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 	return pEntry->ApplyRule(context, pExpr, &buffDst);
 }
 
+bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const StringList &regNames) const
+{
+	ExprOwner &exprChildren = pExpr->GetExprChildren();
+	const char *errMsg = "directive syntax: .SCOPE [a|b|x]*";
+	for (auto regName : regNames) {
+		const char *instStore = nullptr;
+		const char *instLoad = nullptr;
+		const char *labelName = nullptr;
+		if (::strcasecmp(regName.c_str(), "a") == 0) {
+			instStore = "staa";
+			instLoad = "ldaa";
+			labelName = "__scope_restore_a";
+		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
+			instStore = "stab";
+			instLoad = "ldab";
+			labelName = "__scope_restore_b";
+		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
+			instStore = "stx";
+			instLoad = "ldx";
+			labelName = "__scope_restore_x";
+		} else {
+			ErrorLog::AddError(errMsg);
+			break;
+		}
+		do {
+			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
+			pExprInst->DeriveSourceInfo(pExpr);
+			do {
+				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
+				pExprOperand->GetExprOperands().push_back(
+					new Expr_BinOp(
+						Operator::Add,
+						new Expr_Symbol(labelName),
+						new Expr_Number("1", 1)));
+				pExprInst->GetExprOperands().push_back(pExprOperand.release());
+			} while (0);
+			exprChildren.insert(exprChildren.begin(), pExprInst.release());
+		} while (0);
+		do {
+			AutoPtr<Expr> pExprLabel(new Expr_Label(labelName, false));
+			pExprLabel->DeriveSourceInfo(pExpr);
+			exprChildren.push_back(pExprLabel.release());
+		} while (0);
+		do {
+			AutoPtr<Expr> pExprInst(new Expr_Instruction(instLoad));
+			pExprInst->DeriveSourceInfo(pExpr);
+			pExprInst->GetExprOperands().push_back(new Expr_Number(0));
+			exprChildren.push_back(pExprInst.release());
+		} while (0);
+	}
+	return true;
+}
+
 Generator_M6800::Entry *Generator_M6800::Entry_ACC(const String &symbol, UInt8 codeACC)
 {
 	Entry *pEntry = new Entry(symbol, "ACC");

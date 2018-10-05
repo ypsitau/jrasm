@@ -30,6 +30,11 @@ bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary
 	return DoGenerate(context, pExpr, *pBuffDst);
 }
 
+bool Generator::GenCodeScope(Context &context, Expr *pExpr, const StringList &regNames) const
+{
+	return DoGenCodeScope(context, pExpr, regNames);
+}
+
 void Generator::DumpDisasmHelper(
 	Number addr, const Binary &buff, const char *strCode,
 	FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax)
