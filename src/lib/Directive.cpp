@@ -720,8 +720,8 @@ bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, co
 bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
-	const char *errMsg = "directive syntax: .PCG symbol,width,height";
-	if (exprOperands.size() != 3) {
+	const char *errMsg = "directive syntax: .PCG symbol,width,height,[xstep,[ystep]]";
+	if (exprOperands.size() < 3 || exprOperands.size() > 5) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
@@ -752,6 +752,22 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 			return false;
 		}
 		htChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+	} while (0);
+	if (exprOperands.size() >= 4) {
+		Expr *pExprOperand = exprOperands[3];
+		if (!pExprOperand->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, errMsg);
+			return false;
+		}
+		xStep = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+	} while (0);
+	if (exprOperands.size() >= 5) {
+		Expr *pExprOperand = exprOperands[4];
+		if (!pExprOperand->IsTypeNumber()) {
+			ErrorLog::AddError(pExpr, errMsg);
+			return false;
+		}
+		yStep = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
 	} while (0);
 	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, xStep, yStep));
 	Binary buffOrg;
