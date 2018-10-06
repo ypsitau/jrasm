@@ -10,6 +10,25 @@
 // Macro
 //-----------------------------------------------------------------------------
 class Macro {
+public:
+	class Param {
+	private:
+		String _symbol;
+		AutoPtr<Expr> _pExprDefault;
+	public:
+		inline Param(const String &symbol) : _symbol(symbol) {}
+		inline Param(const String &symbol, Expr *pExprDefault) :
+			_symbol(symbol), _pExprDefault(pExprDefault) {}
+		inline const char *GetSymbol() const { return _symbol.c_str(); }
+		inline const Expr *GetExprDefault() const { return _pExprDefault.get(); }
+	};
+	class ParamList : public std::vector<Param *> {
+	};
+	class ParamOwner : public ParamList {
+	public:
+		~ParamOwner();
+		void Clear();
+	};
 private:
 	int _cntRef;
 	String _symbol;
