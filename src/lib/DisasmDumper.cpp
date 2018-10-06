@@ -41,6 +41,7 @@ void DisasmDumper::DumpDataAndCode(Number addr, const Binary &buff, const char *
 	const char *formatData = _upperCaseFlag? " %02X" : " %02x";
 	const char *formatHead = _upperCaseFlag? "    %04X%s  %s%s\n" : "    %04x%s  %s%s\n";
 	const char *formatFollow = _upperCaseFlag? "    %04X%s\n" : "    %04x%s\n";
+	const char *formatFollowIndent = _upperCaseFlag? "    %04X%s  %s\n" : "    %04x%s  %s\n";
 	String indentCode = MakePadding(indentLevelCode, "| ");
 	String strRow;
 	size_t iCol = 0;
@@ -55,10 +56,10 @@ void DisasmDumper::DumpDataAndCode(Number addr, const Binary &buff, const char *
 			strRow = JustifyLeft(strRow.c_str(), 3 * _nColsPerLine);
 			if (iLine == 0) {
 				::fprintf(_fp, formatHead, addr, strRow.c_str(), indentCode.c_str(), strCode);
-			} else if (!indentCode.empty()) {
-				::fprintf(_fp, formatHead, addr, strRow.c_str(), indentCode.c_str(), "");
-			} else {
+			} else if (indentCode.empty()) {
 				::fprintf(_fp, formatFollow, addr, strRow.c_str());
+			} else {
+				::fprintf(_fp, formatFollowIndent, addr, strRow.c_str(), indentCode.c_str());
 			}
 			strRow.clear();
 			addr += static_cast<Number>(iCol);
