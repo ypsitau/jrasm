@@ -62,21 +62,21 @@ addr2:             |
                    | .end
                    macro5 0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
     1045 00 00     | .dw  0x0000,0x1111,0x2222,0x3333,0x4444,0x5555,0x6666,0x7777,0x8888,0x9999,0xaaaa,0xbbbb,0xcccc,0xdddd,0xeeee,0xffff
-    1047 11 11     | 
-    1049 22 22     | 
-    104b 33 33     | 
-    104d 44 44     | 
-    104f 55 55     | 
-    1051 66 66     | 
-    1053 77 77     | 
-    1055 88 88     | 
-    1057 99 99     | 
-    1059 aa aa     | 
-    105b bb bb     | 
-    105d cc cc     | 
-    105f dd dd     | 
-    1061 ee ee     | 
-    1063 ff ff     | 
+    1047 11 11     |
+    1049 22 22     |
+    104b 33 33     |
+    104d 44 44     |
+    104f 55 55     |
+    1051 66 66     |
+    1053 77 77     |
+    1055 88 88     |
+    1057 99 99     |
+    1059 aa aa     |
+    105b bb bb     |
+    105d cc cc     |
+    105f dd dd     |
+    1061 ee ee     |
+    1063 ff ff     |
                    | .end
                    macro10
                    | macro9
@@ -90,23 +90,23 @@ addr2:             |
                    | .end
                    macro11
     1065 11 22     | .db  0x11,0x22,0x33,0x44
-    1067 33 44     | 
+    1067 33 44     |
                    | .end
                    macro11 0xaa
     1069 aa 22     | .db  0xaa,0x22,0x33,0x44
-    106b 33 44     | 
+    106b 33 44     |
                    | .end
                    macro11 0xaa,0xbb
     106d aa bb     | .db  0xaa,0xbb,0x33,0x44
-    106f 33 44     | 
+    106f 33 44     |
                    | .end
                    macro11 0xaa,0xbb,0xcc
     1071 aa bb     | .db  0xaa,0xbb,0xcc,0x44
-    1073 cc 44     | 
+    1073 cc 44     |
                    | .end
                    macro11 0xaa,0xbb,0xcc,0xdd
     1075 aa bb     | .db  0xaa,0xbb,0xcc,0xdd
-    1077 cc dd     | 
+    1077 cc dd     |
                    | .end
 [Symbol List]
 0020  external_val
