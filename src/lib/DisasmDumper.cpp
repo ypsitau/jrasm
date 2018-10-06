@@ -39,10 +39,10 @@ void DisasmDumper::DumpLabelAndCode(const char *strLabel, const char *strCode, i
 void DisasmDumper::DumpDataAndCode(Number addr, const Binary &buff, const char *strCode, int indentLevelCode)
 {
 	const char *formatData = _upperCaseFlag? " %02X" : " %02x";
-	const char *formatHead = _upperCaseFlag? "    %04X%s  %s%s\n" : "    %04x%s  %s%s\n";
+	const char *formatHead = _upperCaseFlag? "    %04X%s %s %s\n" : "    %04x%s %s %s\n";
 	const char *formatFollow = _upperCaseFlag? "    %04X%s\n" : "    %04x%s\n";
-	const char *formatFollowIndent = _upperCaseFlag? "    %04X%s  %s\n" : "    %04x%s  %s\n";
-	String indentCode = MakePadding(indentLevelCode, "| ");
+	const char *formatFollowIndent = _upperCaseFlag? "    %04X%s %s\n" : "    %04x%s %s\n";
+	String indentCode = MakePadding(indentLevelCode, " |");
 	String strRow;
 	size_t iCol = 0;
 	size_t iLine = 0;
