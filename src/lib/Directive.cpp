@@ -547,18 +547,20 @@ bool Directive_MACRO::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	AutoPtr<Macro> pMacro(new Macro(_symbol, pExpr->GetExprChildren().Reference()));
-	StringList &paramNames = pMacro->GetParamNames();
-	paramNames.reserve(exprOperands.size());
+	Macro::ParamOwner &paramOwner = pMacro->GetParamOwner();
+	paramOwner.reserve(exprOperands.size());
 	for (auto pExpr : exprOperands) {
 		if (pExpr->IsTypeSymbol()) {
-			paramNames.push_back(dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol());
+			paramOwner.push_back(new Macro::Param(dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol()));
 		} else if (pExpr->IsTypeAssign()) {
 			Expr_Assign *pExprEx = dynamic_cast<Expr_Assign *>(pExpr);
 			if (!pExprEx->GetLeft()->IsTypeSymbol()) {
 				ErrorLog::AddError(pExpr, "left value of the assignment must be a symbol");
 				return false;
 			}
-			paramNames.push_back(dynamic_cast<const Expr_Symbol *>(pExprEx->GetLeft())->GetSymbol());
+			paramOwner.push_back(new Macro::Param(
+									 dynamic_cast<const Expr_Symbol *>(pExprEx->GetLeft())->GetSymbol(),
+									 pExprEx->GetRight()->Reference()));
 		} else {
 			ErrorLog::AddError(pExpr, "directive .MACRO takes a list of parameter names");
 			return false;

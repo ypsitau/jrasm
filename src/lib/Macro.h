@@ -32,7 +32,7 @@ public:
 private:
 	int _cntRef;
 	String _symbol;
-	StringList _paramNames;
+	ParamOwner _paramOwner;
 	AutoPtr<ExprOwner> _pExprOwner;
 public:
 	DeclareReferenceAccessor(Macro);
@@ -43,8 +43,8 @@ private:
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline const ExprOwner &GetExprOwner() const { return *_pExprOwner; }
-	inline StringList &GetParamNames() { return _paramNames; }
-	inline const StringList &GetParamNames() const { return _paramNames; }
+	inline ParamOwner &GetParamOwner() { return _paramOwner; }
+	inline const ParamOwner &GetParamOwner() const { return _paramOwner; }
 };
 
 //-----------------------------------------------------------------------------

@@ -88,5 +88,25 @@ addr2:             |
                    | | | .end
                    | | .end
                    | .end
+                   macro11
+    1065 11 22     | .db  0x11,0x22,0x33,0x44
+    1067 33 44     | 
+                   | .end
+                   macro11 0xaa
+    1069 aa 22     | .db  0xaa,0x22,0x33,0x44
+    106b 33 44     | 
+                   | .end
+                   macro11 0xaa,0xbb
+    106d aa bb     | .db  0xaa,0xbb,0x33,0x44
+    106f 33 44     | 
+                   | .end
+                   macro11 0xaa,0xbb,0xcc
+    1071 aa bb     | .db  0xaa,0xbb,0xcc,0x44
+    1073 cc 44     | 
+                   | .end
+                   macro11 0xaa,0xbb,0xcc,0xdd
+    1075 aa bb     | .db  0xaa,0xbb,0xcc,0xdd
+    1077 cc dd     | 
+                   | .end
 [Symbol List]
 0020  external_val
