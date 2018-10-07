@@ -267,8 +267,16 @@ bool Parser::ReduceThree()
 	} else if (pToken1->IsType(TOKEN_ParenL) && pToken3->IsType(TOKEN_ParenR)) {
 		// ( [Exp] )
 		_tokenStack.Push(pToken2.release());
-	} else if (pToken1->IsType(TOKEN_BracketL) && pToken3->IsType(TOKEN_BracketR)) {
-		
+	} else if (pToken1->IsType(TOKEN_BracketL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_BracketR)) {
+		// [ [Exp] ]
+		AutoPtr<Expr_Bracket> pExpr(dynamic_cast<Expr_Bracket *>(pToken1->GetExpr()->Reference()));
+		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
+		_tokenStack.Push(new Token(pExpr.release()));
+	} else if (pToken1->IsType(TOKEN_BraceL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_BraceR)) {
+		// { [Exp] }
+		AutoPtr<Expr_Brace> pExpr(dynamic_cast<Expr_Brace *>(pToken1->GetExpr()->Reference()));
+		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
+		_tokenStack.Push(new Token(pExpr.release()));
 	} else {
 		AddError("unacceptable syntax: %s %s %s",
 				 pToken1->ToString().c_str(), pToken2->ToString().c_str(), pToken3->ToString().c_str());
