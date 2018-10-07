@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasm", "jrasm\jrasm.vcxproj", "{0F385A17-50AE-4801-9B2F-0FF174AF55BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF} = {EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasmcore", "lib\jrasmcore.vcxproj", "{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,14 @@ Global
 		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x64.Build.0 = Release|x64
 		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x86.ActiveCfg = Release|Win32
 		{0F385A17-50AE-4801-9B2F-0FF174AF55BE}.Release|x86.Build.0 = Release|Win32
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Debug|x64.ActiveCfg = Debug|x64
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Debug|x64.Build.0 = Debug|x64
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Debug|x86.ActiveCfg = Debug|Win32
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Debug|x86.Build.0 = Debug|Win32
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Release|x64.ActiveCfg = Release|x64
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Release|x64.Build.0 = Release|x64
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Release|x86.ActiveCfg = Release|Win32
+		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
