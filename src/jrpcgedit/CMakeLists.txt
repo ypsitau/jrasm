@@ -16,8 +16,8 @@ add_definitions(
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Carbon -framework Cocoa")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework AudioToolbox -framework System")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGL -framework WebKit -framework Security")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework System -framework OpenGL")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework WebKit -framework Security")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_SOURCE_DIR}/guest/wxWidgets-3.1.1/lib")
 
 target_link_libraries(jrpcgedit
