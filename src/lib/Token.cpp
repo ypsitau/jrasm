@@ -29,6 +29,10 @@ const TokenInfo TOKEN_Slash =			{ 12, "Slash",			"/"		};
 const TokenInfo TOKEN_Percent =			{ 12, "Percent",		"%"		};
 const TokenInfo TOKEN_ParenL =			{ 13, "ParenL",			"("		};
 const TokenInfo TOKEN_ParenR =			{ 14, "ParenR",			")"		};
+const TokenInfo TOKEN_BracketL =		{ 13, "BracketL",		"["		};
+const TokenInfo TOKEN_BracketR =		{ 14, "BracketR",		"]"		};
+const TokenInfo TOKEN_BraceL =			{ 13, "BraceL",			"{"		};
+const TokenInfo TOKEN_BraceR =			{ 14, "BraceR",			"}"		};
 const TokenInfo TOKEN_Number =			{ 15, "Number",			"[Num]"	};
 const TokenInfo TOKEN_Symbol =			{ 15, "Symbol",			"[Sym]"	};
 const TokenInfo TOKEN_String =			{ 15, "String",			"[Str]"	};
@@ -37,15 +41,6 @@ const TokenInfo TOKEN_Bang =			{  0, "Bang",			"!"		};
 const TokenInfo TOKEN_Comma =			{  0, "Comma",			","		};
 const TokenInfo TOKEN_Colon =			{  0, "Colon",			":"		};
 const TokenInfo TOKEN_ColonColon =		{  0, "ColonColon",		"::"	};
-#if 0
-const TokenInfo TOKEN_BracketL =		{  0, "BracketL",		"["		};
-const TokenInfo TOKEN_BracketR =		{  0, "BracketR",		"]"		};
-#else
-const TokenInfo TOKEN_BracketL =		{ 13, "BracketL",		"["		};
-const TokenInfo TOKEN_BracketR =		{ 14, "BracketR",		"]"		};
-#endif
-const TokenInfo TOKEN_BraceL =			{  0, "BraceL",			"{"		};
-const TokenInfo TOKEN_BraceR =			{  0, "BraceR",			"}"		};
 const TokenInfo TOKEN_EOL =				{  0, "EOL",			"[EOL]"	};
 const TokenInfo TOKEN_White =			{  0, "White",			"[Whi]"	};
 
