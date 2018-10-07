@@ -60,7 +60,7 @@ RegionOwner *RegionList::Join(size_t bytesGapToJoin, UInt8 dataFiller) const
 		if (pRegion->GetAddrTop() < pRegionPrev->GetAddrBtm()) {
 			ErrorLog::AddError("memory regions are overwrapped at 0x%04x", pRegion->GetAddrTop());
 			return nullptr;
-		} else if (pRegion->GetAddrTop() - pRegionPrev->GetAddrBtm() < bytesGapToJoin) {
+		} else if (pRegion->GetAddrTop() - pRegionPrev->GetAddrBtm() < static_cast<Int32>(bytesGapToJoin)) {
 			pRegionPrev->AppendFiller(dataFiller, pRegion->GetAddrTop() - pRegionPrev->GetAddrBtm());
 			pRegionPrev->AppendBuffer(pRegion->GetBuffer());
 			pRegionPrev->AddRegionIngredient(pRegion->Reference());
