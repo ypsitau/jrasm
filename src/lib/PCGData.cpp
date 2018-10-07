@@ -63,6 +63,25 @@ Expr *PCGData::ComposeExpr() const
 		}
 		asmCode += "        .end\n";
 	} while (0);
+	do { // create macro: pcg.SYMBOL.fill
+		::sprintf_s(str, "pcg.%s.fill:\n", GetSymbol());
+		asmCode += str;
+		asmCode += "        .macro code,offset=0\n";
+		::sprintf_s(str, "        ldaa    code\n");
+		asmCode += str;
+		size_t iCol = 0, iRow = 0;
+		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
+			::sprintf_s(str, "        staa    [x+0x%02x+offset]\n",
+						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
+			asmCode += str;
+			iCol++;
+			if (iCol == _wdChar) {
+				iCol = 0;
+				iRow++;
+			}
+		}
+		asmCode += "        .end\n";
+	} while (0);
 	do { // create macro: pcg.SYMBOL.putattr
 		::sprintf_s(str, "pcg.%s.putattr:\n", GetSymbol());
 		asmCode += str;
