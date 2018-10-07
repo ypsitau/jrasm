@@ -6,7 +6,7 @@ rem ---------------------------------------------------------------------------
 set GUESTURL=http://www.gura-lang.org/guest
 set BASEDIR=%~dp0
 set UNZIP="%BASEDIR%buildtool\7za920\7za.exe"
-set CURL="%BASEDIR%buildtools\curl\curl.exe"
+set CURL="%BASEDIR%buildtool\curl\curl.exe"
 if not defined VCINSTALLDIR call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\vsdevcmd.bat" -arch=x86
 rem Add include path containing Win32.mak in case vs2015 doesn't include SDK providing that file.
 set INCLUDE=%BASEDIR%include;%INCLUDE%
@@ -25,6 +25,12 @@ rem ---------------------------------------------------------------------------
 rem Register labels of subroutines
 rem ---------------------------------------------------------------------------
 set LABELS=wx
+rem ---------------------------------------------------------------------------
+rem Download packages
+rem ---------------------------------------------------------------------------
+set PACKAGES=
+for %%L in (%LABELS%) do call :getinfo_%%L
+call :download_packages
 rem ---------------------------------------------------------------------------
 rem Build packages
 rem ---------------------------------------------------------------------------

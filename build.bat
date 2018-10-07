@@ -1,6 +1,6 @@
 @echo off
 set VERSION=0.1.2
-set ZIP=buildtool\7za920\7za.exe
+set ZIP=guest\buildtool\7za920\7za.exe
 set WORKDIR=jrasm-%VERSION%
 set ARCFILE=jrasm-%VERSION%.zip
 msbuild src\jrasm.sln /clp:DisableConsoleColor /t:Rebuild /p:Configuration="Release" /p:Platform=x86
