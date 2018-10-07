@@ -122,24 +122,6 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 				_stat = STAT_LineTop;
 			} else if (pToken->IsType(TOKEN_Comma)) {
 				
-			} else if (pToken->IsType(TOKEN_BracketL)) {
-				AutoPtr<Expr> pExpr(new Expr_Bracket());
-				_pExprStack->back()->GetExprOperands().push_back(pExpr->Reference());
-				_pExprStack->push_back(pExpr.release());
-			} else if (pToken->IsType(TOKEN_BracketR)) {
-				if (!_pExprStack->back()->IsTypeBracket()) {
-					AddError("no opening bracket matched");
-				}
-				_pExprStack->pop_back();
-			} else if (pToken->IsType(TOKEN_BraceL)) {
-				AutoPtr<Expr> pExpr(new Expr_Brace());
-				_pExprStack->back()->GetExprOperands().push_back(pExpr->Reference());
-				_pExprStack->push_back(pExpr.release());
-			} else if (pToken->IsType(TOKEN_BraceR)) {
-				if (!_pExprStack->back()->IsTypeBrace()) {
-					AddError("no opening parenthesis matched");
-				}
-				_pExprStack->pop_back();
 			} else {
 				AddError("invalid format of operands");
 				return false;
