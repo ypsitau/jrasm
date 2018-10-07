@@ -187,12 +187,17 @@ bool Parser::ReduceOne()
 	} else if (pToken->IsType(TOKEN_BitPattern)) {
 		// [Exp] -> [BPt]
 		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
+	} else if (pToken->IsType(TOKEN_Comma)) {
+		// (null) -> ,
+		_pExprStack->back()->GetExprOperands().push_back(new Expr_Null());
 	} else {
 		AddError("unacceptable syntax: %s", pToken->ToString().c_str());
 		return false;
 	}
-	SetExprSourceInfo(pExpr.get(), pToken.get());
-	_tokenStack.Push(new Token(pExpr.release()));
+	if (!pExpr.IsNull()) {
+		SetExprSourceInfo(pExpr.get(), pToken.get());
+		_tokenStack.Push(new Token(pExpr.release()));
+	}
 	return true;
 }
 

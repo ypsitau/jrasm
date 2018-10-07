@@ -281,6 +281,31 @@ void ExprDictOwner::Clear()
 }
 
 //-----------------------------------------------------------------------------
+// Expr_Null
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_Null::TYPE = Expr::TYPE_Null;
+
+String Expr_Null::ComposeSource(bool upperCaseFlag) const
+{
+	return "";
+}
+
+Expr *Expr_Null::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_Null::Clone() const
+{
+	return new Expr_Null(*this);
+}
+
+Expr *Expr_Null::Substitute(const ExprDict &exprDict) const
+{
+	return Clone();
+}
+
+//-----------------------------------------------------------------------------
 // Expr_Root
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;

@@ -78,6 +78,7 @@ public:
 class Expr {
 public:
 	enum Type {
+		TYPE_Null,
 		TYPE_Root,
 		TYPE_Number,
 		TYPE_String,
@@ -185,6 +186,21 @@ public:
 // ExprDictOwner
 //-----------------------------------------------------------------------------
 typedef ExprDictOwner ExprDictStack;
+
+//-----------------------------------------------------------------------------
+// Expr_Null
+//-----------------------------------------------------------------------------
+class Expr_Null : public Expr {
+public:
+	static const Type TYPE;
+public:
+	inline Expr_Null() : Expr(TYPE) {}
+	inline Expr_Null(const Expr_Null &expr) : Expr(expr) {}
+	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
+	virtual Expr *Substitute(const ExprDict &exprDict) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
 
 //-----------------------------------------------------------------------------
 // Expr_Root
