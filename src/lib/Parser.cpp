@@ -120,8 +120,6 @@ bool Parser::FeedToken(AutoPtr<Token> pToken)
 			if (pToken->IsType(TOKEN_EOL)) {
 				_pExprStack->pop_back();
 				_stat = STAT_LineTop;
-			} else if (pToken->IsType(TOKEN_Comma)) {
-				
 			} else {
 				AddError("invalid format of operands");
 				return false;
@@ -157,6 +155,8 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			size_t cntToken = std::distance(_tokenStack.rbegin(), ppTokenLeft) + 1;
 			if (cntToken == 1) {
 				if (!ReduceOne()) return false;
+			} else if (cntToken == 2) {
+				if (!ReduceTwo()) return false;
 			} else if (cntToken == 3) {
 				if (!ReduceThree()) return false;
 			} else {
@@ -175,20 +175,35 @@ bool Parser::ReduceOne()
 {
 	AutoPtr<Token> pToken(_tokenStack.Pop());
 	AutoPtr<Expr> pExpr;
-	if (pToken->IsType(TOKEN_Symbol)) {
-		pExpr.reset(new Expr_Symbol(pToken->GetStringSTL()));
-	} else if (pToken->IsType(TOKEN_Number)) {
+	if (pToken->IsType(TOKEN_Number)) {
+		// [Exp] -> [Num]
 		pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
+	} else if (pToken->IsType(TOKEN_Symbol)) {
+		// [Exp] -> [Sym]
+		pExpr.reset(new Expr_Symbol(pToken->GetStringSTL()));
 	} else if (pToken->IsType(TOKEN_String)) {
+		// [Exp] -> [Str]
 		pExpr.reset(new Expr_String(pToken->GetStringSTL()));
 	} else if (pToken->IsType(TOKEN_BitPattern)) {
+		// [Exp] -> [BPt]
 		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
 	} else {
-		AddError("invalid value type");
+		AddError("unacceptable syntax: %s", pToken->ToString().c_str());
 		return false;
 	}
 	SetExprSourceInfo(pExpr.get(), pToken.get());
 	_tokenStack.Push(new Token(pExpr.release()));
+	return true;
+}
+
+bool Parser::ReduceTwo()
+{
+	AutoPtr<Token> pToken2(_tokenStack.Pop());
+	AutoPtr<Token> pToken1(_tokenStack.Pop());
+	if (pToken1->IsType(TOKEN_Expr) && pToken2->IsType(TOKEN_Comma)) {
+		// (null) -> [Exp] ,
+		_pExprStack->back()->GetExprOperands().push_back(pToken1->GetExpr()->Reference());
+	}
 	return true;
 }
 
@@ -198,7 +213,7 @@ bool Parser::ReduceThree()
 	AutoPtr<Token> pToken2(_tokenStack.Pop());
 	AutoPtr<Token> pToken1(_tokenStack.Pop());
 	if (pToken1->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Expr)) {
-		// [Exp] OP [Exp]
+		// [Exp] -> [Exp] OP [Exp]
 		AutoPtr<Expr> pExprL(pToken1->GetExpr()->Reference());
 		AutoPtr<Expr> pExprR(pToken3->GetExpr()->Reference());
 		AutoPtr<Expr> pExpr;
@@ -247,15 +262,20 @@ bool Parser::ReduceThree()
 		SetExprSourceInfo(pExpr.get(), pToken1.get());
 		_tokenStack.Push(new Token(pExpr.release()));
 	} else if (pToken1->IsType(TOKEN_ParenL) && pToken3->IsType(TOKEN_ParenR)) {
-		// ( [Exp] )
+		// [Exp] -> ( [Exp] )
 		_tokenStack.Push(pToken2.release());
 	} else if (pToken1->IsType(TOKEN_BracketL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_BracketR)) {
-		// [ [Exp] ]
+		// [Exp] -> [ [Exp] ]
 		AutoPtr<Expr_Bracket> pExpr(dynamic_cast<Expr_Bracket *>(pToken1->GetExpr()->Reference()));
 		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
 		_tokenStack.Push(new Token(pExpr.release()));
+	} else if (pToken1->IsType(TOKEN_BracketL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Comma)) {
+		// [Exp] -> [ [Exp] ,
+		AutoPtr<Expr_Bracket> pExpr(dynamic_cast<Expr_Bracket *>(pToken1->GetExpr()->Reference()));
+		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
+		_tokenStack.Push(pToken1.release());
 	} else if (pToken1->IsType(TOKEN_BraceL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_BraceR)) {
-		// { [Exp] }
+		// [Exp] -> { [Exp] }
 		AutoPtr<Expr_Brace> pExpr(dynamic_cast<Expr_Brace *>(pToken1->GetExpr()->Reference()));
 		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
 		_tokenStack.Push(new Token(pExpr.release()));

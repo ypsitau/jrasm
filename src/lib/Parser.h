@@ -41,6 +41,7 @@ public:
 private:
 	bool ParseByPrec(AutoPtr<Token> pToken);
 	bool ReduceOne();
+	bool ReduceTwo();
 	bool ReduceThree();
 };
 
