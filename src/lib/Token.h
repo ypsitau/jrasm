@@ -72,7 +72,7 @@ private:
 	String _str;
 	Number _num;
 	bool _validStrFlag;
-	AutoPtr<Expr> _pExpr;	// only valid for TOKEN_Expr
+	AutoPtr<Expr> _pExpr;	// only valid for TOKEN_Expr, TOKEN_BracketL and TOKEN_BraceL
 private:
 	static const Precedence _precMatrix[][16];
 public:
@@ -80,6 +80,8 @@ public:
 public:
 	inline Token(const TokenInfo &tokenInfo, int lineNo) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _num(0), _validStrFlag(false) {}
+	inline Token(const TokenInfo &tokenInfo, int lineNo, Expr *pExpr) :
+		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _num(0), _validStrFlag(false), _pExpr(pExpr) {}
 	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(0), _validStrFlag(true) {}
 	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str, Number num) :

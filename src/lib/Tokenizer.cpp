@@ -424,6 +424,11 @@ bool Tokenizer::FeedToken(const TokenInfo &tokenInfo)
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1));
 }
 
+bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, Expr *pExpr)
+{
+	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, pExpr));
+}
+
 bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str)
 {
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str));

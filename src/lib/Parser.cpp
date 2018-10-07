@@ -216,6 +216,7 @@ bool Parser::ReduceThree()
 	AutoPtr<Token> pToken2(_tokenStack.Pop());
 	AutoPtr<Token> pToken1(_tokenStack.Pop());
 	if (pToken1->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Expr)) {
+		// [Exp] OP [Exp]
 		AutoPtr<Expr> pExprL(pToken1->GetExpr()->Reference());
 		AutoPtr<Expr> pExprR(pToken3->GetExpr()->Reference());
 		AutoPtr<Expr> pExpr;
@@ -258,15 +259,18 @@ bool Parser::ReduceThree()
 		} else if (pToken2->IsType(TOKEN_GtGt)) {
 			pExpr.reset(new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release()));
 		} else {
-			AddError("unsupported binary operator: %s", pToken2->GetSymbol());
+			AddError("unacceptable binary operator: %s", pToken2->GetSymbol());
 			return false;
 		}
 		SetExprSourceInfo(pExpr.get(), pToken1.get());
 		_tokenStack.Push(new Token(pExpr.release()));
 	} else if (pToken1->IsType(TOKEN_ParenL) && pToken3->IsType(TOKEN_ParenR)) {
+		// ( [Exp] )
 		_tokenStack.Push(pToken2.release());
+	} else if (pToken1->IsType(TOKEN_BracketL) && pToken3->IsType(TOKEN_BracketR)) {
+		
 	} else {
-		AddError("can't reduce: %s %s %s",
+		AddError("unacceptable syntax: %s %s %s",
 				 pToken1->ToString().c_str(), pToken2->ToString().c_str(), pToken3->ToString().c_str());
 		return false;
 	}

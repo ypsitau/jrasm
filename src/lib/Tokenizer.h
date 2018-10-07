@@ -73,6 +73,7 @@ private:
 	inline static bool IsSymbolFollow(char ch) { return IsSymbolFirst(ch) || ::isdigit(ch); }
 	inline static bool IsDigit(char ch) { return ::isdigit(ch); }
 	bool FeedToken(const TokenInfo &tokenInfo);
+	bool FeedToken(const TokenInfo &tokenInfo, Expr *pExpr);
 	bool FeedToken(const TokenInfo &tokenInfo, const String &str);
 	bool FeedToken(const TokenInfo &tokenInfo, const String &str, Number num);
 };
