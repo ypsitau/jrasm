@@ -53,24 +53,25 @@ static const Token::Precedence
 	GT = Token::PREC_GT,
 	xx = Token::PREC_Error;
 
-const Token::Precedence Token::_precMatrix[][16] = {
-	/*          e   E   =  ||  &&   |   ^   & ==   <  <<    +   *   (   )   V  */
-	/* e  */ { xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, },
-	/* E  */ { xx, EQ, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* =  */ { xx, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* || */ { xx, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* && */ { xx, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* |  */ { xx, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* ^  */ { xx, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* &  */ { xx, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, GT, LT, },
-	/* == */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, GT, LT, },
-	/* <  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, GT, LT, },
-	/* << */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, GT, LT, },
-	/* +  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, GT, LT, },
-	/* *  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, GT, LT, },
-	/* (  */ { xx, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, EQ, LT, },
-	/* )  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, xx, GT, xx, },
-	/* V  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, xx, GT, xx, },
+const Token::Precedence Token::_precMatrix[][17] = {
+	/*          e   E   =  ||  &&   |   ^   & ==   <  <<    +   *   (   )   V   ,  */
+	/* e  */ { xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, },
+	/* E  */ { xx, EQ, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* =  */ { xx, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* || */ { xx, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* && */ { xx, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* |  */ { xx, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* ^  */ { xx, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* &  */ { xx, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* == */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, LT, GT, LT, xx, },
+	/* <  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, LT, GT, LT, xx, },
+	/* << */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, LT, GT, LT, xx, },
+	/* +  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, LT, GT, LT, xx, },
+	/* *  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, LT, GT, LT, xx, },
+	/* (  */ { xx, GT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, LT, EQ, LT, xx, },
+	/* )  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, xx, GT, xx, xx, },
+	/* V  */ { xx, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, GT, xx, GT, xx, xx, },
+	/* ,  */ { xx, GT, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, },
 };
 
 String Token::ToString() const

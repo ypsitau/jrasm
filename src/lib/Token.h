@@ -74,7 +74,7 @@ private:
 	bool _validStrFlag;
 	AutoPtr<Expr> _pExpr;	// only valid for TOKEN_Expr, TOKEN_BracketL and TOKEN_BraceL
 private:
-	static const Precedence _precMatrix[][16];
+	static const Precedence _precMatrix[][17];
 public:
 	DeclareReferenceAccessor(Token);
 public:
