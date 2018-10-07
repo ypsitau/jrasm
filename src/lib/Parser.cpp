@@ -270,7 +270,7 @@ bool Parser::ReduceThree()
 		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
 		_tokenStack.Push(new Token(pExpr.release()));
 	} else if (pToken1->IsType(TOKEN_BracketL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Comma)) {
-		// [Exp] -> [ [Exp] ,
+		// [ -> [ [Exp] ,
 		AutoPtr<Expr_Bracket> pExpr(dynamic_cast<Expr_Bracket *>(pToken1->GetExpr()->Reference()));
 		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
 		_tokenStack.Push(pToken1.release());
@@ -279,6 +279,11 @@ bool Parser::ReduceThree()
 		AutoPtr<Expr_Brace> pExpr(dynamic_cast<Expr_Brace *>(pToken1->GetExpr()->Reference()));
 		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
 		_tokenStack.Push(new Token(pExpr.release()));
+	} else if (pToken1->IsType(TOKEN_BraceL) && pToken2->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Comma)) {
+		// { -> { [Exp] ,
+		AutoPtr<Expr_Brace> pExpr(dynamic_cast<Expr_Brace *>(pToken1->GetExpr()->Reference()));
+		pExpr->GetExprOperands().push_back(pToken2->GetExpr()->Reference());
+		_tokenStack.Push(pToken1.release());
 	} else {
 		AddError("unacceptable syntax: %s %s %s",
 				 pToken1->ToString().c_str(), pToken2->ToString().c_str(), pToken3->ToString().c_str());
