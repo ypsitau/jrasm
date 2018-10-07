@@ -751,31 +751,8 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 {
 	const Macro *pMacro = context.GetMacroDict().Lookup(GetSymbol());
 	if (pMacro == nullptr) return true;
-	AutoPtr<ExprDict> pExprDict(new ExprDict());
-	const Macro::ParamOwner &paramOwner = pMacro->GetParamOwner();
-	const ExprList &exprList = GetExprOperands();
-	Macro::ParamOwner::const_iterator ppParam = paramOwner.begin();
-	ExprList::const_iterator ppExpr = exprList.begin();
-	for ( ; ppParam != paramOwner.end() && ppExpr != exprList.end(); ppParam++, ppExpr++) {
-		const Macro::Param *pParam = *ppParam;
-		const Expr *pExpr = *ppExpr;
-		pExprDict->Assign(pParam->GetSymbol(), pExpr->Reference(), false);
-	}
-	for ( ; ppParam != paramOwner.end(); ppParam++) {
-		const Macro::Param *pParam = *ppParam;
-		const Expr *pExprDefault = pParam->GetExprDefault();
-		if (pExprDefault == nullptr) {
-			ErrorLog::AddError(this, "too few parameters for %s", pMacro->GetSymbol());
-			return false;
-		} else {
-			pExprDict->Assign(pParam->GetSymbol(), pExprDefault->Reference(), false);
-		}
-	}
-	if (ppExpr != exprList.end()) {
-		ErrorLog::AddError(this, "too many parameters for %s", pMacro->GetSymbol());
-		return false;
-	}
-	_pExprsExpanded.reset(pMacro->GetExprOwner().Substitute(*pExprDict));
+	_pExprsExpanded.reset(pMacro->Expand(context, this));
+	if (_pExprsExpanded.IsNull()) return false;
 	return _pExprsExpanded->OnPhaseExpandMacro(context);
 }
 

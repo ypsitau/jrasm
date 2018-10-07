@@ -45,6 +45,7 @@ public:
 	inline const ExprOwner &GetExprOwner() const { return *_pExprOwner; }
 	inline ParamOwner &GetParamOwner() { return _paramOwner; }
 	inline const ParamOwner &GetParamOwner() const { return _paramOwner; }
+	ExprOwner *Expand(Context &context, const Expr_Instruction *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------
