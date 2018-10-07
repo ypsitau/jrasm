@@ -117,8 +117,9 @@ Expr_Label *ExprList::SeekLabelToAssoc()
 String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
 {
 	String rtn;
-	for (auto pExpr : *this) {
-		if (!rtn.empty()) rtn += sep;
+	for (const_iterator ppExpr = begin(); ppExpr != end(); ppExpr++) {
+		const Expr *pExpr = *ppExpr;
+		if (ppExpr != begin()) rtn += sep;
 		rtn += pExpr->ComposeSource(upperCaseFlag);
 	}
 	return rtn;

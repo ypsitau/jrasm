@@ -154,7 +154,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			}
 			size_t cntToken = std::distance(_tokenStack.rbegin(), ppTokenLeft) + 1;
 			if (cntToken == 1) {
-				if (!ReduceOne()) return false;
+				if (!ReduceOne(pToken->IsType(TOKEN_Empty))) return false;
 			} else if (cntToken == 2) {
 				if (!ReduceTwo()) return false;
 			} else if (cntToken == 3) {
@@ -171,7 +171,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 	return true;
 }
 
-bool Parser::ReduceOne()
+bool Parser::ReduceOne(bool lastFlag)
 {
 	AutoPtr<Token> pToken(_tokenStack.Pop());
 	AutoPtr<Expr> pExpr;
@@ -190,6 +190,9 @@ bool Parser::ReduceOne()
 	} else if (pToken->IsType(TOKEN_Comma)) {
 		// (null) -> ,
 		_pExprStack->back()->GetExprOperands().push_back(new Expr_Null());
+		if (lastFlag) {
+			_pExprStack->back()->GetExprOperands().push_back(new Expr_Null());
+		}
 	} else {
 		AddError("unacceptable syntax: %s", pToken->ToString().c_str());
 		return false;

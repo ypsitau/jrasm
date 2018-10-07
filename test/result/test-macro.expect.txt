@@ -108,5 +108,41 @@ addr2:             |
     1075 aa bb     | .db  0xaa,0xbb,0xcc,0xdd
     1077 cc dd     |
                    | .end
+                   macro11 ,0xbb,0xcc,0xdd
+    1079 11 bb     | .db  0x11,0xbb,0xcc,0xdd
+    107b cc dd     |
+                   | .end
+                   macro11 0xaa,,0xcc,0xdd
+    107d aa 22     | .db  0xaa,0x22,0xcc,0xdd
+    107f cc dd     |
+                   | .end
+                   macro11 0xaa,0xbb,,0xdd
+    1081 aa bb     | .db  0xaa,0xbb,0x33,0xdd
+    1083 33 dd     |
+                   | .end
+                   macro11 0xaa,0xbb,0xcc
+    1085 aa bb     | .db  0xaa,0xbb,0xcc,0x44
+    1087 cc 44     |
+                   | .end
+                   macro11 ,,0xcc,0xdd
+    1089 11 22     | .db  0x11,0x22,0xcc,0xdd
+    108b cc dd     |
+                   | .end
+                   macro11 0xaa,,,0xdd
+    108d aa 22     | .db  0xaa,0x22,0x33,0xdd
+    108f 33 dd     |
+                   | .end
+                   macro11 0xaa,0xbb,,
+    1091 aa bb     | .db  0xaa,0xbb,0x33,0x44
+    1093 33 44     |
+                   | .end
+                   macro11 ,,,0xdd
+    1095 11 22     | .db  0x11,0x22,0x33,0xdd
+    1097 33 dd     |
+                   | .end
+                   macro11 ,,,
+    1099 11 22     | .db  0x11,0x22,0x33,0x44
+    109b 33 44     |
+                   | .end
 [Symbol List]
 0020  external_val
