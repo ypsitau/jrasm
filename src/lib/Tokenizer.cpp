@@ -96,11 +96,11 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == ')') {
 			rtn = FeedToken(TOKEN_ParenR);
 		} else if (ch == '[') {
-			rtn = FeedToken(TOKEN_BracketL);
+			rtn = FeedToken(TOKEN_BracketL, new Expr_Bracket());
 		} else if (ch == ']') {
 			rtn = FeedToken(TOKEN_BracketR);
 		} else if (ch == '{') {
-			rtn = FeedToken(TOKEN_BraceL);
+			rtn = FeedToken(TOKEN_BraceL, new Expr_Brace());
 		} else if (ch == '}') {
 			rtn = FeedToken(TOKEN_BraceR);
 		} else {
