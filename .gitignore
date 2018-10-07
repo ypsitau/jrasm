@@ -39,13 +39,15 @@
 *.result.txt
 
 # Visual Studio Project Files
+.vs
 *.filters
 *.user
 
 /build
-/x86
-/x64
-/src/x86
-/src/x64
-/.vs
+/src/Debug
+/src/Release
+/src/jrasm/Debug
+/src/jrasm/Release
+/src/lib/Debug
+/src/lib/Release
 /
