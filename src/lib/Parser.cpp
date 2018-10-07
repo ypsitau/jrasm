@@ -174,81 +174,9 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			}
 			size_t cntToken = std::distance(_tokenStack.rbegin(), ppTokenLeft) + 1;
 			if (cntToken == 1) {
-				AutoPtr<Token> pToken(_tokenStack.Pop());
-				AutoPtr<Expr> pExpr;
-				if (pToken->IsType(TOKEN_Symbol)) {
-					pExpr.reset(new Expr_Symbol(pToken->GetStringSTL()));
-				} else if (pToken->IsType(TOKEN_Number)) {
-					pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
-				} else if (pToken->IsType(TOKEN_String)) {
-					pExpr.reset(new Expr_String(pToken->GetStringSTL()));
-				} else if (pToken->IsType(TOKEN_BitPattern)) {
-					pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
-				} else {
-					AddError("invalid value type");
-					return false;
-				}
-				SetExprSourceInfo(pExpr.get(), pToken.get());
-				_tokenStack.Push(new Token(pExpr.release()));
+				if (!ReduceOne()) return false;
 			} else if (cntToken == 3) {
-				AutoPtr<Token> pToken3(_tokenStack.Pop());
-				AutoPtr<Token> pToken2(_tokenStack.Pop());
-				AutoPtr<Token> pToken1(_tokenStack.Pop());
-				if (pToken1->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Expr)) {
-					AutoPtr<Expr> pExprL(pToken1->GetExpr()->Reference());
-					AutoPtr<Expr> pExprR(pToken3->GetExpr()->Reference());
-					AutoPtr<Expr> pExpr;
-					if (pToken2->IsType(TOKEN_Eq)) {
-						pExpr.reset(new Expr_Assign(pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Plus)) {
-						pExpr.reset(new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Minus)) {
-						pExpr.reset(new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Asterisk)) {
-						pExpr.reset(new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Slash)) {
-						pExpr.reset(new Expr_BinOp(Operator::Div, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Percent)) {
-						pExpr.reset(new Expr_BinOp(Operator::Mod, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_VBarVBar)) {
-						pExpr.reset(new Expr_BinOp(Operator::LogicOr, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_AmpAmp)) {
-						pExpr.reset(new Expr_BinOp(Operator::LogicAnd, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_VBar)) {
-						pExpr.reset(new Expr_BinOp(Operator::Or, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Hat)) {
-						pExpr.reset(new Expr_BinOp(Operator::Xor, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Amp)) {
-						pExpr.reset(new Expr_BinOp(Operator::And, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_EqEq)) {
-						pExpr.reset(new Expr_BinOp(Operator::Eq, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_BangEq)) {
-						pExpr.reset(new Expr_BinOp(Operator::NotEq, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Lt)) {
-						pExpr.reset(new Expr_BinOp(Operator::Lt, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_LtEq)) {
-						pExpr.reset(new Expr_BinOp(Operator::Le, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_Gt)) {
-						pExpr.reset(new Expr_BinOp(Operator::Gt, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_GtEq)) {
-						pExpr.reset(new Expr_BinOp(Operator::Ge, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_LtLt)) {
-						pExpr.reset(new Expr_BinOp(Operator::ShiftL, pExprL.release(), pExprR.release()));
-					} else if (pToken2->IsType(TOKEN_GtGt)) {
-						pExpr.reset(new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release()));
-					} else {
-						AddError("unsupported binary operator: %s", pToken2->GetSymbol());
-						return false;
-					}
-					SetExprSourceInfo(pExpr.get(), pToken1.get());
-					_tokenStack.Push(new Token(pExpr.release()));
-				} else if (pToken1->IsType(TOKEN_ParenL) && pToken3->IsType(TOKEN_ParenR)) {
-					_tokenStack.Push(pToken2.release());
-				} else {
-					AddError("can't reduce: %s %s %s",
-							 pToken1->ToString().c_str(), pToken2->ToString().c_str(), pToken3->ToString().c_str());
-					return false;
-				}
+				if (!ReduceThree()) return false;
 			} else {
 				AddError("syntax error");
 				return false;
@@ -257,6 +185,90 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 			AddError("syntax error: %s", _tokenStack.ToString().c_str());
 			return false;
 		}
+	}
+	return true;
+}
+
+bool Parser::ReduceOne()
+{
+	AutoPtr<Token> pToken(_tokenStack.Pop());
+	AutoPtr<Expr> pExpr;
+	if (pToken->IsType(TOKEN_Symbol)) {
+		pExpr.reset(new Expr_Symbol(pToken->GetStringSTL()));
+	} else if (pToken->IsType(TOKEN_Number)) {
+		pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
+	} else if (pToken->IsType(TOKEN_String)) {
+		pExpr.reset(new Expr_String(pToken->GetStringSTL()));
+	} else if (pToken->IsType(TOKEN_BitPattern)) {
+		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
+	} else {
+		AddError("invalid value type");
+		return false;
+	}
+	SetExprSourceInfo(pExpr.get(), pToken.get());
+	_tokenStack.Push(new Token(pExpr.release()));
+	return true;
+}
+
+bool Parser::ReduceThree()
+{
+	AutoPtr<Token> pToken3(_tokenStack.Pop());
+	AutoPtr<Token> pToken2(_tokenStack.Pop());
+	AutoPtr<Token> pToken1(_tokenStack.Pop());
+	if (pToken1->IsType(TOKEN_Expr) && pToken3->IsType(TOKEN_Expr)) {
+		AutoPtr<Expr> pExprL(pToken1->GetExpr()->Reference());
+		AutoPtr<Expr> pExprR(pToken3->GetExpr()->Reference());
+		AutoPtr<Expr> pExpr;
+		if (pToken2->IsType(TOKEN_Eq)) {
+			pExpr.reset(new Expr_Assign(pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Plus)) {
+			pExpr.reset(new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Minus)) {
+			pExpr.reset(new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Asterisk)) {
+			pExpr.reset(new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Slash)) {
+			pExpr.reset(new Expr_BinOp(Operator::Div, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Percent)) {
+			pExpr.reset(new Expr_BinOp(Operator::Mod, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_VBarVBar)) {
+			pExpr.reset(new Expr_BinOp(Operator::LogicOr, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_AmpAmp)) {
+			pExpr.reset(new Expr_BinOp(Operator::LogicAnd, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_VBar)) {
+			pExpr.reset(new Expr_BinOp(Operator::Or, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Hat)) {
+			pExpr.reset(new Expr_BinOp(Operator::Xor, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Amp)) {
+			pExpr.reset(new Expr_BinOp(Operator::And, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_EqEq)) {
+			pExpr.reset(new Expr_BinOp(Operator::Eq, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_BangEq)) {
+			pExpr.reset(new Expr_BinOp(Operator::NotEq, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Lt)) {
+			pExpr.reset(new Expr_BinOp(Operator::Lt, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_LtEq)) {
+			pExpr.reset(new Expr_BinOp(Operator::Le, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Gt)) {
+			pExpr.reset(new Expr_BinOp(Operator::Gt, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_GtEq)) {
+			pExpr.reset(new Expr_BinOp(Operator::Ge, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_LtLt)) {
+			pExpr.reset(new Expr_BinOp(Operator::ShiftL, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_GtGt)) {
+			pExpr.reset(new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release()));
+		} else {
+			AddError("unsupported binary operator: %s", pToken2->GetSymbol());
+			return false;
+		}
+		SetExprSourceInfo(pExpr.get(), pToken1.get());
+		_tokenStack.Push(new Token(pExpr.release()));
+	} else if (pToken1->IsType(TOKEN_ParenL) && pToken3->IsType(TOKEN_ParenR)) {
+		_tokenStack.Push(pToken2.release());
+	} else {
+		AddError("can't reduce: %s %s %s",
+				 pToken1->ToString().c_str(), pToken2->ToString().c_str(), pToken3->ToString().c_str());
+		return false;
 	}
 	return true;
 }

@@ -40,6 +40,8 @@ public:
 	virtual bool FeedToken(AutoPtr<Token> pToken);
 private:
 	bool ParseByPrec(AutoPtr<Token> pToken);
+	bool ReduceOne();
+	bool ReduceThree();
 };
 
 #endif
