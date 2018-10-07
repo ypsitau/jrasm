@@ -6,3 +6,4 @@ add_definitions("-Wall -std=c++11")
 
 add_subdirectory(lib)
 add_subdirectory(jrasm)
+add_subdirectory(jrpcgedit)
