@@ -30,7 +30,10 @@ public:
 	inline Binary &GetBuffer() { return _regionOwner.back()->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return _regionOwner.back()->GetBuffer(); }
 	inline void ClearRegion() { _regionOwner.Clear(); }
-	inline void SetAddrOrg(Integer addrOrg) { _addrOrg = addrOrg; _addrOffset = 0; }
+	inline void SetAddrOrg(Integer addrOrg) { _addrOrg = addrOrg; }
+	inline void SetAddrOffset(Integer addrOffset) { _addrOffset = addrOffset; }
+	inline Integer GetAddrOrg() const { return _addrOrg; }
+	inline Integer GetAddrOffset() const { return _addrOffset; }
 	inline Integer GetAddress() const { return _addrOrg + _addrOffset; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
 	bool CheckRegionReady() const;

@@ -20,7 +20,7 @@ public:
 	};
 private:
 	int _cntRef;
-	UInt16 _addrTop;
+	Integer _addrTop;
 	Binary _buff;
 	std::unique_ptr<RegionOwner> _pRegionsIngredient;
 public:

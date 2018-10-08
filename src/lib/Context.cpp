@@ -59,6 +59,7 @@ void Context::StartRegion(Integer addr)
 {
 	_pSegmentCur->AddRegion(new Region(addr));
 	_pSegmentCur->SetAddrOrg(addr);
+	_pSegmentCur->SetAddrOffset(0);
 }
 
 void Context::BeginScope()
