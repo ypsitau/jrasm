@@ -167,7 +167,7 @@ bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_DB::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckSegmentRegionReady()) return false;
+	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
@@ -276,7 +276,7 @@ bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckSegmentRegionReady()) return false;
+	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
@@ -593,7 +593,7 @@ bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckSegmentRegionReady()) return false;
+	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	Handler handler(pBuffDst);
 	MmlParser parser(handler);
@@ -946,7 +946,7 @@ bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.CheckSegmentRegionReady()) return false;
+	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
 		const Binary &buff = pPCGChar->GetBuffer();
