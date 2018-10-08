@@ -79,6 +79,8 @@ public:
 	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
+	inline Segment *GetSegmentCur() { return _pSegmentCur; }
+	inline const Segment *GetSegumentCur() const { return _pSegmentCur; }
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
@@ -94,7 +96,7 @@ public:
 	inline const ExprDict &GetExprDictGlobal() const { return *_exprDictStack.front(); }
 	inline MacroDict &GetMacroDict() { return _macroDict; }
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
-	inline bool PrepareSegmentRegion() const { return _pSegmentCur->PrepareRegion(); }
+	inline bool PrepareSegmentRegion() { return _pSegmentCur->PrepareRegion(); }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	inline void SetPCGPageCur(PCGPage *pPCGPage) { _pPCGPageCur.reset(pPCGPage); }
 	inline PCGPage *GetPCGPageCur() { return _pPCGPageCur.get(); }

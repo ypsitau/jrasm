@@ -227,13 +227,16 @@ class Expr_Integer : public Expr {
 private:
 	String _str;
 	Integer _num;
+	AutoPtr<Region> _pRegion;
 public:
 	static const Type TYPE;
 public:
 	inline Expr_Integer(Integer num) : Expr(TYPE), _num(num) {}
+	inline Expr_Integer(Integer num, Region *pRegion) : Expr(TYPE), _num(num), _pRegion(pRegion) {}
 	inline Expr_Integer(const String &str, Integer num) : Expr(TYPE), _str(str), _num(num) {}
-	inline Expr_Integer(const Expr_Integer &expr) : Expr(expr), _str(expr._str), _num(expr._num) {}
-	inline Integer GetInteger() const { return _num; }
+	inline Expr_Integer(const Expr_Integer &expr) :
+		Expr(expr), _str(expr._str), _num(expr._num), _pRegion(Region::Reference(expr._pRegion.get())) {}
+	inline Integer GetInteger() const { return _pRegion.IsNull()? _num : _num + _pRegion->GetAddrTop(); }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

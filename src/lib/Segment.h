@@ -38,7 +38,7 @@ public:
 	inline Integer GetAddrOffset() const { return _addrOffset; }
 	inline Integer GetAddress() const { return GetAddrTop() + _addrOffset; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
-	bool PrepareRegion() const;
+	bool PrepareRegion();
 };
 
 //-----------------------------------------------------------------------------

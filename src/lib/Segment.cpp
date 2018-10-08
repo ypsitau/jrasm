@@ -6,12 +6,14 @@
 //-----------------------------------------------------------------------------
 // Segment
 //-----------------------------------------------------------------------------
-bool Segment::PrepareRegion() const
+bool Segment::PrepareRegion()
 {
-	if (_regionOwner.empty()) {
+	if (!_regionOwner.empty()) return true;
+	if (_pSegmentPrev.IsNull()) {
 		ErrorLog::AddError("missing .org directive in %s segment", GetName());
 		return false;
 	}
+	AddRegion(new Region(0));
 	return true;
 }
 

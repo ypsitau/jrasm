@@ -636,7 +636,8 @@ bool Expr_Label::OnPhaseAssignSymbol(Context &context)
 	if (IsAssigned()) {
 		_pExprDict->Assign(GetSymbol(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		AutoPtr<Expr> pExpr(new Expr_Integer(context.GetAddress()));
+		AutoPtr<Expr> pExpr(new Expr_Integer(context.GetSegmentCur()->GetAddrOffset(),
+											 context.GetSegmentCur()->GetRegionCur()->Reference()));
 		pExpr->DeriveSourceInfo(this);
 		_pExprDict->Assign(GetSymbol(), pExpr.release(), _forceGlobalFlag);
 	}
@@ -694,7 +695,8 @@ bool Expr_Symbol::OnPhaseAssignSymbol(Context &context)
 {
 	if (!Expr::OnPhaseAssignSymbol(context)) return false;
 	if (_symbol == "$") {
-		_pExprAssigned.reset(new Expr_Integer(context.GetAddress()));
+		_pExprAssigned.reset(new Expr_Integer(context.GetSegmentCur()->GetAddrOffset(),
+											  context.GetSegmentCur()->GetRegionCur()->Reference()));
 		_pExprAssigned->DeriveSourceInfo(this);
 	}
 	return true;
