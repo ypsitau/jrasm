@@ -79,7 +79,6 @@ public:
 	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
-	inline void SelectInternalSegment() { _pSegmentCur = _segmentOwner[2]; }
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }

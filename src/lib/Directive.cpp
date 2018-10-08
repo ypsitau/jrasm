@@ -34,7 +34,6 @@ const DirectiveFactory *Directive::END			= nullptr;
 const DirectiveFactory *Directive::EQU			= nullptr;
 const DirectiveFactory *Directive::FILENAME_JR	= nullptr;
 const DirectiveFactory *Directive::INCLUDE		= nullptr;
-const DirectiveFactory *Directive::ISEG			= nullptr;
 const DirectiveFactory *Directive::MACRO		= nullptr;
 const DirectiveFactory *Directive::MML			= nullptr;
 const DirectiveFactory *Directive::ORG			= nullptr;
@@ -56,7 +55,6 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(EQU			= new Directive_EQU::Factory());
 	_directiveFactoryDict.Assign(FILENAME_JR	= new Directive_FILENAME_JR::Factory());
 	_directiveFactoryDict.Assign(INCLUDE		= new Directive_INCLUDE::Factory());
-	_directiveFactoryDict.Assign(ISEG			= new Directive_ISEG::Factory());
 	_directiveFactoryDict.Assign(MACRO			= new Directive_MACRO::Factory());
 	_directiveFactoryDict.Assign(MML			= new Directive_MML::Factory());
 	_directiveFactoryDict.Assign(ORG			= new Directive_ORG::Factory());
@@ -483,39 +481,6 @@ bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return _pExprIncluded->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
-}
-
-//-----------------------------------------------------------------------------
-// Directive_ISEG
-//-----------------------------------------------------------------------------
-Directive *Directive_ISEG::Factory::Create() const
-{
-	return new Directive_ISEG();
-}
-
-bool Directive_ISEG::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
-{
-	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .ISEG needs no operands");
-		return false;
-	}
-	context.SelectInternalSegment();
-	return true;
-}
-
-bool Directive_ISEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
-{
-	context.SelectInternalSegment();
-	return true;
-}
-
-bool Directive_ISEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
-								   DisasmDumper &disasmDumper, int indentLevelCode) const
-{
-	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	context.SelectInternalSegment();
-	return true;
 }
 
 //-----------------------------------------------------------------------------

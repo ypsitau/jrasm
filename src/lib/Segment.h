@@ -13,12 +13,14 @@ class Segment {
 private:
 	int _cntRef;
 	String _name;
+	AutoPtr<Segment> _pSegmentPrev;
 	RegionOwner _regionOwner;
 	Integer _addrOffset;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
-	inline Segment(const String &name) : _cntRef(1), _name(name), _addrOffset(0) {}
+	inline Segment(const String &name, Segment *pSegmentPrev) :
+		_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _addrOffset(0) {}
 private:
 	inline ~Segment() {}
 public:

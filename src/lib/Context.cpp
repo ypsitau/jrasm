@@ -12,10 +12,10 @@ Context::Context(const String &pathNameSrc) :
 	String fileNameSrc;
 	SplitFileName(pathNameSrc.c_str(), &_dirNameSrc, &fileNameSrc);
 	_fileBaseNameSrc = _fileNameJR = ::RemoveExtName(fileNameSrc.c_str());
-	_exprDictStack.push_back(new ExprDict());			// global exprDict
-	_segmentOwner.push_back(new Segment("code"));		// code segment
-	_segmentOwner.push_back(new Segment("data"));		// data segment
-	_segmentOwner.push_back(new Segment("internal"));	// internal segment
+	_exprDictStack.push_back(new ExprDict());									// global exprDict
+	_segmentOwner.push_back(new Segment("code", nullptr));						// code segment
+	_segmentOwner.push_back(new Segment("data",									// data segment
+										_segmentOwner.back()->Reference()));
 	_pcgCharsBuiltIn.push_back(
 		new PCGChar(PCGTYPE_CRAM, 0x00, Binary("\x00\x00\x00\x00\x00\x00\x00\x00", 8)));
 	SelectCodeSegment();

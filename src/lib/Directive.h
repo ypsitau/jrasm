@@ -67,7 +67,6 @@ public:
 	static const DirectiveFactory *EQU;
 	static const DirectiveFactory *FILENAME_JR;
 	static const DirectiveFactory *INCLUDE;
-	static const DirectiveFactory *ISEG;
 	static const DirectiveFactory *MACRO;
 	static const DirectiveFactory *MML;
 	static const DirectiveFactory *ORG;
@@ -246,24 +245,6 @@ public:
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
-	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
-	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
-							   DisasmDumper &disasmDumper, int indentLevelCode) const;
-};
-
-//-----------------------------------------------------------------------------
-// Directive_ISEG
-//-----------------------------------------------------------------------------
-class Directive_ISEG : public Directive {
-public:
-	class Factory : public DirectiveFactory {
-	public:
-		inline Factory() : DirectiveFactory(".ISEG", true, false) {}
-		virtual Directive *Create() const;
-	};
-public:
-	inline Directive_ISEG() : Directive(ISEG) {}
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
