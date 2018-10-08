@@ -197,7 +197,7 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 		if (pExprResolved->IsTypeInteger()) {
 			Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
 			if (num < -0x80 || num > 0xff) {
-				ErrorLog::AddError(pExpr, "an element value of directive .DB exceeds 8-bit range");
+				ErrorLog::AddError(pExpr, "an element value of directive .DB exceeds 8bit range");
 				return false;
 			}
 			if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(num);
@@ -288,7 +288,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 		}
 		Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
 		if (num < -0x8000 || num > 0xffff) {
-			ErrorLog::AddError(pExpr, "an element value of directive .DW exceeds 16-bit range");
+			ErrorLog::AddError(pExpr, "an element value of directive .DW exceeds 16bit range");
 			return false;
 		}
 		*pBuffDst += static_cast<UInt8>(num >> 8);
@@ -694,7 +694,7 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 	}
 	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();
 	if (num < -0x8000 || num > 0xffff) {
-		ErrorLog::AddError(pExpr, "address value exceeds 16-bit range");
+		ErrorLog::AddError(pExpr, "address value exceeds 16bit range");
 		return false;
 	}
 	context.AddRegion(num);

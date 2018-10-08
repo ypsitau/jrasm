@@ -25,12 +25,14 @@ public:
 	inline const char *GetName() const { return _name.c_str(); }
 	inline RegionOwner &GetRegionOwner() { return _regionOwner; }
 	inline const RegionOwner &GetRegionOwner() const { return _regionOwner; }
+	inline Region *GetRegionCur() { return _regionOwner.back(); }
+	inline const Region *GetRegionCur() const { return _regionOwner.back(); }
 	inline void AddRegion(Region *pRegion) { _regionOwner.push_back(pRegion); }
-	inline Binary &GetBuffer() { return _regionOwner.back()->GetBuffer(); }
-	inline const Binary &GetBuffer() const { return _regionOwner.back()->GetBuffer(); }
+	inline Binary &GetBuffer() { return GetRegionCur()->GetBuffer(); }
+	inline const Binary &GetBuffer() const { return GetRegionCur()->GetBuffer(); }
 	inline void ClearRegion() { _regionOwner.Clear(); }
 	inline void SetAddrOffset(Integer addrOffset) { _addrOffset = addrOffset; }
-	inline Integer GetAddrTop() const { return _regionOwner.back()->GetAddrTop(); }
+	inline Integer GetAddrTop() const { return GetRegionCur()->GetAddrTop(); }
 	inline Integer GetAddrOffset() const { return _addrOffset; }
 	inline Integer GetAddress() const { return GetAddrTop() + _addrOffset; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
