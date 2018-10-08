@@ -58,7 +58,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 void Context::StartRegion(Integer addr)
 {
 	_pSegmentCur->AddRegion(new Region(addr));
-	_pSegmentCur->SetAddress(addr);
+	_pSegmentCur->SetAddrOrg(addr);
 }
 
 void Context::BeginScope()

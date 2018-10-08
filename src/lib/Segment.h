@@ -14,11 +14,12 @@ private:
 	int _cntRef;
 	String _name;
 	RegionOwner _regionOwner;
-	Integer _addr;
+	Integer _addrOrg;
+	Integer _addrOffset;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
-	inline Segment(const String &name) : _cntRef(1), _name(name), _addr(0) {}
+	inline Segment(const String &name) : _cntRef(1), _name(name), _addrOrg(0), _addrOffset(0) {}
 private:
 	inline ~Segment() {}
 public:
@@ -29,9 +30,9 @@ public:
 	inline Binary &GetBuffer() { return _regionOwner.back()->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return _regionOwner.back()->GetBuffer(); }
 	inline void ClearRegion() { _regionOwner.Clear(); }
-	inline void SetAddress(Integer addr) { _addr = addr; }
-	inline Integer GetAddress() const { return _addr; }
-	inline void ForwardAddress(Integer bytes) { _addr += bytes; }
+	inline void SetAddrOrg(Integer addrOrg) { _addrOrg = addrOrg; _addrOffset = 0; }
+	inline Integer GetAddress() const { return _addrOrg + _addrOffset; }
+	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
 	bool CheckRegionReady() const;
 };
 

@@ -161,7 +161,7 @@ bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return true;
 }
 
@@ -171,7 +171,7 @@ bool Directive_DB::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return true;
 }
 
@@ -270,7 +270,7 @@ Directive *Directive_DW::Factory::Create() const
 
 bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	context.ForwardAddress(static_cast<Integer>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
+	context.ForwardAddrOffset(static_cast<Integer>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
 }
 
@@ -295,7 +295,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	size_t bytes = pExpr->GetExprOperands().size() * sizeof(UInt16);
-	context.ForwardAddress(static_cast<Integer>(bytes));
+	context.ForwardAddrOffset(static_cast<Integer>(bytes));
 	return true;
 }
 
@@ -615,7 +615,7 @@ bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 			if (*p == '\0') break;
 		}
 	}
-	context.ForwardAddress(handler.GetBytesSum());
+	context.ForwardAddrOffset(handler.GetBytesSum());
 	return true;
 }
 
@@ -951,7 +951,7 @@ bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Bin
 	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
 		const Binary &buff = pPCGChar->GetBuffer();
 		*pBuffDst += buff;
-		context.ForwardAddress(static_cast<Integer>(buff.size()));
+		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	}
 	return true;
 }
@@ -975,7 +975,7 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 		}
 		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,
 									 (strHead + strData).c_str(), indentLevelCode + 1);
-		context.ForwardAddress(static_cast<Integer>(buff.size()));
+		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	}
 	return true;
 }

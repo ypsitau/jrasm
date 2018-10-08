@@ -364,7 +364,7 @@ Generator_M6800::Result Generator_M6800::Rule_ACC::Apply(
 	if (pBuffDst != nullptr) {
 		*pBuffDst += _code;
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -395,7 +395,7 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 		*pBuffDst += _code;
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -409,7 +409,7 @@ Generator_M6800::Result Generator_M6800::Rule_INH::Apply(
 	if (pBuffDst != nullptr) {
 		*pBuffDst += _code;
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -442,7 +442,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 		*pBuffDst += _code;
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -467,7 +467,7 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 		*pBuffDst += static_cast<UInt8>(num >> 8);
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -510,7 +510,7 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		*pBuffDst += _code;
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -557,7 +557,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 		*pBuffDst += _code;
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -591,7 +591,7 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 		*pBuffDst += _code;
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 
@@ -635,7 +635,7 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		*pBuffDst += static_cast<UInt8>(num >> 8);
 		*pBuffDst += static_cast<UInt8>(num);
 	}
-	context.ForwardAddress(bytes);
+	context.ForwardAddrOffset(bytes);
 	return RESULT_Accepted;
 }
 

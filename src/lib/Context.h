@@ -84,7 +84,7 @@ public:
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
 	inline Integer GetAddress() const { return _pSegmentCur->GetAddress(); }
-	inline void ForwardAddress(Integer bytes) { _pSegmentCur->ForwardAddress(bytes); }
+	inline void ForwardAddrOffset(Integer bytes) { _pSegmentCur->ForwardAddrOffset(bytes); }
 	inline SegmentOwner &GetSegmentOwner() { return _segmentOwner; }
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
