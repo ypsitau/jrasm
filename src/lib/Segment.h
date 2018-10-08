@@ -39,6 +39,7 @@ public:
 	inline Integer GetAddress() const { return GetAddrTop() + _addrOffset; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
 	bool PrepareRegion();
+	bool AdjustAddress();
 };
 
 //-----------------------------------------------------------------------------
@@ -48,6 +49,7 @@ class SegmentList : public std::vector<Segment *> {
 public:
 	void ClearRegion();
 	RegionOwner *JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) const;
+	bool AdjustAddress();
 };
 
 //-----------------------------------------------------------------------------

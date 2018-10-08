@@ -36,6 +36,7 @@ bool Context::Prepare()
 	SetPhase(PHASE_AssignSymbol);
 	ResetSegment();
 	if (!_pExprRoot->OnPhaseAssignSymbol(*this)) return false;
+	_segmentOwner.AdjustAddress();
 	return true;
 }
 

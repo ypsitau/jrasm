@@ -73,6 +73,15 @@ RegionOwner *RegionList::Join(size_t bytesGapToJoin, UInt8 dataFiller) const
 	return pRegionOwner.release();
 }
 
+Integer RegionList::GetAddrBtmMax() const
+{
+	Integer rtn = 0;
+	for (auto pRegion : *this) {
+		if (rtn < pRegion->GetAddrBtm()) rtn = pRegion->GetAddrBtm();
+	}
+	return rtn;
+}
+
 //-----------------------------------------------------------------------------
 // RegionOwner
 //-----------------------------------------------------------------------------
