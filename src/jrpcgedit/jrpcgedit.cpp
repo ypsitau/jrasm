@@ -1,5 +1,4 @@
-#include <wx/wx.h>
-#include "jrasmcore.h"
+#include "stdafx.h"
 
 class MyApp: public wxApp
 {
