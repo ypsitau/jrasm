@@ -446,10 +446,10 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, "directive .INCLUDE takes a string value as its operand");
 		return false;
 	}
-	const char *fileNameIncluded = dynamic_cast<const Expr_String *>(pExprLast)->GetString();
+	String fileNameIncluded = CorrectFileSeparator(dynamic_cast<const Expr_String *>(pExprLast)->GetString());
 	String dirName;
 	::SplitFileName(pExpr->GetPathNameSrc(), &dirName, nullptr);
-	String pathNameIncluded = JoinPathName(dirName.c_str(), fileNameIncluded);
+	String pathNameIncluded = JoinPathName(dirName.c_str(), fileNameIncluded.c_str());
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
 	AutoPtr<Expr> pExprRoot(parser.GetRoot()->Reference());

@@ -3,6 +3,12 @@
 //=============================================================================
 #include "stdafx.h"
 
+#if defined(_MSC_VER)
+const char FileSeparator = '\\';
+#else
+const char FileSeparator = '/';
+#endif
+
 //-----------------------------------------------------------------------------
 // String
 //-----------------------------------------------------------------------------
@@ -106,6 +112,16 @@ String MakeQuotedString(const String &str, char chBorder)
 		}
 	}
 	return strDst;
+}
+
+String CorrectFileSeparator(const char *pathName)
+{
+	String rtn;
+	for (const char *p = pathName; *p != '\0'; p++) {
+		char ch = *p;
+		rtn += IsFileSeparator(ch)? FileSeparator : ch;
+	}
+	return rtn;
 }
 
 String JoinPathName(const char *pathName1, const char *pathName2)
