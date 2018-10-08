@@ -36,7 +36,7 @@ bool Context::Prepare()
 	SetPhase(PHASE_AssignSymbol);
 	ResetSegment();
 	if (!_pExprRoot->OnPhaseAssignSymbol(*this)) return false;
-	_segmentOwner.AdjustAddress();
+	if (!_segmentOwner.AdjustAddress()) return false;
 	return true;
 }
 
@@ -58,7 +58,13 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 
 void Context::AddRegion(Integer addrTop)
 {
-	_pSegmentCur->AddRegion(new Region(addrTop));
+	Region *pRegion = _pSegmentCur->FindRegionByAddrTop(addrTop);
+	if (pRegion == nullptr) {
+		_pSegmentCur->AddRegion(new Region(addrTop));
+	} else {
+		_pSegmentCur->SetRegionCur(pRegion);
+		// pRegion->IsBufferEmpty()
+	}
 	_pSegmentCur->SetAddrOffset(0);
 }
 

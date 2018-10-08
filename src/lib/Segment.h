@@ -15,24 +15,25 @@ private:
 	String _name;
 	AutoPtr<Segment> _pSegmentPrev;
 	RegionOwner _regionOwner;
+	Region *_pRegionCur;
 	Integer _addrOffset;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
 	inline Segment(const String &name, Segment *pSegmentPrev) :
-		_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _addrOffset(0) {}
+		_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _pRegionCur(nullptr), _addrOffset(0) {}
 private:
 	inline ~Segment() {}
 public:
 	inline const char *GetName() const { return _name.c_str(); }
-	inline RegionOwner &GetRegionOwner() { return _regionOwner; }
 	inline const RegionOwner &GetRegionOwner() const { return _regionOwner; }
-	inline Region *GetRegionCur() { return _regionOwner.back(); }
-	inline const Region *GetRegionCur() const { return _regionOwner.back(); }
-	inline void AddRegion(Region *pRegion) { _regionOwner.push_back(pRegion); }
+	inline void SetRegionCur(Region *pRegionCur) { _pRegionCur = pRegionCur; }
+	inline Region *GetRegionCur() { return _pRegionCur; }
+	inline const Region *GetRegionCur() const { return _pRegionCur; }
+	inline void AddRegion(Region *pRegion) { _regionOwner.push_back(pRegion); _pRegionCur = pRegion; }
+	inline Region *FindRegionByAddrTop(Integer addrTop) { return _regionOwner.FindByAddrTop(addrTop); }
 	inline Binary &GetBuffer() { return GetRegionCur()->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return GetRegionCur()->GetBuffer(); }
-	inline void ClearRegion() { _regionOwner.Clear(); }
 	inline void SetAddrOffset(Integer addrOffset) { _addrOffset = addrOffset; }
 	inline Integer GetAddrTop() const { return GetRegionCur()->GetAddrTop(); }
 	inline Integer GetAddrOffset() const { return _addrOffset; }
@@ -47,7 +48,7 @@ public:
 //-----------------------------------------------------------------------------
 class SegmentList : public std::vector<Segment *> {
 public:
-	void ClearRegion();
+	void ResetAddrOffset();
 	RegionOwner *JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) const;
 	bool AdjustAddress();
 };

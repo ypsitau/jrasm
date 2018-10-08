@@ -83,7 +83,7 @@ public:
 	inline const Segment *GetSegumentCur() const { return _pSegmentCur; }
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
-	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
+	inline void ResetSegment() { _segmentOwner.ResetAddrOffset(); }
 	inline Integer GetAddress() const { return _pSegmentCur->GetAddress(); }
 	inline void ForwardAddrOffset(Integer bytes) { _pSegmentCur->ForwardAddrOffset(bytes); }
 	inline SegmentOwner &GetSegmentOwner() { return _segmentOwner; }

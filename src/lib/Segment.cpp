@@ -35,10 +35,10 @@ bool Segment::AdjustAddress()
 //-----------------------------------------------------------------------------
 // SegmentList
 //-----------------------------------------------------------------------------
-void SegmentList::ClearRegion()
+void SegmentList::ResetAddrOffset()
 {
 	for (auto pSegment : *this) {
-		pSegment->ClearRegion();
+		pSegment->SetAddrOffset(0);
 	}
 }
 

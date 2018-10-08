@@ -35,6 +35,7 @@ public:
 	inline Integer GetAddrTop() const { return _addrTop; }
 	inline Integer GetAddrBtm() const { return static_cast<Integer>(_addrTop + _buff.size()); }
 	inline Integer GetBytes() const { return static_cast<Integer>(_buff.size()); }
+	inline bool IsBufferEmpty() const { return _buff.empty(); }
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline Region *Clone() const { return new Region(*this); }
@@ -52,6 +53,7 @@ class RegionList : public std::vector<Region *> {
 public:
 	inline void Sort() { std::sort(begin(), end(), Region::LessThan()); }
 	RegionOwner *Join(size_t bytesGapToJoin, UInt8 dataFiller) const;
+	Region *FindByAddrTop(Integer addrTop);
 	Integer GetAddrBtmMax() const;
 };
 

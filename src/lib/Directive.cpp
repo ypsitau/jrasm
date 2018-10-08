@@ -157,6 +157,7 @@ Directive *Directive_DB::Factory::Create() const
 
 bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.PrepareSegmentRegion()) return false;
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
 	context.ForwardAddrOffset(bytes);
@@ -268,6 +269,7 @@ Directive *Directive_DW::Factory::Create() const
 
 bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.PrepareSegmentRegion()) return false;
 	context.ForwardAddrOffset(static_cast<Integer>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
 }
