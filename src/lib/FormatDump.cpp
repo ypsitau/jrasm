@@ -18,7 +18,7 @@ bool FormatDump::Write(const char *fileNameOut, const RegionList &regionList)
 	for (auto pRegion : regionList) {
 		if (iRegion > 0) ::fprintf(fp, "\n");
 		int iCol = 0;
-		UInt16 addr = pRegion->GetAddrTop();
+		Integer addr = pRegion->GetAddrTop();
 		int nColsBlank = addr - addr / nCols * nCols;
 		if (nColsBlank > 0) {
 			::fprintf(fp, "%04x ", addr);

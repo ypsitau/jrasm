@@ -26,14 +26,14 @@ private:
 public:
 	DeclareReferenceAccessor(Region);
 public:
-	Region(UInt16 addrTop);
+	Region(Integer addrTop);
 	Region(const Region &region);
 private:
 	inline ~Region() {}
 public:
-	inline UInt16 GetAddrTop() const { return _addrTop; }
-	inline UInt16 GetAddrBtm() const { return static_cast<UInt16>(_addrTop + _buff.size()); }
-	inline UInt16 GetBytes() const { return static_cast<UInt16>(_buff.size()); }
+	inline Integer GetAddrTop() const { return _addrTop; }
+	inline Integer GetAddrBtm() const { return static_cast<Integer>(_addrTop + _buff.size()); }
+	inline Integer GetBytes() const { return static_cast<Integer>(_buff.size()); }
 	inline Binary &GetBuffer() { return _buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline Region *Clone() const { return new Region(*this); }
