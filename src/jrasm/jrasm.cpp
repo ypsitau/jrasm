@@ -92,7 +92,7 @@ int main(int argc, const char *argv[])
 			::printf("(no symbol)\n");
 		} else {
 			for (auto pSymbolInfo : *pSymbolInfoOwner) {
-				::printf(format, pSymbolInfo->GetNumber(), pSymbolInfo->GetSymbol());
+				::printf(format, pSymbolInfo->GetInteger(), pSymbolInfo->GetSymbol());
 			}
 		}
 	}

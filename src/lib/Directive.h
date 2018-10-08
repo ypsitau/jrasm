@@ -137,7 +137,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
-	static bool DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Number *pBytes);
+	static bool DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Integer *pBytes);
 };
 
 //-----------------------------------------------------------------------------
@@ -305,12 +305,12 @@ public:
 	class Handler : public MmlParser::Handler {
 	private:
 		Binary *_pBuffDst;
-		Number _bytesSum;
+		Integer _bytesSum;
 	public:
 		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytesSum(0) {}
 		virtual void MmlNote(MmlParser &parser, unsigned char note, int length);
 		virtual void MmlRest(MmlParser &parser, int length);
-		inline Number GetBytesSum() const { return _bytesSum; }
+		inline Integer GetBytesSum() const { return _bytesSum; }
 	};
 public:
 	inline Directive_MML() : Directive(MML) {}

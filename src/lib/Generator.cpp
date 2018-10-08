@@ -36,7 +36,7 @@ bool Generator::GenCodeScope(Context &context, Expr *pExpr, const StringList &re
 }
 
 void Generator::DumpDisasmHelper(
-	Number addr, const Binary &buff, const char *strCode,
+	Integer addr, const Binary &buff, const char *strCode,
 	FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax)
 {
 	const char *formatData = upperCaseFlag? " %02X" : " %02x";
@@ -53,7 +53,7 @@ void Generator::DumpDisasmHelper(
 			::fprintf(fp, formatHead, addr, JustifyLeft(str.c_str(), 3 * nColsPerLineMax).c_str(),
 					  (iLine == 0)? strCode : "");
 			str.clear();
-			addr += static_cast<Number>(iCol);
+			addr += static_cast<Integer>(iCol);
 			iCol = 0;
 			iLine++;
 		}

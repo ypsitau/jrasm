@@ -14,7 +14,7 @@ private:
 	int _cntRef;
 	String _name;
 	RegionOwner _regionOwner;
-	Number _addr;
+	Integer _addr;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
@@ -29,9 +29,9 @@ public:
 	inline Binary &GetBuffer() { return _regionOwner.back()->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return _regionOwner.back()->GetBuffer(); }
 	inline void ClearRegion() { _regionOwner.Clear(); }
-	inline void SetAddress(Number addr) { _addr = addr; }
-	inline Number GetAddress() const { return _addr; }
-	inline void ForwardAddress(Number bytes) { _addr += bytes; }
+	inline void SetAddress(Integer addr) { _addr = addr; }
+	inline Integer GetAddress() const { return _addr; }
+	inline void ForwardAddress(Integer bytes) { _addr += bytes; }
 	bool CheckRegionReady() const;
 };
 

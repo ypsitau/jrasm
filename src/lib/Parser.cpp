@@ -175,9 +175,9 @@ bool Parser::ReduceOne(bool lastFlag)
 {
 	AutoPtr<Token> pToken(_tokenStack.Pop());
 	AutoPtr<Expr> pExpr;
-	if (pToken->IsType(TOKEN_Number)) {
+	if (pToken->IsType(TOKEN_Integer)) {
 		// [Exp] -> [Num]
-		pExpr.reset(new Expr_Number(pToken->GetStringSTL(), pToken->GetNumber()));
+		pExpr.reset(new Expr_Integer(pToken->GetStringSTL(), pToken->GetInteger()));
 	} else if (pToken->IsType(TOKEN_Symbol)) {
 		// [Exp] -> [Sym]
 		pExpr.reset(new Expr_Symbol(pToken->GetStringSTL()));

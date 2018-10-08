@@ -21,7 +21,7 @@ public:
 	void DumpLabel(const char *strLabel, int indentLevelCode);
 	void DumpCode(const char *strCode, int indentLevelCode);
 	void DumpLabelAndCode(const char *strLabel, const char *strCode, int indentLevelCode);
-	void DumpDataAndCode(Number addr, const Binary &buff, const char *strCode, int indentLevelCode);
+	void DumpDataAndCode(Integer addr, const Binary &buff, const char *strCode, int indentLevelCode);
 };
 
 #endif

@@ -336,11 +336,11 @@ String Expr_Root::ComposeSource(bool upperCaseFlag) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Number
+// Expr_Integer
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_Number::TYPE = Expr::TYPE_Number;
+const Expr::Type Expr_Integer::TYPE = Expr::TYPE_Integer;
 
-String Expr_Number::ComposeSource(bool upperCaseFlag) const
+String Expr_Integer::ComposeSource(bool upperCaseFlag) const
 {
 	if (!_str.empty()) {
 		if (_str[0] != '\'') return _str;
@@ -359,17 +359,17 @@ String Expr_Number::ComposeSource(bool upperCaseFlag) const
 	return buff;
 }
 
-Expr *Expr_Number::Resolve(Context &context) const
+Expr *Expr_Integer::Resolve(Context &context) const
 {
 	return Reference();
 }
 
-Expr *Expr_Number::Clone() const
+Expr *Expr_Integer::Clone() const
 {
-	return new Expr_Number(*this);
+	return new Expr_Integer(*this);
 }
 
-Expr *Expr_Number::Substitute(const ExprDict &exprDict) const
+Expr *Expr_Integer::Substitute(const ExprDict &exprDict) const
 {
 	return Clone();
 }
@@ -636,7 +636,7 @@ bool Expr_Label::OnPhaseAssignSymbol(Context &context)
 	if (IsAssigned()) {
 		_pExprDict->Assign(GetSymbol(), GetAssigned()->Reference(), _forceGlobalFlag);
 	} else {
-		AutoPtr<Expr> pExpr(new Expr_Number(context.GetAddress()));
+		AutoPtr<Expr> pExpr(new Expr_Integer(context.GetAddress()));
 		pExpr->DeriveSourceInfo(this);
 		_pExprDict->Assign(GetSymbol(), pExpr.release(), _forceGlobalFlag);
 	}
@@ -694,7 +694,7 @@ bool Expr_Symbol::OnPhaseAssignSymbol(Context &context)
 {
 	if (!Expr::OnPhaseAssignSymbol(context)) return false;
 	if (_symbol == "$") {
-		_pExprAssigned.reset(new Expr_Number(context.GetAddress()));
+		_pExprAssigned.reset(new Expr_Integer(context.GetAddress()));
 		_pExprAssigned->DeriveSourceInfo(this);
 	}
 	return true;
@@ -706,7 +706,7 @@ Expr *Expr_Symbol::Resolve(Context &context) const
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetSymbol())) return Reference();
 	if (!context.IsPhase(Context::PHASE_Generate)) {
-		AutoPtr<Expr> pExprRtn(new Expr_Number(0));
+		AutoPtr<Expr> pExprRtn(new Expr_Integer(0));
 		pExprRtn->DeriveSourceInfo(this);
 		return pExprRtn.release();
 	}
@@ -717,7 +717,7 @@ Expr *Expr_Symbol::Resolve(Context &context) const
 	}
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
-	if (!pExprResolved->IsTypeNumber()) {
+	if (!pExprResolved->IsTypeInteger()) {
 		ErrorLog::AddError(this, "symbol %s must be associated with a number", GetSymbol());
 		return nullptr;
 	}
@@ -792,7 +792,7 @@ bool Expr_Instruction::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumpe
 	bool upperCaseFlag = disasmDumper.GetUpperCaseFlag();
 	if (_pExprsExpanded.IsNull()) {
 		Binary buffDst;
-		Number addr = context.GetAddress();
+		Integer addr = context.GetAddress();
 		if ((rtn = Generator::GetInstance().Generate(context, this, &buffDst))) {
 			disasmDumper.DumpDataAndCode(addr, buffDst, ComposeSource(upperCaseFlag).c_str(), indentLevelCode);
 		}

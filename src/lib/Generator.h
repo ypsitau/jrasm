@@ -30,7 +30,7 @@ public:
 	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const;
 	bool GenCodeScope(Context &context, Expr *pExpr, const StringList &regNames) const;
 	static void DumpDisasmHelper(
-		Number addr, const Binary &buff, const char *strCode,
+		Integer addr, const Binary &buff, const char *strCode,
 		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
 	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
 	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const = 0;

@@ -159,7 +159,7 @@ Directive *Directive_DB::Factory::Create() const
 
 bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	Number bytes = 0;
+	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
 	context.ForwardAddress(bytes);
 	return true;
@@ -169,7 +169,7 @@ bool Directive_DB::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 {
 	if (!context.CheckSegmentRegionReady()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
-	Number bytes = 0;
+	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
 	context.ForwardAddress(bytes);
 	return true;
@@ -179,7 +179,7 @@ bool Directive_DB::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								 DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	Binary buffDst;
-	Number addr = context.GetAddress();
+	Integer addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
 	disasmDumper.DumpDataAndCode(
 		addr, buffDst,
@@ -187,15 +187,15 @@ bool Directive_DB::OnPhaseDisasm(Context &context, const Expr *pExpr,
 	return true;
 }
 
-bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Number *pBytes)
+bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Integer *pBytes)
 {
-	Number bytes = 0;
+	Integer bytes = 0;
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
-		if (pExprResolved->IsTypeNumber()) {
-			Number num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
+		if (pExprResolved->IsTypeInteger()) {
+			Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
 			if (num < -0x80 || num > 0xff) {
 				ErrorLog::AddError(pExpr, "an element value of directive .DB exceeds 8-bit range");
 				return false;
@@ -217,7 +217,7 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			}
 			Binary buff = pExprEx->GetBinary();
 			if (pBuffDst != nullptr) *pBuffDst += buff;
-			bytes += static_cast<Number>(buff.size());
+			bytes += static_cast<Integer>(buff.size());
 		} else {
 			ErrorLog::AddError(pExpr, "elements of directive .DB must be number or string value");
 			return false;
@@ -270,7 +270,7 @@ Directive *Directive_DW::Factory::Create() const
 
 bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	context.ForwardAddress(static_cast<Number>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
+	context.ForwardAddress(static_cast<Integer>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
 }
 
@@ -282,11 +282,11 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
-		if (!pExprResolved->IsTypeNumber()) {
+		if (!pExprResolved->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "elements of directive .DW must be number value");
 			return false;
 		}
-		Number num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
+		Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
 		if (num < -0x8000 || num > 0xffff) {
 			ErrorLog::AddError(pExpr, "an element value of directive .DW exceeds 16-bit range");
 			return false;
@@ -295,7 +295,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 		*pBuffDst += static_cast<UInt8>(num);
 	}
 	size_t bytes = pExpr->GetExprOperands().size() * sizeof(UInt16);
-	context.ForwardAddress(static_cast<Number>(bytes));
+	context.ForwardAddress(static_cast<Integer>(bytes));
 	return true;
 }
 
@@ -303,7 +303,7 @@ bool Directive_DW::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								 DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	Binary buffDst;
-	Number addr = context.GetAddress();
+	Integer addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
 	disasmDumper.DumpDataAndCode(
 		addr, buffDst,
@@ -623,7 +623,7 @@ bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	Binary buffDst;
-	Number addr = context.GetAddress();
+	Integer addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
 	disasmDumper.DumpDataAndCode(
 		addr, buffDst,
@@ -688,11 +688,11 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
-	if (!pExprLast->IsTypeNumber()) {
+	if (!pExprLast->IsTypeInteger()) {
 		ErrorLog::AddError(pExpr, "directive .ORG takes a number value as its operand");
 		return false;
 	}
-	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
+	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();
 	if (num < -0x8000 || num > 0xffff) {
 		ErrorLog::AddError(pExpr, "address value exceeds 16-bit range");
 		return false;
@@ -741,39 +741,39 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 	} while (0);
 	do {
 		Expr *pExprOperand = exprOperands[1];
-		if (!pExprOperand->IsTypeNumber()) {
+		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		wdChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	do {
 		Expr *pExprOperand = exprOperands[2];
-		if (!pExprOperand->IsTypeNumber()) {
+		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		htChar = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+		htChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	if (exprOperands.size() >= 4) {
 		Expr *pExprOperand = exprOperands[3];
-		if (!pExprOperand->IsTypeNumber()) {
+		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		xStep = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+		xStep = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	if (exprOperands.size() >= 5) {
 		Expr *pExprOperand = exprOperands[4];
-		if (!pExprOperand->IsTypeNumber()) {
+		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		yStep = dynamic_cast<Expr_Number *>(pExprOperand)->GetNumber();
+		yStep = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, xStep, yStep));
 	Binary buffOrg;
-	Number bytes = 0;
+	Integer bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
 			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCG");
@@ -903,11 +903,11 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	} while (0);
 	do {
 		Expr *pExprOperand = exprOperands[2];
-		if (!pExprOperand->IsTypeNumber()) {
+		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		charCodeStart = dynamic_cast<const Expr_Number *>(pExprOperand)->GetNumber();
+		charCodeStart = dynamic_cast<const Expr_Integer *>(pExprOperand)->GetInteger();
 		if (pcgType == PCGTYPE_CRAM) {
 			if (charCodeStart < 0 || charCodeStart > 255) {
 				ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
@@ -951,7 +951,7 @@ bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Bin
 	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
 		const Binary &buff = pPCGChar->GetBuffer();
 		*pBuffDst += buff;
-		context.ForwardAddress(static_cast<Number>(buff.size()));
+		context.ForwardAddress(static_cast<Integer>(buff.size()));
 	}
 	return true;
 }
@@ -975,7 +975,7 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 		}
 		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,
 									 (strHead + strData).c_str(), indentLevelCode + 1);
-		context.ForwardAddress(static_cast<Number>(buff.size()));
+		context.ForwardAddress(static_cast<Integer>(buff.size()));
 	}
 	return true;
 }

@@ -28,9 +28,9 @@ public:
 public:
 	class SymbolInfo {
 	public:
-		struct LessThan_Number {
+		struct LessThan_Integer {
 			inline bool operator()(const SymbolInfo *pSymbolInfo1, const SymbolInfo *pSymbolInfo2) const {
-				return pSymbolInfo1->GetNumber() < pSymbolInfo2->GetNumber();
+				return pSymbolInfo1->GetInteger() < pSymbolInfo2->GetInteger();
 			}
 		};
 		struct LessThan_Symbol {
@@ -39,16 +39,16 @@ public:
 			}
 		};
 	private:
-		Number _num;
+		Integer _num;
 		String _symbol;
 	public:
-		inline SymbolInfo(Number num, const String &symbol) : _num(num), _symbol(symbol) {}
-		inline Number GetNumber() const { return _num; }
+		inline SymbolInfo(Integer num, const String &symbol) : _num(num), _symbol(symbol) {}
+		inline Integer GetInteger() const { return _num; }
 		inline const char *GetSymbol() const { return _symbol.c_str(); }
 	};
 	class SymbolInfoList : public std::vector<SymbolInfo *> {
 	public:
-		void SortByNumber() { std::sort(begin(), end(), SymbolInfo::LessThan_Number()); }
+		void SortByInteger() { std::sort(begin(), end(), SymbolInfo::LessThan_Integer()); }
 		void SortBySymbol() { std::sort(begin(), end(), SymbolInfo::LessThan_Symbol()); }
 		static size_t GetSymbolLenMax(const_iterator ppSymbolInfo, const_iterator ppSymbolInfoEnd);
 	};
@@ -83,8 +83,8 @@ public:
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ClearRegion(); }
-	inline Number GetAddress() const { return _pSegmentCur->GetAddress(); }
-	inline void ForwardAddress(Number bytes) { _pSegmentCur->ForwardAddress(bytes); }
+	inline Integer GetAddress() const { return _pSegmentCur->GetAddress(); }
+	inline void ForwardAddress(Integer bytes) { _pSegmentCur->ForwardAddress(bytes); }
 	inline SegmentOwner &GetSegmentOwner() { return _segmentOwner; }
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
@@ -104,7 +104,7 @@ public:
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
-	void StartRegion(Number addr);
+	void StartRegion(Integer addr);
 	void BeginScope();
 	void EndScope();
 	String MakeFileNameOut(const char *extName) const;

@@ -43,7 +43,7 @@ extern const TokenInfo TOKEN_BracketL;
 extern const TokenInfo TOKEN_BracketR;
 extern const TokenInfo TOKEN_BraceL;
 extern const TokenInfo TOKEN_BraceR;
-extern const TokenInfo TOKEN_Number;
+extern const TokenInfo TOKEN_Integer;
 extern const TokenInfo TOKEN_Symbol;
 extern const TokenInfo TOKEN_String;
 extern const TokenInfo TOKEN_BitPattern;
@@ -70,7 +70,7 @@ private:
 	const TokenInfo *_pTokenInfo;
 	int _lineNo;
 	String _str;
-	Number _num;
+	Integer _num;
 	bool _validStrFlag;
 	AutoPtr<Expr> _pExpr;	// only valid for TOKEN_Expr, TOKEN_BracketL and TOKEN_BraceL
 private:
@@ -84,7 +84,7 @@ public:
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _num(0), _validStrFlag(false), _pExpr(pExpr) {}
 	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(0), _validStrFlag(true) {}
-	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str, Number num) :
+	inline Token(const TokenInfo &tokenInfo, int lineNo, const String &str, Integer num) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(lineNo), _str(str), _num(num), _validStrFlag(true) {}
 	inline Token(const TokenInfo &tokenInfo) :
 		_cntRef(1), _pTokenInfo(&tokenInfo), _lineNo(0), _num(0), _validStrFlag(false) {}
@@ -99,7 +99,7 @@ public:
 	inline bool HasPrecedence() const { return GetCategory() != 0; }
 	inline bool IsType(const TokenInfo &tokenInfo) const { return _pTokenInfo->IsIdentical(tokenInfo); }
 	inline int GetLineNo() const { return _lineNo; }
-	inline Number GetNumber() const { return _num; }
+	inline Integer GetInteger() const { return _num; }
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
 	inline const Expr *GetExpr() const { return _pExpr.get(); }

@@ -32,10 +32,10 @@ public:
 		STAT_Bang,
 		STAT_Slash,
 		STAT_DetectZero,
-		STAT_BinNumber,
-		STAT_OctNumber,
-		STAT_DecNumber,
-		STAT_HexNumber,
+		STAT_BinInteger,
+		STAT_OctInteger,
+		STAT_DecInteger,
+		STAT_HexInteger,
 		STAT_Symbol,
 		STAT_BitPatternPre,
 		STAT_Quoted,
@@ -52,7 +52,7 @@ private:
 	Listener *_pListener;
 	AutoPtr<StringShared> _pPathNameSrc;
 	bool _numNegFlag;
-	Number _num;
+	Integer _num;
 	String _str;
 	int _nLines;
 	char _quotedType;
@@ -75,7 +75,7 @@ private:
 	bool FeedToken(const TokenInfo &tokenInfo);
 	bool FeedToken(const TokenInfo &tokenInfo, Expr *pExpr);
 	bool FeedToken(const TokenInfo &tokenInfo, const String &str);
-	bool FeedToken(const TokenInfo &tokenInfo, const String &str, Number num);
+	bool FeedToken(const TokenInfo &tokenInfo, const String &str, Integer num);
 };
 
 #endif

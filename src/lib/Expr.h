@@ -80,7 +80,7 @@ public:
 	enum Type {
 		TYPE_Null,
 		TYPE_Root,
-		TYPE_Number,
+		TYPE_Integer,
 		TYPE_String,
 		TYPE_BitPattern,
 		TYPE_BinOp,
@@ -113,7 +113,7 @@ protected:
 public:
 	inline bool IsType(Type type) const { return _type == type; }
 	inline bool IsTypeRoot() const { return IsType(TYPE_Root); }
-	inline bool IsTypeNumber() const { return IsType(TYPE_Number); }
+	inline bool IsTypeInteger() const { return IsType(TYPE_Integer); }
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
@@ -221,19 +221,19 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_Number
+// Expr_Integer
 //-----------------------------------------------------------------------------
-class Expr_Number : public Expr {
+class Expr_Integer : public Expr {
 private:
 	String _str;
-	Number _num;
+	Integer _num;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_Number(Number num) : Expr(TYPE), _num(num) {}
-	inline Expr_Number(const String &str, Number num) : Expr(TYPE), _str(str), _num(num) {}
-	inline Expr_Number(const Expr_Number &expr) : Expr(expr), _str(expr._str), _num(expr._num) {}
-	inline Number GetNumber() const { return _num; }
+	inline Expr_Integer(Integer num) : Expr(TYPE), _num(num) {}
+	inline Expr_Integer(const String &str, Integer num) : Expr(TYPE), _str(str), _num(num) {}
+	inline Expr_Integer(const Expr_Integer &expr) : Expr(expr), _str(expr._str), _num(expr._num) {}
+	inline Integer GetInteger() const { return _num; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

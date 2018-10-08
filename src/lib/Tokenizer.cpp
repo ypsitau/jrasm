@@ -59,7 +59,7 @@ bool Tokenizer::FeedChar(char ch)
 			_numNegFlag = false;
 			_num = 0;
 			_str.clear();
-			_stat = STAT_DecNumber;
+			_stat = STAT_DecInteger;
 			Pushback();
 		} else if (ch == ';') {
 			_stat = STAT_LineComment;
@@ -165,7 +165,7 @@ bool Tokenizer::FeedChar(char ch)
 			_num = 0;
 			_str.clear();
 			_str += '-';
-			_stat = STAT_DecNumber;
+			_stat = STAT_DecInteger;
 			Pushback();
 		} else {
 			rtn = FeedToken(TOKEN_Minus);
@@ -310,7 +310,7 @@ bool Tokenizer::FeedChar(char ch)
 					AddError("character literal must contain just one character");
 					rtn = false;
 				} else {
-					rtn = FeedToken(TOKEN_Number, _str, _str[1]);
+					rtn = FeedToken(TOKEN_Integer, _str, _str[1]);
 				}
 			} else if (_quotedType == QUOTEDTYPE_BitPattern) {
 				rtn = FeedToken(TOKEN_BitPattern, _str);
@@ -346,32 +346,32 @@ bool Tokenizer::FeedChar(char ch)
 	case STAT_DetectZero: {
 		if (ch == 'b') {
 			_str += ch;
-			_stat = STAT_BinNumber;
+			_stat = STAT_BinInteger;
 		} else if (::isdigit(ch)) {
-			_stat = STAT_OctNumber;
+			_stat = STAT_OctInteger;
 			Pushback();
 		} else if (ch == 'x') {
 			_str += ch;
-			_stat = STAT_HexNumber;
+			_stat = STAT_HexInteger;
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
+			rtn = FeedToken(TOKEN_Integer, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
 		break;
 	}
-	case STAT_BinNumber: {
+	case STAT_BinInteger: {
 		if ('0' <= ch && ch <= '1') {
 			_str += ch;
 			_num = (_num << 1) + (ch - '0');
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
+			rtn = FeedToken(TOKEN_Integer, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
 		break;
 	}
-	case STAT_OctNumber: {
+	case STAT_OctInteger: {
 		if ('0' <= ch && ch <= '7') {
 			_str += ch;
 			_num = _num * 8 + (ch - '0');
@@ -379,24 +379,24 @@ bool Tokenizer::FeedChar(char ch)
 			AddError("decimal number must not start with zero");
 			rtn = false;
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
+			rtn = FeedToken(TOKEN_Integer, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
 		break;
 	}
-	case STAT_DecNumber: {
+	case STAT_DecInteger: {
 		if (IsDigit(ch)) {
 			_str += ch;
 			_num = _num * 10 + (ch - '0');
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
+			rtn = FeedToken(TOKEN_Integer, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
 		break;
 	}
-	case STAT_HexNumber: {
+	case STAT_HexInteger: {
 		if (IsDigit(ch)) {
 			_str += ch;
 			_num = (_num << 4) + (ch - '0');
@@ -407,7 +407,7 @@ bool Tokenizer::FeedChar(char ch)
 			_str += ch;
 			_num = (_num << 4) + (ch - 'A' + 10);
 		} else {
-			rtn = FeedToken(TOKEN_Number, _str, _numNegFlag? -_num : _num);
+			rtn = FeedToken(TOKEN_Integer, _str, _numNegFlag? -_num : _num);
 			_stat = STAT_Neutral;
 			Pushback();
 		}
@@ -434,7 +434,7 @@ bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str)
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str));
 }
 
-bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, Number num)
+bool Tokenizer::FeedToken(const TokenInfo &tokenInfo, const String &str, Integer num)
 {
 	return _pListener->FeedToken(new Token(tokenInfo, _nLines + 1, str, num));
 }

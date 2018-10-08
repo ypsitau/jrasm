@@ -55,7 +55,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 
-void Context::StartRegion(Number addr)
+void Context::StartRegion(Integer addr)
 {
 	_pSegmentCur->AddRegion(new Region(addr));
 	_pSegmentCur->SetAddress(addr);
@@ -87,12 +87,12 @@ Context::SymbolInfoOwner *Context::MakeSymbolInfoOwner()
 		const String &symbol = iter.first;
 		const Expr *pExpr = iter.second;
 		AutoPtr<Expr> pExprResolved(pExpr->Resolve(*this));
-		if (!pExprResolved.IsNull() && pExprResolved->IsTypeNumber()) {
-			Number num = dynamic_cast<Expr_Number *>(pExprResolved.get())->GetNumber();
+		if (!pExprResolved.IsNull() && pExprResolved->IsTypeInteger()) {
+			Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
 			pSymbolInfoOwner->push_back(new SymbolInfo(num, symbol));
 		}
 	}
-	pSymbolInfoOwner->SortByNumber();
+	pSymbolInfoOwner->SortByInteger();
 	return pSymbolInfoOwner.release();
 }
 

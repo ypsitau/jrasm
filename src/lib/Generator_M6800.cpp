@@ -194,7 +194,7 @@ bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const String
 					new Expr_BinOp(
 						Operator::Add,
 						new Expr_Symbol(labelName),
-						new Expr_Number("1", 1)));
+						new Expr_Integer("1", 1)));
 				pExprInst->GetExprOperands().push_back(pExprOperand.release());
 			} while (0);
 			exprChildren.insert(exprChildren.begin() + i, pExprInst.release());
@@ -207,7 +207,7 @@ bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const String
 		do {
 			AutoPtr<Expr> pExprInst(new Expr_Instruction(instLoad));
 			pExprInst->DeriveSourceInfo(pExpr);
-			pExprInst->GetExprOperands().push_back(new Expr_Number(0));
+			pExprInst->GetExprOperands().push_back(new Expr_Integer(0));
 			exprChildren.push_back(pExprInst.release());
 		} while (0);
 		i++;
@@ -377,12 +377,12 @@ Generator_M6800::Result Generator_M6800::Rule_REL::Apply(
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
+	if (!pExprLast->IsTypeInteger()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	Number num = dynamic_cast<Expr_Number *>(pExprLast.get())->GetNumber();
+	Integer num = dynamic_cast<Expr_Integer *>(pExprLast.get())->GetInteger();
 	if (!context.IsPhase(Context::PHASE_Generate)) {
 		num = 0;
-	} else if (exprOperands.back()->IsTypeNumber()) {
+	} else if (exprOperands.back()->IsTypeInteger()) {
 		// nothing to do
 	} else {
 		num -= context.GetAddress() + bytes;
@@ -431,9 +431,9 @@ Generator_M6800::Result Generator_M6800::Rule_IMM8::Apply(
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
+	if (!pExprLast->IsTypeInteger()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
+	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();
 	if (num < -0x80 || num > 0xff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 8-bit range");
 		return RESULT_Error;
@@ -455,9 +455,9 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsTypeNumber()) return RESULT_Rejected;
+	if (!pExprLast->IsTypeInteger()) return RESULT_Rejected;
 	// This rule was determined to be applied.
-	Number num = dynamic_cast<const Expr_Number *>(pExprLast.get())->GetNumber();
+	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();
 	if (num < -0x8000 || num > 0xffff) {
 		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 		return RESULT_Error;
@@ -497,11 +497,11 @@ Generator_M6800::Result Generator_M6800::Rule_DIR::Apply(
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
-	if (!exprList.front()->IsTypeNumber()) {
+	if (!exprList.front()->IsTypeInteger()) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
-	Number num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
+	Integer num = dynamic_cast<Expr_Integer *>(exprList.front())->GetInteger();
 	if (num < -0x80 || num > 0xff) {
 		ErrorLog::AddError(pExpr, "direct address value exceeds 8-bit range");
 		return RESULT_Error;
@@ -535,15 +535,15 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	if (!pExprLast->IsTypeBracket()) return RESULT_Rejected;
 	ExprList &exprList = pExprLast->GetExprOperands();
 	if (exprList.size() != 1) return RESULT_Rejected;
-	Number num = 0;
+	Integer num = 0;
 	if (exprList.front()->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
 		// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
-		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
+		if (!pExprBinOp->GetLeft()->IsTypeInteger() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
 			return RESULT_Rejected;
 		}
 		// This rule was determined to be applied.
-		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+		num = dynamic_cast<const Expr_Integer *>(pExprBinOp->GetLeft())->GetInteger();
 	} else if (exprList.front()->IsTypeSymbol("x")) {
 		num = 0;
 	} else {
@@ -569,15 +569,15 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	Number num = 0;
+	Integer num = 0;
 	if (pExprLast->IsTypeBinOp()) {
 		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprLast.get());
 		// If operand was specified in x+data16, it has been modified to data16+x in resolving process.
-		if (!pExprBinOp->GetLeft()->IsTypeNumber() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
+		if (!pExprBinOp->GetLeft()->IsTypeInteger() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
 			return RESULT_Rejected;
 		}
 		// This rule was determined to be applied.
-		num = dynamic_cast<const Expr_Number *>(pExprBinOp->GetLeft())->GetNumber();
+		num = dynamic_cast<const Expr_Integer *>(pExprBinOp->GetLeft())->GetInteger();
 	} else if (pExprLast->IsTypeSymbol("x")) {
 		num = 0;
 	} else {
@@ -621,11 +621,11 @@ Generator_M6800::Result Generator_M6800::Rule_EXT::Apply(
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
-	if (!exprList.front()->IsTypeNumber()) {
+	if (!exprList.front()->IsTypeInteger()) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return RESULT_Error;
 	}
-	Number num = dynamic_cast<Expr_Number *>(exprList.front())->GetNumber();
+	Integer num = dynamic_cast<Expr_Integer *>(exprList.front())->GetInteger();
 	if (num < -0x8000 || num > 0xffff) {
 		ErrorLog::AddError(pExpr, "external address value exceeds 16-bit range");
 		return RESULT_Error;
