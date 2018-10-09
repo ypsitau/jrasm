@@ -130,4 +130,7 @@ label1:
     10fd 20 82     bra  label1
     10ff 20 80     bra  label1
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1081  label1

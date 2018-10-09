@@ -280,6 +280,9 @@ label_1186:
 label_120e:
     120e 12 0e     .dw  label_120e
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1000  label_1000
 1082  label_1082
 1104  label_1104

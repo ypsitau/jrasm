@@ -16,6 +16,9 @@ label8:            .equ label6
     1010 ce 10 06  ldx  label6
     1013 ce 10 09  ldx  label7
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1000  label4
 1003  label5
 1006  label6

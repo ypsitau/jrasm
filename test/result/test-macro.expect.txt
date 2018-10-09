@@ -145,4 +145,7 @@ addr2:             |
     109b 33 44     |
                    | .end
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 0020  external_val

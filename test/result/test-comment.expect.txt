@@ -69,4 +69,6 @@
     2085 fc fd   
     2087 fe ff   
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

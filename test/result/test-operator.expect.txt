@@ -15,4 +15,6 @@
     101a 00 87     .dw  12+34+89
     101c 0b de     .dw  12+34*89
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

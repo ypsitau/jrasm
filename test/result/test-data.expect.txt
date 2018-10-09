@@ -407,6 +407,9 @@ label5:
     131f 3c ff   
 label6:
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1000  label1
 1100  label2
 110b  label3

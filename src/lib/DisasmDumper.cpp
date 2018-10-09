@@ -10,7 +10,6 @@ DisasmDumper::DisasmDumper(FILE *fp, bool upperCaseFlag, size_t nColsPerLine) :
 	_fp(fp), _upperCaseFlag(upperCaseFlag), _nColsPerLine(nColsPerLine)
 {
 	_paddingLeft = MakePadding(8 + 1 + 3 * _nColsPerLine + 1);
-	_paddingDataArea = MakePadding(1 + 3 * _nColsPerLine);
 }
 
 void DisasmDumper::DumpLabel(const char *strLabel, int indentLevelCode)
@@ -37,11 +36,11 @@ void DisasmDumper::DumpLabelAndCode(const char *strLabel, const char *strCode, i
 			  indentCode.c_str(), strCode);
 }
 
-void DisasmDumper::DumpAddrAndCode(Integer addr, const char *strCode, int indentLevelCode)
+void DisasmDumper::DumpAddrAndCode(Integer addr, Integer addrEnd, const char *strCode, int indentLevelCode)
 {
 	String indentCode = MakePadding(indentLevelCode, " |");
-	const char *formatHead = _upperCaseFlag? "    %04X%s%s %s\n" : "    %04x%s%s %s\n";
-	::fprintf(_fp, formatHead, addr, _paddingDataArea.c_str(), indentCode.c_str(), strCode);
+	const char *formatHead = _upperCaseFlag? "    %04X-%04X     %s %s\n" : "    %04x-%04x     %s %s\n";
+	::fprintf(_fp, formatHead, addr, addrEnd, indentCode.c_str(), strCode);
 }
 
 void DisasmDumper::DumpDataAndCode(Integer addr, const Binary &buff, const char *strCode, int indentLevelCode)

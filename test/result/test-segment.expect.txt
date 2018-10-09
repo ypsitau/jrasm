@@ -27,4 +27,6 @@
                    .dseg
     2010 f0 08     .dw  0xf008
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

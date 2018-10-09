@@ -17,4 +17,6 @@
     1012 f0 01     .dw  0xf001
     1014 f0 02     .dw  0xf002
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

@@ -135,6 +135,9 @@ __scopesave_x:     |
     10b3 ce 00 00  | ldx  0x00
                    | .end
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1000  label1
 1001  label2
 1016  func1

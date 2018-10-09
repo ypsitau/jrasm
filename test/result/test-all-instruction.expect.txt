@@ -617,6 +617,9 @@ after_txs:
     125c 3e        wai 
 after_wai:
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1000  start
 1001  after_aba
 1003  after_adc_a_imm

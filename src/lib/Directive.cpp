@@ -287,11 +287,12 @@ bool Directive_DS::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 bool Directive_DS::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								 DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	Binary buffDst;
+	Integer bytes = 0;
 	Integer addr = context.GetAddress();
-	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
+	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
+	context.ForwardAddrOffset(bytes);
 	disasmDumper.DumpAddrAndCode(
-		addr, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+		addr, addr + bytes - 1, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 

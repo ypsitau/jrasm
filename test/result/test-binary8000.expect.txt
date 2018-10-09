@@ -4000,4 +4000,6 @@
     3f3c 3c 3d   
     3f3e 3e 3f   
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

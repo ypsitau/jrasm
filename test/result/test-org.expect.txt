@@ -213,4 +213,6 @@
     3f1d 0e 0f   
     3f1f 10        .db  0x10
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

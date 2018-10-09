@@ -36,6 +36,9 @@ label16bit$3:      .equ 0x3456
     103c b9 35 79  adc  a,[label16bit$1+label16bit$2]
     103f b9 69 cf  adc  a,[label16bit$1+label16bit$2+label16bit$3]
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 0011  label8bit$1
 0022  label8bit$2
 0033  label8bit$3

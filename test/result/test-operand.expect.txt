@@ -37,4 +37,6 @@
     104a 6e 12     jmp  x+0x12
     104c 7e 12 34  jmp  0x1234
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

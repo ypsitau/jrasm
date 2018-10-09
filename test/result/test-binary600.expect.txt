@@ -300,4 +300,6 @@
     2254 54 55   
     2256 56 57   
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD

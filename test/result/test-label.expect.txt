@@ -41,6 +41,9 @@ label1:            | .equ $
     102a 10 2a     | .dw  label1
                    | .end
 [Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
 1000  label_1000
 1001  label_1001
 1003  label_1003

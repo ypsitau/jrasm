@@ -256,4 +256,6 @@
     21fc fc fd   
     21fe fe ff   
 [Symbol List]
-(no symbol)
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
