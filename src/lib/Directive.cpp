@@ -305,7 +305,7 @@ bool Directive_DS::DoDirective(Context &context, const Expr *pExpr) const
 	}
 	//Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
 	//**************************************
-	return context.SetAddrOrg(0);
+	return context.AddRegion(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -710,7 +710,7 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 		ErrorLog::AddError(pExpr, "address value exceeds 16bit range");
 		return false;
 	}
-	return context.SetAddrOrg(num);
+	return context.AddRegion(num);
 }
 
 //-----------------------------------------------------------------------------

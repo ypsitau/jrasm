@@ -6,21 +6,19 @@
 //-----------------------------------------------------------------------------
 // Region
 //-----------------------------------------------------------------------------
-Region::Region(Integer addrTop) :
-	_cntRef(1), _addrTop(addrTop), _addrOffset(0), _pRegionsIngredient(new RegionOwner())
+Region::Region(Integer addrTop) : _cntRef(1), _addrTop(addrTop), _addrOffset(0)
 {
 	_buff.reserve(4096);
 }
 
 Region::Region(const Region &region) :
-	_cntRef(1), _addrTop(region._addrTop), _addrOffset(region._addrOffset), _buff(region._buff),
-	_pRegionsIngredient(new RegionOwner())
+	_cntRef(1), _addrTop(region._addrTop), _addrOffset(region._addrOffset), _buff(region._buff)
 {
 }
 
 void Region::AddRegionIngredient(Region *pRegion)
 {
-	_pRegionsIngredient->push_back(pRegion);
+	_regionsIngredient.push_back(pRegion);
 }
 
 void Region::AppendFiller(UInt8 dataFiller, size_t bytes)

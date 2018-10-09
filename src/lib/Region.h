@@ -45,7 +45,7 @@ private:
 	Integer _addrTop;
 	Integer _addrOffset;
 	Binary _buff;
-	std::unique_ptr<RegionOwner> _pRegionsIngredient;
+	RegionOwner _regionsIngredient;
 public:
 	DeclareReferenceAccessor(Region);
 public:
@@ -67,7 +67,7 @@ public:
 	inline const Binary &GetBuffer() const { return _buff; }
 	inline Region *Clone() const { return new Region(*this); }
 	inline void AppendBuffer(const Binary &buff) { _buff += buff; }
-	inline const RegionOwner &GetRegionsIngredient() const { return *_pRegionsIngredient; }
+	inline const RegionOwner &GetRegionsIngredient() const { return _regionsIngredient; }
 	void AddRegionIngredient(Region *pRegion);
 	void AppendFiller(UInt8 dataFiller, size_t bytes);
 	void Dump() const;

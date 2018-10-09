@@ -56,7 +56,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 
-bool Context::SetAddrOrg(Integer addrTop)
+bool Context::AddRegion(Integer addrTop)
 {
 	Region *pRegion = _pSegmentCur->FindRegionByAddrTop(addrTop);
 	if (pRegion == nullptr) {
