@@ -290,9 +290,8 @@ bool Directive_DS::OnPhaseDisasm(Context &context, const Expr *pExpr,
 	Binary buffDst;
 	Integer addr = context.GetAddress();
 	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
-	disasmDumper.DumpDataAndCode(
-		addr, buffDst,
-		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	disasmDumper.DumpAddrAndCode(
+		addr, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 
@@ -306,12 +305,14 @@ bool Directive_DS::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 	context.StartToResolve();
 	AutoPtr<Expr> pExprResolved(exprOperands.front()->Resolve(context));
 	if (pExprResolved.IsNull()) return false;
-	if (pExprResolved->IsTypeInteger()) {
+	if (!pExprResolved->IsTypeInteger()) {
 		ErrorLog::AddError(pExpr, "directive .DS takes integer value");
 		return false;
 	}
 	Integer bytes = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
-	for (Integer i = 0; i < bytes; i++) *pBuffDst += '\0';
+	if (pBuffDst != nullptr) {
+		for (Integer i = 0; i < bytes; i++) *pBuffDst += '\0';
+	}
 	*pBytes = bytes;
 	return true;
 }
