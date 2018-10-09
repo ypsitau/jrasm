@@ -62,6 +62,7 @@ public:
 	static const DirectiveFactory *CSEG;
 	static const DirectiveFactory *DB;
 	static const DirectiveFactory *DSEG;
+	static const DirectiveFactory *DS;
 	static const DirectiveFactory *DW;
 	static const DirectiveFactory *END;
 	static const DirectiveFactory *EQU;
@@ -155,6 +156,25 @@ public:
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_DS
+//-----------------------------------------------------------------------------
+class Directive_DS : public Directive {
+public:
+	class Factory : public DirectiveFactory {
+	public:
+		inline Factory() : DirectiveFactory(".DS", true, false) {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_DS() : Directive(DS) {}
+	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
+	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+	bool DoDirective(Context &context, const Expr *pExpr) const;
 };
 
 //-----------------------------------------------------------------------------

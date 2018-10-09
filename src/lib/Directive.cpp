@@ -29,6 +29,7 @@ DirectiveFactoryDict Directive::_directiveFactoryDict;
 const DirectiveFactory *Directive::CSEG			= nullptr;
 const DirectiveFactory *Directive::DB			= nullptr;
 const DirectiveFactory *Directive::DSEG			= nullptr;
+const DirectiveFactory *Directive::DS			= nullptr;
 const DirectiveFactory *Directive::DW			= nullptr;
 const DirectiveFactory *Directive::END			= nullptr;
 const DirectiveFactory *Directive::EQU			= nullptr;
@@ -50,6 +51,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(CSEG			= new Directive_CSEG::Factory());
 	_directiveFactoryDict.Assign(DB				= new Directive_DB::Factory());
 	_directiveFactoryDict.Assign(DSEG			= new Directive_DSEG::Factory());
+	_directiveFactoryDict.Assign(DS				= new Directive_DS::Factory());
 	_directiveFactoryDict.Assign(DW				= new Directive_DW::Factory());
 	_directiveFactoryDict.Assign(END			= new Directive_END::Factory());
 	_directiveFactoryDict.Assign(EQU			= new Directive_EQU::Factory());
@@ -216,7 +218,7 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			if (pBuffDst != nullptr) *pBuffDst += buff;
 			bytes += static_cast<Integer>(buff.size());
 		} else {
-			ErrorLog::AddError(pExpr, "elements of directive .DB must be number or string value");
+			ErrorLog::AddError(pExpr, "elements of directive .DB must be integer or string value");
 			return false;
 		}
 	}
@@ -258,6 +260,55 @@ bool Directive_DSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
 }
 
 //-----------------------------------------------------------------------------
+// Directive_DS
+//-----------------------------------------------------------------------------
+Directive *Directive_DS::Factory::Create() const
+{
+	return new Directive_DS();
+}
+
+bool Directive_DS::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	return DoDirective(context, pExpr);
+}
+
+bool Directive_DS::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	return DoDirective(context, pExpr);
+}
+
+bool Directive_DS::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								 DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	Binary buffDst;
+	//Integer addr = context.GetAddress();
+	if (!DoDirective(context, pExpr)) return false;
+	//disasmDumper.DumpDataAndCode(
+	//	addr, buffDst,
+	//	pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return true;
+}
+
+bool Directive_DS::DoDirective(Context &context, const Expr *pExpr) const
+{
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (exprOperands.size() != 1) {
+		ErrorLog::AddError(pExpr, "directive .DS takes one operand");
+		return false;
+	}
+	context.StartToResolve();
+	AutoPtr<Expr> pExprResolved(exprOperands.front()->Resolve(context));
+	if (pExprResolved.IsNull()) return false;
+	if (pExprResolved->IsTypeInteger()) {
+		ErrorLog::AddError(pExpr, "directive .DS takes integer value");
+		return false;
+	}
+	//Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
+	//**************************************
+	return context.SetAddrOrg(0);
+}
+
+//-----------------------------------------------------------------------------
 // Directive_DW
 //-----------------------------------------------------------------------------
 Directive *Directive_DW::Factory::Create() const
@@ -279,7 +330,7 @@ bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *
 		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (!pExprResolved->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, "elements of directive .DW must be number value");
+			ErrorLog::AddError(pExpr, "elements of directive .DW must be integer value");
 			return false;
 		}
 		Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
@@ -651,7 +702,7 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeInteger()) {
-		ErrorLog::AddError(pExpr, "directive .ORG takes a number value as its operand");
+		ErrorLog::AddError(pExpr, "directive .ORG takes a integer value as its operand");
 		return false;
 	}
 	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();

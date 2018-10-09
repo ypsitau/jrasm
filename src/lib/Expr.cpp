@@ -720,7 +720,7 @@ Expr *Expr_Symbol::Resolve(Context &context) const
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
 	if (!pExprResolved->IsTypeInteger()) {
-		ErrorLog::AddError(this, "symbol %s must be associated with a number", GetSymbol());
+		ErrorLog::AddError(this, "symbol %s must be associated with an integer", GetSymbol());
 		return nullptr;
 	}
 	return pExprResolved.release();
