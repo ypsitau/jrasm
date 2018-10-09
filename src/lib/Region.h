@@ -21,6 +21,7 @@ public:
 private:
 	int _cntRef;
 	Integer _addrTop;
+	Integer _addrOffset;
 	Binary _buff;
 	std::unique_ptr<RegionOwner> _pRegionsIngredient;
 public:
@@ -32,7 +33,10 @@ private:
 	inline ~Region() {}
 public:
 	inline void SetAddrTop(Integer addrTop) { _addrTop = addrTop; }
+	inline void ClearAddrOffset() { _addrOffset = 0; }
 	inline Integer GetAddrTop() const { return _addrTop; }
+	inline Integer GetAddrOffset() const { return _addrTop; }
+	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
 	inline Integer GetAddrBtm() const { return static_cast<Integer>(_addrTop + _buff.size()); }
 	inline Integer GetBytes() const { return static_cast<Integer>(_buff.size()); }
 	inline bool IsBufferEmpty() const { return _buff.empty(); }
