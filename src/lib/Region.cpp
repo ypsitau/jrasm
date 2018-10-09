@@ -53,6 +53,11 @@ void RegionList::ResetAddrOffset()
 	}
 }
 
+void RegionList::Sort()
+{
+	std::sort(begin(), end(), Region::LessThan());
+}
+
 RegionOwner *RegionList::Join(size_t bytesGapToJoin, UInt8 dataFiller) const
 {
 	std::unique_ptr<RegionOwner> pRegionOwner(new RegionOwner());

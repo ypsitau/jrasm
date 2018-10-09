@@ -6,7 +6,29 @@
 
 #include "Common.h"
 
+class Region;
 class RegionOwner;
+
+//-----------------------------------------------------------------------------
+// RegionList
+//-----------------------------------------------------------------------------
+class RegionList : public std::vector<Region *> {
+public:
+	void Sort();
+	void ResetAddrOffset();
+	RegionOwner *Join(size_t bytesGapToJoin, UInt8 dataFiller) const;
+	Region *FindByAddrTop(Integer addrTop);
+	Integer GetAddrBtmMax() const;
+};
+
+//-----------------------------------------------------------------------------
+// RegionOwner
+//-----------------------------------------------------------------------------
+class RegionOwner : public RegionList {
+public:
+	~RegionOwner();
+	void Clear();
+};
 
 //-----------------------------------------------------------------------------
 // Region
@@ -49,27 +71,6 @@ public:
 	void AddRegionIngredient(Region *pRegion);
 	void AppendFiller(UInt8 dataFiller, size_t bytes);
 	void Dump() const;
-};
-
-//-----------------------------------------------------------------------------
-// RegionList
-//-----------------------------------------------------------------------------
-class RegionList : public std::vector<Region *> {
-public:
-	inline void Sort() { std::sort(begin(), end(), Region::LessThan()); }
-	void ResetAddrOffset();
-	RegionOwner *Join(size_t bytesGapToJoin, UInt8 dataFiller) const;
-	Region *FindByAddrTop(Integer addrTop);
-	Integer GetAddrBtmMax() const;
-};
-
-//-----------------------------------------------------------------------------
-// RegionOwner
-//-----------------------------------------------------------------------------
-class RegionOwner : public RegionList {
-public:
-	~RegionOwner();
-	void Clear();
 };
 
 #endif
