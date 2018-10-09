@@ -174,7 +174,7 @@ public:
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
-	bool DoDirective(Context &context, const Expr *pExpr) const;
+	bool DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Integer *pBytes) const;
 };
 
 //-----------------------------------------------------------------------------

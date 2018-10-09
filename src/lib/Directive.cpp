@@ -269,27 +269,34 @@ Directive *Directive_DS::Factory::Create() const
 
 bool Directive_DS::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	return DoDirective(context, pExpr);
+	Integer bytes = 0;
+	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
+	context.ForwardAddrOffset(bytes);
+	return true;
 }
 
 bool Directive_DS::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	return DoDirective(context, pExpr);
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
+	Integer bytes = 0;
+	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
+	context.ForwardAddrOffset(bytes);
+	return true;
 }
 
 bool Directive_DS::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								 DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	Binary buffDst;
-	//Integer addr = context.GetAddress();
-	if (!DoDirective(context, pExpr)) return false;
-	//disasmDumper.DumpDataAndCode(
-	//	addr, buffDst,
-	//	pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	Integer addr = context.GetAddress();
+	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
+	disasmDumper.DumpDataAndCode(
+		addr, buffDst,
+		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 
-bool Directive_DS::DoDirective(Context &context, const Expr *pExpr) const
+bool Directive_DS::DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Integer *pBytes) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
@@ -303,9 +310,10 @@ bool Directive_DS::DoDirective(Context &context, const Expr *pExpr) const
 		ErrorLog::AddError(pExpr, "directive .DS takes integer value");
 		return false;
 	}
-	//Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
-	//**************************************
-	return context.AddRegion(0);
+	Integer bytes = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
+	for (Integer i = 0; i < bytes; i++) *pBuffDst += '\0';
+	*pBytes = bytes;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
