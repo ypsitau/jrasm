@@ -7,9 +7,10 @@
 // Segment
 //-----------------------------------------------------------------------------
 Segment::Segment(const String &name, Segment *pSegmentPrev) :
-	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _pRegionCur(nullptr), _addrOffset(0)
+	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _addrOffset(0)
 {
-	//AddRegion(new Region(0));
+	_pRegionCur = new Region(0);
+	_regionOwner.push_back(_pRegionCur);
 }
 
 bool Segment::PrepareRegion()
@@ -19,23 +20,28 @@ bool Segment::PrepareRegion()
 		ErrorLog::AddError("missing .org directive in %s segment", GetName());
 		return false;
 	}
-	AddRegion(new Region(0)); // create a temporary region with the start address 0.
+	AddRegion(0); // create a temporary region with the start address 0.
 	return true;
 }
 
-void Segment::AddRegion(Region *pRegion)
+void Segment::AddRegion(Integer addrTop)
 {
-	_regionOwner.push_back(pRegion);
-	_pRegionCur = pRegion;
+	if (_pRegionCur->GetAddrTop() == 0) {
+		_pRegionCur->SetAddrTop(addrTop);
+	} else {
+		Region *pRegion = new Region(addrTop);
+		_regionOwner.push_back(pRegion);
+		_pRegionCur = pRegion;
+	}
 }
 
 bool Segment::AdjustAddress()
 {
-	if (_regionOwner.empty()) return true;
 	Region *pRegionTop = _regionOwner.front();
 	if (pRegionTop->GetAddrTop() == 0) {
-		Integer addrTop = _pSegmentPrev->GetRegionOwner().GetAddrBtmMax();
-		if (addrTop == 0) {
+		Integer addrTop = 0;
+		if (_pSegmentPrev.IsNull() ||
+			(addrTop = _pSegmentPrev->GetRegionOwner().GetAddrBtmMax()) == 0) {
 			ErrorLog::AddError("missing .org directive in %s segment", GetName());
 			return false;
 		}

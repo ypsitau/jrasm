@@ -60,7 +60,7 @@ void Context::AddRegion(Integer addrTop)
 {
 	Region *pRegion = _pSegmentCur->FindRegionByAddrTop(addrTop);
 	if (pRegion == nullptr) {
-		_pSegmentCur->AddRegion(new Region(addrTop));
+		_pSegmentCur->AddRegion(addrTop);
 	} else {
 		_pSegmentCur->SetRegionCur(pRegion);
 		// pRegion->IsBufferEmpty()
