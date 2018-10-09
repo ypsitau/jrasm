@@ -20,8 +20,7 @@ private:
 public:
 	DeclareReferenceAccessor(Segment);
 public:
-	inline Segment(const String &name, Segment *pSegmentPrev) :
-		_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _pRegionCur(nullptr), _addrOffset(0) {}
+	Segment(const String &name, Segment *pSegmentPrev);
 private:
 	inline ~Segment() {}
 public:

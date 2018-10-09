@@ -6,6 +6,11 @@
 //-----------------------------------------------------------------------------
 // Segment
 //-----------------------------------------------------------------------------
+Segment::Segment(const String &name, Segment *pSegmentPrev) :
+	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _pRegionCur(nullptr), _addrOffset(0)
+{
+}
+
 bool Segment::PrepareRegion()
 {
 	if (!_regionOwner.empty()) return true;
