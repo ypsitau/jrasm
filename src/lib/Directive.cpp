@@ -659,8 +659,7 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 		ErrorLog::AddError(pExpr, "address value exceeds 16bit range");
 		return false;
 	}
-	context.AddRegion(num);
-	return true;
+	return context.SetAddrOrg(num);
 }
 
 //-----------------------------------------------------------------------------

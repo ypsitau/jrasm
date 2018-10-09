@@ -56,16 +56,19 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 
-void Context::AddRegion(Integer addrTop)
+bool Context::SetAddrOrg(Integer addrTop)
 {
 	Region *pRegion = _pSegmentCur->FindRegionByAddrTop(addrTop);
 	if (pRegion == nullptr) {
 		_pSegmentCur->AddRegion(addrTop);
+	} else if (!pRegion->IsBufferEmpty()) {
+		ErrorLog::AddError("memory regions are overwrapped at 0x%04x", addrTop);
+		return false;
 	} else {
 		_pSegmentCur->SetRegionCur(pRegion);
-		// pRegion->IsBufferEmpty()
 	}
 	_pSegmentCur->ResetAddrOffset();
+	return true;
 }
 
 void Context::BeginScope()

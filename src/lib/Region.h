@@ -34,10 +34,11 @@ private:
 public:
 	inline void SetAddrTop(Integer addrTop) { _addrTop = addrTop; }
 	inline void ResetAddrOffset() { _addrOffset = 0; }
-	inline Integer GetAddrTop() const { return _addrTop; }
-	inline Integer GetAddrOffset() const { return _addrTop; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
-	inline Integer GetAddrBtm() const { return static_cast<Integer>(_addrTop + _buff.size()); }
+	inline Integer GetAddrTop() const { return _addrTop; }
+	inline Integer GetAddrOffset() const { return _addrOffset; }
+	inline Integer GetAddress() const { return _addrTop + _addrOffset; }
+	inline Integer GetAddrBtm() const { return _addrTop + _addrOffset; }
 	inline Integer GetBytes() const { return static_cast<Integer>(_buff.size()); }
 	inline bool IsBufferEmpty() const { return _buff.empty(); }
 	inline Binary &GetBuffer() { return _buff; }
@@ -56,6 +57,7 @@ public:
 class RegionList : public std::vector<Region *> {
 public:
 	inline void Sort() { std::sort(begin(), end(), Region::LessThan()); }
+	void ResetAddrOffset();
 	RegionOwner *Join(size_t bytesGapToJoin, UInt8 dataFiller) const;
 	Region *FindByAddrTop(Integer addrTop);
 	Integer GetAddrBtmMax() const;

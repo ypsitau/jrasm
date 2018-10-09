@@ -16,7 +16,6 @@ private:
 	AutoPtr<Segment> _pSegmentPrev;
 	RegionOwner _regionOwner;
 	Region *_pRegionCur;
-	Integer _addrOffset;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
@@ -30,13 +29,13 @@ public:
 	inline Region *GetRegionCur() { return _pRegionCur; }
 	inline const Region *GetRegionCur() const { return _pRegionCur; }
 	inline Region *FindRegionByAddrTop(Integer addrTop) { return _regionOwner.FindByAddrTop(addrTop); }
-	inline Binary &GetBuffer() { return GetRegionCur()->GetBuffer(); }
-	inline const Binary &GetBuffer() const { return GetRegionCur()->GetBuffer(); }
-	inline void ResetAddrOffset() { _addrOffset = 0; }
-	inline Integer GetAddrTop() const { return GetRegionCur()->GetAddrTop(); }
-	inline Integer GetAddrOffset() const { return _addrOffset; }
-	inline Integer GetAddress() const { return GetAddrTop() + _addrOffset; }
-	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
+	inline Binary &GetBuffer() { return _pRegionCur->GetBuffer(); }
+	inline const Binary &GetBuffer() const { return _pRegionCur->GetBuffer(); }
+	inline void ResetAddrOffset() { _regionOwner.ResetAddrOffset(); }
+	inline Integer GetAddrTop() const { return _pRegionCur->GetAddrTop(); }
+	inline Integer GetAddrOffset() const { return _pRegionCur->GetAddrOffset(); }
+	inline Integer GetAddress() const { return _pRegionCur->GetAddress(); }
+	inline void ForwardAddrOffset(Integer bytes) { _pRegionCur->ForwardAddrOffset(bytes); }
 	void AddRegion(Integer addrTop);
 	bool AdjustAddress();
 };

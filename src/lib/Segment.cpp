@@ -7,7 +7,7 @@
 // Segment
 //-----------------------------------------------------------------------------
 Segment::Segment(const String &name, Segment *pSegmentPrev) :
-	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _addrOffset(0)
+	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev)
 {
 	_pRegionCur = new Region(0);
 	_regionOwner.push_back(_pRegionCur);
@@ -18,9 +18,8 @@ void Segment::AddRegion(Integer addrTop)
 	if (_pRegionCur->GetAddrTop() == 0) {
 		_pRegionCur->SetAddrTop(addrTop);
 	} else {
-		Region *pRegion = new Region(addrTop);
-		_regionOwner.push_back(pRegion);
-		_pRegionCur = pRegion;
+		_pRegionCur = new Region(addrTop);
+		_regionOwner.push_back(_pRegionCur);
 	}
 }
 

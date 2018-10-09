@@ -104,7 +104,7 @@ public:
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
-	void AddRegion(Integer addrTop);
+	bool SetAddrOrg(Integer addrTop);
 	void BeginScope();
 	void EndScope();
 	String MakeFileNameOut(const char *extName) const;

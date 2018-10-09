@@ -7,13 +7,13 @@
 // Region
 //-----------------------------------------------------------------------------
 Region::Region(Integer addrTop) :
-	_cntRef(1), _addrTop(addrTop), _pRegionsIngredient(new RegionOwner())
+	_cntRef(1), _addrTop(addrTop), _addrOffset(0), _pRegionsIngredient(new RegionOwner())
 {
 	_buff.reserve(4096);
 }
 
 Region::Region(const Region &region) :
-	_cntRef(1), _addrTop(region._addrTop), _buff(region._buff),
+	_cntRef(1), _addrTop(region._addrTop), _addrOffset(region._addrOffset), _buff(region._buff),
 	_pRegionsIngredient(new RegionOwner())
 {
 }
@@ -46,6 +46,13 @@ void Region::Dump() const
 //-----------------------------------------------------------------------------
 // RegionList
 //-----------------------------------------------------------------------------
+void RegionList::ResetAddrOffset()
+{
+	for (auto pRegion : *this) {
+		pRegion->ResetAddrOffset();
+	}
+}
+
 RegionOwner *RegionList::Join(size_t bytesGapToJoin, UInt8 dataFiller) const
 {
 	std::unique_ptr<RegionOwner> pRegionOwner(new RegionOwner());
