@@ -38,7 +38,7 @@ bool Segment::AdjustAddress()
 void SegmentList::ResetAddrOffset()
 {
 	for (auto pSegment : *this) {
-		pSegment->SetAddrOffset(0);
+		pSegment->ResetAddrOffset();
 	}
 }
 

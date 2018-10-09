@@ -34,7 +34,7 @@ public:
 	inline Region *FindRegionByAddrTop(Integer addrTop) { return _regionOwner.FindByAddrTop(addrTop); }
 	inline Binary &GetBuffer() { return GetRegionCur()->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return GetRegionCur()->GetBuffer(); }
-	inline void SetAddrOffset(Integer addrOffset) { _addrOffset = addrOffset; }
+	inline void ResetAddrOffset() { _addrOffset = 0; }
 	inline Integer GetAddrTop() const { return GetRegionCur()->GetAddrTop(); }
 	inline Integer GetAddrOffset() const { return _addrOffset; }
 	inline Integer GetAddress() const { return GetAddrTop() + _addrOffset; }

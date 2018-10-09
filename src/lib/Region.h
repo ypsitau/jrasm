@@ -33,7 +33,7 @@ private:
 	inline ~Region() {}
 public:
 	inline void SetAddrTop(Integer addrTop) { _addrTop = addrTop; }
-	inline void ClearAddrOffset() { _addrOffset = 0; }
+	inline void ResetAddrOffset() { _addrOffset = 0; }
 	inline Integer GetAddrTop() const { return _addrTop; }
 	inline Integer GetAddrOffset() const { return _addrTop; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }

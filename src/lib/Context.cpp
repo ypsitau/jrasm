@@ -65,7 +65,7 @@ void Context::AddRegion(Integer addrTop)
 		_pSegmentCur->SetRegionCur(pRegion);
 		// pRegion->IsBufferEmpty()
 	}
-	_pSegmentCur->SetAddrOffset(0);
+	_pSegmentCur->ResetAddrOffset();
 }
 
 void Context::BeginScope()
