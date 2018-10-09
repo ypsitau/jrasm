@@ -41,6 +41,7 @@ const DirectiveFactory *Directive::ORG			= nullptr;
 const DirectiveFactory *Directive::PCG			= nullptr;
 const DirectiveFactory *Directive::PCGPAGE		= nullptr;
 const DirectiveFactory *Directive::SCOPE		= nullptr;
+const DirectiveFactory *Directive::STRUCT		= nullptr;
 
 Directive::~Directive()
 {
@@ -63,6 +64,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(PCG			= new Directive_PCG::Factory());
 	_directiveFactoryDict.Assign(PCGPAGE		= new Directive_PCGPAGE::Factory());
 	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
+	_directiveFactoryDict.Assign(STRUCT			= new Directive_STRUCT::Factory());
 }
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
@@ -1059,6 +1061,42 @@ bool Directive_SCOPE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binar
 }
 
 bool Directive_SCOPE::OnPhaseDisasm(Context &context, const Expr *pExpr,
+									DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+}
+
+//-----------------------------------------------------------------------------
+// Directive_STRUCT
+//-----------------------------------------------------------------------------
+Directive *Directive_STRUCT::Factory::Create() const
+{
+	return new Directive_STRUCT();
+}
+
+bool Directive_STRUCT::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+{
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
+	return true;
+}
+
+bool Directive_STRUCT::OnPhasePreprocess(Context &context, Expr *pExpr)
+{
+	return true;
+}
+
+bool Directive_STRUCT::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	return true;
+}
+
+
+bool Directive_STRUCT::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);

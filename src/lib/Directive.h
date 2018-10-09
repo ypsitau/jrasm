@@ -74,6 +74,7 @@ public:
 	static const DirectiveFactory *PCG;
 	static const DirectiveFactory *PCGPAGE;
 	static const DirectiveFactory *SCOPE;
+	static const DirectiveFactory *STRUCT;
 private:
 	static DirectiveFactoryDict _directiveFactoryDict;
 public:
@@ -407,6 +408,25 @@ public:
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_STRUCT
+//-----------------------------------------------------------------------------
+class Directive_STRUCT : public Directive {
+public:
+	class Factory : public DirectiveFactory {
+	public:
+		inline Factory() : DirectiveFactory(".STRUCT", false, true) {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_STRUCT() : Directive(STRUCT) {}
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
