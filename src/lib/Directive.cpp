@@ -157,7 +157,6 @@ Directive *Directive_DB::Factory::Create() const
 
 bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	if (!context.PrepareSegmentRegion()) return false;
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
 	context.ForwardAddrOffset(bytes);
@@ -166,7 +165,6 @@ bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_DB::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, pBuffDst, &bytes)) return false;
@@ -269,14 +267,12 @@ Directive *Directive_DW::Factory::Create() const
 
 bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	if (!context.PrepareSegmentRegion()) return false;
 	context.ForwardAddrOffset(static_cast<Integer>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
 }
 
 bool Directive_DW::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
@@ -560,7 +556,6 @@ bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	Handler handler(pBuffDst);
 	MmlParser parser(handler);
@@ -913,7 +908,6 @@ bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!context.PrepareSegmentRegion()) return false;
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
 	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
 		const Binary &buff = pPCGChar->GetBuffer();

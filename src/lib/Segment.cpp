@@ -13,17 +13,6 @@ Segment::Segment(const String &name, Segment *pSegmentPrev) :
 	_regionOwner.push_back(_pRegionCur);
 }
 
-bool Segment::PrepareRegion()
-{
-	if (!_regionOwner.empty()) return true;
-	if (_pSegmentPrev.IsNull()) {
-		ErrorLog::AddError("missing .org directive in %s segment", GetName());
-		return false;
-	}
-	AddRegion(0); // create a temporary region with the start address 0.
-	return true;
-}
-
 void Segment::AddRegion(Integer addrTop)
 {
 	if (_pRegionCur->GetAddrTop() == 0) {

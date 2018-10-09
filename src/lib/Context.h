@@ -96,7 +96,6 @@ public:
 	inline const ExprDict &GetExprDictGlobal() const { return *_exprDictStack.front(); }
 	inline MacroDict &GetMacroDict() { return _macroDict; }
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
-	inline bool PrepareSegmentRegion() { return _pSegmentCur->PrepareRegion(); }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	inline void SetPCGPageCur(PCGPage *pPCGPage) { _pPCGPageCur.reset(pPCGPage); }
 	inline PCGPage *GetPCGPageCur() { return _pPCGPageCur.get(); }
