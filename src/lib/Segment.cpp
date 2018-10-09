@@ -9,6 +9,7 @@
 Segment::Segment(const String &name, Segment *pSegmentPrev) :
 	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev), _pRegionCur(nullptr), _addrOffset(0)
 {
+	//AddRegion(new Region(0));
 }
 
 bool Segment::PrepareRegion()
@@ -20,6 +21,12 @@ bool Segment::PrepareRegion()
 	}
 	AddRegion(new Region(0)); // create a temporary region with the start address 0.
 	return true;
+}
+
+void Segment::AddRegion(Region *pRegion)
+{
+	_regionOwner.push_back(pRegion);
+	_pRegionCur = pRegion;
 }
 
 bool Segment::AdjustAddress()
@@ -51,8 +58,9 @@ RegionOwner *SegmentList::JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) co
 {
 	RegionList regionList;
 	for (auto pSegment : *this) {
-		const RegionOwner &regionOwnerOrg = pSegment->GetRegionOwner();
-		regionList.insert(regionList.end(), regionOwnerOrg.begin(), regionOwnerOrg.end());
+		for (auto pRegion : pSegment->GetRegionOwner()) {
+			if (!pRegion->IsBufferEmpty()) regionList.push_back(pRegion);
+		}
 	}
 	regionList.Sort();
 	return regionList.Join(bytesGapToJoin, dataFiller);

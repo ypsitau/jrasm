@@ -29,7 +29,6 @@ public:
 	inline void SetRegionCur(Region *pRegionCur) { _pRegionCur = pRegionCur; }
 	inline Region *GetRegionCur() { return _pRegionCur; }
 	inline const Region *GetRegionCur() const { return _pRegionCur; }
-	inline void AddRegion(Region *pRegion) { _regionOwner.push_back(pRegion); _pRegionCur = pRegion; }
 	inline Region *FindRegionByAddrTop(Integer addrTop) { return _regionOwner.FindByAddrTop(addrTop); }
 	inline Binary &GetBuffer() { return GetRegionCur()->GetBuffer(); }
 	inline const Binary &GetBuffer() const { return GetRegionCur()->GetBuffer(); }
@@ -39,6 +38,7 @@ public:
 	inline Integer GetAddress() const { return GetAddrTop() + _addrOffset; }
 	inline void ForwardAddrOffset(Integer bytes) { _addrOffset += bytes; }
 	bool PrepareRegion();
+	void AddRegion(Region *pRegion);
 	bool AdjustAddress();
 };
 
