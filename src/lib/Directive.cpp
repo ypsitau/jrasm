@@ -313,6 +313,7 @@ bool Directive_DS::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 		return false;
 	}
 	Integer bytes = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
+	::printf("* %d\n", bytes);
 	if (pBuffDst != nullptr) {
 		for (Integer i = 0; i < bytes; i++) *pBuffDst += '\0';
 	}
@@ -1077,24 +1078,47 @@ Directive *Directive_STRUCT::Factory::Create() const
 
 bool Directive_STRUCT::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
+	Expr_Label *pExprLabel = exprStack.back()->GetExprChildren().SeekLabelToAssoc();
+	if (pExprLabel == nullptr) {
+		pParser->AddError("directive .STRUCT must be preceded by a label");
+		return false;
+	}
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	_symbol = pExprLabel->GetSymbol();
+	_forceGlobalFlag = pExprLabel->GetForceGlobalFlag();
+	pExprLabel->SetAssigned(pExpr->Reference());	// associate it to the preceding symbol
 	exprStack.push_back(pExpr->Reference());		// for children
 	exprStack.push_back(pExpr.release());			// for operands
 	return true;
 }
 
-bool Directive_STRUCT::OnPhasePreprocess(Context &context, Expr *pExpr)
-{
-	return true;
-}
-
 bool Directive_STRUCT::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	Integer offset = 0;
+	for (auto pExprChild : pExpr->GetExprChildren()) {
+		if (pExprChild->IsTypeLabel()) {
+			Expr_Label *pExprEx = dynamic_cast<Expr_Label *>(pExprChild);
+			::printf("%s .. %d\n", pExprEx->GetSymbol(), offset);
+		} else if (pExprChild->IsTypeDirective(Directive::DS)) {
+			Integer bytes = 0;
+			Directive_DS *pDirective = dynamic_cast<Directive_DS *>(
+				dynamic_cast<Expr_Directive *>(pExprChild)->GetDirective());
+			if (!pDirective->DoDirective(context, pExprChild, nullptr, &bytes)) return false;
+			offset += bytes;
+		} else if (pExprChild->IsTypeDirective(Directive::END)) {
+			// nothing to do
+		} else {
+			ErrorLog::AddError(pExprChild, "only label and .DS directive can be stored in .STRUCT");
+			return false;
+		}
+	}
+	// @symbol
+	// symbol.label1
+	// symbol.label2
+	//      :
 	return true;
 }
-
 
 bool Directive_STRUCT::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const

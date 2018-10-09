@@ -422,10 +422,12 @@ public:
 		inline Factory() : DirectiveFactory(".STRUCT", false, true) {}
 		virtual Directive *Create() const;
 	};
+private:
+	String _symbol;
+	bool _forceGlobalFlag;
 public:
 	inline Directive_STRUCT() : Directive(STRUCT) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
-	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
