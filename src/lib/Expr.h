@@ -44,6 +44,7 @@ class ExprList : public std::vector<Expr *> {
 public:
 	Expr_Label *SeekLabelToAssoc();
 	String ComposeSource(bool upperCaseFlag, const char *sep) const;
+	void AssignExprDict(Context &context, bool recursiveFlag);
 	bool OnPhasePreprocess(Context &context);
 	bool OnPhaseAssignMacro(Context &context);
 	bool OnPhaseExpandMacro(Context &context);
@@ -143,6 +144,7 @@ public:
 	inline int GetLineNo() const { return _lineNo; }
 	inline bool IsExprDictReady() const { return !_pExprDict.IsNull(); }
 	inline const ExprDict *GetExprDict() const { return _pExprDict.get(); }
+	void AssignExprDict(Context &context, bool recursiveFlag);
 	bool IsTypeLabel(const char *symbol) const;
 	bool IsTypeSymbol(const char *symbol) const;
 	bool IsTypeBinOp(const Operator *pOperator) const;

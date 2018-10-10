@@ -1095,6 +1095,7 @@ bool Directive_STRUCT::OnPhaseParse(const Parser *pParser, ExprStack &exprStack,
 
 bool Directive_STRUCT::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	pExpr->AssignExprDict(context, true);
 	Integer offset = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (pExprChild->IsTypeLabel()) {

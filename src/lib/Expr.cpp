@@ -33,6 +33,15 @@ Expr::~Expr()
 {
 }
 
+void Expr::AssignExprDict(Context &context, bool recursiveFlag)
+{
+	_pExprDict.reset(context.GetExprDictCurrent().Reference());
+	if (recursiveFlag) {
+		GetExprChildren().AssignExprDict(context, recursiveFlag);
+		GetExprOperands().AssignExprDict(context, recursiveFlag);
+	}
+}
+
 bool Expr::IsTypeLabel(const char *symbol) const
 {
 	return IsTypeLabel() &&
@@ -87,7 +96,8 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 
 bool Expr::OnPhaseAssignSymbol(Context &context)
 {
-	_pExprDict.reset(context.GetExprDictCurrent().Reference());
+	//_pExprDict.reset(context.GetExprDictCurrent().Reference());
+	AssignExprDict(context, false);
 	return GetExprOperands().OnPhaseAssignSymbol(context) &&
 		GetExprChildren().OnPhaseAssignSymbol(context);
 }
@@ -123,6 +133,13 @@ String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
 		rtn += pExpr->ComposeSource(upperCaseFlag);
 	}
 	return rtn;
+}
+
+void ExprList::AssignExprDict(Context &context, bool recursiveFlag)
+{
+	for (auto pExpr : *this) {
+		pExpr->AssignExprDict(context, recursiveFlag);
+	}
 }
 
 bool ExprList::OnPhasePreprocess(Context &context)
@@ -707,15 +724,16 @@ Expr *Expr_Symbol::Resolve(Context &context) const
 	if (!_pExprAssigned.IsNull()) return _pExprAssigned->Reference();
 	if (context.CheckCircularReference(this)) return nullptr;
 	if (Generator::GetInstance().IsRegisterSymbol(GetSymbol())) return Reference();
-	if (!context.IsPhase(Context::PHASE_Generate)) {
+	const Expr *pExpr = _pExprDict.IsNull()? nullptr : _pExprDict->Lookup(GetSymbol());
+	if (pExpr != nullptr) {
+		// nothing to do
+	} else if (context.IsPhase(Context::PHASE_Generate)) {
+		ErrorLog::AddError(this, "undefined symbol: %s", GetSymbol());
+		return nullptr;
+	} else {
 		AutoPtr<Expr> pExprRtn(new Expr_Integer(0));
 		pExprRtn->DeriveSourceInfo(this);
 		return pExprRtn.release();
-	}
-	const Expr *pExpr = _pExprDict->Lookup(GetSymbol());
-	if (pExpr == nullptr) {
-		ErrorLog::AddError(this, "undefined symbol: %s", GetSymbol());
-		return nullptr;
 	}
 	AutoPtr<Expr> pExprResolved(pExpr->Resolve(context));
 	if (pExprResolved.IsNull()) return nullptr;
