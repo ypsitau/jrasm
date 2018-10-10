@@ -1,5 +1,6 @@
 add_executable(jrpcgedit
 	jrpcgedit.cpp
+	FrameMain.cpp
 )
 
 include_directories(
