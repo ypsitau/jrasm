@@ -313,7 +313,6 @@ bool Directive_DS::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 		return false;
 	}
 	Integer bytes = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
-	::printf("* %d\n", bytes);
 	if (pBuffDst != nullptr) {
 		for (Integer i = 0; i < bytes; i++) *pBuffDst += '\0';
 	}
@@ -1097,10 +1096,16 @@ bool Directive_STRUCT::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
 	pExpr->AssignExprDict(context, true);
 	Integer offset = 0;
+	ExprDict &exprDict = context.GetExprDictCurrent();
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (pExprChild->IsTypeLabel()) {
 			Expr_Label *pExprEx = dynamic_cast<Expr_Label *>(pExprChild);
-			::printf("%s .. %d\n", pExprEx->GetSymbol(), offset);
+			String symbol = _symbol;
+			symbol += ".";
+			symbol += pExprEx->GetSymbol();
+			AutoPtr<Expr> pExprAssigned(new Expr_Integer(offset));
+			pExprAssigned->DeriveSourceInfo(pExprEx);
+			exprDict.Assign(symbol.c_str(), pExprAssigned.release(), _forceGlobalFlag);
 		} else if (pExprChild->IsTypeDirective(Directive::DS)) {
 			Integer bytes = 0;
 			Directive_DS *pDirective = dynamic_cast<Directive_DS *>(
@@ -1114,10 +1119,13 @@ bool Directive_STRUCT::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 			return false;
 		}
 	}
-	// @symbol
-	// symbol.label1
-	// symbol.label2
-	//      :
+	do {
+		String symbol = "@";
+		symbol += _symbol;
+		AutoPtr<Expr> pExprAssigned(new Expr_Integer(offset));
+		pExprAssigned->DeriveSourceInfo(pExpr);
+		exprDict.Assign(symbol.c_str(), pExprAssigned.release(), _forceGlobalFlag);
+	} while (0);
 	return true;
 }
 
