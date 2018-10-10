@@ -1,61 +1,63 @@
 	.org	0x2000
 
-	pcgpage.circles.store
+ball:	.struct
+posx:	.ds	@byte
+posy:	.ds	@byte
+dirx:	.ds	@byte
+diry:	.ds	@byte
+	.end
+	
+	pcgpage.mainpage.store
 
 mainloop:
 
 	.scope
-	ldx		balls
-loop:
-	.scope		x
-	XY2CodeAddr	[x + ball.posx], [x + ball.posy]
-	pcg.chkcircle2x2.erase
-	Code2AttrAddr
-	pcg.chkcircle2x2.eraseattr 7, 0
-	.end
-	addx		4
-	cpx		ballsEnd
-	bne		loop
-	.end
-
-	.scope
-	ldx		balls
-loop:
-	.scope		x
-	MoveBound	[x + ball.posx], [x + ball.dirx], 0, 30
-	MoveBound	[x + ball.posy], [x + ball.diry], 0, 22
-	.end
-	addx		4
-	cpx		ballsEnd
-	bne		loop
-	.end
-
-	.scope
-	ldx		balls
+	ldx	balls
 loop:
 	.scope	x
-	XY2CodeAddr 	[x + ball.posx], [x + ball.posy]
+	xy2codeaddr [x+ball.posx], [x+ball.posy]
+	pcg.chkcircle2x2.erase
+	code2attraddr
+	pcg.chkcircle2x2.eraseattr 7, 0
+	.end
+	addx	4
+	cpx	ballsEnd
+	bne	loop
+	.end
+
+	.scope
+	ldx	balls
+loop:
+	.scope	x
+	movebound [x+ball.posx], [x+ball.dirx], 0, 30
+	movebound [x+ball.posy], [x+ball.diry], 0, 22
+	.end
+	addx	4
+	cpx	ballsEnd
+	bne	loop
+	.end
+
+	.scope
+	ldx	balls
+loop:
+	.scope	x
+	xy2codeaddr [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.put
-	Code2AttrAddr
+	code2attraddr
 	pcg.chkcircle2x2.putattr 2, 0
 	.end
 	
-	addx		4
-	cpx		ballsEnd
-	bne		loop
+	addx	4
+	cpx	ballsEnd
+	bne	loop
 	.end
 
-	ldx		0x1000
+	ldx	0x1000
 delay:
 	dex
-	bne		delay
+	bne	delay
 
-	jmp		mainloop
-
-ball.posx:		.equ	0
-ball.posy:		.equ	1
-ball.dirx:		.equ	2
-ball.diry:		.equ	3
+	jmp	mainloop
 
 balls:
 	.db	20, 10, 1, 1
@@ -70,7 +72,7 @@ balls:
 	.db	27, 19, 1, -1
 ballsEnd:
 
-	.pcgpage circles,user,32
+	.pcgpage mainpage,user,32
 
 	.pcg	chkcircle2x2,2,2
 	.db	b".....######....."
@@ -109,27 +111,27 @@ addx:
 result:	.equ $+1
 highbyte: .equ $+1
 lowbyte: .equ $+2
-	ldx		0x0000
+	ldx	0x0000
 	.end
 
 ;-----------------------------------------------------------------------------
-; Format: MoveBound pos,dir,min,max
+; Format: movebound pos,dir,min,max
 ; Param: posx [IMM, DIR, IDX, EXT] .. Position
 ;        dir [IMM, DIR, IDX, EXT] .. Direction
 ;        min [IMM, DIR, IDX, EXT] .. Minimum value
 ;        max [IMM, DIR, IDX, EXT] .. Maximum value
 ;-----------------------------------------------------------------------------
-MoveBound:
+movebound:
 	.macro	pos,dir,min,max
 	ldaa	pos
 	cmpa	max
-	bne		rel1
+	bne	rel1
 	ldaa	0xff
 	staa	dir
-	bra		rel2
+	bra	rel2
 rel1:
 	cmpa	min
-	bne		rel2
+	bne	rel2
 	ldaa	1
 	staa	dir
 rel2:
@@ -139,13 +141,13 @@ rel2:
 	.end
 
 ;-----------------------------------------------------------------------------
-; Format: XY2CodeAddr posx,posy
+; Format: xy2codeaddr posx,posy
 ; Param: posx [IMM, DIR, IDX, EXT] .. X position
 ;        posy [IMM, DIR, IDX, EXT] .. Y position
 ; Output: x .. Code address that begins from 0xc100
 ; Broken: a, b
 ;-----------------------------------------------------------------------------
-XY2CodeAddr:
+xy2codeaddr:
 	.macro	posx,posy
 	clra
 	ldab	posy
@@ -162,21 +164,21 @@ XY2CodeAddr:
 	staa	[lowbyte]
 highbyte: .equ $+1
 lowbyte: .equ $+2
-	ldx		0x0000
+	ldx	0x0000
 	.end
 
 ;-----------------------------------------------------------------------------
-; Format: Code2AttrAddr
+; Format: code2attraddr
 ; Input: x .. Code address that begins from 0xc100
 ; Output: x .. Attribute address that begins from 0xc500
 ; Broken: a
 ;-----------------------------------------------------------------------------
-Code2AttrAddr:
+code2attraddr:
 	.macro
-	stx		[result]
+	stx	[result]
 	ldaa	0x04
 	adda	[result]
 	staa	[result]
 result:	.equ $+1
-	ldx		0x0000
+	ldx	0x0000
 	.end

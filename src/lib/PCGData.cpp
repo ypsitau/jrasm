@@ -85,7 +85,7 @@ Expr *PCGData::ComposeExpr() const
 	do { // create macro: pcg.SYMBOL.putattr
 		::sprintf_s(str, "pcg.%s.putattr:\n", GetSymbol());
 		asmCode += str;
-		::sprintf_s(str, "        .macro foreground,background,offset=0\n");
+		::sprintf_s(str, "        .macro foreground=7,background=0,offset=0\n");
 		asmCode += str;
 		if (_pcgType == PCGTYPE_CRAM) {
 			::sprintf_s(str, "        ldaa    foreground+(background<<3)\n");
@@ -109,7 +109,7 @@ Expr *PCGData::ComposeExpr() const
 	do { // create macro: pcg.SYMBOL.eraseattr
 		::sprintf_s(str, "pcg.%s.eraseattr:\n", GetSymbol());
 		asmCode += str;
-		::sprintf_s(str, "        .macro foreground,background,offset\n");
+		::sprintf_s(str, "        .macro foreground=7,background=0,offset=0\n");
 		asmCode += str;
 		::sprintf_s(str, "        ldaa    foreground+(background<<3)\n");
 		asmCode += str;
