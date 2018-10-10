@@ -23,6 +23,7 @@ caseNames="$caseNames org"
 caseNames="$caseNames rel"
 caseNames="$caseNames scope"
 caseNames="$caseNames segment"
+caseNames="$caseNames struct"
 
 #if [ $# = 1 ] ; then
 #	caseName=$1

@@ -1,0 +1,32 @@
+                   .org 0x1000
+    1000 05        .db  @struct1
+    1001 00        .db  struct1.posx
+    1002 01        .db  struct1.posy
+    1003 02        .db  struct1.score
+    1004 04        .db  struct1.attr
+    1005-102c      .ds  @struct1*8
+    102d 17        .db  @struct2
+    102e 00        .db  struct2.attr1
+    102f 01        .db  struct2.attr2
+    1030 09        .db  struct2.attr3
+    1031 0b        .db  struct2.attr4
+    1032 0d        .db  struct2.attr5
+    1033 15        .db  struct2.attr6
+    1034 16        .db  struct2.attr7
+[Symbol List]
+0000  struct1.posx
+0000  struct2.attr1
+0001  @BYTE
+0001  struct1.posy
+0001  struct2.attr2
+0002  @WORD
+0002  struct1.score
+0004  @DWORD
+0004  struct1.attr
+0005  @struct1
+0009  struct2.attr3
+000b  struct2.attr4
+000d  struct2.attr5
+0015  struct2.attr6
+0016  struct2.attr7
+0017  @struct2
