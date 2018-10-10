@@ -144,6 +144,222 @@ addr2:             |
     1099 11 22     | .db  0x11,0x22,0x33,0x44
     109b 33 44     |
                    | .end
+                   addmb_acc {0x12},a
+    109d 9b 12     | add  a,{0x12}
+    109f 97 12     | sta  a,{0x12}
+                   | .end
+                   addmb_acc [x+0x12],a
+    10a1 ab 12     | add  a,[x+0x12]
+    10a3 a7 12     | sta  a,[x+0x12]
+                   | .end
+                   addmb_acc [0x1234],a
+    10a5 bb 12 34  | add  a,[0x1234]
+    10a8 b7 12 34  | sta  a,[0x1234]
+                   | .end
+                   addmb_acc {0x12},b
+    10ab db 12     | add  b,{0x12}
+    10ad d7 12     | sta  b,{0x12}
+                   | .end
+                   addmb_acc [x+0x12],b
+    10af eb 12     | add  b,[x+0x12]
+    10b1 e7 12     | sta  b,[x+0x12]
+                   | .end
+                   addmb_acc [0x1234],b
+    10b3 fb 12 34  | add  b,[0x1234]
+    10b6 f7 12 34  | sta  b,[0x1234]
+                   | .end
+                   addmb_mb {0x12},[0x5678]
+    10b9 b6 56 78  | lda  a,[0x5678]
+                   | addmb_acc {0x12},a
+    10bc 9b 12     | | add  a,{0x12}
+    10be 97 12     | | sta  a,{0x12}
+                   | | .end
+                   | .end
+                   addmb_mb [x+0x12],[0x5678]
+    10c0 b6 56 78  | lda  a,[0x5678]
+                   | addmb_acc [x+0x12],a
+    10c3 ab 12     | | add  a,[x+0x12]
+    10c5 a7 12     | | sta  a,[x+0x12]
+                   | | .end
+                   | .end
+                   addmb_mb [0x1234],[0x5678]
+    10c7 b6 56 78  | lda  a,[0x5678]
+                   | addmb_acc [0x1234],a
+    10ca bb 12 34  | | add  a,[0x1234]
+    10cd b7 12 34  | | sta  a,[0x1234]
+                   | | .end
+                   | .end
+                   addmb_mb {0x12},[0x5678],b
+    10d0 f6 56 78  | lda  b,[0x5678]
+                   | addmb_acc {0x12},b
+    10d3 db 12     | | add  b,{0x12}
+    10d5 d7 12     | | sta  b,{0x12}
+                   | | .end
+                   | .end
+                   addmb_mb [x+0x12],[0x5678],b
+    10d7 f6 56 78  | lda  b,[0x5678]
+                   | addmb_acc [x+0x12],b
+    10da eb 12     | | add  b,[x+0x12]
+    10dc e7 12     | | sta  b,[x+0x12]
+                   | | .end
+                   | .end
+                   addmb_mb [0x1234],[0x5678],b
+    10de f6 56 78  | lda  b,[0x5678]
+                   | addmb_acc [0x1234],b
+    10e1 fb 12 34  | | add  b,[0x1234]
+    10e4 f7 12 34  | | sta  b,[0x1234]
+                   | | .end
+                   | .end
+                   addmw_acc {0x12},a
+    10e7 9b 13     | add  a,{0x12}<+>1
+    10e9 97 13     | sta  a,{0x12}<+>1
+    10eb 96 12     | lda  a,{0x12}
+    10ed 89 00     | adc  a,0
+    10ef 97 12     | sta  a,{0x12}
+                   | .end
+                   addmw_acc [x+0x12],a
+    10f1 ab 13     | add  a,[x+0x12]<+>1
+    10f3 a7 13     | sta  a,[x+0x12]<+>1
+    10f5 a6 12     | lda  a,[x+0x12]
+    10f7 89 00     | adc  a,0
+    10f9 a7 12     | sta  a,[x+0x12]
+                   | .end
+                   addmw_acc [0x1234],a
+    10fb bb 12 35  | add  a,[0x1234]<+>1
+    10fe b7 12 35  | sta  a,[0x1234]<+>1
+    1101 b6 12 34  | lda  a,[0x1234]
+    1104 89 00     | adc  a,0
+    1106 b7 12 34  | sta  a,[0x1234]
+                   | .end
+                   addmw_acc {0x12},b
+    1109 db 13     | add  b,{0x12}<+>1
+    110b d7 13     | sta  b,{0x12}<+>1
+    110d d6 12     | lda  b,{0x12}
+    110f c9 00     | adc  b,0
+    1111 d7 12     | sta  b,{0x12}
+                   | .end
+                   addmw_acc [x+0x12],b
+    1113 eb 13     | add  b,[x+0x12]<+>1
+    1115 e7 13     | sta  b,[x+0x12]<+>1
+    1117 e6 12     | lda  b,[x+0x12]
+    1119 c9 00     | adc  b,0
+    111b e7 12     | sta  b,[x+0x12]
+                   | .end
+                   addmw_acc [0x1234],b
+    111d fb 12 35  | add  b,[0x1234]<+>1
+    1120 f7 12 35  | sta  b,[0x1234]<+>1
+    1123 f6 12 34  | lda  b,[0x1234]
+    1126 c9 00     | adc  b,0
+    1128 f7 12 34  | sta  b,[0x1234]
+                   | .end
+                   addmw_mb {0x12},[0x5678]
+    112b b6 56 78  | lda  a,[0x5678]
+                   | addmw_acc {0x12},a
+    112e 9b 13     | | add  a,{0x12}<+>1
+    1130 97 13     | | sta  a,{0x12}<+>1
+    1132 96 12     | | lda  a,{0x12}
+    1134 89 00     | | adc  a,0
+    1136 97 12     | | sta  a,{0x12}
+                   | | .end
+                   | .end
+                   addmw_mb [x+0x12],[0x5678]
+    1138 b6 56 78  | lda  a,[0x5678]
+                   | addmw_acc [x+0x12],a
+    113b ab 13     | | add  a,[x+0x12]<+>1
+    113d a7 13     | | sta  a,[x+0x12]<+>1
+    113f a6 12     | | lda  a,[x+0x12]
+    1141 89 00     | | adc  a,0
+    1143 a7 12     | | sta  a,[x+0x12]
+                   | | .end
+                   | .end
+                   addmw_mb [0x1234],[0x5678]
+    1145 b6 56 78  | lda  a,[0x5678]
+                   | addmw_acc [0x1234],a
+    1148 bb 12 35  | | add  a,[0x1234]<+>1
+    114b b7 12 35  | | sta  a,[0x1234]<+>1
+    114e b6 12 34  | | lda  a,[0x1234]
+    1151 89 00     | | adc  a,0
+    1153 b7 12 34  | | sta  a,[0x1234]
+                   | | .end
+                   | .end
+                   addmw_mb {0x12},[0x5678],b
+    1156 f6 56 78  | lda  b,[0x5678]
+                   | addmw_acc {0x12},b
+    1159 db 13     | | add  b,{0x12}<+>1
+    115b d7 13     | | sta  b,{0x12}<+>1
+    115d d6 12     | | lda  b,{0x12}
+    115f c9 00     | | adc  b,0
+    1161 d7 12     | | sta  b,{0x12}
+                   | | .end
+                   | .end
+                   addmw_mb [x+0x12],[0x5678],b
+    1163 f6 56 78  | lda  b,[0x5678]
+                   | addmw_acc [x+0x12],b
+    1166 eb 13     | | add  b,[x+0x12]<+>1
+    1168 e7 13     | | sta  b,[x+0x12]<+>1
+    116a e6 12     | | lda  b,[x+0x12]
+    116c c9 00     | | adc  b,0
+    116e e7 12     | | sta  b,[x+0x12]
+                   | | .end
+                   | .end
+                   addmw_mb [0x1234],[0x5678],b
+    1170 f6 56 78  | lda  b,[0x5678]
+                   | addmw_acc [0x1234],b
+    1173 fb 12 35  | | add  b,[0x1234]<+>1
+    1176 f7 12 35  | | sta  b,[0x1234]<+>1
+    1179 f6 12 34  | | lda  b,[0x1234]
+    117c c9 00     | | adc  b,0
+    117e f7 12 34  | | sta  b,[0x1234]
+                   | | .end
+                   | .end
+                   addmw_mw {0x12},[0x5678]
+    1181 b6 56 79  | lda  a,[0x5678]<+>1
+    1184 9b 13     | add  a,{0x12}<+>1
+    1186 97 13     | sta  a,{0x12}<+>1
+    1188 96 12     | lda  a,{0x12}
+    118a b9 56 78  | adc  a,[0x5678]
+    118d 97 12     | sta  a,{0x12}
+                   | .end
+                   addmw_mw [x+0x12],[0x5678]
+    118f b6 56 79  | lda  a,[0x5678]<+>1
+    1192 ab 13     | add  a,[x+0x12]<+>1
+    1194 a7 13     | sta  a,[x+0x12]<+>1
+    1196 a6 12     | lda  a,[x+0x12]
+    1198 b9 56 78  | adc  a,[0x5678]
+    119b a7 12     | sta  a,[x+0x12]
+                   | .end
+                   addmw_mw [0x1234],[0x5678]
+    119d b6 56 79  | lda  a,[0x5678]<+>1
+    11a0 bb 12 35  | add  a,[0x1234]<+>1
+    11a3 b7 12 35  | sta  a,[0x1234]<+>1
+    11a6 b6 12 34  | lda  a,[0x1234]
+    11a9 b9 56 78  | adc  a,[0x5678]
+    11ac b7 12 34  | sta  a,[0x1234]
+                   | .end
+                   addmw_mw {0x12},[0x5678],b
+    11af f6 56 79  | lda  b,[0x5678]<+>1
+    11b2 db 13     | add  b,{0x12}<+>1
+    11b4 d7 13     | sta  b,{0x12}<+>1
+    11b6 d6 12     | lda  b,{0x12}
+    11b8 f9 56 78  | adc  b,[0x5678]
+    11bb d7 12     | sta  b,{0x12}
+                   | .end
+                   addmw_mw [x+0x12],[0x5678],b
+    11bd f6 56 79  | lda  b,[0x5678]<+>1
+    11c0 eb 13     | add  b,[x+0x12]<+>1
+    11c2 e7 13     | sta  b,[x+0x12]<+>1
+    11c4 e6 12     | lda  b,[x+0x12]
+    11c6 f9 56 78  | adc  b,[0x5678]
+    11c9 e7 12     | sta  b,[x+0x12]
+                   | .end
+                   addmw_mw [0x1234],[0x5678],b
+    11cb f6 56 79  | lda  b,[0x5678]<+>1
+    11ce fb 12 35  | add  b,[0x1234]<+>1
+    11d1 f7 12 35  | sta  b,[0x1234]<+>1
+    11d4 f6 12 34  | lda  b,[0x1234]
+    11d7 f9 56 78  | adc  b,[0x5678]
+    11da f7 12 34  | sta  b,[0x1234]
+                   | .end
 [Symbol List]
 0001  @BYTE
 0002  @WORD
