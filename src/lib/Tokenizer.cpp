@@ -70,7 +70,7 @@ bool Tokenizer::FeedChar(char ch)
 		} else if (ch == '=') {
 			_stat = STAT_Equal;
 		} else if (ch == '|') {
-			_stat = STAT_VerticalBar;
+			_stat = STAT_VBar;
 		} else if (ch == '&') {
 			_stat = STAT_Ampersand;
 		} else if (ch == '<') {
@@ -196,7 +196,7 @@ bool Tokenizer::FeedChar(char ch)
 		}
 		break;
 	}
-	case STAT_VerticalBar: {
+	case STAT_VBar: {
 		if (ch == '|') {
 			rtn = FeedToken(TOKEN_VBarVBar);
 			_stat = STAT_Neutral;
@@ -224,6 +224,9 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_Neutral;
 		} else if (ch == '<') {
 			rtn = FeedToken(TOKEN_LtLt);
+			_stat = STAT_Neutral;
+		} else if (ch == '+') {
+			rtn = FeedToken(TOKEN_LtPlus);
 			_stat = STAT_Neutral;
 		} else {
 			rtn = FeedToken(TOKEN_Lt);

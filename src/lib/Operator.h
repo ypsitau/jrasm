@@ -16,6 +16,7 @@ class Operator {
 public:
 	static const Operator *Add;
 	static const Operator *Sub;
+	static const Operator *AddInj;
 	static const Operator *Mul;
 	static const Operator *Div;
 	static const Operator *Mod;
@@ -61,6 +62,15 @@ public:
 class Operator_Sub : public Operator {
 public:
 	inline Operator_Sub() : Operator(TOKEN_Minus) {}
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+};
+
+//-----------------------------------------------------------------------------
+// Operator_AddInj
+//-----------------------------------------------------------------------------
+class Operator_AddInj : public Operator {
+public:
+	inline Operator_AddInj() : Operator(TOKEN_LtPlus) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 

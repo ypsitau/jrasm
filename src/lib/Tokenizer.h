@@ -25,7 +25,7 @@ public:
 		STAT_Minus,
 		STAT_Colon,
 		STAT_Equal,
-		STAT_VerticalBar,
+		STAT_VBar,
 		STAT_Ampersand,
 		STAT_LessThan,
 		STAT_GreaterThan,

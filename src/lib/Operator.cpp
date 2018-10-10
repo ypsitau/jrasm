@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------------
 const Operator *Operator::Add		= nullptr;
 const Operator *Operator::Sub		= nullptr;
+const Operator *Operator::AddInj	= nullptr;
 const Operator *Operator::Mul		= nullptr;
 const Operator *Operator::Div		= nullptr;
 const Operator *Operator::Mod		= nullptr;
@@ -29,6 +30,7 @@ void Operator::Initialize()
 {
 	Add			= new Operator_Add();
 	Sub			= new Operator_Sub();
+	AddInj		= new Operator_AddInj();
 	Mul			= new Operator_Mul();
 	Div			= new Operator_Div();
 	Mod			= new Operator_Mod();
@@ -81,6 +83,23 @@ Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		return new Expr_Integer(numL - numR);
 	}
 	return new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release());
+}
+
+//-----------------------------------------------------------------------------
+// Operator_AddInj
+//-----------------------------------------------------------------------------
+Expr *Operator_AddInj::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+{
+	if (pExprL->IsTypeBracket() && pExprR->IsTypeInteger()) {
+		const ExprList &exprOperands = dynamic_cast<const Expr_Bracket *>(pExprL.get())->GetExprOperands();
+		if (exprOperands.size() != 1) {
+			ErrorLog::AddError(pExprL.get(), "the bracket must contain one element");
+			return nullptr;
+		}
+		AutoPtr<Expr> pExprGen(new Expr_BinOp(Operator::Add, exprOperands.front()->Reference(), pExprR.release()));
+		return pExprGen->Resolve(context);
+	}
+	return new Expr_BinOp(Operator::AddInj, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------

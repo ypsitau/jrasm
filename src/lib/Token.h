@@ -34,6 +34,7 @@ extern const TokenInfo TOKEN_LtLt;
 extern const TokenInfo TOKEN_GtGt;
 extern const TokenInfo TOKEN_Plus;
 extern const TokenInfo TOKEN_Minus;
+extern const TokenInfo TOKEN_LtPlus;
 extern const TokenInfo TOKEN_Asterisk;
 extern const TokenInfo TOKEN_Slash;
 extern const TokenInfo TOKEN_Percent;

@@ -231,6 +231,8 @@ bool Parser::ReduceThree()
 			pExpr.reset(new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release()));
 		} else if (pToken2->IsType(TOKEN_Minus)) {
 			pExpr.reset(new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_LtPlus)) {
+			pExpr.reset(new Expr_BinOp(Operator::AddInj, pExprL.release(), pExprR.release()));
 		} else if (pToken2->IsType(TOKEN_Asterisk)) {
 			pExpr.reset(new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release()));
 		} else if (pToken2->IsType(TOKEN_Slash)) {
