@@ -38,7 +38,7 @@ wxIMPLEMENT_APP(AppMain);
 bool AppMain::OnInit()
 {
 	FrameMain *pFrame = new FrameMain(wxT("Hello World"), wxPoint(50, 50), wxSize(450, 340));
-	pFrame->Show( true );
+	pFrame->Show(true);
 	return true;
 }
 
@@ -81,7 +81,7 @@ void FrameMain::OnExit(wxCommandEvent &event)
 void FrameMain::OnAbout(wxCommandEvent &event)
 {
 	wxMessageBox(wxT("This is a wxWidgets' Hello world sample"),
-				 wxT("About Hello World"), wxOK | wxICON_INFORMATION );
+				 wxT("About Hello World"), wxOK | wxICON_INFORMATION);
 }
 
 void FrameMain::OnHello(wxCommandEvent &event)
