@@ -406,6 +406,15 @@ label5:
     131d 3c fe   
     131f 3c ff   
 label6:
+    1321-1321      .ds  @byte
+    1322-1323      .ds  @byte*2
+    1324-1326      .ds  @byte*3
+    1327-1328      .ds  @word
+    1329-132c      .ds  @word*2
+    132d-1332      .ds  @word*3
+    1333-1372      .ds  @word*32
+    1373-1392      .ds  @byte*32
+label7:
 [Symbol List]
 0001  @BYTE
 0002  @WORD
@@ -416,3 +425,4 @@ label6:
 111d  label4
 1121  label5
 1321  label6
+1393  label7

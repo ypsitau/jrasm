@@ -229,39 +229,6 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 }
 
 //-----------------------------------------------------------------------------
-// Directive_DSEG
-//-----------------------------------------------------------------------------
-Directive *Directive_DSEG::Factory::Create() const
-{
-	return new Directive_DSEG();
-}
-
-bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
-{
-	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (!exprOperands.empty()) {
-		ErrorLog::AddError(pExpr, "directive .DSEG needs no operands");
-		return false;
-	}
-	context.SelectDataSegment();
-	return true;
-}
-
-bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
-{
-	context.SelectDataSegment();
-	return true;
-}
-
-bool Directive_DSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
-								   DisasmDumper &disasmDumper, int indentLevelCode) const
-{
-	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	context.SelectDataSegment();
-	return true;
-}
-
-//-----------------------------------------------------------------------------
 // Directive_DS
 //-----------------------------------------------------------------------------
 Directive *Directive_DS::Factory::Create() const
@@ -302,21 +269,58 @@ bool Directive_DS::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
-		ErrorLog::AddError(pExpr, "directive .DS takes one operand");
+		ErrorLog::AddError(pExpr, "directive .DS expects one operand");
 		return false;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprResolved(exprOperands.front()->Resolve(context));
 	if (pExprResolved.IsNull()) return false;
 	if (!pExprResolved->IsTypeInteger()) {
-		ErrorLog::AddError(pExpr, "directive .DS takes integer value");
+		ErrorLog::AddError(pExpr, "directive .DS expects integer value");
 		return false;
 	}
 	Integer bytes = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
+	if (bytes <= 0) {
+		ErrorLog::AddError(pExpr, "directive .DS expects positive integer value");
+		return false;
+	}
 	if (pBuffDst != nullptr) {
 		for (Integer i = 0; i < bytes; i++) *pBuffDst += '\0';
 	}
 	*pBytes = bytes;
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_DSEG
+//-----------------------------------------------------------------------------
+Directive *Directive_DSEG::Factory::Create() const
+{
+	return new Directive_DSEG();
+}
+
+bool Directive_DSEG::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .DSEG needs no operands");
+		return false;
+	}
+	context.SelectDataSegment();
+	return true;
+}
+
+bool Directive_DSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	context.SelectDataSegment();
+	return true;
+}
+
+bool Directive_DSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	context.SelectDataSegment();
 	return true;
 }
 
@@ -436,7 +440,7 @@ Expr *Directive_EQU::Resolve(Context &context, const Expr *pExpr) const
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
-		ErrorLog::AddError(pExpr, "directive .EQU takes one operand");
+		ErrorLog::AddError(pExpr, "directive .EQU epects one operand");
 		return nullptr;
 	}
 	return exprOperands.back()->Resolve(context);
@@ -460,14 +464,14 @@ bool Directive_FILENAME_JR::OnPhaseGenerate(Context &context, const Expr *pExpr,
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
-		ErrorLog::AddError(pExpr, "directive .FILENAME.JR takes one operand");
+		ErrorLog::AddError(pExpr, "directive .FILENAME.JR expects one operand");
 		return false;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeString()) {
-		ErrorLog::AddError(pExpr, "directive .FIENAME.JR takes a string value as its operand");
+		ErrorLog::AddError(pExpr, "directive .FIENAME.JR expects a string value as its operand");
 		return false;
 	}
 	const char *fileNameJR = dynamic_cast<const Expr_String *>(pExprLast.get())->GetString();
@@ -497,12 +501,12 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
-		ErrorLog::AddError(pExpr, "directive .INCLUDE takes one operand");
+		ErrorLog::AddError(pExpr, "directive .INCLUDE expects one operand");
 		return false;
 	}
 	const Expr *pExprLast = exprOperands.back();
 	if (!pExprLast->IsTypeString()) {
-		ErrorLog::AddError(pExpr, "directive .INCLUDE takes a string value as its operand");
+		ErrorLog::AddError(pExpr, "directive .INCLUDE expects a string value as its operand");
 		return false;
 	}
 	String fileNameIncluded = CorrectFileSeparator(dynamic_cast<const Expr_String *>(pExprLast)->GetString());
@@ -588,7 +592,7 @@ bool Directive_MACRO::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 									 dynamic_cast<const Expr_Symbol *>(pExprEx->GetLeft())->GetSymbol(),
 									 pExprEx->GetRight()->Reference()));
 		} else {
-			ErrorLog::AddError(pExpr, "directive .MACRO takes a list of parameter names");
+			ErrorLog::AddError(pExpr, "directive .MACRO expects a list of parameter names");
 			return false;
 		}
 	}
@@ -707,14 +711,14 @@ bool Directive_ORG::DoDirective(Context &context, const Expr *pExpr)
 {
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() != 1) {
-		ErrorLog::AddError(pExpr, "directive .ORG takes one operand");
+		ErrorLog::AddError(pExpr, "directive .ORG expects one operand");
 		return false;
 	}
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return false;
 	if (!pExprLast->IsTypeInteger()) {
-		ErrorLog::AddError(pExpr, "directive .ORG takes a integer value as its operand");
+		ErrorLog::AddError(pExpr, "directive .ORG expects a integer value as its operand");
 		return false;
 	}
 	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();

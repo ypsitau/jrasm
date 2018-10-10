@@ -142,24 +142,6 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_DSEG
-//-----------------------------------------------------------------------------
-class Directive_DSEG : public Directive {
-public:
-	class Factory : public DirectiveFactory {
-	public:
-		inline Factory() : DirectiveFactory(".DSEG", true, false) {}
-		virtual Directive *Create() const;
-	};
-public:
-	inline Directive_DSEG() : Directive(DSEG) {}
-	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
-	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
-							   DisasmDumper &disasmDumper, int indentLevelCode) const;
-};
-
-//-----------------------------------------------------------------------------
 // Directive_DS
 //-----------------------------------------------------------------------------
 class Directive_DS : public Directive {
@@ -176,6 +158,24 @@ public:
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 	bool DoDirective(Context &context, const Expr *pExpr, Binary *pBuffDst, Integer *pBytes) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_DSEG
+//-----------------------------------------------------------------------------
+class Directive_DSEG : public Directive {
+public:
+	class Factory : public DirectiveFactory {
+	public:
+		inline Factory() : DirectiveFactory(".DSEG", true, false) {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_DSEG() : Directive(DSEG) {}
+	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
+	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 //-----------------------------------------------------------------------------
