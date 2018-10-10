@@ -6,16 +6,16 @@ label2:
 label3:
 	.equ	0xabcd
 label4:
-	ldx		label1
+	ldx	label1
 label5:
-	ldx		label2
+	ldx	label2
 label6:
-	ldx		label3
+	ldx	label3
 label7:
-	ldx		label4
+	ldx	label4
 label8:
 	.equ	label6
 	nop
-	ldx		label5
-	ldx		label6
-	ldx		label7
+	ldx	label5
+	ldx	label6
+	ldx	label7

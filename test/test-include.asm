@@ -1,11 +1,11 @@
 	.org	0x1000
-	.dw		0xb000
-	.dw		0xb001
-	.dw		0xb002
+	.dw	0xb000
+	.dw	0xb001
+	.dw	0xb002
 	.include "test-include/include1.asm"
 	.include "test-include/include2.asm"
 	.include "test-include/include3.asm"
 	.include "test-include/include4.asm"
-	.dw		0xf000
-	.dw		0xf001
-	.dw		0xf002
+	.dw	0xf000
+	.dw	0xf001
+	.dw	0xf002

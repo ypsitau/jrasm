@@ -37,17 +37,17 @@ macro3:
 
 macro4:
 	.macro
-	.dw		addr1
-	.dw		addr2
+	.dw	addr1
+	.dw	addr2
 addr1:
-	.dw		addr1
+	.dw	addr1
 addr2:
-	.dw		addr2
+	.dw	addr2
 	.end
 
 macro5:
 	.macro	arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16
-	.dw		arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16
+	.dw	arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16
 	.end
 	
 	macro0
@@ -84,7 +84,7 @@ macro10:.macro
 	macro10
 
 macro11: .macro arg1=0x11,arg2=0x22,arg3=0x33,arg4=0x44
-	.db		arg1, arg2, arg3, arg4
+	.db	arg1, arg2, arg3, arg4
 	.end
 
 	macro11
