@@ -117,19 +117,21 @@ addmb_acc:
 	addmb_acc [x+0x12],b
 	addmb_acc [0x1234],b
 
-addmb_mb:
-	.macro	mem,memr,accwk=a
-	lda	accwk,memr
+addmb:
+	.macro	mem,numr,accwk=a
+	lda	accwk,numr
 	addmb_acc mem,accwk
 	.end
 
-	addmb_mb {0x12},[0x5678]
-	addmb_mb [x+0x12],[0x5678]
-	addmb_mb [0x1234],[0x5678]
+	addmb	{0x12},0x56
+	addmb	{0x12},[0x5678]
+	addmb	[x+0x12],[0x5678]
+	addmb	[0x1234],[0x5678]
 
-	addmb_mb {0x12},[0x5678],b
-	addmb_mb [x+0x12],[0x5678],b
-	addmb_mb [0x1234],[0x5678],b
+	addmb	{0x12},0x56,b
+	addmb	{0x12},[0x5678],b
+	addmb	[x+0x12],[0x5678],b
+	addmb	[0x1234],[0x5678],b
 
 addmw_acc:
 	.macro	mem,acc
@@ -148,19 +150,21 @@ addmw_acc:
 	addmw_acc [x+0x12],b
 	addmw_acc [0x1234],b
 
-addmw_mb:
-	.macro	mem,memr,accwk=a
-	lda	accwk,memr
+addmw:
+	.macro	mem,numr,accwk=a
+	lda	accwk,numr
 	addmw_acc mem,accwk
 	.end
 
-	addmw_mb {0x12},[0x5678]
-	addmw_mb [x+0x12],[0x5678]
-	addmw_mb [0x1234],[0x5678]
+	addmw	{0x12},0x56
+	addmw	{0x12},[0x5678]
+	addmw	[x+0x12],[0x5678]
+	addmw	[0x1234],[0x5678]
 
-	addmw_mb {0x12},[0x5678],b
-	addmw_mb [x+0x12],[0x5678],b
-	addmw_mb [0x1234],[0x5678],b
+	addmw	{0x12},0x56,b
+	addmw	{0x12},[0x5678],b
+	addmw	[x+0x12],[0x5678],b
+	addmw	[0x1234],[0x5678],b
 
 addmw_mw:
 	.macro	mem,memr,accwk=a

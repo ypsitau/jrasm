@@ -168,197 +168,231 @@ addr2:             |
     10b3 fb 12 34  | add  b,[0x1234]
     10b6 f7 12 34  | sta  b,[0x1234]
                    | .end
-                   addmb_mb {0x12},[0x5678]
-    10b9 b6 56 78  | lda  a,[0x5678]
+                   addmb {0x12},0x56
+    10b9 86 56     | lda  a,0x56
                    | addmb_acc {0x12},a
-    10bc 9b 12     | | add  a,{0x12}
-    10be 97 12     | | sta  a,{0x12}
+    10bb 9b 12     | | add  a,{0x12}
+    10bd 97 12     | | sta  a,{0x12}
                    | | .end
                    | .end
-                   addmb_mb [x+0x12],[0x5678]
-    10c0 b6 56 78  | lda  a,[0x5678]
+                   addmb {0x12},[0x5678]
+    10bf b6 56 78  | lda  a,[0x5678]
+                   | addmb_acc {0x12},a
+    10c2 9b 12     | | add  a,{0x12}
+    10c4 97 12     | | sta  a,{0x12}
+                   | | .end
+                   | .end
+                   addmb [x+0x12],[0x5678]
+    10c6 b6 56 78  | lda  a,[0x5678]
                    | addmb_acc [x+0x12],a
-    10c3 ab 12     | | add  a,[x+0x12]
-    10c5 a7 12     | | sta  a,[x+0x12]
+    10c9 ab 12     | | add  a,[x+0x12]
+    10cb a7 12     | | sta  a,[x+0x12]
                    | | .end
                    | .end
-                   addmb_mb [0x1234],[0x5678]
-    10c7 b6 56 78  | lda  a,[0x5678]
+                   addmb [0x1234],[0x5678]
+    10cd b6 56 78  | lda  a,[0x5678]
                    | addmb_acc [0x1234],a
-    10ca bb 12 34  | | add  a,[0x1234]
-    10cd b7 12 34  | | sta  a,[0x1234]
+    10d0 bb 12 34  | | add  a,[0x1234]
+    10d3 b7 12 34  | | sta  a,[0x1234]
                    | | .end
                    | .end
-                   addmb_mb {0x12},[0x5678],b
-    10d0 f6 56 78  | lda  b,[0x5678]
+                   addmb {0x12},0x56,b
+    10d6 c6 56     | lda  b,0x56
                    | addmb_acc {0x12},b
-    10d3 db 12     | | add  b,{0x12}
-    10d5 d7 12     | | sta  b,{0x12}
+    10d8 db 12     | | add  b,{0x12}
+    10da d7 12     | | sta  b,{0x12}
                    | | .end
                    | .end
-                   addmb_mb [x+0x12],[0x5678],b
-    10d7 f6 56 78  | lda  b,[0x5678]
+                   addmb {0x12},[0x5678],b
+    10dc f6 56 78  | lda  b,[0x5678]
+                   | addmb_acc {0x12},b
+    10df db 12     | | add  b,{0x12}
+    10e1 d7 12     | | sta  b,{0x12}
+                   | | .end
+                   | .end
+                   addmb [x+0x12],[0x5678],b
+    10e3 f6 56 78  | lda  b,[0x5678]
                    | addmb_acc [x+0x12],b
-    10da eb 12     | | add  b,[x+0x12]
-    10dc e7 12     | | sta  b,[x+0x12]
+    10e6 eb 12     | | add  b,[x+0x12]
+    10e8 e7 12     | | sta  b,[x+0x12]
                    | | .end
                    | .end
-                   addmb_mb [0x1234],[0x5678],b
-    10de f6 56 78  | lda  b,[0x5678]
+                   addmb [0x1234],[0x5678],b
+    10ea f6 56 78  | lda  b,[0x5678]
                    | addmb_acc [0x1234],b
-    10e1 fb 12 34  | | add  b,[0x1234]
-    10e4 f7 12 34  | | sta  b,[0x1234]
+    10ed fb 12 34  | | add  b,[0x1234]
+    10f0 f7 12 34  | | sta  b,[0x1234]
                    | | .end
                    | .end
                    addmw_acc {0x12},a
-    10e7 9b 13     | add  a,{0x12}<+>1
-    10e9 97 13     | sta  a,{0x12}<+>1
-    10eb 96 12     | lda  a,{0x12}
-    10ed 89 00     | adc  a,0
-    10ef 97 12     | sta  a,{0x12}
+    10f3 9b 13     | add  a,{0x12}<+>1
+    10f5 97 13     | sta  a,{0x12}<+>1
+    10f7 96 12     | lda  a,{0x12}
+    10f9 89 00     | adc  a,0
+    10fb 97 12     | sta  a,{0x12}
                    | .end
                    addmw_acc [x+0x12],a
-    10f1 ab 13     | add  a,[x+0x12]<+>1
-    10f3 a7 13     | sta  a,[x+0x12]<+>1
-    10f5 a6 12     | lda  a,[x+0x12]
-    10f7 89 00     | adc  a,0
-    10f9 a7 12     | sta  a,[x+0x12]
+    10fd ab 13     | add  a,[x+0x12]<+>1
+    10ff a7 13     | sta  a,[x+0x12]<+>1
+    1101 a6 12     | lda  a,[x+0x12]
+    1103 89 00     | adc  a,0
+    1105 a7 12     | sta  a,[x+0x12]
                    | .end
                    addmw_acc [0x1234],a
-    10fb bb 12 35  | add  a,[0x1234]<+>1
-    10fe b7 12 35  | sta  a,[0x1234]<+>1
-    1101 b6 12 34  | lda  a,[0x1234]
-    1104 89 00     | adc  a,0
-    1106 b7 12 34  | sta  a,[0x1234]
+    1107 bb 12 35  | add  a,[0x1234]<+>1
+    110a b7 12 35  | sta  a,[0x1234]<+>1
+    110d b6 12 34  | lda  a,[0x1234]
+    1110 89 00     | adc  a,0
+    1112 b7 12 34  | sta  a,[0x1234]
                    | .end
                    addmw_acc {0x12},b
-    1109 db 13     | add  b,{0x12}<+>1
-    110b d7 13     | sta  b,{0x12}<+>1
-    110d d6 12     | lda  b,{0x12}
-    110f c9 00     | adc  b,0
-    1111 d7 12     | sta  b,{0x12}
+    1115 db 13     | add  b,{0x12}<+>1
+    1117 d7 13     | sta  b,{0x12}<+>1
+    1119 d6 12     | lda  b,{0x12}
+    111b c9 00     | adc  b,0
+    111d d7 12     | sta  b,{0x12}
                    | .end
                    addmw_acc [x+0x12],b
-    1113 eb 13     | add  b,[x+0x12]<+>1
-    1115 e7 13     | sta  b,[x+0x12]<+>1
-    1117 e6 12     | lda  b,[x+0x12]
-    1119 c9 00     | adc  b,0
-    111b e7 12     | sta  b,[x+0x12]
+    111f eb 13     | add  b,[x+0x12]<+>1
+    1121 e7 13     | sta  b,[x+0x12]<+>1
+    1123 e6 12     | lda  b,[x+0x12]
+    1125 c9 00     | adc  b,0
+    1127 e7 12     | sta  b,[x+0x12]
                    | .end
                    addmw_acc [0x1234],b
-    111d fb 12 35  | add  b,[0x1234]<+>1
-    1120 f7 12 35  | sta  b,[0x1234]<+>1
-    1123 f6 12 34  | lda  b,[0x1234]
-    1126 c9 00     | adc  b,0
-    1128 f7 12 34  | sta  b,[0x1234]
+    1129 fb 12 35  | add  b,[0x1234]<+>1
+    112c f7 12 35  | sta  b,[0x1234]<+>1
+    112f f6 12 34  | lda  b,[0x1234]
+    1132 c9 00     | adc  b,0
+    1134 f7 12 34  | sta  b,[0x1234]
                    | .end
-                   addmw_mb {0x12},[0x5678]
-    112b b6 56 78  | lda  a,[0x5678]
+                   addmw {0x12},0x56
+    1137 86 56     | lda  a,0x56
                    | addmw_acc {0x12},a
-    112e 9b 13     | | add  a,{0x12}<+>1
-    1130 97 13     | | sta  a,{0x12}<+>1
-    1132 96 12     | | lda  a,{0x12}
-    1134 89 00     | | adc  a,0
-    1136 97 12     | | sta  a,{0x12}
+    1139 9b 13     | | add  a,{0x12}<+>1
+    113b 97 13     | | sta  a,{0x12}<+>1
+    113d 96 12     | | lda  a,{0x12}
+    113f 89 00     | | adc  a,0
+    1141 97 12     | | sta  a,{0x12}
                    | | .end
                    | .end
-                   addmw_mb [x+0x12],[0x5678]
-    1138 b6 56 78  | lda  a,[0x5678]
+                   addmw {0x12},[0x5678]
+    1143 b6 56 78  | lda  a,[0x5678]
+                   | addmw_acc {0x12},a
+    1146 9b 13     | | add  a,{0x12}<+>1
+    1148 97 13     | | sta  a,{0x12}<+>1
+    114a 96 12     | | lda  a,{0x12}
+    114c 89 00     | | adc  a,0
+    114e 97 12     | | sta  a,{0x12}
+                   | | .end
+                   | .end
+                   addmw [x+0x12],[0x5678]
+    1150 b6 56 78  | lda  a,[0x5678]
                    | addmw_acc [x+0x12],a
-    113b ab 13     | | add  a,[x+0x12]<+>1
-    113d a7 13     | | sta  a,[x+0x12]<+>1
-    113f a6 12     | | lda  a,[x+0x12]
-    1141 89 00     | | adc  a,0
-    1143 a7 12     | | sta  a,[x+0x12]
+    1153 ab 13     | | add  a,[x+0x12]<+>1
+    1155 a7 13     | | sta  a,[x+0x12]<+>1
+    1157 a6 12     | | lda  a,[x+0x12]
+    1159 89 00     | | adc  a,0
+    115b a7 12     | | sta  a,[x+0x12]
                    | | .end
                    | .end
-                   addmw_mb [0x1234],[0x5678]
-    1145 b6 56 78  | lda  a,[0x5678]
+                   addmw [0x1234],[0x5678]
+    115d b6 56 78  | lda  a,[0x5678]
                    | addmw_acc [0x1234],a
-    1148 bb 12 35  | | add  a,[0x1234]<+>1
-    114b b7 12 35  | | sta  a,[0x1234]<+>1
-    114e b6 12 34  | | lda  a,[0x1234]
-    1151 89 00     | | adc  a,0
-    1153 b7 12 34  | | sta  a,[0x1234]
+    1160 bb 12 35  | | add  a,[0x1234]<+>1
+    1163 b7 12 35  | | sta  a,[0x1234]<+>1
+    1166 b6 12 34  | | lda  a,[0x1234]
+    1169 89 00     | | adc  a,0
+    116b b7 12 34  | | sta  a,[0x1234]
                    | | .end
                    | .end
-                   addmw_mb {0x12},[0x5678],b
-    1156 f6 56 78  | lda  b,[0x5678]
+                   addmw {0x12},0x56,b
+    116e c6 56     | lda  b,0x56
                    | addmw_acc {0x12},b
-    1159 db 13     | | add  b,{0x12}<+>1
-    115b d7 13     | | sta  b,{0x12}<+>1
-    115d d6 12     | | lda  b,{0x12}
-    115f c9 00     | | adc  b,0
-    1161 d7 12     | | sta  b,{0x12}
+    1170 db 13     | | add  b,{0x12}<+>1
+    1172 d7 13     | | sta  b,{0x12}<+>1
+    1174 d6 12     | | lda  b,{0x12}
+    1176 c9 00     | | adc  b,0
+    1178 d7 12     | | sta  b,{0x12}
                    | | .end
                    | .end
-                   addmw_mb [x+0x12],[0x5678],b
-    1163 f6 56 78  | lda  b,[0x5678]
+                   addmw {0x12},[0x5678],b
+    117a f6 56 78  | lda  b,[0x5678]
+                   | addmw_acc {0x12},b
+    117d db 13     | | add  b,{0x12}<+>1
+    117f d7 13     | | sta  b,{0x12}<+>1
+    1181 d6 12     | | lda  b,{0x12}
+    1183 c9 00     | | adc  b,0
+    1185 d7 12     | | sta  b,{0x12}
+                   | | .end
+                   | .end
+                   addmw [x+0x12],[0x5678],b
+    1187 f6 56 78  | lda  b,[0x5678]
                    | addmw_acc [x+0x12],b
-    1166 eb 13     | | add  b,[x+0x12]<+>1
-    1168 e7 13     | | sta  b,[x+0x12]<+>1
-    116a e6 12     | | lda  b,[x+0x12]
-    116c c9 00     | | adc  b,0
-    116e e7 12     | | sta  b,[x+0x12]
+    118a eb 13     | | add  b,[x+0x12]<+>1
+    118c e7 13     | | sta  b,[x+0x12]<+>1
+    118e e6 12     | | lda  b,[x+0x12]
+    1190 c9 00     | | adc  b,0
+    1192 e7 12     | | sta  b,[x+0x12]
                    | | .end
                    | .end
-                   addmw_mb [0x1234],[0x5678],b
-    1170 f6 56 78  | lda  b,[0x5678]
+                   addmw [0x1234],[0x5678],b
+    1194 f6 56 78  | lda  b,[0x5678]
                    | addmw_acc [0x1234],b
-    1173 fb 12 35  | | add  b,[0x1234]<+>1
-    1176 f7 12 35  | | sta  b,[0x1234]<+>1
-    1179 f6 12 34  | | lda  b,[0x1234]
-    117c c9 00     | | adc  b,0
-    117e f7 12 34  | | sta  b,[0x1234]
+    1197 fb 12 35  | | add  b,[0x1234]<+>1
+    119a f7 12 35  | | sta  b,[0x1234]<+>1
+    119d f6 12 34  | | lda  b,[0x1234]
+    11a0 c9 00     | | adc  b,0
+    11a2 f7 12 34  | | sta  b,[0x1234]
                    | | .end
                    | .end
                    addmw_mw {0x12},[0x5678]
-    1181 b6 56 79  | lda  a,[0x5678]<+>1
-    1184 9b 13     | add  a,{0x12}<+>1
-    1186 97 13     | sta  a,{0x12}<+>1
-    1188 96 12     | lda  a,{0x12}
-    118a b9 56 78  | adc  a,[0x5678]
-    118d 97 12     | sta  a,{0x12}
+    11a5 b6 56 79  | lda  a,[0x5678]<+>1
+    11a8 9b 13     | add  a,{0x12}<+>1
+    11aa 97 13     | sta  a,{0x12}<+>1
+    11ac 96 12     | lda  a,{0x12}
+    11ae b9 56 78  | adc  a,[0x5678]
+    11b1 97 12     | sta  a,{0x12}
                    | .end
                    addmw_mw [x+0x12],[0x5678]
-    118f b6 56 79  | lda  a,[0x5678]<+>1
-    1192 ab 13     | add  a,[x+0x12]<+>1
-    1194 a7 13     | sta  a,[x+0x12]<+>1
-    1196 a6 12     | lda  a,[x+0x12]
-    1198 b9 56 78  | adc  a,[0x5678]
-    119b a7 12     | sta  a,[x+0x12]
+    11b3 b6 56 79  | lda  a,[0x5678]<+>1
+    11b6 ab 13     | add  a,[x+0x12]<+>1
+    11b8 a7 13     | sta  a,[x+0x12]<+>1
+    11ba a6 12     | lda  a,[x+0x12]
+    11bc b9 56 78  | adc  a,[0x5678]
+    11bf a7 12     | sta  a,[x+0x12]
                    | .end
                    addmw_mw [0x1234],[0x5678]
-    119d b6 56 79  | lda  a,[0x5678]<+>1
-    11a0 bb 12 35  | add  a,[0x1234]<+>1
-    11a3 b7 12 35  | sta  a,[0x1234]<+>1
-    11a6 b6 12 34  | lda  a,[0x1234]
-    11a9 b9 56 78  | adc  a,[0x5678]
-    11ac b7 12 34  | sta  a,[0x1234]
+    11c1 b6 56 79  | lda  a,[0x5678]<+>1
+    11c4 bb 12 35  | add  a,[0x1234]<+>1
+    11c7 b7 12 35  | sta  a,[0x1234]<+>1
+    11ca b6 12 34  | lda  a,[0x1234]
+    11cd b9 56 78  | adc  a,[0x5678]
+    11d0 b7 12 34  | sta  a,[0x1234]
                    | .end
                    addmw_mw {0x12},[0x5678],b
-    11af f6 56 79  | lda  b,[0x5678]<+>1
-    11b2 db 13     | add  b,{0x12}<+>1
-    11b4 d7 13     | sta  b,{0x12}<+>1
-    11b6 d6 12     | lda  b,{0x12}
-    11b8 f9 56 78  | adc  b,[0x5678]
-    11bb d7 12     | sta  b,{0x12}
+    11d3 f6 56 79  | lda  b,[0x5678]<+>1
+    11d6 db 13     | add  b,{0x12}<+>1
+    11d8 d7 13     | sta  b,{0x12}<+>1
+    11da d6 12     | lda  b,{0x12}
+    11dc f9 56 78  | adc  b,[0x5678]
+    11df d7 12     | sta  b,{0x12}
                    | .end
                    addmw_mw [x+0x12],[0x5678],b
-    11bd f6 56 79  | lda  b,[0x5678]<+>1
-    11c0 eb 13     | add  b,[x+0x12]<+>1
-    11c2 e7 13     | sta  b,[x+0x12]<+>1
-    11c4 e6 12     | lda  b,[x+0x12]
-    11c6 f9 56 78  | adc  b,[0x5678]
-    11c9 e7 12     | sta  b,[x+0x12]
+    11e1 f6 56 79  | lda  b,[0x5678]<+>1
+    11e4 eb 13     | add  b,[x+0x12]<+>1
+    11e6 e7 13     | sta  b,[x+0x12]<+>1
+    11e8 e6 12     | lda  b,[x+0x12]
+    11ea f9 56 78  | adc  b,[0x5678]
+    11ed e7 12     | sta  b,[x+0x12]
                    | .end
                    addmw_mw [0x1234],[0x5678],b
-    11cb f6 56 79  | lda  b,[0x5678]<+>1
-    11ce fb 12 35  | add  b,[0x1234]<+>1
-    11d1 f7 12 35  | sta  b,[0x1234]<+>1
-    11d4 f6 12 34  | lda  b,[0x1234]
-    11d7 f9 56 78  | adc  b,[0x5678]
-    11da f7 12 34  | sta  b,[0x1234]
+    11ef f6 56 79  | lda  b,[0x5678]<+>1
+    11f2 fb 12 35  | add  b,[0x1234]<+>1
+    11f5 f7 12 35  | sta  b,[0x1234]<+>1
+    11f8 f6 12 34  | lda  b,[0x1234]
+    11fb f9 56 78  | adc  b,[0x5678]
+    11fe f7 12 34  | sta  b,[0x1234]
                    | .end
 [Symbol List]
 0001  @BYTE
