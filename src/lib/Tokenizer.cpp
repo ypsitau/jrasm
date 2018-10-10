@@ -226,10 +226,20 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_LtLt);
 			_stat = STAT_Neutral;
 		} else if (ch == '+') {
+			_stat = STAT_LessThanPlus;
+		} else {
+			rtn = FeedToken(TOKEN_Lt);
+			_stat = STAT_Neutral;
+			Pushback();
+		}
+		break;
+	}
+	case STAT_LessThanPlus: {
+		if (ch == '>') {
 			rtn = FeedToken(TOKEN_LtPlus);
 			_stat = STAT_Neutral;
 		} else {
-			rtn = FeedToken(TOKEN_Lt);
+			rtn = FeedToken(TOKEN_Lt) && FeedToken(TOKEN_Plus);
 			_stat = STAT_Neutral;
 			Pushback();
 		}

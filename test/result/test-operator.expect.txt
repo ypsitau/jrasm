@@ -14,6 +14,25 @@
     1018 01 f1     .dw  12*34+89
     101a 00 87     .dw  12+34+89
     101c 0b de     .dw  12+34*89
+                   .scope
+num1:              | .equ 0x200
+num2:              | .equ 0x300
+num3:              | .equ 0x30
+    101e b6 00 30  | ldaa [0x10]<+>0x20
+    1021 a6 30     | ldaa [x+0x10]<+>0x20
+    1023 a6 30     | ldaa [0x10+x]<+>0x20
+    1025 b6 02 20  | ldaa [num1]<+>0x20
+    1028 b6 05 20  | ldaa [num1+num2]<+>0x20
+    102b b6 01 20  | ldaa [num2-num1]<+>0x20
+    102e b6 0b 20  | ldaa [num1+num2*3]<+>0x20
+    1031 b6 00 40  | ldaa [0x10]<+>num3
+    1034 a6 40     | ldaa [x+0x10]<+>num3
+    1036 a6 40     | ldaa [0x10+x]<+>num3
+    1038 b6 02 30  | ldaa [num1]<+>num3
+    103b b6 05 30  | ldaa [num1+num2]<+>num3
+    103e b6 01 30  | ldaa [num2-num1]<+>num3
+    1041 b6 0b 30  | ldaa [num1+num2*3]<+>num3
+                   | .end
 [Symbol List]
 0001  @BYTE
 0002  @WORD

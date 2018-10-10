@@ -28,6 +28,7 @@ public:
 		STAT_VBar,
 		STAT_Ampersand,
 		STAT_LessThan,
+		STAT_LessThanPlus,
 		STAT_GreaterThan,
 		STAT_Bang,
 		STAT_Slash,

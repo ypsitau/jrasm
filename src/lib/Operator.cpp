@@ -91,13 +91,15 @@ Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 Expr *Operator_AddInj::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeBracket() && pExprR->IsTypeInteger()) {
-		const ExprList &exprOperands = dynamic_cast<const Expr_Bracket *>(pExprL.get())->GetExprOperands();
-		if (exprOperands.size() != 1) {
-			ErrorLog::AddError(pExprL.get(), "the bracket must contain one element");
-			return nullptr;
+		const ExprList &exprOperandsOrg = dynamic_cast<const Expr_Bracket *>(pExprL.get())->GetExprOperands();
+		AutoPtr<ExprOwner> pExprOperands(new ExprOwner());
+		for (auto pExprOperandOrg : exprOperandsOrg) {
+			AutoPtr<Expr> pExprOperand(new Expr_BinOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
+			AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
+			if (pExprOperandResolved.IsNull()) return nullptr;
+			pExprOperands->push_back(pExprOperandResolved.release());
 		}
-		AutoPtr<Expr> pExprGen(new Expr_BinOp(Operator::Add, exprOperands.front()->Reference(), pExprR.release()));
-		return pExprGen->Resolve(context);
+		return new Expr_Bracket(pExprOperands.release());
 	}
 	return new Expr_BinOp(Operator::AddInj, pExprL.release(), pExprR.release());
 }
