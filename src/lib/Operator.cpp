@@ -100,6 +100,16 @@ Expr *Operator_AddInj::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 			pExprOperands->push_back(pExprOperandResolved.release());
 		}
 		return new Expr_Bracket(pExprOperands.release());
+	} else if (pExprL->IsTypeBrace() && pExprR->IsTypeInteger()) {
+		const ExprList &exprOperandsOrg = dynamic_cast<const Expr_Brace *>(pExprL.get())->GetExprOperands();
+		AutoPtr<ExprOwner> pExprOperands(new ExprOwner());
+		for (auto pExprOperandOrg : exprOperandsOrg) {
+			AutoPtr<Expr> pExprOperand(new Expr_BinOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
+			AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
+			if (pExprOperandResolved.IsNull()) return nullptr;
+			pExprOperands->push_back(pExprOperandResolved.release());
+		}
+		return new Expr_Brace(pExprOperands.release());
 	}
 	return new Expr_BinOp(Operator::AddInj, pExprL.release(), pExprR.release());
 }

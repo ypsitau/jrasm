@@ -35,3 +35,19 @@ num3:	.equ	0x30
 	ldaa	[num2-num1] <+> num3
 	ldaa	[num1+num2*3] <+> num3
 	.end
+
+	.scope
+num1:	.equ	0x20
+num2:	.equ	0x30
+num3:	.equ	0x3
+	ldaa	{0x10} <+> 0x2
+	ldaa	{num1} <+> 0x2
+	ldaa	{num1+num2} <+> 0x2
+	ldaa	{num2-num1} <+> 0x2
+	ldaa	{num1+num2*3} <+> 0x2
+	ldaa	{0x10} <+> num3
+	ldaa	{num1} <+> num3
+	ldaa	{num1+num2} <+> num3
+	ldaa	{num2-num1} <+> num3
+	ldaa	{num1+num2*3} <+> num3
+	.end

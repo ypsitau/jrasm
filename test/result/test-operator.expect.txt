@@ -33,6 +33,21 @@ num3:              | .equ 0x30
     103e b6 01 30  | ldaa [num2-num1]<+>num3
     1041 b6 0b 30  | ldaa [num1+num2*3]<+>num3
                    | .end
+                   .scope
+num1:              | .equ 0x20
+num2:              | .equ 0x30
+num3:              | .equ 0x3
+    1044 96 12     | ldaa {0x10}<+>0x2
+    1046 96 22     | ldaa {num1}<+>0x2
+    1048 96 52     | ldaa {num1+num2}<+>0x2
+    104a 96 12     | ldaa {num2-num1}<+>0x2
+    104c 96 b2     | ldaa {num1+num2*3}<+>0x2
+    104e 96 13     | ldaa {0x10}<+>num3
+    1050 96 23     | ldaa {num1}<+>num3
+    1052 96 53     | ldaa {num1+num2}<+>num3
+    1054 96 13     | ldaa {num2-num1}<+>num3
+    1056 96 b3     | ldaa {num1+num2*3}<+>num3
+                   | .end
 [Symbol List]
 0001  @BYTE
 0002  @WORD
