@@ -6,8 +6,7 @@
 //-----------------------------------------------------------------------------
 // AppMain
 //-----------------------------------------------------------------------------
-class AppMain: public wxApp
-{
+class AppMain: public wxApp {
 public:
 	virtual bool OnInit();
 };
@@ -19,7 +18,7 @@ wxIMPLEMENT_APP(AppMain);
 
 bool AppMain::OnInit()
 {
-	FrameMain *pFrame = new FrameMain(nullptr, wxT("Hello World"), wxPoint(50, 50), wxSize(450, 340));
+	FrameMain *pFrame = new FrameMain(nullptr, wxT("JR-200 PCG Editor"), wxPoint(50, 50), wxSize(800, 600));
 	pFrame->Show(true);
 	return true;
 }

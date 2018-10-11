@@ -10,6 +10,8 @@
 class PanelMain : public wxPanel {
 public:
 	PanelMain(wxWindow *pParent);
+private:
+    wxDECLARE_EVENT_TABLE();
 };
 
 #endif

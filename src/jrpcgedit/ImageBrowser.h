@@ -10,6 +10,8 @@
 class ImageBrowser : public wxListCtrl {
 public:
 	ImageBrowser(wxWindow *pParent);
+private:
+    wxDECLARE_EVENT_TABLE();
 };
 
 #endif

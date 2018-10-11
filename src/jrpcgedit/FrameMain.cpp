@@ -26,12 +26,16 @@ FrameMain::FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &po
 	} while (0);
 	CreateStatusBar();
 	SetStatusText(wxT("Welcome to wxWidgets!"));
+	_pPanelMain = new PanelMain(this);
 }
 
+//-----------------------------------------------------------------------------
+// Event Handler
+//-----------------------------------------------------------------------------
 wxBEGIN_EVENT_TABLE(FrameMain, wxFrame)
-EVT_MENU(ID_Hello,		FrameMain::OnHello)
-EVT_MENU(wxID_EXIT,		FrameMain::OnExit)
-EVT_MENU(wxID_ABOUT,	FrameMain::OnAbout)
+	EVT_MENU(ID_Hello,		FrameMain::OnHello)
+	EVT_MENU(wxID_EXIT,		FrameMain::OnExit)
+	EVT_MENU(wxID_ABOUT,	FrameMain::OnAbout)
 wxEND_EVENT_TABLE()
 
 void FrameMain::OnExit(wxCommandEvent &event)
