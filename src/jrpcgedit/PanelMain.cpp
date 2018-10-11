@@ -10,6 +10,23 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 {
 	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
 	SetSizer(pOuterBox);
+	do {
+		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM);
+		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());
+		pNotebook->AddPage(new Page(pNotebook), wxT("Page1"));
+		pNotebook->AddPage(new Page(pNotebook), wxT("Page2"));
+		pNotebook->AddPage(new Page(pNotebook), wxT("Page3"));
+		pNotebook->AddPage(new Page(pNotebook), wxT("Page4"));
+	} while (0);
+}
+
+//-----------------------------------------------------------------------------
+// PanelMain::Page
+//-----------------------------------------------------------------------------
+PanelMain::Page::Page(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
+{
+	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
+	SetSizer(pOuterBox);
 	wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
 	pOuterBox->Add(pHBox, wxSizerFlags(1).Expand());
 	do {

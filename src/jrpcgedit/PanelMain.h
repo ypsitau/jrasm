@@ -9,6 +9,11 @@
 //-----------------------------------------------------------------------------
 class PanelMain : public wxPanel {
 public:
+	class Page : public wxPanel {
+	public:
+		Page(wxWindow *pParent);
+	};
+public:
 	PanelMain(wxWindow *pParent);
 private:
     wxDECLARE_EVENT_TABLE();
