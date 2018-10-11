@@ -33,15 +33,23 @@ PanelMain::Page::Page(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 {
 	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
 	SetSizer(pOuterBox);
-	wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
-	pOuterBox->Add(pHBox, wxSizerFlags(1).Expand());
 	do {
-		PatternEditor *pPatternEditor = new PatternEditor(this);
-		pHBox->Add(pPatternEditor, wxSizerFlags(1).Expand());
+		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
+			this, ID_SASH_Left, wxDefaultPosition, wxDefaultSize,
+			wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
+		pSash->SetDefaultSize(wxSize(400, 1000));
+		pSash->SetOrientation(wxLAYOUT_VERTICAL);
+		pSash->SetAlignment(wxLAYOUT_LEFT);
+		pSash->SetSashVisible(wxSASH_RIGHT, true);
+		_pSashLeft = pSash;
 	} while (0);
 	do {
-		ImageBrowser *pImageBrowser = new ImageBrowser(this);
-		pHBox->Add(pImageBrowser, wxSizerFlags(1).Expand());
+		PatternEditor *pCtrl = new PatternEditor(_pSashLeft);
+		_pPatternEditor = pCtrl;
+	} while (0);
+	do {
+		ImageBrowser *pCtrl= new ImageBrowser(this);
+		_pImageBrowser = pCtrl;
 	} while (0);
 }
 
@@ -49,4 +57,20 @@ PanelMain::Page::Page(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 // Event Handler for PanelMain::Page
 //-----------------------------------------------------------------------------
 wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
+	EVT_SIZE(PanelMain::Page::OnSize)
+	EVT_SASH_DRAGGED(ID_SASH_Left, PanelMain::Page::OnSashDrag_Left)
 wxEND_EVENT_TABLE()
+
+void PanelMain::Page::OnSize(wxSizeEvent &event)
+{
+	wxLayoutAlgorithm().LayoutWindow(this, _pImageBrowser);
+	event.Skip();
+}
+
+void PanelMain::Page::OnSashDrag_Left(wxSashEvent &event)
+{
+	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE) return;
+	_pSashLeft->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
+	wxLayoutAlgorithm().LayoutWindow(this, _pImageBrowser);
+    Refresh();
+}
