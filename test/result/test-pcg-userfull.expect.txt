@@ -1,0 +1,555 @@
+                   .org 0x1000
+                   pcgpage.test.store
+    1000 ce 11 45  | ldx  pcgpage.test.src
+    1003 ff 10 0d  | stx  [ptrsrc1]
+    1006 ce c0 00  | ldx  0xc000
+    1009 ff 10 16  | stx  [ptrdst1]
+loop1:             | 
+ptrsrc1:           | .equ $+1
+    100c ce 00 00  | ldx  0x0000
+    100f a6 00     | ldaa [x]
+    1011 08        | inx 
+    1012 ff 10 0d  | stx  [ptrsrc1]
+ptrdst1:           | .equ $+1
+    1015 ce 00 00  | ldx  0x0000
+    1018 a7 00     | staa [x]
+    101a 08        | inx 
+    101b ff 10 16  | stx  [ptrdst1]
+    101e 8c c1 00  | cpx  0xc100
+    1021 26 e9     | bne  loop1
+    1023 fe 10 0d  | ldx  [ptrsrc1]
+    1026 ff 10 30  | stx  [ptrsrc2]
+    1029 ce c4 00  | ldx  0xc400
+    102c ff 10 39  | stx  [ptrdst2]
+loop2:             | 
+ptrsrc2:           | .equ $+1
+    102f ce 00 00  | ldx  0x0000
+    1032 a6 00     | ldaa [x]
+    1034 08        | inx 
+    1035 ff 10 30  | stx  [ptrsrc2]
+ptrdst2:           | .equ $+1
+    1038 ce 00 00  | ldx  0x0000
+    103b a7 00     | staa [x]
+    103d 08        | inx 
+    103e ff 10 39  | stx  [ptrdst2]
+    1041 8c c5 00  | cpx  0xc500
+    1044 26 e9     | bne  loop2
+                   | .end
+                   pcg.user20.put
+    1046 4f        | clra
+    1047 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user21.put
+    1049 86 01     | ldaa 0x01
+    104b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user22.put
+    104d 86 02     | ldaa 0x02
+    104f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user23.put
+    1051 86 03     | ldaa 0x03
+    1053 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user24.put
+    1055 86 04     | ldaa 0x04
+    1057 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user25.put
+    1059 86 05     | ldaa 0x05
+    105b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user26.put
+    105d 86 06     | ldaa 0x06
+    105f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user27.put
+    1061 86 07     | ldaa 0x07
+    1063 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user28.put
+    1065 86 08     | ldaa 0x08
+    1067 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user29.put
+    1069 86 09     | ldaa 0x09
+    106b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2a.put
+    106d 86 0a     | ldaa 0x0a
+    106f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2b.put
+    1071 86 0b     | ldaa 0x0b
+    1073 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2c.put
+    1075 86 0c     | ldaa 0x0c
+    1077 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2d.put
+    1079 86 0d     | ldaa 0x0d
+    107b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2e.put
+    107d 86 0e     | ldaa 0x0e
+    107f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2f.put
+    1081 86 0f     | ldaa 0x0f
+    1083 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user30.put
+    1085 86 10     | ldaa 0x10
+    1087 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user31.put
+    1089 86 11     | ldaa 0x11
+    108b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user32.put
+    108d 86 12     | ldaa 0x12
+    108f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user33.put
+    1091 86 13     | ldaa 0x13
+    1093 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user34.put
+    1095 86 14     | ldaa 0x14
+    1097 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user35.put
+    1099 86 15     | ldaa 0x15
+    109b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user36.put
+    109d 86 16     | ldaa 0x16
+    109f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user37.put
+    10a1 86 17     | ldaa 0x17
+    10a3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user38.put
+    10a5 86 18     | ldaa 0x18
+    10a7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user39.put
+    10a9 86 19     | ldaa 0x19
+    10ab a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3a.put
+    10ad 86 1a     | ldaa 0x1a
+    10af a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3b.put
+    10b1 86 1b     | ldaa 0x1b
+    10b3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3c.put
+    10b5 86 1c     | ldaa 0x1c
+    10b7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3d.put
+    10b9 86 1d     | ldaa 0x1d
+    10bb a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3e.put
+    10bd 86 1e     | ldaa 0x1e
+    10bf a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3f.put
+    10c1 86 1f     | ldaa 0x1f
+    10c3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user40.put
+    10c5 86 80     | ldaa 0x80
+    10c7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user41.put
+    10c9 86 81     | ldaa 0x81
+    10cb a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user42.put
+    10cd 86 82     | ldaa 0x82
+    10cf a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user43.put
+    10d1 86 83     | ldaa 0x83
+    10d3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user44.put
+    10d5 86 84     | ldaa 0x84
+    10d7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user45.put
+    10d9 86 85     | ldaa 0x85
+    10db a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user46.put
+    10dd 86 86     | ldaa 0x86
+    10df a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user47.put
+    10e1 86 87     | ldaa 0x87
+    10e3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user48.put
+    10e5 86 88     | ldaa 0x88
+    10e7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user49.put
+    10e9 86 89     | ldaa 0x89
+    10eb a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4a.put
+    10ed 86 8a     | ldaa 0x8a
+    10ef a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4b.put
+    10f1 86 8b     | ldaa 0x8b
+    10f3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4c.put
+    10f5 86 8c     | ldaa 0x8c
+    10f7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4d.put
+    10f9 86 8d     | ldaa 0x8d
+    10fb a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4e.put
+    10fd 86 8e     | ldaa 0x8e
+    10ff a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4f.put
+    1101 86 8f     | ldaa 0x8f
+    1103 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user50.put
+    1105 86 90     | ldaa 0x90
+    1107 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user51.put
+    1109 86 91     | ldaa 0x91
+    110b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user52.put
+    110d 86 92     | ldaa 0x92
+    110f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user53.put
+    1111 86 93     | ldaa 0x93
+    1113 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user54.put
+    1115 86 94     | ldaa 0x94
+    1117 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user55.put
+    1119 86 95     | ldaa 0x95
+    111b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user56.put
+    111d 86 96     | ldaa 0x96
+    111f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user57.put
+    1121 86 97     | ldaa 0x97
+    1123 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user58.put
+    1125 86 98     | ldaa 0x98
+    1127 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user59.put
+    1129 86 99     | ldaa 0x99
+    112b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5a.put
+    112d 86 9a     | ldaa 0x9a
+    112f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5b.put
+    1131 86 9b     | ldaa 0x9b
+    1133 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5c.put
+    1135 86 9c     | ldaa 0x9c
+    1137 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5d.put
+    1139 86 9d     | ldaa 0x9d
+    113b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5e.put
+    113d 86 9e     | ldaa 0x9e
+    113f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5f.put
+    1141 86 9f     | ldaa 0x9f
+    1143 a7 00     | staa [x+0x00+0]
+                   | .end
+                   .pcgpage test,user,0x20
+    1145 ff ff     | .db  0xff,0xff,0x20,0x20,0x20,0x20,0xff,0xff
+    1147 20 20     |
+    1149 20 20     |
+    114b ff ff     |
+    114d ff ff     | .db  0xff,0xff,0x21,0x21,0x21,0x21,0xff,0xff
+    114f 21 21     |
+    1151 21 21     |
+    1153 ff ff     |
+    1155 ff ff     | .db  0xff,0xff,0x22,0x22,0x22,0x22,0xff,0xff
+    1157 22 22     |
+    1159 22 22     |
+    115b ff ff     |
+    115d ff ff     | .db  0xff,0xff,0x23,0x23,0x23,0x23,0xff,0xff
+    115f 23 23     |
+    1161 23 23     |
+    1163 ff ff     |
+    1165 ff ff     | .db  0xff,0xff,0x24,0x24,0x24,0x24,0xff,0xff
+    1167 24 24     |
+    1169 24 24     |
+    116b ff ff     |
+    116d ff ff     | .db  0xff,0xff,0x25,0x25,0x25,0x25,0xff,0xff
+    116f 25 25     |
+    1171 25 25     |
+    1173 ff ff     |
+    1175 ff ff     | .db  0xff,0xff,0x26,0x26,0x26,0x26,0xff,0xff
+    1177 26 26     |
+    1179 26 26     |
+    117b ff ff     |
+    117d ff ff     | .db  0xff,0xff,0x27,0x27,0x27,0x27,0xff,0xff
+    117f 27 27     |
+    1181 27 27     |
+    1183 ff ff     |
+    1185 ff ff     | .db  0xff,0xff,0x28,0x28,0x28,0x28,0xff,0xff
+    1187 28 28     |
+    1189 28 28     |
+    118b ff ff     |
+    118d ff ff     | .db  0xff,0xff,0x29,0x29,0x29,0x29,0xff,0xff
+    118f 29 29     |
+    1191 29 29     |
+    1193 ff ff     |
+    1195 ff ff     | .db  0xff,0xff,0x2a,0x2a,0x2a,0x2a,0xff,0xff
+    1197 2a 2a     |
+    1199 2a 2a     |
+    119b ff ff     |
+    119d ff ff     | .db  0xff,0xff,0x2b,0x2b,0x2b,0x2b,0xff,0xff
+    119f 2b 2b     |
+    11a1 2b 2b     |
+    11a3 ff ff     |
+    11a5 ff ff     | .db  0xff,0xff,0x2c,0x2c,0x2c,0x2c,0xff,0xff
+    11a7 2c 2c     |
+    11a9 2c 2c     |
+    11ab ff ff     |
+    11ad ff ff     | .db  0xff,0xff,0x2d,0x2d,0x2d,0x2d,0xff,0xff
+    11af 2d 2d     |
+    11b1 2d 2d     |
+    11b3 ff ff     |
+    11b5 ff ff     | .db  0xff,0xff,0x2e,0x2e,0x2e,0x2e,0xff,0xff
+    11b7 2e 2e     |
+    11b9 2e 2e     |
+    11bb ff ff     |
+    11bd ff ff     | .db  0xff,0xff,0x2f,0x2f,0x2f,0x2f,0xff,0xff
+    11bf 2f 2f     |
+    11c1 2f 2f     |
+    11c3 ff ff     |
+    11c5 ff ff     | .db  0xff,0xff,0x30,0x30,0x30,0x30,0xff,0xff
+    11c7 30 30     |
+    11c9 30 30     |
+    11cb ff ff     |
+    11cd ff ff     | .db  0xff,0xff,0x31,0x31,0x31,0x31,0xff,0xff
+    11cf 31 31     |
+    11d1 31 31     |
+    11d3 ff ff     |
+    11d5 ff ff     | .db  0xff,0xff,0x32,0x32,0x32,0x32,0xff,0xff
+    11d7 32 32     |
+    11d9 32 32     |
+    11db ff ff     |
+    11dd ff ff     | .db  0xff,0xff,0x33,0x33,0x33,0x33,0xff,0xff
+    11df 33 33     |
+    11e1 33 33     |
+    11e3 ff ff     |
+    11e5 ff ff     | .db  0xff,0xff,0x34,0x34,0x34,0x34,0xff,0xff
+    11e7 34 34     |
+    11e9 34 34     |
+    11eb ff ff     |
+    11ed ff ff     | .db  0xff,0xff,0x35,0x35,0x35,0x35,0xff,0xff
+    11ef 35 35     |
+    11f1 35 35     |
+    11f3 ff ff     |
+    11f5 ff ff     | .db  0xff,0xff,0x36,0x36,0x36,0x36,0xff,0xff
+    11f7 36 36     |
+    11f9 36 36     |
+    11fb ff ff     |
+    11fd ff ff     | .db  0xff,0xff,0x37,0x37,0x37,0x37,0xff,0xff
+    11ff 37 37     |
+    1201 37 37     |
+    1203 ff ff     |
+    1205 ff ff     | .db  0xff,0xff,0x38,0x38,0x38,0x38,0xff,0xff
+    1207 38 38     |
+    1209 38 38     |
+    120b ff ff     |
+    120d ff ff     | .db  0xff,0xff,0x39,0x39,0x39,0x39,0xff,0xff
+    120f 39 39     |
+    1211 39 39     |
+    1213 ff ff     |
+    1215 ff ff     | .db  0xff,0xff,0x3a,0x3a,0x3a,0x3a,0xff,0xff
+    1217 3a 3a     |
+    1219 3a 3a     |
+    121b ff ff     |
+    121d ff ff     | .db  0xff,0xff,0x3b,0x3b,0x3b,0x3b,0xff,0xff
+    121f 3b 3b     |
+    1221 3b 3b     |
+    1223 ff ff     |
+    1225 ff ff     | .db  0xff,0xff,0x3c,0x3c,0x3c,0x3c,0xff,0xff
+    1227 3c 3c     |
+    1229 3c 3c     |
+    122b ff ff     |
+    122d ff ff     | .db  0xff,0xff,0x3d,0x3d,0x3d,0x3d,0xff,0xff
+    122f 3d 3d     |
+    1231 3d 3d     |
+    1233 ff ff     |
+    1235 ff ff     | .db  0xff,0xff,0x3e,0x3e,0x3e,0x3e,0xff,0xff
+    1237 3e 3e     |
+    1239 3e 3e     |
+    123b ff ff     |
+    123d ff ff     | .db  0xff,0xff,0x3f,0x3f,0x3f,0x3f,0xff,0xff
+    123f 3f 3f     |
+    1241 3f 3f     |
+    1243 ff ff     |
+    1245 ff ff     | .db  0xff,0xff,0x40,0x40,0x40,0x40,0xff,0xff
+    1247 40 40     |
+    1249 40 40     |
+    124b ff ff     |
+    124d ff ff     | .db  0xff,0xff,0x41,0x41,0x41,0x41,0xff,0xff
+    124f 41 41     |
+    1251 41 41     |
+    1253 ff ff     |
+    1255 ff ff     | .db  0xff,0xff,0x42,0x42,0x42,0x42,0xff,0xff
+    1257 42 42     |
+    1259 42 42     |
+    125b ff ff     |
+    125d ff ff     | .db  0xff,0xff,0x43,0x43,0x43,0x43,0xff,0xff
+    125f 43 43     |
+    1261 43 43     |
+    1263 ff ff     |
+    1265 ff ff     | .db  0xff,0xff,0x44,0x44,0x44,0x44,0xff,0xff
+    1267 44 44     |
+    1269 44 44     |
+    126b ff ff     |
+    126d ff ff     | .db  0xff,0xff,0x45,0x45,0x45,0x45,0xff,0xff
+    126f 45 45     |
+    1271 45 45     |
+    1273 ff ff     |
+    1275 ff ff     | .db  0xff,0xff,0x46,0x46,0x46,0x46,0xff,0xff
+    1277 46 46     |
+    1279 46 46     |
+    127b ff ff     |
+    127d ff ff     | .db  0xff,0xff,0x47,0x47,0x47,0x47,0xff,0xff
+    127f 47 47     |
+    1281 47 47     |
+    1283 ff ff     |
+    1285 ff ff     | .db  0xff,0xff,0x48,0x48,0x48,0x48,0xff,0xff
+    1287 48 48     |
+    1289 48 48     |
+    128b ff ff     |
+    128d ff ff     | .db  0xff,0xff,0x49,0x49,0x49,0x49,0xff,0xff
+    128f 49 49     |
+    1291 49 49     |
+    1293 ff ff     |
+    1295 ff ff     | .db  0xff,0xff,0x4a,0x4a,0x4a,0x4a,0xff,0xff
+    1297 4a 4a     |
+    1299 4a 4a     |
+    129b ff ff     |
+    129d ff ff     | .db  0xff,0xff,0x4b,0x4b,0x4b,0x4b,0xff,0xff
+    129f 4b 4b     |
+    12a1 4b 4b     |
+    12a3 ff ff     |
+    12a5 ff ff     | .db  0xff,0xff,0x4c,0x4c,0x4c,0x4c,0xff,0xff
+    12a7 4c 4c     |
+    12a9 4c 4c     |
+    12ab ff ff     |
+    12ad ff ff     | .db  0xff,0xff,0x4d,0x4d,0x4d,0x4d,0xff,0xff
+    12af 4d 4d     |
+    12b1 4d 4d     |
+    12b3 ff ff     |
+    12b5 ff ff     | .db  0xff,0xff,0x4e,0x4e,0x4e,0x4e,0xff,0xff
+    12b7 4e 4e     |
+    12b9 4e 4e     |
+    12bb ff ff     |
+    12bd ff ff     | .db  0xff,0xff,0x4f,0x4f,0x4f,0x4f,0xff,0xff
+    12bf 4f 4f     |
+    12c1 4f 4f     |
+    12c3 ff ff     |
+    12c5 ff ff     | .db  0xff,0xff,0x50,0x50,0x50,0x50,0xff,0xff
+    12c7 50 50     |
+    12c9 50 50     |
+    12cb ff ff     |
+    12cd ff ff     | .db  0xff,0xff,0x51,0x51,0x51,0x51,0xff,0xff
+    12cf 51 51     |
+    12d1 51 51     |
+    12d3 ff ff     |
+    12d5 ff ff     | .db  0xff,0xff,0x52,0x52,0x52,0x52,0xff,0xff
+    12d7 52 52     |
+    12d9 52 52     |
+    12db ff ff     |
+    12dd ff ff     | .db  0xff,0xff,0x53,0x53,0x53,0x53,0xff,0xff
+    12df 53 53     |
+    12e1 53 53     |
+    12e3 ff ff     |
+    12e5 ff ff     | .db  0xff,0xff,0x54,0x54,0x54,0x54,0xff,0xff
+    12e7 54 54     |
+    12e9 54 54     |
+    12eb ff ff     |
+    12ed ff ff     | .db  0xff,0xff,0x55,0x55,0x55,0x55,0xff,0xff
+    12ef 55 55     |
+    12f1 55 55     |
+    12f3 ff ff     |
+    12f5 ff ff     | .db  0xff,0xff,0x56,0x56,0x56,0x56,0xff,0xff
+    12f7 56 56     |
+    12f9 56 56     |
+    12fb ff ff     |
+    12fd ff ff     | .db  0xff,0xff,0x57,0x57,0x57,0x57,0xff,0xff
+    12ff 57 57     |
+    1301 57 57     |
+    1303 ff ff     |
+    1305 ff ff     | .db  0xff,0xff,0x58,0x58,0x58,0x58,0xff,0xff
+    1307 58 58     |
+    1309 58 58     |
+    130b ff ff     |
+    130d ff ff     | .db  0xff,0xff,0x59,0x59,0x59,0x59,0xff,0xff
+    130f 59 59     |
+    1311 59 59     |
+    1313 ff ff     |
+    1315 ff ff     | .db  0xff,0xff,0x5a,0x5a,0x5a,0x5a,0xff,0xff
+    1317 5a 5a     |
+    1319 5a 5a     |
+    131b ff ff     |
+    131d ff ff     | .db  0xff,0xff,0x5b,0x5b,0x5b,0x5b,0xff,0xff
+    131f 5b 5b     |
+    1321 5b 5b     |
+    1323 ff ff     |
+    1325 ff ff     | .db  0xff,0xff,0x5c,0x5c,0x5c,0x5c,0xff,0xff
+    1327 5c 5c     |
+    1329 5c 5c     |
+    132b ff ff     |
+    132d ff ff     | .db  0xff,0xff,0x5d,0x5d,0x5d,0x5d,0xff,0xff
+    132f 5d 5d     |
+    1331 5d 5d     |
+    1333 ff ff     |
+    1335 ff ff     | .db  0xff,0xff,0x5e,0x5e,0x5e,0x5e,0xff,0xff
+    1337 5e 5e     |
+    1339 5e 5e     |
+    133b ff ff     |
+    133d ff ff     | .db  0xff,0xff,0x5f,0x5f,0x5f,0x5f,0xff,0xff
+    133f 5f 5f     |
+    1341 5f 5f     |
+    1343 ff ff     |
+[Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
+1145  pcgpage.test.src
