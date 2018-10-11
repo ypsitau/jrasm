@@ -19,7 +19,7 @@ wxIMPLEMENT_APP(AppMain);
 
 bool AppMain::OnInit()
 {
-	FrameMain *pFrame = new FrameMain(wxT("Hello World"), wxPoint(50, 50), wxSize(450, 340));
+	FrameMain *pFrame = new FrameMain(nullptr, wxT("Hello World"), wxPoint(50, 50), wxSize(450, 340));
 	pFrame->Show(true);
 	return true;
 }

@@ -1,6 +1,9 @@
 add_executable(jrpcgedit
 	jrpcgedit.cpp
 	FrameMain.cpp
+	ImageBrowser.cpp
+	PanelMain.cpp
+	PatternEditor.cpp
 )
 
 include_directories(

@@ -6,8 +6,8 @@
 //-----------------------------------------------------------------------------
 // FrameMain
 //-----------------------------------------------------------------------------
-FrameMain::FrameMain(const wxString& title, const wxPoint& pos, const wxSize& size)
-        : wxFrame(NULL, wxID_ANY, title, pos, size)
+FrameMain::FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &pos, const wxSize &size) :
+	wxFrame(pParent, wxID_ANY, title, pos, size)
 {
 	wxMenuBar *pMenuBar = new wxMenuBar();
 	SetMenuBar(pMenuBar);
