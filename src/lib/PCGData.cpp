@@ -10,29 +10,33 @@ Expr *PCGData::ComposeExpr() const
 {
 	String asmCode;
 	char str[256];
-	do { // create macro: pcg.SYMBOL.put
-		::sprintf_s(str, "pcg.%s.put:\n", GetSymbol());
+	do { // create macro: PCG.symbol.PUT
+		::sprintf_s(str, "PCG.%s.PUT:\n", GetSymbol());
 		asmCode += str;
-		asmCode += "        .macro offset=0\n";
+		asmCode += "        .MACRO offset=0\n";
 		int charCodePrev = -1;
 		size_t iCol = 0, iRow = 0;
 		for (auto pPCGChar : _pcgCharOwner) {
-			if (pPCGChar->GetCharCode() == 0) {
-				::sprintf_s(str, "        clra\n");
+			int charCode = pPCGChar->GetCharCode();
+			if (_pcgType == PCGTYPE_User && charCode >= 0x20) {
+				charCode = charCode - 0x20 + 0x80;
+			}
+			if (charCode == 0) {
+				::sprintf_s(str, "        CLRA\n");
 				asmCode += str;
-			} else if (charCodePrev >= 0 && pPCGChar->GetCharCode() - charCodePrev == 1) {
-				::sprintf_s(str, "        inca\n");
+			} else if (charCodePrev >= 0 && charCode == charCodePrev + 1) {
+				::sprintf_s(str, "        INCA\n");
 				asmCode += str;
-			} else if (charCodePrev >= 0 && pPCGChar->GetCharCode() - charCodePrev == -1) {
-				::sprintf_s(str, "        deca\n");
+			} else if (charCodePrev >= 0 && charCode == charCodePrev - 1) {
+				::sprintf_s(str, "        DECA\n");
 				asmCode += str;
-			} else if (charCodePrev >= 0 && pPCGChar->GetCharCode() == charCodePrev) {
+			} else if (charCodePrev >= 0 && charCode == charCodePrev) {
 				// nothing to do
 			} else {
-				::sprintf_s(str, "        ldaa    0x%02x\n", pPCGChar->GetCharCode());
+				::sprintf_s(str, "        LDAA    0x%02x\n", charCode);
 				asmCode += str;
 			}
-			::sprintf_s(str, "        staa    [x+0x%02x+offset]\n",
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
 						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
@@ -40,19 +44,19 @@ Expr *PCGData::ComposeExpr() const
 				iCol = 0;
 				iRow++;
 			}
-			charCodePrev = pPCGChar->GetCharCode();
+			charCodePrev = charCode;
 		}
-		asmCode += "        .end\n";
+		asmCode += "        .END\n";
 	} while (0);
-	do { // create macro: pcg.SYMBOL.erase
-		::sprintf_s(str, "pcg.%s.erase:\n", GetSymbol());
+	do { // create macro: PCG.symbol.ERASE
+		::sprintf_s(str, "PCG.%s.ERASE:\n", GetSymbol());
 		asmCode += str;
-		asmCode += "        .macro offset=0\n";
-		::sprintf_s(str, "        clra\n");
+		asmCode += "        .MACRO offset=0\n";
+		::sprintf_s(str, "        CLRA\n");
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x+offset]\n",
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
 						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
@@ -61,17 +65,17 @@ Expr *PCGData::ComposeExpr() const
 				iRow++;
 			}
 		}
-		asmCode += "        .end\n";
+		asmCode += "        .END\n";
 	} while (0);
-	do { // create macro: pcg.SYMBOL.fill
-		::sprintf_s(str, "pcg.%s.fill:\n", GetSymbol());
+	do { // create macro: PCG.symbol.FILL
+		::sprintf_s(str, "PCG.%s.FILL:\n", GetSymbol());
 		asmCode += str;
-		asmCode += "        .macro code,offset=0\n";
-		::sprintf_s(str, "        ldaa    code\n");
+		asmCode += "        .MACRO code,offset=0\n";
+		::sprintf_s(str, "        LDAA    code\n");
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x+offset]\n",
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
 						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
@@ -80,22 +84,22 @@ Expr *PCGData::ComposeExpr() const
 				iRow++;
 			}
 		}
-		asmCode += "        .end\n";
+		asmCode += "        .END\n";
 	} while (0);
-	do { // create macro: pcg.SYMBOL.putattr
-		::sprintf_s(str, "pcg.%s.putattr:\n", GetSymbol());
+	do { // create macro: PCG.symbol.PUTATTR
+		::sprintf_s(str, "PCG.%s.PUTATTR:\n", GetSymbol());
 		asmCode += str;
-		::sprintf_s(str, "        .macro foreground=7,background=0,offset=0\n");
+		::sprintf_s(str, "        .MACRO foreground=7,background=0,offset=0\n");
 		asmCode += str;
 		if (_pcgType == PCGTYPE_CRAM) {
-			::sprintf_s(str, "        ldaa    foreground+(background<<3)\n");
+			::sprintf_s(str, "        LDAA    foreground+(background<<3)\n");
 		} else { // _pcgType == PCGTYPE_User
-			::sprintf_s(str, "        ldaa    (1<<6)+foreground+(background<<3)\n");
+			::sprintf_s(str, "        LDAA    (1<<6)+foreground+(background<<3)\n");
 		}
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x+offset]\n",
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
 						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
@@ -104,18 +108,18 @@ Expr *PCGData::ComposeExpr() const
 				iRow++;
 			}
 		}
-		asmCode += "        .end\n";
+		asmCode += "        .END\n";
 	} while (0);
-	do { // create macro: pcg.SYMBOL.eraseattr
-		::sprintf_s(str, "pcg.%s.eraseattr:\n", GetSymbol());
+	do { // create macro: PCG.symbol.ERASEATTR
+		::sprintf_s(str, "PCG.%s.ERASEATTR:\n", GetSymbol());
 		asmCode += str;
-		::sprintf_s(str, "        .macro foreground=7,background=0,offset=0\n");
+		::sprintf_s(str, "        .MACRO foreground=7,background=0,offset=0\n");
 		asmCode += str;
-		::sprintf_s(str, "        ldaa    foreground+(background<<3)\n");
+		::sprintf_s(str, "        LDAA    foreground+(background<<3)\n");
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        staa    [x+0x%02x+offset]\n",
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
 						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
 			asmCode += str;
 			iCol++;
@@ -124,9 +128,8 @@ Expr *PCGData::ComposeExpr() const
 				iRow++;
 			}
 		}
-		asmCode += "        .end\n";
+		asmCode += "        .END\n";
 	} while (0);
-	//::printf("%s", asmCode.c_str());
 	Parser parser("***PCGData.cpp***");
 	if (!parser.ParseString(asmCode.c_str())) return nullptr;
 	return parser.GetRoot()->Reference();
