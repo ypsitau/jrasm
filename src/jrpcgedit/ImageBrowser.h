@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------------
 // ImageBrowser
 //-----------------------------------------------------------------------------
-class ImageBrowser : public wxListCtrl {
+class ImageBrowser : public wxPanel {
 public:
 	ImageBrowser(wxWindow *pParent);
 private:

@@ -6,13 +6,12 @@
 //-----------------------------------------------------------------------------
 // ImageBrowser
 //-----------------------------------------------------------------------------
-ImageBrowser::ImageBrowser(wxWindow *pParent) : wxListCtrl(
-	pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRTUAL)
+ImageBrowser::ImageBrowser(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Event Handler for ImageBrowser
 //-----------------------------------------------------------------------------
-wxBEGIN_EVENT_TABLE(ImageBrowser, wxListCtrl)
+wxBEGIN_EVENT_TABLE(ImageBrowser, wxPanel)
 wxEND_EVENT_TABLE()
