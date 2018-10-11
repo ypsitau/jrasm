@@ -11,7 +11,7 @@ PatternEditor::PatternEditor(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 }
 
 //-----------------------------------------------------------------------------
-// Event Handler
+// Event Handler for PatternEditor
 //-----------------------------------------------------------------------------
 wxBEGIN_EVENT_TABLE(PatternEditor, wxPanel)
 	EVT_ERASE_BACKGROUND(PatternEditor::OnEraseBackground)
@@ -39,6 +39,7 @@ void PatternEditor::OnPaint(wxPaintEvent &event)
 	wxPaintDC dc(this);
 	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
+	dc.DrawRectangle(10, 10, 300, 300);
 }
 
 void PatternEditor::OnSetFocus(wxFocusEvent &event)

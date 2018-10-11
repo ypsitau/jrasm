@@ -21,6 +21,12 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 }
 
 //-----------------------------------------------------------------------------
+// Event Handler for PanelMain
+//-----------------------------------------------------------------------------
+wxBEGIN_EVENT_TABLE(PanelMain, wxPanel)
+wxEND_EVENT_TABLE()
+
+//-----------------------------------------------------------------------------
 // PanelMain::Page
 //-----------------------------------------------------------------------------
 PanelMain::Page::Page(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
@@ -40,7 +46,7 @@ PanelMain::Page::Page(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 }
 
 //-----------------------------------------------------------------------------
-// Event Handler
+// Event Handler for PanelMain::Page
 //-----------------------------------------------------------------------------
-wxBEGIN_EVENT_TABLE(PanelMain, wxPanel)
+wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
 wxEND_EVENT_TABLE()

@@ -12,7 +12,7 @@ ImageBrowser::ImageBrowser(wxWindow *pParent) : wxListCtrl(
 }
 
 //-----------------------------------------------------------------------------
-// Event Handler
+// Event Handler for ImageBrowser
 //-----------------------------------------------------------------------------
 wxBEGIN_EVENT_TABLE(ImageBrowser, wxListCtrl)
 wxEND_EVENT_TABLE()

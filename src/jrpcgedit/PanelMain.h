@@ -12,6 +12,8 @@ public:
 	class Page : public wxPanel {
 	public:
 		Page(wxWindow *pParent);
+	private:
+		wxDECLARE_EVENT_TABLE();
 	};
 public:
 	PanelMain(wxWindow *pParent);
