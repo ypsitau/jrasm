@@ -48,6 +48,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		PatternEditor *pCtrl = new PatternEditor(
 			this, pPageInfo->GetPatternInfoOwner().front()->Reference());
 		_pPatternEditor = pCtrl;
+		_pPatternEditor->AddListener(this);
 	} while (0);
 	do {
 		PatternBrowser *pCtrl= new PatternBrowser(_pSashRight, pPageInfo->Reference());
@@ -76,3 +77,9 @@ void PanelMain::Page::OnSashDrag_Left(wxSashEvent &event)
 	wxLayoutAlgorithm().LayoutWindow(this, _pPatternEditor);
     Refresh();
 }
+
+void PanelMain::Page::NotifyPatternModified()
+{
+	_pPatternBrowser->Refresh();
+}
+

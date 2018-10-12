@@ -113,6 +113,7 @@ void PatternEditor::OnMotion(wxMouseEvent &event)
 		int iDotX = (pt.x - _rcMatrix.x) / _sizeDot;
 		int iDotY = (pt.y - _rcMatrix.y) / _sizeDot;
 		_pPatternInfo->PutDot(iDotX, iDotY, true);
+		_listenerList.NotifyPatternModified();
 		UpdateMatrix();
 		Refresh();
 	}
@@ -125,6 +126,7 @@ void PatternEditor::OnLeftDown(wxMouseEvent &event)
 		int iDotX = (pt.x - _rcMatrix.x) / _sizeDot;
 		int iDotY = (pt.y - _rcMatrix.y) / _sizeDot;
 		_pPatternInfo->PutDot(iDotX, iDotY, true);
+		_listenerList.NotifyPatternModified();
 		UpdateMatrix();
 		Refresh();
 	}
@@ -156,4 +158,12 @@ void PatternEditor::OnKeyDown(wxKeyEvent &event)
 
 void PatternEditor::OnKeyUp(wxKeyEvent &event)
 {
+}
+
+//-----------------------------------------------------------------------------
+// PatternEditor::ListenerList
+//-----------------------------------------------------------------------------
+void PatternEditor::ListenerList::NotifyPatternModified()
+{
+	for (auto pListener : *this) pListener->NotifyPatternModified();
 }

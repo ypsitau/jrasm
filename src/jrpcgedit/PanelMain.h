@@ -12,7 +12,7 @@
 //-----------------------------------------------------------------------------
 class PanelMain : public wxPanel {
 public:
-	class Page : public wxPanel {
+	class Page : public wxPanel, public PatternEditor::Listener {
 	public:
 		enum {
 			ID_SASH_Left = 1000,
@@ -28,6 +28,9 @@ public:
 		wxDECLARE_EVENT_TABLE();
 		void OnSize(wxSizeEvent &event);
 		void OnSashDrag_Left(wxSashEvent &event);
+	public:
+		// virtual function of PatternEditor::Listener
+		virtual void NotifyPatternModified();
 	};
 public:
 	PanelMain(wxWindow *pParent);

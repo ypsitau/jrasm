@@ -10,13 +10,24 @@
 // PatternEditor
 //-----------------------------------------------------------------------------
 class PatternEditor : public wxPanel {
+public:
+	class Listener {
+	public:
+		virtual void NotifyPatternModified() = 0;
+	};
+	class ListenerList : public std::vector<Listener *> {
+	public:
+		void NotifyPatternModified();
+	};
 private:
 	int _sizeDot;
 	wxRect _rcMatrix;
 	AutoPtr<PatternInfo> _pPatternInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
+	ListenerList _listenerList;
 public:
 	PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo);
+	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
 	void PrepareMatrix();
 	void UpdateMatrix();
 private:

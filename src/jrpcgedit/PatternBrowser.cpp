@@ -47,7 +47,7 @@ void PatternBrowser::OnPaint(wxPaintEvent &event)
 	wxPaintDC dc(this);
 	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
-	int sizeDot = 8;
+	int sizeDot = 4;
 	int x = 0, y = 0;
 	for (auto pPatternInfo : _pPageInfo->GetPatternInfoOwner()) {
 		dc.DrawBitmap(pPatternInfo->MakeBitmap(sizeDot), x, y);

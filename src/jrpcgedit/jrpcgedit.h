@@ -9,11 +9,12 @@
 #include <wx/laywin.h>
 #include <wx/listctrl.h>
 #include "lib/jrasmcore.h"
+#include "Document.h"
 #include "FrameMain.h"
-#include "PanelMain.h"
 #include "PageInfo.h"
-#include "PatternInfo.h"
+#include "PanelMain.h"
 #include "PatternBrowser.h"
 #include "PatternEditor.h"
+#include "PatternInfo.h"
 
 #endif

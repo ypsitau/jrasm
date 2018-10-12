@@ -156,21 +156,23 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="jrpcgedit.h" />
+    <ClInclude Include="Document.h" />
     <ClInclude Include="FrameMain.h" />
-    <ClInclude Include="PanelMain.h" />
     <ClInclude Include="PageInfo.h" />
-    <ClInclude Include="PatternInfo.h" />
+    <ClInclude Include="PanelMain.h" />
     <ClInclude Include="PatternBrowser.h" />
     <ClInclude Include="PatternEditor.h" />
+    <ClInclude Include="PatternInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jrpcgedit.cpp" />
+    <ClCompile Include="Document.cpp" />
     <ClCompile Include="FrameMain.cpp" />
-    <ClCompile Include="PanelMain.cpp" />
     <ClCompile Include="PageInfo.cpp" />
-    <ClCompile Include="PatternInfo.cpp" />
+    <ClCompile Include="PanelMain.cpp" />
     <ClCompile Include="PatternBrowser.cpp" />
     <ClCompile Include="PatternEditor.cpp" />
+    <ClCompile Include="PatternInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
