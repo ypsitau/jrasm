@@ -1,0 +1,75 @@
+#!/usr/bin/env gura
+import(jpeg)
+import(png)
+import(wx.show)
+
+width = 32 * 8, height = 24 * 8
+img = image('cat.jpg')
+cutLevel = 200
+mapTbl1 = [interval(0, 255, 256 - cutLevel), consts(255, cutLevel)]
+mapTbl2 = [consts(0, 52), consts(64, 51), consts(128, 51), consts(192, 51), consts(255, 51)]
+//mapTblNeg = range(255, 0)
+mapTblNeg = range(0, 255)
+img = img.resize(width / 2, height / 2).grayscale().mapcolorlevel(mapTblNeg).mapcolorlevel(mapTbl1).mapcolorlevel(mapTbl2)
+imgDst = image(`rgb, width, height)
+img.scan {|c, i|
+	[xSrc, ySrc] = [i % (width / 2), int(i / (width / 2))]
+	[xDst, yDst] = [xSrc * 2, ySrc * 2]
+	if (c.r < 64) {
+		imgDst.putpixel(xDst,     yDst, color.black)
+		imgDst.putpixel(xDst + 1, yDst, color.black)
+		imgDst.putpixel(xDst,     yDst + 1, color.black)
+		imgDst.putpixel(xDst + 1, yDst + 1, color.black)
+	} elsif (c.r < 128) {
+		imgDst.putpixel(xDst,     yDst, color.white)
+		imgDst.putpixel(xDst + 1, yDst, color.black)
+		imgDst.putpixel(xDst,     yDst + 1, color.black)
+		imgDst.putpixel(xDst + 1, yDst + 1, color.black)
+	} elsif (c.r < 192) {
+		imgDst.putpixel(xDst,     yDst, color.white)
+		imgDst.putpixel(xDst + 1, yDst, color.black)
+		imgDst.putpixel(xDst,     yDst + 1, color.white)
+		imgDst.putpixel(xDst + 1, yDst + 1, color.black)
+	} elsif (c.r < 255) {
+		imgDst.putpixel(xDst,     yDst, color.white)
+		imgDst.putpixel(xDst + 1, yDst, color.white)
+		imgDst.putpixel(xDst,     yDst + 1, color.white)
+		imgDst.putpixel(xDst + 1, yDst + 1, color.black)
+	} else {
+		imgDst.putpixel(xDst,     yDst, color.white)
+		imgDst.putpixel(xDst + 1, yDst, color.white)
+		imgDst.putpixel(xDst,     yDst + 1, color.white)
+		imgDst.putpixel(xDst + 1, yDst + 1, color.white)
+	}
+}
+//imgDst.show()
+//sys.exit()
+nBits = 0
+accum = 0
+bytes = imgDst.scan():xiter {|c|
+	accum = (accum << 1) + cond(c.r == 0, 0, 1)
+	nBits += 1
+	if (nBits == 8) {
+		data = accum
+		nBits = 0
+		accum = 0
+		data
+	}
+}
+R'''
+	.org	0x1000
+
+	pcgpage.page.store
+	ldx	0xc100
+	pcg.screen.put
+	rts
+	
+	.pcgpage page,cram,1
+	.pcg	screen,32,24
+	${format('0x%02x', bytes).fold(16):*join(',').each {|line|}}
+	.db	${line}
+	${end}
+	.end
+	.end
+'''.template().render(sys.stdout)
+//println('\t.db ', format('0x%02x', bytes).fold(16):*join(','))
