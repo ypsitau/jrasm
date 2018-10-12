@@ -70,8 +70,8 @@ Expr *PCGData::ComposeExpr() const
 	do { // create macro: PCG.symbol.FILL
 		::sprintf_s(str, "PCG.%s.FILL:\n", GetSymbol());
 		asmCode += str;
-		asmCode += "        .MACRO code,offset=0\n";
-		::sprintf_s(str, "        LDAA    code\n");
+		asmCode += "        .MACRO data,offset=0\n";
+		::sprintf_s(str, "        LDAA    data\n");
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
@@ -89,12 +89,12 @@ Expr *PCGData::ComposeExpr() const
 	do { // create macro: PCG.symbol.PUTATTR
 		::sprintf_s(str, "PCG.%s.PUTATTR:\n", GetSymbol());
 		asmCode += str;
-		::sprintf_s(str, "        .MACRO foreground=7,background=0,offset=0\n");
+		::sprintf_s(str, "        .MACRO fg=7,bg=0,offset=0\n");
 		asmCode += str;
 		if (_pcgType == PCGTYPE_CRAM) {
-			::sprintf_s(str, "        LDAA    foreground+(background<<3)\n");
+			::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
 		} else { // _pcgType == PCGTYPE_User
-			::sprintf_s(str, "        LDAA    (1<<6)+foreground+(background<<3)\n");
+			::sprintf_s(str, "        LDAA    (1<<6)+fg+(bg<<3)\n");
 		}
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
@@ -113,9 +113,9 @@ Expr *PCGData::ComposeExpr() const
 	do { // create macro: PCG.symbol.ERASEATTR
 		::sprintf_s(str, "PCG.%s.ERASEATTR:\n", GetSymbol());
 		asmCode += str;
-		::sprintf_s(str, "        .MACRO foreground=7,background=0,offset=0\n");
+		::sprintf_s(str, "        .MACRO fg=7,bg=0,offset=0\n");
 		asmCode += str;
-		::sprintf_s(str, "        LDAA    foreground+(background<<3)\n");
+		::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
 		asmCode += str;
 		size_t iCol = 0, iRow = 0;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {

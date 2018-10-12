@@ -7,6 +7,9 @@ println('\tpcgpage.test.store')
 
 repeat (0x100) {|code|
     printf('\tpcg.cram%02x.put\n', code)
+    printf('\tpcg.cram%02x.putattr\n', code)
+    printf('\tpcg.cram%02x.erase\n', code)
+    printf('\tpcg.cram%02x.eraseattr\n', code)
 }
 
 println('\t.pcgpage test,cram,0x00')
@@ -20,261 +23,1029 @@ println('\t.end')
 	.org	0x1000
 	pcgpage.test.store
 	pcg.cram00.put
+	pcg.cram00.putattr
+	pcg.cram00.erase
+	pcg.cram00.eraseattr
 	pcg.cram01.put
+	pcg.cram01.putattr
+	pcg.cram01.erase
+	pcg.cram01.eraseattr
 	pcg.cram02.put
+	pcg.cram02.putattr
+	pcg.cram02.erase
+	pcg.cram02.eraseattr
 	pcg.cram03.put
+	pcg.cram03.putattr
+	pcg.cram03.erase
+	pcg.cram03.eraseattr
 	pcg.cram04.put
+	pcg.cram04.putattr
+	pcg.cram04.erase
+	pcg.cram04.eraseattr
 	pcg.cram05.put
+	pcg.cram05.putattr
+	pcg.cram05.erase
+	pcg.cram05.eraseattr
 	pcg.cram06.put
+	pcg.cram06.putattr
+	pcg.cram06.erase
+	pcg.cram06.eraseattr
 	pcg.cram07.put
+	pcg.cram07.putattr
+	pcg.cram07.erase
+	pcg.cram07.eraseattr
 	pcg.cram08.put
+	pcg.cram08.putattr
+	pcg.cram08.erase
+	pcg.cram08.eraseattr
 	pcg.cram09.put
+	pcg.cram09.putattr
+	pcg.cram09.erase
+	pcg.cram09.eraseattr
 	pcg.cram0a.put
+	pcg.cram0a.putattr
+	pcg.cram0a.erase
+	pcg.cram0a.eraseattr
 	pcg.cram0b.put
+	pcg.cram0b.putattr
+	pcg.cram0b.erase
+	pcg.cram0b.eraseattr
 	pcg.cram0c.put
+	pcg.cram0c.putattr
+	pcg.cram0c.erase
+	pcg.cram0c.eraseattr
 	pcg.cram0d.put
+	pcg.cram0d.putattr
+	pcg.cram0d.erase
+	pcg.cram0d.eraseattr
 	pcg.cram0e.put
+	pcg.cram0e.putattr
+	pcg.cram0e.erase
+	pcg.cram0e.eraseattr
 	pcg.cram0f.put
+	pcg.cram0f.putattr
+	pcg.cram0f.erase
+	pcg.cram0f.eraseattr
 	pcg.cram10.put
+	pcg.cram10.putattr
+	pcg.cram10.erase
+	pcg.cram10.eraseattr
 	pcg.cram11.put
+	pcg.cram11.putattr
+	pcg.cram11.erase
+	pcg.cram11.eraseattr
 	pcg.cram12.put
+	pcg.cram12.putattr
+	pcg.cram12.erase
+	pcg.cram12.eraseattr
 	pcg.cram13.put
+	pcg.cram13.putattr
+	pcg.cram13.erase
+	pcg.cram13.eraseattr
 	pcg.cram14.put
+	pcg.cram14.putattr
+	pcg.cram14.erase
+	pcg.cram14.eraseattr
 	pcg.cram15.put
+	pcg.cram15.putattr
+	pcg.cram15.erase
+	pcg.cram15.eraseattr
 	pcg.cram16.put
+	pcg.cram16.putattr
+	pcg.cram16.erase
+	pcg.cram16.eraseattr
 	pcg.cram17.put
+	pcg.cram17.putattr
+	pcg.cram17.erase
+	pcg.cram17.eraseattr
 	pcg.cram18.put
+	pcg.cram18.putattr
+	pcg.cram18.erase
+	pcg.cram18.eraseattr
 	pcg.cram19.put
+	pcg.cram19.putattr
+	pcg.cram19.erase
+	pcg.cram19.eraseattr
 	pcg.cram1a.put
+	pcg.cram1a.putattr
+	pcg.cram1a.erase
+	pcg.cram1a.eraseattr
 	pcg.cram1b.put
+	pcg.cram1b.putattr
+	pcg.cram1b.erase
+	pcg.cram1b.eraseattr
 	pcg.cram1c.put
+	pcg.cram1c.putattr
+	pcg.cram1c.erase
+	pcg.cram1c.eraseattr
 	pcg.cram1d.put
+	pcg.cram1d.putattr
+	pcg.cram1d.erase
+	pcg.cram1d.eraseattr
 	pcg.cram1e.put
+	pcg.cram1e.putattr
+	pcg.cram1e.erase
+	pcg.cram1e.eraseattr
 	pcg.cram1f.put
+	pcg.cram1f.putattr
+	pcg.cram1f.erase
+	pcg.cram1f.eraseattr
 	pcg.cram20.put
+	pcg.cram20.putattr
+	pcg.cram20.erase
+	pcg.cram20.eraseattr
 	pcg.cram21.put
+	pcg.cram21.putattr
+	pcg.cram21.erase
+	pcg.cram21.eraseattr
 	pcg.cram22.put
+	pcg.cram22.putattr
+	pcg.cram22.erase
+	pcg.cram22.eraseattr
 	pcg.cram23.put
+	pcg.cram23.putattr
+	pcg.cram23.erase
+	pcg.cram23.eraseattr
 	pcg.cram24.put
+	pcg.cram24.putattr
+	pcg.cram24.erase
+	pcg.cram24.eraseattr
 	pcg.cram25.put
+	pcg.cram25.putattr
+	pcg.cram25.erase
+	pcg.cram25.eraseattr
 	pcg.cram26.put
+	pcg.cram26.putattr
+	pcg.cram26.erase
+	pcg.cram26.eraseattr
 	pcg.cram27.put
+	pcg.cram27.putattr
+	pcg.cram27.erase
+	pcg.cram27.eraseattr
 	pcg.cram28.put
+	pcg.cram28.putattr
+	pcg.cram28.erase
+	pcg.cram28.eraseattr
 	pcg.cram29.put
+	pcg.cram29.putattr
+	pcg.cram29.erase
+	pcg.cram29.eraseattr
 	pcg.cram2a.put
+	pcg.cram2a.putattr
+	pcg.cram2a.erase
+	pcg.cram2a.eraseattr
 	pcg.cram2b.put
+	pcg.cram2b.putattr
+	pcg.cram2b.erase
+	pcg.cram2b.eraseattr
 	pcg.cram2c.put
+	pcg.cram2c.putattr
+	pcg.cram2c.erase
+	pcg.cram2c.eraseattr
 	pcg.cram2d.put
+	pcg.cram2d.putattr
+	pcg.cram2d.erase
+	pcg.cram2d.eraseattr
 	pcg.cram2e.put
+	pcg.cram2e.putattr
+	pcg.cram2e.erase
+	pcg.cram2e.eraseattr
 	pcg.cram2f.put
+	pcg.cram2f.putattr
+	pcg.cram2f.erase
+	pcg.cram2f.eraseattr
 	pcg.cram30.put
+	pcg.cram30.putattr
+	pcg.cram30.erase
+	pcg.cram30.eraseattr
 	pcg.cram31.put
+	pcg.cram31.putattr
+	pcg.cram31.erase
+	pcg.cram31.eraseattr
 	pcg.cram32.put
+	pcg.cram32.putattr
+	pcg.cram32.erase
+	pcg.cram32.eraseattr
 	pcg.cram33.put
+	pcg.cram33.putattr
+	pcg.cram33.erase
+	pcg.cram33.eraseattr
 	pcg.cram34.put
+	pcg.cram34.putattr
+	pcg.cram34.erase
+	pcg.cram34.eraseattr
 	pcg.cram35.put
+	pcg.cram35.putattr
+	pcg.cram35.erase
+	pcg.cram35.eraseattr
 	pcg.cram36.put
+	pcg.cram36.putattr
+	pcg.cram36.erase
+	pcg.cram36.eraseattr
 	pcg.cram37.put
+	pcg.cram37.putattr
+	pcg.cram37.erase
+	pcg.cram37.eraseattr
 	pcg.cram38.put
+	pcg.cram38.putattr
+	pcg.cram38.erase
+	pcg.cram38.eraseattr
 	pcg.cram39.put
+	pcg.cram39.putattr
+	pcg.cram39.erase
+	pcg.cram39.eraseattr
 	pcg.cram3a.put
+	pcg.cram3a.putattr
+	pcg.cram3a.erase
+	pcg.cram3a.eraseattr
 	pcg.cram3b.put
+	pcg.cram3b.putattr
+	pcg.cram3b.erase
+	pcg.cram3b.eraseattr
 	pcg.cram3c.put
+	pcg.cram3c.putattr
+	pcg.cram3c.erase
+	pcg.cram3c.eraseattr
 	pcg.cram3d.put
+	pcg.cram3d.putattr
+	pcg.cram3d.erase
+	pcg.cram3d.eraseattr
 	pcg.cram3e.put
+	pcg.cram3e.putattr
+	pcg.cram3e.erase
+	pcg.cram3e.eraseattr
 	pcg.cram3f.put
+	pcg.cram3f.putattr
+	pcg.cram3f.erase
+	pcg.cram3f.eraseattr
 	pcg.cram40.put
+	pcg.cram40.putattr
+	pcg.cram40.erase
+	pcg.cram40.eraseattr
 	pcg.cram41.put
+	pcg.cram41.putattr
+	pcg.cram41.erase
+	pcg.cram41.eraseattr
 	pcg.cram42.put
+	pcg.cram42.putattr
+	pcg.cram42.erase
+	pcg.cram42.eraseattr
 	pcg.cram43.put
+	pcg.cram43.putattr
+	pcg.cram43.erase
+	pcg.cram43.eraseattr
 	pcg.cram44.put
+	pcg.cram44.putattr
+	pcg.cram44.erase
+	pcg.cram44.eraseattr
 	pcg.cram45.put
+	pcg.cram45.putattr
+	pcg.cram45.erase
+	pcg.cram45.eraseattr
 	pcg.cram46.put
+	pcg.cram46.putattr
+	pcg.cram46.erase
+	pcg.cram46.eraseattr
 	pcg.cram47.put
+	pcg.cram47.putattr
+	pcg.cram47.erase
+	pcg.cram47.eraseattr
 	pcg.cram48.put
+	pcg.cram48.putattr
+	pcg.cram48.erase
+	pcg.cram48.eraseattr
 	pcg.cram49.put
+	pcg.cram49.putattr
+	pcg.cram49.erase
+	pcg.cram49.eraseattr
 	pcg.cram4a.put
+	pcg.cram4a.putattr
+	pcg.cram4a.erase
+	pcg.cram4a.eraseattr
 	pcg.cram4b.put
+	pcg.cram4b.putattr
+	pcg.cram4b.erase
+	pcg.cram4b.eraseattr
 	pcg.cram4c.put
+	pcg.cram4c.putattr
+	pcg.cram4c.erase
+	pcg.cram4c.eraseattr
 	pcg.cram4d.put
+	pcg.cram4d.putattr
+	pcg.cram4d.erase
+	pcg.cram4d.eraseattr
 	pcg.cram4e.put
+	pcg.cram4e.putattr
+	pcg.cram4e.erase
+	pcg.cram4e.eraseattr
 	pcg.cram4f.put
+	pcg.cram4f.putattr
+	pcg.cram4f.erase
+	pcg.cram4f.eraseattr
 	pcg.cram50.put
+	pcg.cram50.putattr
+	pcg.cram50.erase
+	pcg.cram50.eraseattr
 	pcg.cram51.put
+	pcg.cram51.putattr
+	pcg.cram51.erase
+	pcg.cram51.eraseattr
 	pcg.cram52.put
+	pcg.cram52.putattr
+	pcg.cram52.erase
+	pcg.cram52.eraseattr
 	pcg.cram53.put
+	pcg.cram53.putattr
+	pcg.cram53.erase
+	pcg.cram53.eraseattr
 	pcg.cram54.put
+	pcg.cram54.putattr
+	pcg.cram54.erase
+	pcg.cram54.eraseattr
 	pcg.cram55.put
+	pcg.cram55.putattr
+	pcg.cram55.erase
+	pcg.cram55.eraseattr
 	pcg.cram56.put
+	pcg.cram56.putattr
+	pcg.cram56.erase
+	pcg.cram56.eraseattr
 	pcg.cram57.put
+	pcg.cram57.putattr
+	pcg.cram57.erase
+	pcg.cram57.eraseattr
 	pcg.cram58.put
+	pcg.cram58.putattr
+	pcg.cram58.erase
+	pcg.cram58.eraseattr
 	pcg.cram59.put
+	pcg.cram59.putattr
+	pcg.cram59.erase
+	pcg.cram59.eraseattr
 	pcg.cram5a.put
+	pcg.cram5a.putattr
+	pcg.cram5a.erase
+	pcg.cram5a.eraseattr
 	pcg.cram5b.put
+	pcg.cram5b.putattr
+	pcg.cram5b.erase
+	pcg.cram5b.eraseattr
 	pcg.cram5c.put
+	pcg.cram5c.putattr
+	pcg.cram5c.erase
+	pcg.cram5c.eraseattr
 	pcg.cram5d.put
+	pcg.cram5d.putattr
+	pcg.cram5d.erase
+	pcg.cram5d.eraseattr
 	pcg.cram5e.put
+	pcg.cram5e.putattr
+	pcg.cram5e.erase
+	pcg.cram5e.eraseattr
 	pcg.cram5f.put
+	pcg.cram5f.putattr
+	pcg.cram5f.erase
+	pcg.cram5f.eraseattr
 	pcg.cram60.put
+	pcg.cram60.putattr
+	pcg.cram60.erase
+	pcg.cram60.eraseattr
 	pcg.cram61.put
+	pcg.cram61.putattr
+	pcg.cram61.erase
+	pcg.cram61.eraseattr
 	pcg.cram62.put
+	pcg.cram62.putattr
+	pcg.cram62.erase
+	pcg.cram62.eraseattr
 	pcg.cram63.put
+	pcg.cram63.putattr
+	pcg.cram63.erase
+	pcg.cram63.eraseattr
 	pcg.cram64.put
+	pcg.cram64.putattr
+	pcg.cram64.erase
+	pcg.cram64.eraseattr
 	pcg.cram65.put
+	pcg.cram65.putattr
+	pcg.cram65.erase
+	pcg.cram65.eraseattr
 	pcg.cram66.put
+	pcg.cram66.putattr
+	pcg.cram66.erase
+	pcg.cram66.eraseattr
 	pcg.cram67.put
+	pcg.cram67.putattr
+	pcg.cram67.erase
+	pcg.cram67.eraseattr
 	pcg.cram68.put
+	pcg.cram68.putattr
+	pcg.cram68.erase
+	pcg.cram68.eraseattr
 	pcg.cram69.put
+	pcg.cram69.putattr
+	pcg.cram69.erase
+	pcg.cram69.eraseattr
 	pcg.cram6a.put
+	pcg.cram6a.putattr
+	pcg.cram6a.erase
+	pcg.cram6a.eraseattr
 	pcg.cram6b.put
+	pcg.cram6b.putattr
+	pcg.cram6b.erase
+	pcg.cram6b.eraseattr
 	pcg.cram6c.put
+	pcg.cram6c.putattr
+	pcg.cram6c.erase
+	pcg.cram6c.eraseattr
 	pcg.cram6d.put
+	pcg.cram6d.putattr
+	pcg.cram6d.erase
+	pcg.cram6d.eraseattr
 	pcg.cram6e.put
+	pcg.cram6e.putattr
+	pcg.cram6e.erase
+	pcg.cram6e.eraseattr
 	pcg.cram6f.put
+	pcg.cram6f.putattr
+	pcg.cram6f.erase
+	pcg.cram6f.eraseattr
 	pcg.cram70.put
+	pcg.cram70.putattr
+	pcg.cram70.erase
+	pcg.cram70.eraseattr
 	pcg.cram71.put
+	pcg.cram71.putattr
+	pcg.cram71.erase
+	pcg.cram71.eraseattr
 	pcg.cram72.put
+	pcg.cram72.putattr
+	pcg.cram72.erase
+	pcg.cram72.eraseattr
 	pcg.cram73.put
+	pcg.cram73.putattr
+	pcg.cram73.erase
+	pcg.cram73.eraseattr
 	pcg.cram74.put
+	pcg.cram74.putattr
+	pcg.cram74.erase
+	pcg.cram74.eraseattr
 	pcg.cram75.put
+	pcg.cram75.putattr
+	pcg.cram75.erase
+	pcg.cram75.eraseattr
 	pcg.cram76.put
+	pcg.cram76.putattr
+	pcg.cram76.erase
+	pcg.cram76.eraseattr
 	pcg.cram77.put
+	pcg.cram77.putattr
+	pcg.cram77.erase
+	pcg.cram77.eraseattr
 	pcg.cram78.put
+	pcg.cram78.putattr
+	pcg.cram78.erase
+	pcg.cram78.eraseattr
 	pcg.cram79.put
+	pcg.cram79.putattr
+	pcg.cram79.erase
+	pcg.cram79.eraseattr
 	pcg.cram7a.put
+	pcg.cram7a.putattr
+	pcg.cram7a.erase
+	pcg.cram7a.eraseattr
 	pcg.cram7b.put
+	pcg.cram7b.putattr
+	pcg.cram7b.erase
+	pcg.cram7b.eraseattr
 	pcg.cram7c.put
+	pcg.cram7c.putattr
+	pcg.cram7c.erase
+	pcg.cram7c.eraseattr
 	pcg.cram7d.put
+	pcg.cram7d.putattr
+	pcg.cram7d.erase
+	pcg.cram7d.eraseattr
 	pcg.cram7e.put
+	pcg.cram7e.putattr
+	pcg.cram7e.erase
+	pcg.cram7e.eraseattr
 	pcg.cram7f.put
+	pcg.cram7f.putattr
+	pcg.cram7f.erase
+	pcg.cram7f.eraseattr
 	pcg.cram80.put
+	pcg.cram80.putattr
+	pcg.cram80.erase
+	pcg.cram80.eraseattr
 	pcg.cram81.put
+	pcg.cram81.putattr
+	pcg.cram81.erase
+	pcg.cram81.eraseattr
 	pcg.cram82.put
+	pcg.cram82.putattr
+	pcg.cram82.erase
+	pcg.cram82.eraseattr
 	pcg.cram83.put
+	pcg.cram83.putattr
+	pcg.cram83.erase
+	pcg.cram83.eraseattr
 	pcg.cram84.put
+	pcg.cram84.putattr
+	pcg.cram84.erase
+	pcg.cram84.eraseattr
 	pcg.cram85.put
+	pcg.cram85.putattr
+	pcg.cram85.erase
+	pcg.cram85.eraseattr
 	pcg.cram86.put
+	pcg.cram86.putattr
+	pcg.cram86.erase
+	pcg.cram86.eraseattr
 	pcg.cram87.put
+	pcg.cram87.putattr
+	pcg.cram87.erase
+	pcg.cram87.eraseattr
 	pcg.cram88.put
+	pcg.cram88.putattr
+	pcg.cram88.erase
+	pcg.cram88.eraseattr
 	pcg.cram89.put
+	pcg.cram89.putattr
+	pcg.cram89.erase
+	pcg.cram89.eraseattr
 	pcg.cram8a.put
+	pcg.cram8a.putattr
+	pcg.cram8a.erase
+	pcg.cram8a.eraseattr
 	pcg.cram8b.put
+	pcg.cram8b.putattr
+	pcg.cram8b.erase
+	pcg.cram8b.eraseattr
 	pcg.cram8c.put
+	pcg.cram8c.putattr
+	pcg.cram8c.erase
+	pcg.cram8c.eraseattr
 	pcg.cram8d.put
+	pcg.cram8d.putattr
+	pcg.cram8d.erase
+	pcg.cram8d.eraseattr
 	pcg.cram8e.put
+	pcg.cram8e.putattr
+	pcg.cram8e.erase
+	pcg.cram8e.eraseattr
 	pcg.cram8f.put
+	pcg.cram8f.putattr
+	pcg.cram8f.erase
+	pcg.cram8f.eraseattr
 	pcg.cram90.put
+	pcg.cram90.putattr
+	pcg.cram90.erase
+	pcg.cram90.eraseattr
 	pcg.cram91.put
+	pcg.cram91.putattr
+	pcg.cram91.erase
+	pcg.cram91.eraseattr
 	pcg.cram92.put
+	pcg.cram92.putattr
+	pcg.cram92.erase
+	pcg.cram92.eraseattr
 	pcg.cram93.put
+	pcg.cram93.putattr
+	pcg.cram93.erase
+	pcg.cram93.eraseattr
 	pcg.cram94.put
+	pcg.cram94.putattr
+	pcg.cram94.erase
+	pcg.cram94.eraseattr
 	pcg.cram95.put
+	pcg.cram95.putattr
+	pcg.cram95.erase
+	pcg.cram95.eraseattr
 	pcg.cram96.put
+	pcg.cram96.putattr
+	pcg.cram96.erase
+	pcg.cram96.eraseattr
 	pcg.cram97.put
+	pcg.cram97.putattr
+	pcg.cram97.erase
+	pcg.cram97.eraseattr
 	pcg.cram98.put
+	pcg.cram98.putattr
+	pcg.cram98.erase
+	pcg.cram98.eraseattr
 	pcg.cram99.put
+	pcg.cram99.putattr
+	pcg.cram99.erase
+	pcg.cram99.eraseattr
 	pcg.cram9a.put
+	pcg.cram9a.putattr
+	pcg.cram9a.erase
+	pcg.cram9a.eraseattr
 	pcg.cram9b.put
+	pcg.cram9b.putattr
+	pcg.cram9b.erase
+	pcg.cram9b.eraseattr
 	pcg.cram9c.put
+	pcg.cram9c.putattr
+	pcg.cram9c.erase
+	pcg.cram9c.eraseattr
 	pcg.cram9d.put
+	pcg.cram9d.putattr
+	pcg.cram9d.erase
+	pcg.cram9d.eraseattr
 	pcg.cram9e.put
+	pcg.cram9e.putattr
+	pcg.cram9e.erase
+	pcg.cram9e.eraseattr
 	pcg.cram9f.put
+	pcg.cram9f.putattr
+	pcg.cram9f.erase
+	pcg.cram9f.eraseattr
 	pcg.crama0.put
+	pcg.crama0.putattr
+	pcg.crama0.erase
+	pcg.crama0.eraseattr
 	pcg.crama1.put
+	pcg.crama1.putattr
+	pcg.crama1.erase
+	pcg.crama1.eraseattr
 	pcg.crama2.put
+	pcg.crama2.putattr
+	pcg.crama2.erase
+	pcg.crama2.eraseattr
 	pcg.crama3.put
+	pcg.crama3.putattr
+	pcg.crama3.erase
+	pcg.crama3.eraseattr
 	pcg.crama4.put
+	pcg.crama4.putattr
+	pcg.crama4.erase
+	pcg.crama4.eraseattr
 	pcg.crama5.put
+	pcg.crama5.putattr
+	pcg.crama5.erase
+	pcg.crama5.eraseattr
 	pcg.crama6.put
+	pcg.crama6.putattr
+	pcg.crama6.erase
+	pcg.crama6.eraseattr
 	pcg.crama7.put
+	pcg.crama7.putattr
+	pcg.crama7.erase
+	pcg.crama7.eraseattr
 	pcg.crama8.put
+	pcg.crama8.putattr
+	pcg.crama8.erase
+	pcg.crama8.eraseattr
 	pcg.crama9.put
+	pcg.crama9.putattr
+	pcg.crama9.erase
+	pcg.crama9.eraseattr
 	pcg.cramaa.put
+	pcg.cramaa.putattr
+	pcg.cramaa.erase
+	pcg.cramaa.eraseattr
 	pcg.cramab.put
+	pcg.cramab.putattr
+	pcg.cramab.erase
+	pcg.cramab.eraseattr
 	pcg.cramac.put
+	pcg.cramac.putattr
+	pcg.cramac.erase
+	pcg.cramac.eraseattr
 	pcg.cramad.put
+	pcg.cramad.putattr
+	pcg.cramad.erase
+	pcg.cramad.eraseattr
 	pcg.cramae.put
+	pcg.cramae.putattr
+	pcg.cramae.erase
+	pcg.cramae.eraseattr
 	pcg.cramaf.put
+	pcg.cramaf.putattr
+	pcg.cramaf.erase
+	pcg.cramaf.eraseattr
 	pcg.cramb0.put
+	pcg.cramb0.putattr
+	pcg.cramb0.erase
+	pcg.cramb0.eraseattr
 	pcg.cramb1.put
+	pcg.cramb1.putattr
+	pcg.cramb1.erase
+	pcg.cramb1.eraseattr
 	pcg.cramb2.put
+	pcg.cramb2.putattr
+	pcg.cramb2.erase
+	pcg.cramb2.eraseattr
 	pcg.cramb3.put
+	pcg.cramb3.putattr
+	pcg.cramb3.erase
+	pcg.cramb3.eraseattr
 	pcg.cramb4.put
+	pcg.cramb4.putattr
+	pcg.cramb4.erase
+	pcg.cramb4.eraseattr
 	pcg.cramb5.put
+	pcg.cramb5.putattr
+	pcg.cramb5.erase
+	pcg.cramb5.eraseattr
 	pcg.cramb6.put
+	pcg.cramb6.putattr
+	pcg.cramb6.erase
+	pcg.cramb6.eraseattr
 	pcg.cramb7.put
+	pcg.cramb7.putattr
+	pcg.cramb7.erase
+	pcg.cramb7.eraseattr
 	pcg.cramb8.put
+	pcg.cramb8.putattr
+	pcg.cramb8.erase
+	pcg.cramb8.eraseattr
 	pcg.cramb9.put
+	pcg.cramb9.putattr
+	pcg.cramb9.erase
+	pcg.cramb9.eraseattr
 	pcg.cramba.put
+	pcg.cramba.putattr
+	pcg.cramba.erase
+	pcg.cramba.eraseattr
 	pcg.crambb.put
+	pcg.crambb.putattr
+	pcg.crambb.erase
+	pcg.crambb.eraseattr
 	pcg.crambc.put
+	pcg.crambc.putattr
+	pcg.crambc.erase
+	pcg.crambc.eraseattr
 	pcg.crambd.put
+	pcg.crambd.putattr
+	pcg.crambd.erase
+	pcg.crambd.eraseattr
 	pcg.crambe.put
+	pcg.crambe.putattr
+	pcg.crambe.erase
+	pcg.crambe.eraseattr
 	pcg.crambf.put
+	pcg.crambf.putattr
+	pcg.crambf.erase
+	pcg.crambf.eraseattr
 	pcg.cramc0.put
+	pcg.cramc0.putattr
+	pcg.cramc0.erase
+	pcg.cramc0.eraseattr
 	pcg.cramc1.put
+	pcg.cramc1.putattr
+	pcg.cramc1.erase
+	pcg.cramc1.eraseattr
 	pcg.cramc2.put
+	pcg.cramc2.putattr
+	pcg.cramc2.erase
+	pcg.cramc2.eraseattr
 	pcg.cramc3.put
+	pcg.cramc3.putattr
+	pcg.cramc3.erase
+	pcg.cramc3.eraseattr
 	pcg.cramc4.put
+	pcg.cramc4.putattr
+	pcg.cramc4.erase
+	pcg.cramc4.eraseattr
 	pcg.cramc5.put
+	pcg.cramc5.putattr
+	pcg.cramc5.erase
+	pcg.cramc5.eraseattr
 	pcg.cramc6.put
+	pcg.cramc6.putattr
+	pcg.cramc6.erase
+	pcg.cramc6.eraseattr
 	pcg.cramc7.put
+	pcg.cramc7.putattr
+	pcg.cramc7.erase
+	pcg.cramc7.eraseattr
 	pcg.cramc8.put
+	pcg.cramc8.putattr
+	pcg.cramc8.erase
+	pcg.cramc8.eraseattr
 	pcg.cramc9.put
+	pcg.cramc9.putattr
+	pcg.cramc9.erase
+	pcg.cramc9.eraseattr
 	pcg.cramca.put
+	pcg.cramca.putattr
+	pcg.cramca.erase
+	pcg.cramca.eraseattr
 	pcg.cramcb.put
+	pcg.cramcb.putattr
+	pcg.cramcb.erase
+	pcg.cramcb.eraseattr
 	pcg.cramcc.put
+	pcg.cramcc.putattr
+	pcg.cramcc.erase
+	pcg.cramcc.eraseattr
 	pcg.cramcd.put
+	pcg.cramcd.putattr
+	pcg.cramcd.erase
+	pcg.cramcd.eraseattr
 	pcg.cramce.put
+	pcg.cramce.putattr
+	pcg.cramce.erase
+	pcg.cramce.eraseattr
 	pcg.cramcf.put
+	pcg.cramcf.putattr
+	pcg.cramcf.erase
+	pcg.cramcf.eraseattr
 	pcg.cramd0.put
+	pcg.cramd0.putattr
+	pcg.cramd0.erase
+	pcg.cramd0.eraseattr
 	pcg.cramd1.put
+	pcg.cramd1.putattr
+	pcg.cramd1.erase
+	pcg.cramd1.eraseattr
 	pcg.cramd2.put
+	pcg.cramd2.putattr
+	pcg.cramd2.erase
+	pcg.cramd2.eraseattr
 	pcg.cramd3.put
+	pcg.cramd3.putattr
+	pcg.cramd3.erase
+	pcg.cramd3.eraseattr
 	pcg.cramd4.put
+	pcg.cramd4.putattr
+	pcg.cramd4.erase
+	pcg.cramd4.eraseattr
 	pcg.cramd5.put
+	pcg.cramd5.putattr
+	pcg.cramd5.erase
+	pcg.cramd5.eraseattr
 	pcg.cramd6.put
+	pcg.cramd6.putattr
+	pcg.cramd6.erase
+	pcg.cramd6.eraseattr
 	pcg.cramd7.put
+	pcg.cramd7.putattr
+	pcg.cramd7.erase
+	pcg.cramd7.eraseattr
 	pcg.cramd8.put
+	pcg.cramd8.putattr
+	pcg.cramd8.erase
+	pcg.cramd8.eraseattr
 	pcg.cramd9.put
+	pcg.cramd9.putattr
+	pcg.cramd9.erase
+	pcg.cramd9.eraseattr
 	pcg.cramda.put
+	pcg.cramda.putattr
+	pcg.cramda.erase
+	pcg.cramda.eraseattr
 	pcg.cramdb.put
+	pcg.cramdb.putattr
+	pcg.cramdb.erase
+	pcg.cramdb.eraseattr
 	pcg.cramdc.put
+	pcg.cramdc.putattr
+	pcg.cramdc.erase
+	pcg.cramdc.eraseattr
 	pcg.cramdd.put
+	pcg.cramdd.putattr
+	pcg.cramdd.erase
+	pcg.cramdd.eraseattr
 	pcg.cramde.put
+	pcg.cramde.putattr
+	pcg.cramde.erase
+	pcg.cramde.eraseattr
 	pcg.cramdf.put
+	pcg.cramdf.putattr
+	pcg.cramdf.erase
+	pcg.cramdf.eraseattr
 	pcg.crame0.put
+	pcg.crame0.putattr
+	pcg.crame0.erase
+	pcg.crame0.eraseattr
 	pcg.crame1.put
+	pcg.crame1.putattr
+	pcg.crame1.erase
+	pcg.crame1.eraseattr
 	pcg.crame2.put
+	pcg.crame2.putattr
+	pcg.crame2.erase
+	pcg.crame2.eraseattr
 	pcg.crame3.put
+	pcg.crame3.putattr
+	pcg.crame3.erase
+	pcg.crame3.eraseattr
 	pcg.crame4.put
+	pcg.crame4.putattr
+	pcg.crame4.erase
+	pcg.crame4.eraseattr
 	pcg.crame5.put
+	pcg.crame5.putattr
+	pcg.crame5.erase
+	pcg.crame5.eraseattr
 	pcg.crame6.put
+	pcg.crame6.putattr
+	pcg.crame6.erase
+	pcg.crame6.eraseattr
 	pcg.crame7.put
+	pcg.crame7.putattr
+	pcg.crame7.erase
+	pcg.crame7.eraseattr
 	pcg.crame8.put
+	pcg.crame8.putattr
+	pcg.crame8.erase
+	pcg.crame8.eraseattr
 	pcg.crame9.put
+	pcg.crame9.putattr
+	pcg.crame9.erase
+	pcg.crame9.eraseattr
 	pcg.cramea.put
+	pcg.cramea.putattr
+	pcg.cramea.erase
+	pcg.cramea.eraseattr
 	pcg.crameb.put
+	pcg.crameb.putattr
+	pcg.crameb.erase
+	pcg.crameb.eraseattr
 	pcg.cramec.put
+	pcg.cramec.putattr
+	pcg.cramec.erase
+	pcg.cramec.eraseattr
 	pcg.cramed.put
+	pcg.cramed.putattr
+	pcg.cramed.erase
+	pcg.cramed.eraseattr
 	pcg.cramee.put
+	pcg.cramee.putattr
+	pcg.cramee.erase
+	pcg.cramee.eraseattr
 	pcg.cramef.put
+	pcg.cramef.putattr
+	pcg.cramef.erase
+	pcg.cramef.eraseattr
 	pcg.cramf0.put
+	pcg.cramf0.putattr
+	pcg.cramf0.erase
+	pcg.cramf0.eraseattr
 	pcg.cramf1.put
+	pcg.cramf1.putattr
+	pcg.cramf1.erase
+	pcg.cramf1.eraseattr
 	pcg.cramf2.put
+	pcg.cramf2.putattr
+	pcg.cramf2.erase
+	pcg.cramf2.eraseattr
 	pcg.cramf3.put
+	pcg.cramf3.putattr
+	pcg.cramf3.erase
+	pcg.cramf3.eraseattr
 	pcg.cramf4.put
+	pcg.cramf4.putattr
+	pcg.cramf4.erase
+	pcg.cramf4.eraseattr
 	pcg.cramf5.put
+	pcg.cramf5.putattr
+	pcg.cramf5.erase
+	pcg.cramf5.eraseattr
 	pcg.cramf6.put
+	pcg.cramf6.putattr
+	pcg.cramf6.erase
+	pcg.cramf6.eraseattr
 	pcg.cramf7.put
+	pcg.cramf7.putattr
+	pcg.cramf7.erase
+	pcg.cramf7.eraseattr
 	pcg.cramf8.put
+	pcg.cramf8.putattr
+	pcg.cramf8.erase
+	pcg.cramf8.eraseattr
 	pcg.cramf9.put
+	pcg.cramf9.putattr
+	pcg.cramf9.erase
+	pcg.cramf9.eraseattr
 	pcg.cramfa.put
+	pcg.cramfa.putattr
+	pcg.cramfa.erase
+	pcg.cramfa.eraseattr
 	pcg.cramfb.put
+	pcg.cramfb.putattr
+	pcg.cramfb.erase
+	pcg.cramfb.eraseattr
 	pcg.cramfc.put
+	pcg.cramfc.putattr
+	pcg.cramfc.erase
+	pcg.cramfc.eraseattr
 	pcg.cramfd.put
+	pcg.cramfd.putattr
+	pcg.cramfd.erase
+	pcg.cramfd.eraseattr
 	pcg.cramfe.put
+	pcg.cramfe.putattr
+	pcg.cramfe.erase
+	pcg.cramfe.eraseattr
 	pcg.cramff.put
+	pcg.cramff.putattr
+	pcg.cramff.erase
+	pcg.cramff.eraseattr
 	.pcgpage test,cram,0x00
 	.pcg	cram00,1,1
 	.db	0xff,0xff,0x00,0x00,0x00,0x00,0xff,0xff
