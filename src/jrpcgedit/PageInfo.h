@@ -1,31 +1,42 @@
 //=============================================================================
-// Pattern.cpp
+// PageInfo.h
 //=============================================================================
-#include "stdafx.h"
+#ifndef __JRPCGEDIT_PAGEINFO_H__
+#define __JRPCGEDIT_PAGEINFO_H__
+
+#include "PatternInfo.h"
 
 //-----------------------------------------------------------------------------
-// Pattern
+// PageInfo
 //-----------------------------------------------------------------------------
-Pattern::Pattern() : _cntRef(1)
-{
-}
+class PageInfo {
+private:
+	int _cntRef;
+	PatternInfoOwner _patternInfoOwner;
+public:
+	DeclareReferenceAccessor(PageInfo);
+public:
+	PageInfo();
+protected:
+	inline ~PageInfo() {};
+public:
+	const PatternInfoOwner &GetPatternInfoOwner() const { return _patternInfoOwner; }
+};
 
 //-----------------------------------------------------------------------------
-// PatternList
+// PageInfoList
 //-----------------------------------------------------------------------------
+class PageInfoList : public std::vector<PageInfo *> {
+};
 
 //-----------------------------------------------------------------------------
-// PatternOwner
+// PageInfoOwner
 //-----------------------------------------------------------------------------
-PatternOwner::~PatternOwner()
-{
-	Clear();
-}
+class PageInfoOwner : public PageInfoList {
+public:
+	~PageInfoOwner();
+	void Clear();
+};
 
-void PatternOwner::Clear()
-{
-	for (auto pPattern : *this) {
-		Pattern::Delete(pPattern);
-	}
-	clear();
-}
+#endif
+

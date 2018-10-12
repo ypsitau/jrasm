@@ -4,7 +4,7 @@
 #ifndef __JRPCGEDIT_PATTERNEDITOR_H__
 #define __JRPCGEDIT_PATTERNEDITOR_H__
 
-#include "Pattern.h"
+#include "PatternInfo.h"
 
 //-----------------------------------------------------------------------------
 // PatternEditor
@@ -12,13 +12,11 @@
 class PatternEditor : public wxPanel {
 private:
 	int _sizeDot;
-	int _nDotsX;
-	int _nDotsY;
 	wxRect _rcMatrix;
-	std::unique_ptr<UInt8[]> _dotTbl;
+	AutoPtr<PatternInfo> _pPatternInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
 public:
-	PatternEditor(wxWindow *pParent);
+	PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo);
 	void PrepareMatrix();
 	void UpdateMatrix();
 private:

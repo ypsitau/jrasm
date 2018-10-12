@@ -6,10 +6,10 @@
 //-----------------------------------------------------------------------------
 // PatternEditor
 //-----------------------------------------------------------------------------
-PatternEditor::PatternEditor(wxWindow *pParent) :
+PatternEditor::PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
-	_sizeDot(24), _nDotsX(16), _nDotsY(16)
+	_sizeDot(24), _pPatternInfo(pPatternInfo)
 {
 	PrepareMatrix();
 	UpdateMatrix();
@@ -17,9 +17,9 @@ PatternEditor::PatternEditor(wxWindow *pParent) :
 
 void PatternEditor::PrepareMatrix()
 {
-	_dotTbl.reset(new UInt8 [_nDotsX * _nDotsY]);
-	_pBmpMatrix.reset(new wxBitmap(_sizeDot * _nDotsX + 1, _sizeDot * _nDotsY + 1));
-	::memset(_dotTbl.get(), 0x00, _nDotsX * _nDotsY);
+	_pBmpMatrix.reset(new wxBitmap(
+						  _sizeDot * _pPatternInfo->GetNDotsX() + 1,
+						  _sizeDot * _pPatternInfo->GetNDotsY() + 1));
 }
 
 void PatternEditor::UpdateMatrix()
@@ -27,25 +27,26 @@ void PatternEditor::UpdateMatrix()
 	wxMemoryDC dc(*_pBmpMatrix);
 	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
-	int xLeft = _sizeDot * _nDotsX;
-	int yBottom = _sizeDot * _nDotsY;
+	int nDotsX = _pPatternInfo->GetNDotsX();
+	int nDotsY = _pPatternInfo->GetNDotsY();
+	int xLeft = _sizeDot * nDotsX;
+	int yBottom = _sizeDot * nDotsY;
 	dc.SetPen(*wxBLACK_PEN);
-	for (int iDotX = 0; iDotX <= _nDotsX; iDotX++) {
+	for (int iDotX = 0; iDotX <= nDotsX; iDotX++) {
 		int x = iDotX * _sizeDot;
 		dc.DrawLine(x, 0, x, yBottom);
 	}
-	for (int iDotY = 0; iDotY <= _nDotsY; iDotY++) {
+	for (int iDotY = 0; iDotY <= nDotsY; iDotY++) {
 		int y = iDotY * _sizeDot;
 		dc.DrawLine(0, y, xLeft, y);
 	}
 	dc.SetPen(*wxWHITE_PEN);
 	dc.SetBrush(*wxBLACK_BRUSH);
-	for (int iDotY = 0; iDotY < _nDotsY; iDotY++) {
+	for (int iDotY = 0; iDotY < nDotsY; iDotY++) {
 		int y = iDotY * _sizeDot;
-		for (int iDotX = 0; iDotX < _nDotsX; iDotX++) {
+		for (int iDotX = 0; iDotX < nDotsX; iDotX++) {
 			int x = iDotX * _sizeDot;
-			UInt8 dot = _dotTbl[iDotX + iDotY * _nDotsX];
-			if (dot != 0) {
+			if (_pPatternInfo->GetDot(iDotX, iDotY)) {
 				dc.DrawRectangle(x, y, _sizeDot + 1, _sizeDot + 1);
 			}
 		}
@@ -111,8 +112,7 @@ void PatternEditor::OnMotion(wxMouseEvent &event)
 	if (event.Dragging() && _rcMatrix.Contains(event.GetPosition())) {
 		int iDotX = (pt.x - _rcMatrix.x) / _sizeDot;
 		int iDotY = (pt.y - _rcMatrix.y) / _sizeDot;
-		UInt8 &dot = _dotTbl[iDotX + iDotY * _nDotsX];
-		dot = 1;
+		_pPatternInfo->PutDot(iDotX, iDotY, true);
 		UpdateMatrix();
 		Refresh();
 	}
@@ -124,8 +124,7 @@ void PatternEditor::OnLeftDown(wxMouseEvent &event)
 	if (_rcMatrix.Contains(event.GetPosition())) {
 		int iDotX = (pt.x - _rcMatrix.x) / _sizeDot;
 		int iDotY = (pt.y - _rcMatrix.y) / _sizeDot;
-		UInt8 &dot = _dotTbl[iDotX + iDotY * _nDotsX];
-		dot = 1;
+		_pPatternInfo->PutDot(iDotX, iDotY, true);
 		UpdateMatrix();
 		Refresh();
 	}

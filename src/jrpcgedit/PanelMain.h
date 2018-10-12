@@ -18,11 +18,12 @@ public:
 			ID_SASH_Left = 1000,
 		};
 	private:
-		wxSashLayoutWindow *_pSashLeft;
+		wxSashLayoutWindow *_pSashRight;
 		PatternEditor *_pPatternEditor;
 		PatternBrowser *_pPatternBrowser;
+		AutoPtr<PageInfo> _pPageInfo;
 	public:
-		Page(wxWindow *pParent);
+		Page(wxWindow *pParent, PageInfo *pPageInfo);
 	private:
 		wxDECLARE_EVENT_TABLE();
 		void OnSize(wxSizeEvent &event);

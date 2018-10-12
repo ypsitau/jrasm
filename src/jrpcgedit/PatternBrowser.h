@@ -4,14 +4,16 @@
 #ifndef __JRPCGEDIT_PATTERNBROWSER_H__
 #define __JRPCGEDIT_PATTERNBROWSER_H__
 
-#include "Pattern.h"
+#include "PageInfo.h"
 
 //-----------------------------------------------------------------------------
 // PatternBrowser
 //-----------------------------------------------------------------------------
 class PatternBrowser : public wxPanel {
+private:
+	AutoPtr<PageInfo> _pPageInfo;
 public:
-	PatternBrowser(wxWindow *pParent);
+	PatternBrowser(wxWindow *pParent, PageInfo *pPageInfo);
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnEraseBackground(wxEraseEvent &event);

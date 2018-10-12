@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 // PatternBrowser
 //-----------------------------------------------------------------------------
-PatternBrowser::PatternBrowser(wxWindow *pParent) :
+PatternBrowser::PatternBrowser(wxWindow *pParent, PageInfo *pPageInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-			wxTAB_TRAVERSAL | wxBORDER_SUNKEN)
+			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPageInfo(pPageInfo)
 {
 }
 

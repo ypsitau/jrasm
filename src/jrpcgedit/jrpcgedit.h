@@ -11,8 +11,8 @@
 #include "lib/jrasmcore.h"
 #include "FrameMain.h"
 #include "PanelMain.h"
-#include "Page.h"
-#include "Pattern.h"
+#include "PageInfo.h"
+#include "PatternInfo.h"
 #include "PatternBrowser.h"
 #include "PatternEditor.h"
 

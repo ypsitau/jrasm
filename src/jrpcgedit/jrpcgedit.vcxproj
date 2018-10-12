@@ -158,8 +158,8 @@
     <ClInclude Include="jrpcgedit.h" />
     <ClInclude Include="FrameMain.h" />
     <ClInclude Include="PanelMain.h" />
-    <ClInclude Include="Page.h" />
-    <ClInclude Include="Pattern.h" />
+    <ClInclude Include="PageInfo.h" />
+    <ClInclude Include="PatternInfo.h" />
     <ClInclude Include="PatternBrowser.h" />
     <ClInclude Include="PatternEditor.h" />
   </ItemGroup>
@@ -167,8 +167,8 @@
     <ClCompile Include="jrpcgedit.cpp" />
     <ClCompile Include="FrameMain.cpp" />
     <ClCompile Include="PanelMain.cpp" />
-    <ClCompile Include="Page.cpp" />
-    <ClCompile Include="Pattern.cpp" />
+    <ClCompile Include="PageInfo.cpp" />
+    <ClCompile Include="PatternInfo.cpp" />
     <ClCompile Include="PatternBrowser.cpp" />
     <ClCompile Include="PatternEditor.cpp" />
     <ClCompile Include="stdafx.cpp">
