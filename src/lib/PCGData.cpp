@@ -9,14 +9,26 @@
 Expr *PCGData::ComposeExpr() const
 {
 	String asmCode;
-	char str[256];
+	char str[4096];
+	const char *formatForwardX =
+		"        STX     [forwardx%d+1]\n"
+		"        INC     [forwardx%d+1]\n"
+		"forwardx%d:\n"
+		"        LDX     0x0000\n";
 	do { // create macro: PCG.symbol.PUT
 		::sprintf_s(str, "PCG.%s.PUT:\n", GetSymbol());
 		asmCode += str;
 		asmCode += "        .MACRO offset=0\n";
 		int charCodePrev = -1;
-		size_t iCol = 0, iRow = 0;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
 		for (auto pPCGChar : _pcgCharOwner) {
+			int offsetBase = iCol * _xStep + iRow * _yStep;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
 			int charCode = pPCGChar->GetCharCode();
 			if (_pcgType == PCGTYPE_User && charCode >= 0x20) {
 				charCode = charCode - 0x20 + 0x80;
@@ -36,8 +48,7 @@ Expr *PCGData::ComposeExpr() const
 				::sprintf_s(str, "        LDAA    0x%02x\n", charCode);
 				asmCode += str;
 			}
-			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
-						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -54,10 +65,16 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += "        .MACRO offset=0\n";
 		::sprintf_s(str, "        CLRA\n");
 		asmCode += str;
-		size_t iCol = 0, iRow = 0;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
-						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
+			int offsetBase = iCol * _xStep + iRow * _yStep;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -73,10 +90,16 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += "        .MACRO data,offset=0\n";
 		::sprintf_s(str, "        LDAA    data\n");
 		asmCode += str;
-		size_t iCol = 0, iRow = 0;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
-						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
+			int offsetBase = iCol * _xStep + iRow * _yStep;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -97,10 +120,16 @@ Expr *PCGData::ComposeExpr() const
 			::sprintf_s(str, "        LDAA    (1<<6)+fg+(bg<<3)\n");
 		}
 		asmCode += str;
-		size_t iCol = 0, iRow = 0;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
-						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
+			int offsetBase = iCol * _xStep + iRow * _yStep;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
@@ -117,10 +146,16 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += str;
 		::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
 		asmCode += str;
-		size_t iCol = 0, iRow = 0;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n",
-						static_cast<UInt8>(iCol * _xStep + iRow * _yStep));
+			int offsetBase = iCol * _xStep + iRow * _yStep;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 			asmCode += str;
 			iCol++;
 			if (iCol == _wdChar) {
