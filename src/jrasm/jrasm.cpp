@@ -16,8 +16,8 @@ const char *strOption = R"**(available options:
 --print-hexdump-u  -X       prints hex dump in upper case
 --print-list-l     -l       prints symbol list in lower case
 --print-list-u     -L       prints symbol list in upper case
---print-memory-l   -m       prints memory image in lower case
---print-memory-u   -M       prints memory image in upper case
+--print-resource-l -r       prints resource information in lower case
+--print-resource-u -R       prints resource information in upper case
 --verbose          -v       verbose mode
 --help             -h       prints this help
 )**";
@@ -35,8 +35,8 @@ int main(int argc, const char *argv[])
 		{ "print-hexdump-u",	'X',	CommandLine::TYPE_Flag	},
 		{ "print-list-l",		'l',	CommandLine::TYPE_Flag	},
 		{ "print-list-u",		'L',	CommandLine::TYPE_Flag	},
-		{ "print-memory-l",		'm',	CommandLine::TYPE_Flag	},
-		{ "print-memory-u",		'M',	CommandLine::TYPE_Flag	},
+		{ "print-resource-l",	'r',	CommandLine::TYPE_Flag	},
+		{ "print-resource-u",	'R',	CommandLine::TYPE_Flag	},
 		{ "verbose",			'v',	CommandLine::TYPE_Flag	},
 		{ "help",				'h',	CommandLine::TYPE_Flag	},
 	};
@@ -85,38 +85,12 @@ int main(int argc, const char *argv[])
 	}
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-list-l") || (upperCaseFlag = cmdLine.IsSet("print-list-u"))) {
-		const char *format = upperCaseFlag? "%04X  %s\n" : "%04x  %s\n";
-		std::unique_ptr<Context::SymbolInfoOwner> pSymbolInfoOwner(context.MakeSymbolInfoOwner());
-		::printf("[Symbol List]\n");
-		if (pSymbolInfoOwner->empty()) {
-			::printf("(no symbol)\n");
-		} else {
-			for (auto pSymbolInfo : *pSymbolInfoOwner) {
-				::printf(format, pSymbolInfo->GetInteger(), pSymbolInfo->GetSymbol());
-			}
-		}
+		context.PrintSymbolList(stdout, upperCaseFlag);
 	}
 	upperCaseFlag = false;
-	if (cmdLine.IsSet("print-memory-l") || (upperCaseFlag = cmdLine.IsSet("print-memory-u"))) {
-		const char *formatRoot	= "%04x-%04x   %5dbytes\n";
-		const char *formatChild	= " %04x-%04x  %5dbytes\n";
-		if (upperCaseFlag) {
-			formatRoot	= "%04X-%04X   %5dbytes\n";
-			formatChild	= " %04X-%04X  %5dbytes\n";
-		}
-		size_t bytesGapToJoin = 128;
-		UInt8 dataFiller = 0x00;
-		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(bytesGapToJoin, dataFiller));
-		if (pRegionOwner.get() == nullptr) goto errorDone;
-		::printf("[Memory Image]\n");
-		for (auto pRegion : *pRegionOwner) {
-			::printf(formatRoot, pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
-			for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
-				::printf(formatChild,
-						 pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm() - 1,
-						 pRegionIngredient->GetBytes());
-			}
-		}
+	if (cmdLine.IsSet("print-resource-l") || (upperCaseFlag = cmdLine.IsSet("print-resource-u"))) {
+		if (!context.PrintMemoryUsage(stdout, upperCaseFlag)) goto errorDone;
+		context.PrintPCGUsage(stdout, upperCaseFlag);
 	}
 	return 0;
 errorDone:

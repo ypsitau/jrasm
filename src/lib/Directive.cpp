@@ -821,17 +821,6 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		return false;
 	}
 	int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
-	if (pcgType == PCGTYPE_CRAM) {
-		if (charCodeCur < 0 || charCodeCur > 255) {
-			ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
-			return false;
-		}
-	} else { // pcgType == PCGTYPE_User
-		if (charCodeCur < 0 || charCodeCur > 63) {
-			ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
-			return false;
-		}
-	}
 	for (size_t yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (size_t xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
@@ -842,6 +831,17 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 			}
 			const PCGChar *pPCGChar = context.GetPCGCharsBuiltIn().FindSamePattern(buffDst);
 			if (pPCGChar == nullptr) {
+				if (pcgType == PCGTYPE_CRAM) {
+					if (charCodeCur < 0 || charCodeCur > 255) {
+						ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
+						return false;
+					}
+				} else { // pcgType == PCGTYPE_User
+					if (charCodeCur < 0 || charCodeCur > 63) {
+						ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
+						return false;
+					}
+				}
 				_pPCGData->AddPCGChar(context.GetPCGPageCur()->CreatePCGChar(buffDst));
 			} else {
 				_pPCGData->AddPCGChar(pPCGChar->Reference());
@@ -950,7 +950,7 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 	} while (0);
 	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
-	context.SetPCGPageCur(_pPCGPage->Reference());
+	context.AddPCGPage(_pPCGPage->Reference());
 	return true;
 }
 
@@ -958,7 +958,6 @@ bool Directive_PCGPAGE::OnPhaseAssignMacro(Context &context, Expr *pExpr)
 {
 	_pExprGenerated.reset(_pPCGPage->ComposeExpr());
 	if (_pExprGenerated.IsNull()) return false;
-	//_pExprGenerated->GetExprChildren().Print(false);
 	return _pExprGenerated->OnPhaseAssignMacro(context);
 }
 

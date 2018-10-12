@@ -68,7 +68,7 @@ private:
 	ExprDictStack _exprDictStack;
 	MacroDict _macroDict;
 	AutoPtr<Expr> _pExprRoot;
-	AutoPtr<PCGPage> _pPCGPageCur;
+	PCGPageOwner _pcgPageOwner;
 	PCGCharOwner _pcgCharsBuiltIn;
 	std::unique_ptr<ExprList> _pExprListResolved;
 public:
@@ -97,13 +97,17 @@ public:
 	inline MacroDict &GetMacroDict() { return _macroDict; }
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
-	inline void SetPCGPageCur(PCGPage *pPCGPage) { _pPCGPageCur.reset(pPCGPage); }
-	inline PCGPage *GetPCGPageCur() { return _pPCGPageCur.get(); }
+	inline const PCGPageOwner &GetPCGPageOwner() const { return _pcgPageOwner; }
+	inline void AddPCGPage(PCGPage *pPCGPage) { _pcgPageOwner.push_back(pPCGPage); }
+	inline PCGPage *GetPCGPageCur() { return _pcgPageOwner.back(); }
 	inline const PCGCharOwner &GetPCGCharsBuiltIn() const { return _pcgCharsBuiltIn; }
 	bool ParseFile();
 	bool Prepare();
 	RegionOwner *Generate(size_t bytesGapToJoin, UInt8 dataFiller);
 	bool DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine);
+	void PrintSymbolList(FILE *fp, bool upperCaseFlag);
+	bool PrintMemoryUsage(FILE *fp, bool upperCaseFlag);
+	void PrintPCGUsage(FILE *fp, bool upperCaseFlag);
 	bool AddRegion(Integer addrTop);
 	void BeginScope();
 	void EndScope();

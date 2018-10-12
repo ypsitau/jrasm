@@ -60,6 +60,56 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 	return _pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0);
 }
 
+void Context::PrintSymbolList(FILE *fp, bool upperCaseFlag)
+{
+	const char *format = upperCaseFlag? "%04X  %s\n" : "%04x  %s\n";
+	std::unique_ptr<SymbolInfoOwner> pSymbolInfoOwner(MakeSymbolInfoOwner());
+	::fprintf(fp, "[Symbol List]\n");
+	if (pSymbolInfoOwner->empty()) {
+		::fprintf(fp, "(no symbol)\n");
+	} else {
+		for (auto pSymbolInfo : *pSymbolInfoOwner) {
+			::fprintf(fp, format, pSymbolInfo->GetInteger(), pSymbolInfo->GetSymbol());
+		}
+	}
+}
+
+bool Context::PrintMemoryUsage(FILE *fp, bool upperCaseFlag)
+{
+	const char *formatRoot	= "%04x-%04x   %5dbytes\n";
+	const char *formatChild	= " %04x-%04x  %5dbytes\n";
+	if (upperCaseFlag) {
+		formatRoot	= "%04X-%04X   %5dbytes\n";
+		formatChild	= " %04X-%04X  %5dbytes\n";
+	}
+	size_t bytesGapToJoin = 128;
+	UInt8 dataFiller = 0x00;
+	std::unique_ptr<RegionOwner> pRegionOwner(Generate(bytesGapToJoin, dataFiller));
+	if (pRegionOwner.get() == nullptr) return false;
+	::fprintf(fp, "[Memory Usage]\n");
+	for (auto pRegion : *pRegionOwner) {
+		::fprintf(fp, formatRoot, pRegion->GetAddrTop(), pRegion->GetAddrBtm() - 1, pRegion->GetBytes());
+		for (auto pRegionIngredient : pRegion->GetRegionsIngredient()) {
+			::fprintf(fp, formatChild,
+					  pRegionIngredient->GetAddrTop(), pRegionIngredient->GetAddrBtm() - 1,
+					  pRegionIngredient->GetBytes());
+		}
+	}
+	return true;
+}
+
+void Context::PrintPCGUsage(FILE *fp, bool upperCaseFlag)
+{
+	if (GetPCGPageOwner().empty()) return;
+	::fprintf(fp, "[PCG Usage]\n");
+	for (auto pPCGOwner : GetPCGPageOwner()) {
+		if (pPCGOwner->IsEmpty()) continue;
+		::fprintf(fp, "%s: %s .. 0x%02x-0x%02x\n",
+				  pPCGOwner->GetSymbol(), (pPCGOwner->GetPCGType() == PCGTYPE_User)? "User" : "CRAM",
+				  pPCGOwner->GetCharCodeStart(), pPCGOwner->GetCharCodeEnd());
+	}
+}
+
 bool Context::AddRegion(Integer addrTop)
 {
 	Region *pRegion = _pSegmentCur->FindRegionByAddrTop(addrTop);

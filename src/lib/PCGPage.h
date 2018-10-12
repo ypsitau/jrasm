@@ -30,7 +30,9 @@ private:
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline PCGType GetPCGType() const { return _pcgType; }
+	inline bool IsEmpty() const { return _pcgCharOwner.empty(); }
 	inline int GetCharCodeStart() const { return _charCodeStart; }
+	inline int GetCharCodeEnd() const { return _charCodeStart + static_cast<int>(_pcgCharOwner.size()) - 1; }
 	inline int GetCharCodeCur() const { return _charCodeStart + static_cast<int>(_pcgCharOwner.size()); }
 	inline const PCGCharOwner &GetPCGCharOwner() const { return _pcgCharOwner; }
 	PCGChar *CreatePCGChar(const Binary &buff);
