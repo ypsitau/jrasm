@@ -4,7 +4,7 @@
 #ifndef __PANELMAIN_H__
 #define __PANELMAIN_H__
 
-#include "ImageBrowser.h"
+#include "PatternBrowser.h"
 #include "PatternEditor.h"
 
 //-----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ public:
 	private:
 		wxSashLayoutWindow *_pSashLeft;
 		PatternEditor *_pPatternEditor;
-		ImageBrowser *_pImageBrowser;
+		PatternBrowser *_pPatternBrowser;
 	public:
 		Page(wxWindow *pParent);
 	private:

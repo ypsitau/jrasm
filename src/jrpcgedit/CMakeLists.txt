@@ -1,8 +1,8 @@
 add_executable(jrpcgedit
 	jrpcgedit.cpp
 	FrameMain.cpp
-	ImageBrowser.cpp
 	PanelMain.cpp
+	PatternBrowser.cpp
 	PatternEditor.cpp
 )
 

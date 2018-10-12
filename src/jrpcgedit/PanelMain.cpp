@@ -48,8 +48,8 @@ PanelMain::Page::Page(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 		_pPatternEditor = pCtrl;
 	} while (0);
 	do {
-		ImageBrowser *pCtrl= new ImageBrowser(this);
-		_pImageBrowser = pCtrl;
+		PatternBrowser *pCtrl= new PatternBrowser(this);
+		_pPatternBrowser = pCtrl;
 	} while (0);
 }
 
@@ -63,7 +63,7 @@ wxEND_EVENT_TABLE()
 
 void PanelMain::Page::OnSize(wxSizeEvent &event)
 {
-	wxLayoutAlgorithm().LayoutWindow(this, _pImageBrowser);
+	wxLayoutAlgorithm().LayoutWindow(this, _pPatternBrowser);
 	event.Skip();
 }
 
@@ -71,6 +71,6 @@ void PanelMain::Page::OnSashDrag_Left(wxSashEvent &event)
 {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE) return;
 	_pSashLeft->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
-	wxLayoutAlgorithm().LayoutWindow(this, _pImageBrowser);
+	wxLayoutAlgorithm().LayoutWindow(this, _pPatternBrowser);
     Refresh();
 }
