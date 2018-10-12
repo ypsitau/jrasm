@@ -1,8 +1,8 @@
 //=============================================================================
 // PCGData.h
 //=============================================================================
-#ifndef __PCGDATA_H__
-#define __PCGDATA_H__
+#ifndef __JRASMCORE_PCGDATA_H__
+#define __JRASMCORE_PCGDATA_H__
 
 #include "PCGChar.h"
 

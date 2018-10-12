@@ -1,8 +1,8 @@
 //=============================================================================
 // FormatCJR.h
 //=============================================================================
-#ifndef __FORMATCJR_H__
-#define __FORMATCJR_H__
+#ifndef __JRASMCORE_FORMATCJR_H__
+#define __JRASMCORE_FORMATCJR_H__
 
 #include "Region.h"
 

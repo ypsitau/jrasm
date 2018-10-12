@@ -1,8 +1,8 @@
 //=============================================================================
 // MmlParser.h
 //=============================================================================
-#ifndef __MMLPARSER_H__
-#define __MMLPARSER_H__
+#ifndef __JRASMCORE_MMLPARSER_H__
+#define __JRASMCORE_MMLPARSER_H__
 
 class MmlParser {
 public:

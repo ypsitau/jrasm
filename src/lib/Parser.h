@@ -1,8 +1,8 @@
 //=============================================================================
 // Parser.h
 //=============================================================================
-#ifndef __PARSER_H__
-#define __PARSER_H__
+#ifndef __JRASMCORE_PARSER_H__
+#define __JRASMCORE_PARSER_H__
 
 #include "Tokenizer.h"
 

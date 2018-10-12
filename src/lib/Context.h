@@ -1,8 +1,8 @@
 //=============================================================================
 // Context.h
 //=============================================================================
-#ifndef __CONTEXT_H__
-#define __CONTEXT_H__
+#ifndef __JRASMCORE_CONTEXT_H__
+#define __JRASMCORE_CONTEXT_H__
 
 #include "Segment.h"
 #include "Expr.h"

@@ -1,8 +1,8 @@
 //=============================================================================
 // ErrorLog.h
 //=============================================================================
-#ifndef __ERRORLOG_H__
-#define __ERRORLOG_H__
+#ifndef __JRASMCORE_ERRORLOG_H__
+#define __JRASMCORE_ERRORLOG_H__
 
 #include "Common.h"
 

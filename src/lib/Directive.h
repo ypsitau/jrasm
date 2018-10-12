@@ -1,8 +1,8 @@
 //=============================================================================
 // Directive.h
 //=============================================================================
-#ifndef __DIRECTIVE_H__
-#define __DIRECTIVE_H__
+#ifndef __JRASMCORE_DIRECTIVE_H__
+#define __JRASMCORE_DIRECTIVE_H__
 
 #include "Common.h"
 #include "MmlParser.h"

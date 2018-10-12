@@ -1,8 +1,8 @@
 //=============================================================================
 // Common.h
 //=============================================================================
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef __JRASMCORE_COMMON_H__
+#define __JRASMCORE_COMMON_H__
 
 #include <stdio.h>
 #include <stdlib.h>

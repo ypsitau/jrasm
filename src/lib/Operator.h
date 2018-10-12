@@ -1,8 +1,8 @@
 //=============================================================================
 // Operator.h
 //=============================================================================
-#ifndef __OPERATOR_H__
-#define __OPERATOR_H__
+#ifndef __JRASMCORE_OPERATOR_H__
+#define __JRASMCORE_OPERATOR_H__
 
 #include "Token.h"
 

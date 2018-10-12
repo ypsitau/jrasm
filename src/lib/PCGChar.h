@@ -1,8 +1,8 @@
 //=============================================================================
 // PCGChar.h
 //=============================================================================
-#ifndef __PCGCHAR_H__
-#define __PCGCHAR_H__
+#ifndef __JRASMCORE_PCGCHAR_H__
+#define __JRASMCORE_PCGCHAR_H__
 
 #include "Common.h"
 

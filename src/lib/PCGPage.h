@@ -1,8 +1,8 @@
 //=============================================================================
 // PCGPage.h
 //=============================================================================
-#ifndef __PCGPAGE_H__
-#define __PCGPAGE_H__
+#ifndef __JRASMCORE_PCGPAGE_H__
+#define __JRASMCORE_PCGPAGE_H__
 
 #include "PCGChar.h"
 

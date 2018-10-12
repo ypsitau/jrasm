@@ -1,8 +1,8 @@
 //=============================================================================
 // Generator.h
 //=============================================================================
-#ifndef __GENERATOR_H__
-#define __GENERATOR_H__
+#ifndef __JRASMCORE_GENERATOR_H__
+#define __JRASMCORE_GENERATOR_H__
 
 #include "Common.h"
 

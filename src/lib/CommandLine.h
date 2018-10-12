@@ -1,8 +1,8 @@
 //=============================================================================
 // CommandLine.h
 //=============================================================================
-#ifndef __COMMANDLINE_H__
-#define __COMMANDLINE_H__
+#ifndef __JRASMCORE_COMMANDLINE_H__
+#define __JRASMCORE_COMMANDLINE_H__
 
 #include "Common.h"
 

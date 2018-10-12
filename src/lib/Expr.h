@@ -1,8 +1,8 @@
 //=============================================================================
 // Expr.h
 //=============================================================================
-#ifndef __EXPR_H__
-#define __EXPR_H__
+#ifndef __JRASMCORE_EXPR_H__
+#define __JRASMCORE_EXPR_H__
 
 #include "Directive.h"
 #include "Operator.h"

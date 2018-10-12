@@ -1,8 +1,8 @@
 //=============================================================================
 // Segment.h
 //=============================================================================
-#ifndef __SEGMENT_H__
-#define __SEGMENT_H__
+#ifndef __JRASMCORE_SEGMENT_H__
+#define __JRASMCORE_SEGMENT_H__
 
 #include "Region.h"
 

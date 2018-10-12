@@ -1,8 +1,8 @@
 //=============================================================================
 // Tokenizer.h
 //=============================================================================
-#ifndef __TOKENIZER_H__
-#define __TOKENIZER_H__
+#ifndef __JRASMCORE_TOKENIZER_H__
+#define __JRASMCORE_TOKENIZER_H__
 
 #include "Token.h"
 

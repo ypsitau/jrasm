@@ -1,8 +1,8 @@
 //=============================================================================
 // Generator_M6800.h
 //=============================================================================
-#ifndef __GENERATOR_M6800_H__
-#define __GENERATOR_M6800_H__
+#ifndef __JRASMCORE_GENERATOR_M6800_H__
+#define __JRASMCORE_GENERATOR_M6800_H__
 
 #include "Generator.h"
 

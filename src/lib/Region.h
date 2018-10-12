@@ -1,8 +1,8 @@
 //=============================================================================
 // Region.h
 //=============================================================================
-#ifndef __REGION_H__
-#define __REGION_H__
+#ifndef __JRASMCORE_REGION_H__
+#define __JRASMCORE_REGION_H__
 
 #include "Common.h"
 

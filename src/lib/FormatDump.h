@@ -1,8 +1,8 @@
 //=============================================================================
 // FormatDump.h
 //=============================================================================
-#ifndef __FORMATDUMP_H__
-#define __FORMATDUMP_H__
+#ifndef __JRASMCORE_FORMATDUMP_H__
+#define __JRASMCORE_FORMATDUMP_H__
 
 #include "Region.h"
 

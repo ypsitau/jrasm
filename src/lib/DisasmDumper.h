@@ -1,8 +1,8 @@
 //=============================================================================
 // DisasmDumper.h
 //=============================================================================
-#ifndef __DISASMDUMPER_H__
-#define __DISASMDUMPER_H__
+#ifndef __JRASMCORE_DISASMDUMPER_H__
+#define __JRASMCORE_DISASMDUMPER_H__
 
 #include "Common.h"
 
