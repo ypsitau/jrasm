@@ -32,6 +32,8 @@ public:
 		// virtual function of PatternEditor::Listener
 		virtual void NotifyPatternModified();
 	};
+private:
+	AutoPtr<Document> _pDocument;
 public:
 	PanelMain(wxWindow *pParent);
 private:

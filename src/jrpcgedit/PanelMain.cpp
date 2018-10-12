@@ -10,6 +10,8 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 {
 	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
 	SetSizer(pOuterBox);
+	_pDocument.reset(new Document());
+	_pDocument->ReadFile("pcgsimple.asm");
 	do {
 		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM);
 		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());

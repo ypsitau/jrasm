@@ -21,6 +21,8 @@ protected:
 	inline ~Document() {};
 public:
 	const PageInfoOwner &GetPageInfoOwner() const { return _pageInfoOwner; }
+	bool ReadFile(const char *pathName);
+	bool WriteFile(const char *pathName);
 };
 
 #endif
