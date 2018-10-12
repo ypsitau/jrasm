@@ -1,8 +1,8 @@
 //=============================================================================
 // PanelMain.h
 //=============================================================================
-#ifndef __PANELMAIN_H__
-#define __PANELMAIN_H__
+#ifndef __JRPCGEDIT_PANELMAIN_H__
+#define __JRPCGEDIT_PANELMAIN_H__
 
 #include "PatternBrowser.h"
 #include "PatternEditor.h"

@@ -1,8 +1,8 @@
 //=============================================================================
 // jrpcgedit.h
 //=============================================================================
-#ifndef __JRPCGEDIT_H__
-#define __JRPCGEDIT_H__
+#ifndef __JRPCGEDIT_JRPCGEDIT_H__
+#define __JRPCGEDIT_JRPCGEDIT_H__
 
 #include <wx/wx.h>
 #include <wx/bookctrl.h>

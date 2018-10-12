@@ -1,8 +1,8 @@
 //=============================================================================
 // PatternBrowser.h
 //=============================================================================
-#ifndef __PATTERNBROWSER_H__
-#define __PATTERNBROWSER_H__
+#ifndef __JRPCGEDIT_PATTERNBROWSER_H__
+#define __JRPCGEDIT_PATTERNBROWSER_H__
 
 #include "Pattern.h"
 

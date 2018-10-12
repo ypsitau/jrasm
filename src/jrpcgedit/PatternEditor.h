@@ -1,8 +1,8 @@
 //=============================================================================
 // PatternEditor.h
 //=============================================================================
-#ifndef __PATTERNEDITOR_H__
-#define __PATTERNEDITOR_H__
+#ifndef __JRPCGEDIT_PATTERNEDITOR_H__
+#define __JRPCGEDIT_PATTERNEDITOR_H__
 
 #include "Pattern.h"
 

@@ -1,8 +1,8 @@
 //=============================================================================
 // FrameMain.h
 //=============================================================================
-#ifndef __FRAMEMAIN_H__
-#define __FRAMEMAIN_H__
+#ifndef __JRPCGEDIT_FRAMEMAIN_H__
+#define __JRPCGEDIT_FRAMEMAIN_H__
 
 #include "PanelMain.h"
 
