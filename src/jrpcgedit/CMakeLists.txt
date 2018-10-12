@@ -2,12 +2,13 @@ add_executable(jrpcgedit
 	jrpcgedit.cpp
 	FrameMain.cpp
 	PanelMain.cpp
+	Pattern.cpp
 	PatternBrowser.cpp
 	PatternEditor.cpp
 )
 
 include_directories(
-	${PROJECT_SOURCE_DIR}/lib
+	${PROJECT_SOURCE_DIR}
 	${PROJECT_SOURCE_DIR}/guest/wxWidgets-3.1.1/lib/wx/include/osx_cocoa-unicode-static-3.1/
 	${PROJECT_SOURCE_DIR}/guest/wxWidgets-3.1.1/include/
 )

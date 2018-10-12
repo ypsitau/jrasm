@@ -8,9 +8,10 @@
 #include <wx/bookctrl.h>
 #include <wx/laywin.h>
 #include <wx/listctrl.h>
-#include "jrasmcore.h"
+#include "lib/jrasmcore.h"
 #include "FrameMain.h"
 #include "PanelMain.h"
+#include "Pattern.h"
 #include "PatternBrowser.h"
 #include "PatternEditor.h"
 

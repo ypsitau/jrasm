@@ -7,7 +7,9 @@
 // PatternEditor
 //-----------------------------------------------------------------------------
 PatternEditor::PatternEditor(wxWindow *pParent) :
-	wxPanel(pParent, wxID_ANY), _sizeDot(24), _nDotsX(16), _nDotsY(16)
+	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
+	_sizeDot(24), _nDotsX(16), _nDotsY(16)
 {
 	PrepareMatrix();
 	UpdateMatrix();
