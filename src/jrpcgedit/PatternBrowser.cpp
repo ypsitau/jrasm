@@ -47,15 +47,12 @@ void PatternBrowser::OnPaint(wxPaintEvent &event)
 	wxPaintDC dc(this);
 	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
-/*
-	wxSize sizeClient = GetClientSize();
-	wxSize sizeBmp = _pBmpMatrix->GetSize();
-	_rcMatrix = wxRect(
-		(sizeClient.GetWidth() - sizeBmp.GetWidth()) / 2,
-		(sizeClient.GetHeight() - sizeBmp.GetHeight()) / 2,
-		sizeBmp.GetWidth(), sizeBmp.GetHeight());
-	dc.DrawBitmap(*_pBmpMatrix, _rcMatrix.x, _rcMatrix.y);
-*/
+	int sizeDot = 8;
+	int x = 0, y = 0;
+	for (auto pPatternInfo : _pPageInfo->GetPatternInfoOwner()) {
+		dc.DrawBitmap(pPatternInfo->MakeBitmap(sizeDot), x, y);
+		y += 80;
+	}
 }
 
 void PatternBrowser::OnSetFocus(wxFocusEvent &event)
