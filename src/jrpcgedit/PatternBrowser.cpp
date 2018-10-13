@@ -8,8 +8,13 @@
 //-----------------------------------------------------------------------------
 PatternBrowser::PatternBrowser(wxWindow *pParent, PageInfo *pPageInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPageInfo(pPageInfo)
+			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPageInfo(pPageInfo),
+	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID),
+	_brushSelected(wxColour("light blue"), wxBRUSHSTYLE_SOLID)
 {
+	for (auto pPatternInfo : pPageInfo->GetPatternInfoOwner()) {
+		_itemOwner.push_back(new Item(pPatternInfo->Reference()));
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -44,14 +49,35 @@ void PatternBrowser::OnSize(wxSizeEvent &event)
 
 void PatternBrowser::OnPaint(wxPaintEvent &event)
 {
+	wxRect rcClient = GetClientRect();
+	const int wdItemMin = 48;
+	const int htItemMin = 48;
+	const int mgnTop = 4, mgnBottom = 4;
+	const int mgnLeft = 8;
 	wxPaintDC dc(this);
-	dc.SetBackground(*wxWHITE_BRUSH);
+	dc.SetBackground(_brushBg);
 	dc.Clear();
 	int sizeDot = 4;
-	int x = 0, y = 0;
-	for (auto pPatternInfo : _pPageInfo->GetPatternInfoOwner()) {
-		dc.DrawBitmap(pPatternInfo->MakeBitmap(sizeDot), x, y);
-		y += 80;
+	int x = mgnLeft, y = 0;
+	dc.SetPen(*wxTRANSPARENT_PEN);
+	dc.SetBrush(_brushSelected);
+	bool firstFlag = true;
+	for (auto pItem : _itemOwner) {
+		wxBitmap &bmp = pItem->GetPatternInfo()->MakeBitmap(sizeDot);
+		int htItem = mgnTop + bmp.GetHeight() + mgnBottom;
+		int yBmp = y + mgnTop;
+		if (htItem < htItemMin) {
+			yBmp = y + (htItemMin - htItem) / 2;
+			htItem = htItemMin;
+		}
+		pItem->SetRectWhole(0, y, rcClient.GetWidth(), htItem);
+		if (pItem->GetSelectedFlag()) {
+			dc.DrawRectangle(0, y, rcClient.GetWidth(), htItem);
+			firstFlag = false;
+		}
+		dc.DrawBitmap(bmp, x, yBmp);
+		//dc.DrawLine(0, y + htItem, rcClient.GetRight(), y + htItem);
+		y += htItem;
 	}
 }
 
@@ -69,6 +95,10 @@ void PatternBrowser::OnMotion(wxMouseEvent &event)
 
 void PatternBrowser::OnLeftDown(wxMouseEvent &event)
 {
+	for (auto pItem : _itemOwner) {
+		pItem->SetSelectedFlag(pItem->HitWhole(event.GetPosition()));
+	}
+	Refresh();
 }
 
 void PatternBrowser::OnLeftUp(wxMouseEvent &event)
@@ -98,3 +128,28 @@ void PatternBrowser::OnKeyDown(wxKeyEvent &event)
 void PatternBrowser::OnKeyUp(wxKeyEvent &event)
 {
 }
+
+//-----------------------------------------------------------------------------
+// PatternBrowser::Item
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// PatternBrowser::ItemList
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// PatternBrowser::ItemOwner
+//-----------------------------------------------------------------------------
+PatternBrowser::ItemOwner::~ItemOwner()
+{
+	Clear();
+}
+
+void PatternBrowser::ItemOwner::Clear()
+{
+	for (auto pItem : *this) {
+		delete pItem;
+	}
+	clear();
+}
+

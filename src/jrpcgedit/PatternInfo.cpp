@@ -19,11 +19,13 @@ wxBitmap &PatternInfo::MakeBitmap(int sizeDot)
 		_pBitmap.reset(new wxBitmap(sizeDot * _nDotsX, sizeDot * _nDotsY));
 		_sizeDot = sizeDot;
 	}
+	wxBrush brushBg(wxColour("black"), wxBRUSHSTYLE_SOLID);
+	wxBrush brushFg(wxColour("white"), wxBRUSHSTYLE_SOLID);
 	wxMemoryDC dc(*_pBitmap);
-	dc.SetBackground(*wxWHITE_BRUSH);
+	dc.SetBackground(brushBg);
 	dc.Clear();
 	dc.SetPen(wxNullPen);
-	dc.SetBrush(*wxBLACK_BRUSH);
+	dc.SetBrush(brushFg);
 	for (int iDotY = 0; iDotY < _nDotsY; iDotY++) {
 		int y = iDotY * _sizeDot;
 		for (int iDotX = 0; iDotX < _nDotsX; iDotX++) {

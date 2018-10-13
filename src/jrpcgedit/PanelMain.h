@@ -17,6 +17,7 @@ public:
 		enum {
 			ID_SASH_Vert = 1000,
 			ID_SLIDER,
+			ID_BTN_NewPCG,
 		};
 	private:
 		wxSashLayoutWindow *_pSashVert;
@@ -31,6 +32,7 @@ public:
 		void OnSize(wxSizeEvent &event);
 		void OnSashDrag_Vert(wxSashEvent &event);
 		void OnCommandScroll_SLIDER(wxScrollEvent &event);
+		void OnButton_NewPCG(wxCommandEvent &event);
 	public:
 		// virtual function of PatternEditor::Listener
 		virtual void NotifyPatternModified();

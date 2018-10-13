@@ -10,10 +10,11 @@ PatternEditor::PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
 	_sizeDot(20), _iDotXCur(0), _iDotYCur(0), _pPatternInfo(pPatternInfo),
-	_penBorder(wxColour("grey"), 1, wxPENSTYLE_SOLID),
-	_penGrid(wxColour("grey"), 1, wxPENSTYLE_DOT),
+	_penBorder(wxColour("light grey"), 1, wxPENSTYLE_SOLID),
+	_penGrid(wxColour("light grey"), 1, wxPENSTYLE_DOT),
 	_penGridHL(wxColour("grey"), 1, wxPENSTYLE_SOLID),
-	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID)
+	_brushBg(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
+	_brushMatrix(wxColour("black"), wxBRUSHSTYLE_SOLID)
 {
 	PrepareMatrix();
 	UpdateMatrix(false);
@@ -36,8 +37,8 @@ void PatternEditor::PrepareMatrix()
 void PatternEditor::UpdateMatrix(bool refreshFlag)
 {
 	wxMemoryDC dc(*_pBmpMatrix);
-	wxBrush brushDot(wxColour("black"), wxBRUSHSTYLE_SOLID);
-	dc.SetBackground(*wxWHITE_BRUSH);
+	wxBrush brushDot(wxColour("white"), wxBRUSHSTYLE_SOLID);
+	dc.SetBackground(_brushBg);
 	dc.Clear();
 	int nDotsX = _pPatternInfo->GetNDotsX();
 	int nDotsY = _pPatternInfo->GetNDotsY();
@@ -46,7 +47,7 @@ void PatternEditor::UpdateMatrix(bool refreshFlag)
 	int yTop = DotYToMatrixCoord(0);
 	int yBottom = DotYToMatrixCoord(nDotsY);
 	dc.SetPen(_penBorder);
-	dc.SetBrush(*wxTRANSPARENT_BRUSH);
+	dc.SetBrush(_brushMatrix);
 	dc.DrawRectangle(xLeft, yTop, xRight - xLeft + 1, yBottom - yTop + 1);
 	for (int iDotX = 1; iDotX < nDotsX; iDotX++) {
 		int x = DotXToMatrixCoord(iDotX);

@@ -37,6 +37,7 @@ private:
 	wxPen _penGrid;
 	wxPen _penGridHL;
 	wxBrush _brushBg;
+	wxBrush _brushMatrix;
 public:
 	PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }

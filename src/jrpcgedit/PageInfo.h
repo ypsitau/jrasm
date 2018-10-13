@@ -20,6 +20,7 @@ public:
 protected:
 	inline ~PageInfo() {};
 public:
+	void NewPatternInfo();
 	const PatternInfoOwner &GetPatternInfoOwner() const { return _patternInfoOwner; }
 };
 

@@ -49,9 +49,17 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
 		pPanel->SetSizer(pVBox);
 		do {
-			PatternBrowser *pCtrl= new PatternBrowser(pPanel, pPageInfo->Reference());
+			PatternBrowser *pCtrl= new PatternBrowser(pPanel, _pPageInfo->Reference());
 			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			_pPatternBrowser = pCtrl;
+		} while (0);
+		do {
+			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
+			pVBox->Add(pHBox, wxSizerFlags().Expand());
+			do {
+				wxButton *pCtrl = new wxButton(pPanel, ID_BTN_NewPCG, wxT("New PCG"));
+				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
+			} while (0);
 		} while (0);
 	} while (0);
 	do { // panel on right (main)
@@ -61,7 +69,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		_pMainWindow = pPanel;
 		do {
 			PatternEditor *pCtrl = new PatternEditor(
-				pPanel, pPageInfo->GetPatternInfoOwner().front()->Reference());
+				pPanel, _pPageInfo->GetPatternInfoOwner().front()->Reference());
 			pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			_pPatternEditor = pCtrl;
 			_pPatternEditor->AddListener(this);
@@ -85,6 +93,7 @@ wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
 	EVT_SIZE(PanelMain::Page::OnSize)
 	EVT_SASH_DRAGGED(ID_SASH_Vert, PanelMain::Page::OnSashDrag_Vert)
 	EVT_COMMAND_SCROLL(ID_SLIDER, PanelMain::Page::OnCommandScroll_SLIDER)
+	EVT_BUTTON(ID_BTN_NewPCG, PanelMain::Page::OnButton_NewPCG)
 wxEND_EVENT_TABLE()
 
 void PanelMain::Page::OnSize(wxSizeEvent &event)
@@ -105,6 +114,12 @@ void PanelMain::Page::OnCommandScroll_SLIDER(wxScrollEvent &event)
 {
 	_pPatternEditor->SetSizeDot(event.GetPosition());
 	_pPatternEditor->UpdateMatrix(true);
+}
+
+void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
+{
+	_pPageInfo->NewPatternInfo();
+	_pPatternBrowser->Refresh();
 }
 
 void PanelMain::Page::NotifyPatternModified()
