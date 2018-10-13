@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 PageInfo::PageInfo() : _cntRef(1)
 {
-	_patternInfoOwner.push_back(new PatternInfo(16, 16));
+	_patternInfoOwner.push_back(new PatternInfo("pattern1", 16, 16));
 }
 
 //-----------------------------------------------------------------------------

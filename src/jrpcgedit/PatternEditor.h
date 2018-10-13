@@ -20,16 +20,37 @@ public:
 		void NotifyPatternModified();
 	};
 private:
+	enum {
+		_mgnLeft = 8,
+		_mgnRight = 8,
+		_mgnTop = 8,
+		_mgnBottom = 8,
+	};
+private:
 	int _sizeDot;
+	int _iDotXCur, _iDotYCur;
 	wxRect _rcMatrix;
 	AutoPtr<PatternInfo> _pPatternInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
 	ListenerList _listenerList;
+	wxPen _penBorder;
+	wxPen _penGrid;
+	wxPen _penGridHL;
+	wxBrush _brushBg;
 public:
 	PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
+	inline int DotXToMatrixCoord(int iDotX) const { return _mgnLeft + iDotX * _sizeDot; }
+	inline int DotYToMatrixCoord(int iDotY) const { return _mgnTop + iDotY * _sizeDot; }
+	inline wxRect DotXYToCursorRect(int iDotX, int iDotY) {
+		return wxRect(
+			_rcMatrix.x + DotXToMatrixCoord(iDotX), _rcMatrix.y + DotYToMatrixCoord(iDotY),
+			_sizeDot + 1, _sizeDot + 1);
+	}
 	void PrepareMatrix();
 	void UpdateMatrix();
+	void PutDot(int iDotX, int iDotY, bool data);
+	void PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const;
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnEraseBackground(wxEraseEvent &event);

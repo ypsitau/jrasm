@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 // PatternInfo
 //-----------------------------------------------------------------------------
-PatternInfo::PatternInfo(int nDotsX, int nDotsY) :
-	_cntRef(1), _nDotsX(nDotsX), _nDotsY(nDotsY), _sizeDot(0),
-	_dotTbl(new bool [nDotsX * nDotsY])
+PatternInfo::PatternInfo(const String &symbol, int nDotsX, int nDotsY) :
+	_cntRef(1), _symbol(symbol), _nDotsX(nDotsX), _nDotsY(nDotsY),
+	_sizeDot(0), _dotTbl(new bool [nDotsX * nDotsY])
 {
 	ClearAll();
 }
