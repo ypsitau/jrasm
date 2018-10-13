@@ -18,9 +18,10 @@ public:
 			ID_SASH_Left = 1000,
 		};
 	private:
-		wxSashLayoutWindow *_pSashRight;
+		wxSashLayoutWindow *_pSashVert;
 		PatternEditor *_pPatternEditor;
 		PatternBrowser *_pPatternBrowser;
+		wxWindow *_pMainWindow;
 		AutoPtr<PageInfo> _pPageInfo;
 	public:
 		Page(wxWindow *pParent, PageInfo *pPageInfo);

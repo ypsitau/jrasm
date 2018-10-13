@@ -34,27 +34,38 @@ wxEND_EVENT_TABLE()
 PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 	wxPanel(pParent, wxID_ANY), _pPageInfo(pPageInfo)
 {
-	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
-	SetSizer(pOuterBox);
 	do {
 		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
 			this, ID_SASH_Left, wxDefaultPosition, wxDefaultSize,
 			wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
 		pSash->SetDefaultSize(wxSize(300, 1000));
 		pSash->SetOrientation(wxLAYOUT_VERTICAL);
-		pSash->SetAlignment(wxLAYOUT_RIGHT);
-		pSash->SetSashVisible(wxSASH_LEFT, true);
-		_pSashRight = pSash;
+		pSash->SetAlignment(wxLAYOUT_LEFT);
+		pSash->SetSashVisible(wxSASH_RIGHT, true);
+		_pSashVert = pSash;
 	} while (0);
 	do {
-		PatternEditor *pCtrl = new PatternEditor(
-			this, pPageInfo->GetPatternInfoOwner().front()->Reference());
-		_pPatternEditor = pCtrl;
-		_pPatternEditor->AddListener(this);
+		wxPanel *pPanel = new wxPanel(_pSashVert);
+		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
+		pPanel->SetSizer(pVBox);
+		do {
+			PatternBrowser *pCtrl= new PatternBrowser(pPanel, pPageInfo->Reference());
+			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+			_pPatternBrowser = pCtrl;
+		} while (0);
 	} while (0);
 	do {
-		PatternBrowser *pCtrl= new PatternBrowser(_pSashRight, pPageInfo->Reference());
-		_pPatternBrowser = pCtrl;
+		wxPanel *pPanel = new wxPanel(this);
+		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
+		pPanel->SetSizer(pVBox);
+		do {
+			PatternEditor *pCtrl = new PatternEditor(
+				pPanel, pPageInfo->GetPatternInfoOwner().front()->Reference());
+			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+			_pPatternEditor = pCtrl;
+			_pPatternEditor->AddListener(this);
+		} while (0);
+		_pMainWindow = pPanel;
 	} while (0);
 }
 
@@ -68,15 +79,15 @@ wxEND_EVENT_TABLE()
 
 void PanelMain::Page::OnSize(wxSizeEvent &event)
 {
-	wxLayoutAlgorithm().LayoutWindow(this, _pPatternEditor);
+	wxLayoutAlgorithm().LayoutWindow(this, _pMainWindow);
 	event.Skip();
 }
 
 void PanelMain::Page::OnSashDrag_Left(wxSashEvent &event)
 {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE) return;
-	_pSashRight->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
-	wxLayoutAlgorithm().LayoutWindow(this, _pPatternEditor);
+	_pSashVert->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
+	wxLayoutAlgorithm().LayoutWindow(this, _pMainWindow);
     Refresh();
 }
 
