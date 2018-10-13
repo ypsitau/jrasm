@@ -50,16 +50,17 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	const int sizeDot = 4;
 	const int htBmpMin = 48;
 	const int mgnTop = 4, mgnBottom = 4;
-	const int mgnLeft = 8;
+	const int mgnLeft = 8, mgnRight = 8;
 	wxPaintDC dc(this);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
-	int x = mgnLeft, y = 0;
+	int y = 0;
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetBrush(_brushSelected);
 	bool firstFlag = true;
 	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
 		wxBitmap &bmp = pPCGInfo->MakeBitmap(sizeDot);
+		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + mgnRight);
 		int yBmp = y + mgnTop;
 		int htBmp = bmp.GetHeight();
 		if (htBmp < htBmpMin) {
@@ -72,7 +73,8 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 			dc.DrawRectangle(0, y, rcClient.GetWidth(), htItem);
 			firstFlag = false;
 		}
-		dc.DrawBitmap(bmp, x, yBmp);
+		dc.DrawText(pPCGInfo->GetSymbol(), mgnLeft, yBmp);
+		dc.DrawBitmap(bmp, xBmp, yBmp);
 		y += htItem;
 	}
 }
@@ -134,28 +136,31 @@ void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 			break;
 		}
 	}
+	PCGInfo *pPCGInfoTo = nullptr;
 	if (pcgInfoOwner.empty()) {
 		// nothing to do
 	} else if (keyCode == WXK_UP) {
 		if (ppPCGInfo == pcgInfoOwner.begin()) {
-			// nothing to do
-		} else if (ppPCGInfo == pcgInfoOwner.end()) {
-			pcgInfoOwner.back()->SetSelectedFlag(true);
-		} else {
-			ppPCGInfo--;
 			(*ppPCGInfo)->SetSelectedFlag(true);
+		} else if (ppPCGInfo == pcgInfoOwner.end()) {
+			pPCGInfoTo = pcgInfoOwner.back();
+		} else {
+			pPCGInfoTo = *(ppPCGInfo - 1);
 		}
 	} else if (keyCode == WXK_DOWN) {
 		if (ppPCGInfo == pcgInfoOwner.end()) {
-			pcgInfoOwner.front()->SetSelectedFlag(true);
+			pPCGInfoTo = pcgInfoOwner.front();
 		} else if (ppPCGInfo + 1 == pcgInfoOwner.end()) {
-			// nothing to do
-		} else {
-			ppPCGInfo++;
 			(*ppPCGInfo)->SetSelectedFlag(true);
+		} else {
+			pPCGInfoTo = *(ppPCGInfo + 1);
 		}
 	}
-	Refresh();
+	if (pPCGInfoTo != nullptr) {
+		pPCGInfoTo->SetSelectedFlag(true);
+		Refresh();
+		_listenerList.NotifyPCGSelected(pPCGInfoTo);
+	}
 	
 }
 

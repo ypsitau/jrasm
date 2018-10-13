@@ -27,6 +27,7 @@ public:
 protected:
 	inline ~PCGInfo() {};
 public:
+	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline int GetNDotsX() const { return _nDotsX; }
 	inline int GetNDotsY() const { return _nDotsY; }
 	inline int GetDotPosXMax() const { return _nDotsX - 1; }
