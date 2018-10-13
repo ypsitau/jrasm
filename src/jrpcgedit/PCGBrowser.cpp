@@ -12,9 +12,6 @@ PCGBrowser::PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo) :
 	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID),
 	_brushSelected(wxColour("light blue"), wxBRUSHSTYLE_SOLID)
 {
-	for (auto pPCGInfo : pPageInfo->GetPCGInfoOwner()) {
-		_itemOwner.push_back(new Item(pPCGInfo->Reference()));
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -50,33 +47,32 @@ void PCGBrowser::OnSize(wxSizeEvent &event)
 void PCGBrowser::OnPaint(wxPaintEvent &event)
 {
 	wxRect rcClient = GetClientRect();
-	const int wdItemMin = 48;
-	const int htItemMin = 48;
+	const int sizeDot = 4;
+	const int htBmpMin = 48;
 	const int mgnTop = 4, mgnBottom = 4;
 	const int mgnLeft = 8;
 	wxPaintDC dc(this);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
-	int sizeDot = 4;
 	int x = mgnLeft, y = 0;
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetBrush(_brushSelected);
 	bool firstFlag = true;
-	for (auto pItem : _itemOwner) {
-		wxBitmap &bmp = pItem->GetPCGInfo()->MakeBitmap(sizeDot);
-		int htItem = mgnTop + bmp.GetHeight() + mgnBottom;
+	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
+		wxBitmap &bmp = pPCGInfo->MakeBitmap(sizeDot);
 		int yBmp = y + mgnTop;
-		if (htItem < htItemMin) {
-			yBmp = y + (htItemMin - htItem) / 2;
-			htItem = htItemMin;
+		int htBmp = bmp.GetHeight();
+		if (htBmp < htBmpMin) {
+			yBmp += (htBmpMin - htBmp) / 2;
+			htBmp = htBmpMin;
 		}
-		pItem->SetRectWhole(0, y, rcClient.GetWidth(), htItem);
-		if (pItem->GetSelectedFlag()) {
+		int htItem = mgnTop + htBmp + mgnBottom;
+		pPCGInfo->SetRectItem(0, y, rcClient.GetWidth(), htItem);
+		if (pPCGInfo->GetSelectedFlag()) {
 			dc.DrawRectangle(0, y, rcClient.GetWidth(), htItem);
 			firstFlag = false;
 		}
 		dc.DrawBitmap(bmp, x, yBmp);
-		//dc.DrawLine(0, y + htItem, rcClient.GetRight(), y + htItem);
 		y += htItem;
 	}
 }
@@ -95,12 +91,12 @@ void PCGBrowser::OnMotion(wxMouseEvent &event)
 
 void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
-	for (auto pItem : _itemOwner) {
-		if (pItem->HitWhole(event.GetPosition())) {
-			pItem->SetSelectedFlag(true);
-			_listenerList.NotifyPCGSelected(pItem->GetPCGInfo());
+	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
+		if (pPCGInfo->GetRectItem().Contains(event.GetPosition())) {
+			pPCGInfo->SetSelectedFlag(true);
+			_listenerList.NotifyPCGSelected(pPCGInfo);
 		} else {
-			pItem->SetSelectedFlag(false);
+			pPCGInfo->SetSelectedFlag(false);
 		}
 	}
 	Refresh();
@@ -141,28 +137,3 @@ void PCGBrowser::ListenerList::NotifyPCGSelected(const PCGInfo *pPCGInfo)
 {
 	for (auto pListener : *this) pListener->NotifyPCGSelected(pPCGInfo);
 }
-
-//-----------------------------------------------------------------------------
-// PCGBrowser::Item
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// PCGBrowser::ItemList
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// PCGBrowser::ItemOwner
-//-----------------------------------------------------------------------------
-PCGBrowser::ItemOwner::~ItemOwner()
-{
-	Clear();
-}
-
-void PCGBrowser::ItemOwner::Clear()
-{
-	for (auto pItem : *this) {
-		delete pItem;
-	}
-	clear();
-}
-

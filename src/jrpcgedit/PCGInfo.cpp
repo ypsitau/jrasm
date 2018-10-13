@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 PCGInfo::PCGInfo(const String &symbol, int nDotsX, int nDotsY) :
 	_cntRef(1), _symbol(symbol), _sizeDot(0),
-	_nDotsX(nDotsX), _nDotsY(nDotsY), _dotPosX(0), _dotPosY(0),
+	_nDotsX(nDotsX), _nDotsY(nDotsY), _dotPosX(0), _dotPosY(0), _selectedFlag(false),
 	_dotTbl(new bool [nDotsX * nDotsY])
 {
 	ClearAll();

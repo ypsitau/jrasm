@@ -16,6 +16,8 @@ private:
 	int _nDotsY;
 	int _dotPosX;
 	int _dotPosY;
+	bool _selectedFlag;
+	wxRect _rcItem;
 	std::unique_ptr<bool[]> _dotTbl;
 	std::unique_ptr<wxBitmap> _pBitmap;
 public:
@@ -43,6 +45,12 @@ public:
 	}
 	inline bool GetDot(int dotPosX, int dotPosY) const {
 		return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _nDotsX] : false;
+	}
+	inline void SetSelectedFlag(bool selectedFlag) { _selectedFlag = selectedFlag; }
+	inline bool GetSelectedFlag() { return _selectedFlag; }
+	inline const wxRect &GetRectItem() const { return _rcItem; }
+	inline void SetRectItem(int x, int y, int width, int height) {
+		_rcItem = wxRect(x, y, width, height);
 	}
 	wxBitmap &MakeBitmap(int sizeDot);
 };
