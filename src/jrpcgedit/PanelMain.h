@@ -12,7 +12,7 @@
 //-----------------------------------------------------------------------------
 class PanelMain : public wxPanel {
 public:
-	class Page : public wxPanel, public PCGEditor::Listener {
+	class Page : public wxPanel, public PCGBrowser::Listener, public PCGEditor::Listener {
 	public:
 		enum {
 			ID_SASH_Vert = 1000,
@@ -34,6 +34,8 @@ public:
 		void OnCommandScroll_SLIDER(wxScrollEvent &event);
 		void OnButton_NewPCG(wxCommandEvent &event);
 	public:
+		// virtual function of PCGBrowser::Listener
+		virtual void NotifyPCGSelected(const PCGInfo *pPCGInfo);
 		// virtual function of PCGEditor::Listener
 		virtual void NotifyPCGModified();
 	};

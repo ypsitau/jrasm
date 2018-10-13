@@ -9,7 +9,7 @@
 PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
-	_sizeDot(20), _iDotXCur(0), _iDotYCur(0), _pPCGInfo(pPCGInfo),
+	_sizeDot(20), _dotPosXCur(0), _dotPosYCur(0), _pPCGInfo(pPCGInfo),
 	_penBorder(wxColour("light grey"), 1, wxPENSTYLE_SOLID),
 	_penGrid(wxColour("light grey"), 1, wxPENSTYLE_DOT),
 	_penGridHL(wxColour("grey"), 1, wxPENSTYLE_SOLID),
@@ -24,6 +24,14 @@ void PCGEditor::SetSizeDot(int sizeDot)
 {
 	_sizeDot = sizeDot;
 	PrepareMatrix();
+	UpdateMatrix(true);
+}
+
+void PCGEditor::SetPCGInfo(PCGInfo *pPCGInfo)
+{
+	_pPCGInfo.reset(pPCGInfo);
+	PrepareMatrix();
+	UpdateMatrix(true);
 }
 
 void PCGEditor::PrepareMatrix()
@@ -49,9 +57,9 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 	dc.SetPen(_penBorder);
 	dc.SetBrush(_brushMatrix);
 	dc.DrawRectangle(xLeft, yTop, xRight - xLeft + 1, yBottom - yTop + 1);
-	for (int iDotX = 1; iDotX < nDotsX; iDotX++) {
-		int x = DotXToMatrixCoord(iDotX);
-		if (iDotX % 8 == 0) {
+	for (int dotPosX = 1; dotPosX < nDotsX; dotPosX++) {
+		int x = DotXToMatrixCoord(dotPosX);
+		if (dotPosX % 8 == 0) {
 			dc.SetPen(_penGridHL);
 			dc.DrawLine(x, yTop - _mgnTop, x, yBottom + _mgnBottom);
 		} else {
@@ -59,9 +67,9 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 			dc.DrawLine(x, yTop, x, yBottom);
 		}
 	}
-	for (int iDotY = 1; iDotY < nDotsY; iDotY++) {
-		int y = DotYToMatrixCoord(iDotY);
-		if (iDotY % 8 == 0) {
+	for (int dotPosY = 1; dotPosY < nDotsY; dotPosY++) {
+		int y = DotYToMatrixCoord(dotPosY);
+		if (dotPosY % 8 == 0) {
 			dc.SetPen(_penGridHL);
 			dc.DrawLine(xLeft - _mgnLeft, y, xRight + _mgnRight, y);
 		} else {
@@ -70,11 +78,11 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 		}
 	}
 	dc.SetBrush(brushDot);
-	for (int iDotY = 0; iDotY < nDotsY; iDotY++) {
-		int y = DotYToMatrixCoord(iDotY);
-		for (int iDotX = 0; iDotX < nDotsX; iDotX++) {
-			int x = DotXToMatrixCoord(iDotX);
-			if (_pPCGInfo->GetDot(iDotX, iDotY)) {
+	for (int dotPosY = 0; dotPosY < nDotsY; dotPosY++) {
+		int y = DotYToMatrixCoord(dotPosY);
+		for (int dotPosX = 0; dotPosX < nDotsX; dotPosX++) {
+			int x = DotXToMatrixCoord(dotPosX);
+			if (_pPCGInfo->GetDot(dotPosX, dotPosY)) {
 				dc.SetPen(*wxTRANSPARENT_PEN);
 				dc.DrawRectangle(x + 1, y + 1, _sizeDot - 1, _sizeDot - 1);
 			}
@@ -83,29 +91,29 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 	if (refreshFlag) Refresh();
 }
 
-void PCGEditor::PutDot(int iDotX, int iDotY, bool data)
+void PCGEditor::PutDot(int dotPosX, int dotPosY, bool data)
 {
-	_pPCGInfo->PutDot(_iDotXCur, _iDotYCur, data);
+	_pPCGInfo->PutDot(_dotPosXCur, _dotPosYCur, data);
 	_listenerList.NotifyPCGModified();
 	UpdateMatrix(true);
 }
 
-wxRect PCGEditor::DotXYToCursorRect(int iDotX, int iDotY)
+wxRect PCGEditor::DotXYToCursorRect(int dotPosX, int dotPosY)
 {
 	return wxRect(
-		_rcMatrix.x + DotXToMatrixCoord(iDotX), _rcMatrix.y + DotYToMatrixCoord(iDotY),
+		_rcMatrix.x + DotXToMatrixCoord(dotPosX), _rcMatrix.y + DotYToMatrixCoord(dotPosY),
 		_sizeDot + 1, _sizeDot + 1);
 }
 
-void PCGEditor::PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const
+void PCGEditor::PointToDotXY(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const
 {
-	int iDotX = (pt.x - _rcMatrix.x - _mgnLeft) / _sizeDot;
-	int iDotY = (pt.y - _rcMatrix.y - _mgnTop) / _sizeDot;
-	if (iDotX < 0) iDotX = 0;
-	if (iDotX > _pPCGInfo->GetDotXMax()) iDotX = _pPCGInfo->GetDotXMax();
-	if (iDotY < 0) iDotY = 0;
-	if (iDotY > _pPCGInfo->GetDotYMax()) iDotX = _pPCGInfo->GetDotYMax();
-	*piDotX = iDotX, *piDotY = iDotY;
+	int dotPosX = (pt.x - _rcMatrix.x - _mgnLeft) / _sizeDot;
+	int dotPosY = (pt.y - _rcMatrix.y - _mgnTop) / _sizeDot;
+	if (dotPosX < 0) dotPosX = 0;
+	if (dotPosX > _pPCGInfo->GetDotXMax()) dotPosX = _pPCGInfo->GetDotXMax();
+	if (dotPosY < 0) dotPosY = 0;
+	if (dotPosY > _pPCGInfo->GetDotYMax()) dotPosX = _pPCGInfo->GetDotYMax();
+	*pDotPosX = dotPosX, *pDotPosY = dotPosY;
 }
 
 //-----------------------------------------------------------------------------
@@ -153,7 +161,7 @@ void PCGEditor::OnPaint(wxPaintEvent &event)
 	wxPen penCursor(wxColour(HasFocus()? "red" : "pink"), 2, wxPENSTYLE_SOLID);
 	dc.SetPen(penCursor);
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	dc.DrawRectangle(DotXYToCursorRect(_iDotXCur, _iDotYCur));
+	dc.DrawRectangle(DotXYToCursorRect(_dotPosXCur, _dotPosYCur));
 }
 
 void PCGEditor::OnSetFocus(wxFocusEvent &event)
@@ -170,8 +178,8 @@ void PCGEditor::OnMotion(wxMouseEvent &event)
 {
 	wxPoint pt = event.GetPosition();
 	if (event.Dragging() && _rcMatrix.Contains(event.GetPosition())) {
-		PointToDotXY(pt, &_iDotXCur, &_iDotYCur);
-		PutDot(_iDotXCur, _iDotYCur, true);
+		PointToDotXY(pt, &_dotPosXCur, &_dotPosYCur);
+		PutDot(_dotPosXCur, _dotPosYCur, true);
 	}
 }
 
@@ -179,8 +187,8 @@ void PCGEditor::OnLeftDown(wxMouseEvent &event)
 {
 	wxPoint pt = event.GetPosition();
 	if (_rcMatrix.Contains(event.GetPosition())) {
-		PointToDotXY(pt, &_iDotXCur, &_iDotYCur);
-		PutDot(_iDotXCur, _iDotYCur, true);
+		PointToDotXY(pt, &_dotPosXCur, &_dotPosYCur);
+		PutDot(_dotPosXCur, _dotPosYCur, true);
 	}
 }
 
@@ -208,30 +216,30 @@ void PCGEditor::OnKeyDown(wxKeyEvent &event)
 {
 	int keyCode = event.GetKeyCode();
 	if (keyCode == WXK_LEFT) {
-		if (_iDotXCur > 0) {
-			_iDotXCur--;
+		if (_dotPosXCur > 0) {
+			_dotPosXCur--;
 		}
 		Refresh();
 	} else if (keyCode == WXK_RIGHT) {
-		if (_iDotXCur < _pPCGInfo->GetNDotsX() - 1) {
-			_iDotXCur++;
+		if (_dotPosXCur < _pPCGInfo->GetNDotsX() - 1) {
+			_dotPosXCur++;
 		}
 		Refresh();
 	} else if (keyCode == WXK_UP) {
-		if (_iDotYCur > 0) {
-			_iDotYCur--;
+		if (_dotPosYCur > 0) {
+			_dotPosYCur--;
 		}
 		Refresh();
 	} else if (keyCode == WXK_DOWN) {
-		if (_iDotYCur < _pPCGInfo->GetNDotsY() - 1) {
-			_iDotYCur++;
+		if (_dotPosYCur < _pPCGInfo->GetNDotsY() - 1) {
+			_dotPosYCur++;
 		}
 		Refresh();
 	} else if (keyCode == WXK_SPACE || keyCode == 'Z') {
-		PutDot(_iDotXCur, _iDotYCur, true);
+		PutDot(_dotPosXCur, _dotPosYCur, true);
 		
 	} else if (keyCode == WXK_DELETE || keyCode == WXK_BACK || keyCode == 'X') {
-		PutDot(_iDotXCur, _iDotYCur, false);
+		PutDot(_dotPosXCur, _dotPosYCur, false);
 	}
 }
 

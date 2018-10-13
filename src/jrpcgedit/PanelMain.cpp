@@ -52,6 +52,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 			PCGBrowser *pCtrl= new PCGBrowser(pPanel, _pPageInfo->Reference());
 			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			_pPCGBrowser = pCtrl;
+			_pPCGBrowser->AddListener(this);
 		} while (0);
 		do {
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
@@ -113,13 +114,17 @@ void PanelMain::Page::OnSashDrag_Vert(wxSashEvent &event)
 void PanelMain::Page::OnCommandScroll_SLIDER(wxScrollEvent &event)
 {
 	_pPCGEditor->SetSizeDot(event.GetPosition());
-	_pPCGEditor->UpdateMatrix(true);
 }
 
 void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 {
 	_pPageInfo->NewPCGInfo();
 	_pPCGBrowser->Refresh();
+}
+
+void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)
+{
+	_pPCGEditor->SetPCGInfo(pPCGInfo->Reference());
 }
 
 void PanelMain::Page::NotifyPCGModified()

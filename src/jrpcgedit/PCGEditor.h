@@ -28,28 +28,29 @@ private:
 	};
 private:
 	int _sizeDot;
-	int _iDotXCur, _iDotYCur;
+	int _dotPosXCur, _dotPosYCur;
 	wxRect _rcMatrix;
 	AutoPtr<PCGInfo> _pPCGInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
-	ListenerList _listenerList;
 	wxPen _penBorder;
 	wxPen _penGrid;
 	wxPen _penGridHL;
 	wxBrush _brushBg;
 	wxBrush _brushMatrix;
+	ListenerList _listenerList;
 public:
 	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
-	inline int DotXToMatrixCoord(int iDotX) const { return _mgnLeft + iDotX * _sizeDot; }
-	inline int DotYToMatrixCoord(int iDotY) const { return _mgnTop + iDotY * _sizeDot; }
+	inline int DotXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * _sizeDot; }
+	inline int DotYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * _sizeDot; }
 	inline int GetSizeDot() const { return _sizeDot; }
 	void SetSizeDot(int sizeDot);
+	void SetPCGInfo(PCGInfo *pPCGInfo);
 	void PrepareMatrix();
 	void UpdateMatrix(bool refreshFlag);
-	void PutDot(int iDotX, int iDotY, bool data);
-	wxRect DotXYToCursorRect(int iDotX, int iDotY);
-	void PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const;
+	void PutDot(int dotPosX, int dotPosY, bool data);
+	wxRect DotXYToCursorRect(int dotPosX, int dotPosY);
+	void PointToDotXY(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const;
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnEraseBackground(wxEraseEvent &event);

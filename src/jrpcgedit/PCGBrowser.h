@@ -11,6 +11,15 @@
 //-----------------------------------------------------------------------------
 class PCGBrowser : public wxPanel {
 public:
+	class Listener {
+	public:
+		virtual void NotifyPCGSelected(const PCGInfo *pPCGInfo) = 0;
+	};
+	class ListenerList : public std::vector<Listener *> {
+	public:
+		void NotifyPCGSelected(const PCGInfo *pPCGInfo);
+	};
+public:
 	class Item {
 	private:
 		AutoPtr<PCGInfo> _pPCGInfo;
@@ -38,8 +47,10 @@ private:
 	wxBrush _brushBg;
 	wxBrush _brushSelected;
 	ItemOwner _itemOwner;
+	ListenerList _listenerList;
 public:
 	PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo);
+	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnEraseBackground(wxEraseEvent &event);

@@ -96,7 +96,12 @@ void PCGBrowser::OnMotion(wxMouseEvent &event)
 void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
 	for (auto pItem : _itemOwner) {
-		pItem->SetSelectedFlag(pItem->HitWhole(event.GetPosition()));
+		if (pItem->HitWhole(event.GetPosition())) {
+			pItem->SetSelectedFlag(true);
+			_listenerList.NotifyPCGSelected(pItem->GetPCGInfo());
+		} else {
+			pItem->SetSelectedFlag(false);
+		}
 	}
 	Refresh();
 }
@@ -127,6 +132,14 @@ void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 
 void PCGBrowser::OnKeyUp(wxKeyEvent &event)
 {
+}
+
+//-----------------------------------------------------------------------------
+// PCGBrowser::ListenerList
+//-----------------------------------------------------------------------------
+void PCGBrowser::ListenerList::NotifyPCGSelected(const PCGInfo *pPCGInfo)
+{
+	for (auto pListener : *this) pListener->NotifyPCGSelected(pPCGInfo);
 }
 
 //-----------------------------------------------------------------------------
