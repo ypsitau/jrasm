@@ -28,7 +28,6 @@ private:
 	};
 private:
 	int _sizeDot;
-	int _dotPosXCur, _dotPosYCur;
 	wxRect _rcMatrix;
 	AutoPtr<PCGInfo> _pPCGInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;

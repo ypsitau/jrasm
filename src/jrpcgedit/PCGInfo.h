@@ -11,9 +11,11 @@ class PCGInfo {
 private:
 	int _cntRef;
 	String _symbol;
+	int _sizeDot;
 	int _nDotsX;
 	int _nDotsY;
-	int _sizeDot;
+	int _dotPosX;
+	int _dotPosY;
 	std::unique_ptr<bool[]> _dotTbl;
 	std::unique_ptr<wxBitmap> _pBitmap;
 public:
@@ -27,6 +29,11 @@ public:
 	inline int GetNDotsY() const { return _nDotsY; }
 	inline int GetDotPosXMax() const { return _nDotsX - 1; }
 	inline int GetDotPosYMax() const { return _nDotsY - 1; }
+	inline int GetDotPosX() const { return _dotPosX; }
+	inline int GetDotPosY() const { return _dotPosY; }
+	inline void SetDotPosX(int dotPosX) { _dotPosX = dotPosX; }
+	inline void SetDotPosY(int dotPosY) { _dotPosY = dotPosY; }
+	inline void SetDotPos(int dotPosX, int dotPosY) { _dotPosX = dotPosX, _dotPosY = dotPosY; }
 	inline void ClearAll() { ::memset(_dotTbl.get(), 0x00, _nDotsX * _nDotsY); }
 	inline bool IsWithin(int dotPosX, int dotPosY) const {
 		return 0 <= dotPosX && dotPosX < _nDotsX && 0 <= dotPosY && dotPosY < _nDotsY;
