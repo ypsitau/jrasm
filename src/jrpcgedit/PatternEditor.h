@@ -42,14 +42,12 @@ public:
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
 	inline int DotXToMatrixCoord(int iDotX) const { return _mgnLeft + iDotX * _sizeDot; }
 	inline int DotYToMatrixCoord(int iDotY) const { return _mgnTop + iDotY * _sizeDot; }
-	inline wxRect DotXYToCursorRect(int iDotX, int iDotY) {
-		return wxRect(
-			_rcMatrix.x + DotXToMatrixCoord(iDotX), _rcMatrix.y + DotYToMatrixCoord(iDotY),
-			_sizeDot + 1, _sizeDot + 1);
-	}
+	inline int GetSizeDot() const { return _sizeDot; }
+	void SetSizeDot(int sizeDot);
 	void PrepareMatrix();
-	void UpdateMatrix();
+	void UpdateMatrix(bool refreshFlag);
 	void PutDot(int iDotX, int iDotY, bool data);
+	wxRect DotXYToCursorRect(int iDotX, int iDotY);
 	void PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const;
 private:
     wxDECLARE_EVENT_TABLE();

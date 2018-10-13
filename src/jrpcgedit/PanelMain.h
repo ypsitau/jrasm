@@ -15,7 +15,8 @@ public:
 	class Page : public wxPanel, public PatternEditor::Listener {
 	public:
 		enum {
-			ID_SASH_Left = 1000,
+			ID_SASH_Vert = 1000,
+			ID_SLIDER,
 		};
 	private:
 		wxSashLayoutWindow *_pSashVert;
@@ -28,7 +29,8 @@ public:
 	private:
 		wxDECLARE_EVENT_TABLE();
 		void OnSize(wxSizeEvent &event);
-		void OnSashDrag_Left(wxSashEvent &event);
+		void OnSashDrag_Vert(wxSashEvent &event);
+		void OnCommandScroll_SLIDER(wxScrollEvent &event);
 	public:
 		// virtual function of PatternEditor::Listener
 		virtual void NotifyPatternModified();

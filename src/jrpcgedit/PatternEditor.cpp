@@ -9,14 +9,20 @@
 PatternEditor::PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
-	_sizeDot(24), _iDotXCur(0), _iDotYCur(0), _pPatternInfo(pPatternInfo),
+	_sizeDot(20), _iDotXCur(0), _iDotYCur(0), _pPatternInfo(pPatternInfo),
 	_penBorder(wxColour("grey"), 1, wxPENSTYLE_SOLID),
 	_penGrid(wxColour("grey"), 1, wxPENSTYLE_DOT),
 	_penGridHL(wxColour("grey"), 1, wxPENSTYLE_SOLID),
 	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID)
 {
 	PrepareMatrix();
-	UpdateMatrix();
+	UpdateMatrix(false);
+}
+
+void PatternEditor::SetSizeDot(int sizeDot)
+{
+	_sizeDot = sizeDot;
+	PrepareMatrix();
 }
 
 void PatternEditor::PrepareMatrix()
@@ -27,7 +33,7 @@ void PatternEditor::PrepareMatrix()
 			_mgnTop + _sizeDot * _pPatternInfo->GetNDotsY() + 1 + _mgnBottom));
 }
 
-void PatternEditor::UpdateMatrix()
+void PatternEditor::UpdateMatrix(bool refreshFlag)
 {
 	wxMemoryDC dc(*_pBmpMatrix);
 	wxBrush brushDot(wxColour("black"), wxBRUSHSTYLE_SOLID);
@@ -73,14 +79,21 @@ void PatternEditor::UpdateMatrix()
 			}
 		}
 	}
+	if (refreshFlag) Refresh();
 }
 
 void PatternEditor::PutDot(int iDotX, int iDotY, bool data)
 {
 	_pPatternInfo->PutDot(_iDotXCur, _iDotYCur, data);
 	_listenerList.NotifyPatternModified();
-	UpdateMatrix();
-	Refresh();
+	UpdateMatrix(true);
+}
+
+wxRect PatternEditor::DotXYToCursorRect(int iDotX, int iDotY)
+{
+	return wxRect(
+		_rcMatrix.x + DotXToMatrixCoord(iDotX), _rcMatrix.y + DotYToMatrixCoord(iDotY),
+		_sizeDot + 1, _sizeDot + 1);
 }
 
 void PatternEditor::PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const

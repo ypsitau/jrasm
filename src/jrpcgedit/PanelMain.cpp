@@ -36,7 +36,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 {
 	do {
 		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
-			this, ID_SASH_Left, wxDefaultPosition, wxDefaultSize,
+			this, ID_SASH_Vert, wxDefaultPosition, wxDefaultSize,
 			wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
 		pSash->SetDefaultSize(wxSize(300, 1000));
 		pSash->SetOrientation(wxLAYOUT_VERTICAL);
@@ -67,9 +67,13 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 			_pPatternEditor->AddListener(this);
 		} while (0);
 		do {
-			wxSlider *pCtrl = new wxSlider(pPanel, wxID_ANY, 0, 0, 100,
-										   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL);
-			pHBox->Add(pCtrl, wxSizerFlags().Expand());
+			wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
+			pHBox->Add(pVBox, wxSizerFlags().Expand());
+			do {
+				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPatternEditor->GetSizeDot(), 4, 24,
+											   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL | wxSL_INVERSE);
+				pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+			} while (0);
 		} while (0);
 	} while (0);
 }
@@ -79,7 +83,8 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 //-----------------------------------------------------------------------------
 wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
 	EVT_SIZE(PanelMain::Page::OnSize)
-	EVT_SASH_DRAGGED(ID_SASH_Left, PanelMain::Page::OnSashDrag_Left)
+	EVT_SASH_DRAGGED(ID_SASH_Vert, PanelMain::Page::OnSashDrag_Vert)
+	EVT_COMMAND_SCROLL(ID_SLIDER, PanelMain::Page::OnCommandScroll_SLIDER)
 wxEND_EVENT_TABLE()
 
 void PanelMain::Page::OnSize(wxSizeEvent &event)
@@ -88,12 +93,18 @@ void PanelMain::Page::OnSize(wxSizeEvent &event)
 	event.Skip();
 }
 
-void PanelMain::Page::OnSashDrag_Left(wxSashEvent &event)
+void PanelMain::Page::OnSashDrag_Vert(wxSashEvent &event)
 {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE) return;
 	_pSashVert->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
 	wxLayoutAlgorithm().LayoutWindow(this, _pMainWindow);
     Refresh();
+}
+
+void PanelMain::Page::OnCommandScroll_SLIDER(wxScrollEvent &event)
+{
+	_pPatternEditor->SetSizeDot(event.GetPosition());
+	_pPatternEditor->UpdateMatrix(true);
 }
 
 void PanelMain::Page::NotifyPatternModified()
