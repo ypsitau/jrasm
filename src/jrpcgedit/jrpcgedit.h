@@ -13,8 +13,8 @@
 #include "FrameMain.h"
 #include "PageInfo.h"
 #include "PanelMain.h"
-#include "PatternBrowser.h"
-#include "PatternEditor.h"
-#include "PatternInfo.h"
+#include "PCGBrowser.h"
+#include "PCGEditor.h"
+#include "PCGInfo.h"
 
 #endif

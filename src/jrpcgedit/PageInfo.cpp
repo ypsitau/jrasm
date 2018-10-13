@@ -8,14 +8,14 @@
 //-----------------------------------------------------------------------------
 PageInfo::PageInfo() : _cntRef(1)
 {
-	_patternInfoOwner.push_back(new PatternInfo("pattern1", 16, 16));
-	_patternInfoOwner.push_back(new PatternInfo("pattern2", 16, 16));
-	_patternInfoOwner.push_back(new PatternInfo("pattern3", 16, 16));
+	_pcgInfoOwner.push_back(new PCGInfo("pcg1", 16, 16));
+	_pcgInfoOwner.push_back(new PCGInfo("pcg2", 16, 16));
+	_pcgInfoOwner.push_back(new PCGInfo("pcg3", 16, 16));
 }
 
-void PageInfo::NewPatternInfo()
+void PageInfo::NewPCGInfo()
 {
-	_patternInfoOwner.push_back(new PatternInfo("patternX", 16, 16));
+	_pcgInfoOwner.push_back(new PCGInfo("pcgX", 16, 16));
 }
 
 //-----------------------------------------------------------------------------

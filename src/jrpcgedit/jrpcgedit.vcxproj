@@ -160,9 +160,9 @@
     <ClInclude Include="FrameMain.h" />
     <ClInclude Include="PageInfo.h" />
     <ClInclude Include="PanelMain.h" />
-    <ClInclude Include="PatternBrowser.h" />
-    <ClInclude Include="PatternEditor.h" />
-    <ClInclude Include="PatternInfo.h" />
+    <ClInclude Include="PCGBrowser.h" />
+    <ClInclude Include="PCGEditor.h" />
+    <ClInclude Include="PCGInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jrpcgedit.cpp" />
@@ -170,9 +170,9 @@
     <ClCompile Include="FrameMain.cpp" />
     <ClCompile Include="PageInfo.cpp" />
     <ClCompile Include="PanelMain.cpp" />
-    <ClCompile Include="PatternBrowser.cpp" />
-    <ClCompile Include="PatternEditor.cpp" />
-    <ClCompile Include="PatternInfo.cpp" />
+    <ClCompile Include="PCGBrowser.cpp" />
+    <ClCompile Include="PCGEditor.cpp" />
+    <ClCompile Include="PCGInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

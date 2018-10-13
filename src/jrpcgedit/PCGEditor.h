@@ -1,23 +1,23 @@
 //=============================================================================
-// PatternEditor.h
+// PCGEditor.h
 //=============================================================================
-#ifndef __JRPCGEDIT_PATTERNEDITOR_H__
-#define __JRPCGEDIT_PATTERNEDITOR_H__
+#ifndef __JRPCGEDIT_PCGEDITOR_H__
+#define __JRPCGEDIT_PCGEDITOR_H__
 
-#include "PatternInfo.h"
+#include "PCGInfo.h"
 
 //-----------------------------------------------------------------------------
-// PatternEditor
+// PCGEditor
 //-----------------------------------------------------------------------------
-class PatternEditor : public wxPanel {
+class PCGEditor : public wxPanel {
 public:
 	class Listener {
 	public:
-		virtual void NotifyPatternModified() = 0;
+		virtual void NotifyPCGModified() = 0;
 	};
 	class ListenerList : public std::vector<Listener *> {
 	public:
-		void NotifyPatternModified();
+		void NotifyPCGModified();
 	};
 private:
 	enum {
@@ -30,7 +30,7 @@ private:
 	int _sizeDot;
 	int _iDotXCur, _iDotYCur;
 	wxRect _rcMatrix;
-	AutoPtr<PatternInfo> _pPatternInfo;
+	AutoPtr<PCGInfo> _pPCGInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
 	ListenerList _listenerList;
 	wxPen _penBorder;
@@ -39,7 +39,7 @@ private:
 	wxBrush _brushBg;
 	wxBrush _brushMatrix;
 public:
-	PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo);
+	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
 	inline int DotXToMatrixCoord(int iDotX) const { return _mgnLeft + iDotX * _sizeDot; }
 	inline int DotYToMatrixCoord(int iDotY) const { return _mgnTop + iDotY * _sizeDot; }

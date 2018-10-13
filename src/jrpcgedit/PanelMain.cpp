@@ -49,9 +49,9 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
 		pPanel->SetSizer(pVBox);
 		do {
-			PatternBrowser *pCtrl= new PatternBrowser(pPanel, _pPageInfo->Reference());
+			PCGBrowser *pCtrl= new PCGBrowser(pPanel, _pPageInfo->Reference());
 			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
-			_pPatternBrowser = pCtrl;
+			_pPCGBrowser = pCtrl;
 		} while (0);
 		do {
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
@@ -68,17 +68,17 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		pPanel->SetSizer(pHBox);
 		_pMainWindow = pPanel;
 		do {
-			PatternEditor *pCtrl = new PatternEditor(
-				pPanel, _pPageInfo->GetPatternInfoOwner().front()->Reference());
+			PCGEditor *pCtrl = new PCGEditor(
+				pPanel, _pPageInfo->GetPCGInfoOwner().front()->Reference());
 			pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
-			_pPatternEditor = pCtrl;
-			_pPatternEditor->AddListener(this);
+			_pPCGEditor = pCtrl;
+			_pPCGEditor->AddListener(this);
 		} while (0);
 		do {
 			wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
 			pHBox->Add(pVBox, wxSizerFlags().Expand());
 			do {
-				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPatternEditor->GetSizeDot(), 4, 24,
+				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
 											   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL | wxSL_INVERSE);
 				pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			} while (0);
@@ -112,18 +112,17 @@ void PanelMain::Page::OnSashDrag_Vert(wxSashEvent &event)
 
 void PanelMain::Page::OnCommandScroll_SLIDER(wxScrollEvent &event)
 {
-	_pPatternEditor->SetSizeDot(event.GetPosition());
-	_pPatternEditor->UpdateMatrix(true);
+	_pPCGEditor->SetSizeDot(event.GetPosition());
+	_pPCGEditor->UpdateMatrix(true);
 }
 
 void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 {
-	_pPageInfo->NewPatternInfo();
-	_pPatternBrowser->Refresh();
+	_pPageInfo->NewPCGInfo();
+	_pPCGBrowser->Refresh();
 }
 
-void PanelMain::Page::NotifyPatternModified()
+void PanelMain::Page::NotifyPCGModified()
 {
-	_pPatternBrowser->Refresh();
+	_pPCGBrowser->Refresh();
 }
-

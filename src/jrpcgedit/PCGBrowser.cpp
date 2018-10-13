@@ -1,53 +1,53 @@
 //=============================================================================
-// PatternBrowser.cpp
+// PCGBrowser.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// PatternBrowser
+// PCGBrowser
 //-----------------------------------------------------------------------------
-PatternBrowser::PatternBrowser(wxWindow *pParent, PageInfo *pPageInfo) :
+PCGBrowser::PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPageInfo(pPageInfo),
 	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID),
 	_brushSelected(wxColour("light blue"), wxBRUSHSTYLE_SOLID)
 {
-	for (auto pPatternInfo : pPageInfo->GetPatternInfoOwner()) {
-		_itemOwner.push_back(new Item(pPatternInfo->Reference()));
+	for (auto pPCGInfo : pPageInfo->GetPCGInfoOwner()) {
+		_itemOwner.push_back(new Item(pPCGInfo->Reference()));
 	}
 }
 
 //-----------------------------------------------------------------------------
-// Event Handler for PatternBrowser
+// Event Handler for PCGBrowser
 //-----------------------------------------------------------------------------
-wxBEGIN_EVENT_TABLE(PatternBrowser, wxPanel)
-	EVT_ERASE_BACKGROUND(PatternBrowser::OnEraseBackground)
-	EVT_SIZE(PatternBrowser::OnSize)
-	EVT_PAINT(PatternBrowser::OnPaint)
-	EVT_SET_FOCUS(PatternBrowser::OnSetFocus)
-	EVT_KILL_FOCUS(PatternBrowser::OnKillFocus)
-	EVT_MOTION(PatternBrowser::OnMotion)
-	EVT_LEFT_DOWN(PatternBrowser::OnLeftDown)
-	EVT_LEFT_UP(PatternBrowser::OnLeftUp)
-	EVT_LEFT_DCLICK(PatternBrowser::OnLeftDClick)
-	EVT_RIGHT_DOWN(PatternBrowser::OnRightDown)
-	EVT_RIGHT_UP(PatternBrowser::OnRightUp)
-	EVT_LEAVE_WINDOW(PatternBrowser::OnLeaveWindow)
-	EVT_KEY_DOWN(PatternBrowser::OnKeyDown)
-	EVT_KEY_UP(PatternBrowser::OnKeyUp)
+wxBEGIN_EVENT_TABLE(PCGBrowser, wxPanel)
+	EVT_ERASE_BACKGROUND(PCGBrowser::OnEraseBackground)
+	EVT_SIZE(PCGBrowser::OnSize)
+	EVT_PAINT(PCGBrowser::OnPaint)
+	EVT_SET_FOCUS(PCGBrowser::OnSetFocus)
+	EVT_KILL_FOCUS(PCGBrowser::OnKillFocus)
+	EVT_MOTION(PCGBrowser::OnMotion)
+	EVT_LEFT_DOWN(PCGBrowser::OnLeftDown)
+	EVT_LEFT_UP(PCGBrowser::OnLeftUp)
+	EVT_LEFT_DCLICK(PCGBrowser::OnLeftDClick)
+	EVT_RIGHT_DOWN(PCGBrowser::OnRightDown)
+	EVT_RIGHT_UP(PCGBrowser::OnRightUp)
+	EVT_LEAVE_WINDOW(PCGBrowser::OnLeaveWindow)
+	EVT_KEY_DOWN(PCGBrowser::OnKeyDown)
+	EVT_KEY_UP(PCGBrowser::OnKeyUp)
 wxEND_EVENT_TABLE()
 
-void PatternBrowser::OnEraseBackground(wxEraseEvent &event)
+void PCGBrowser::OnEraseBackground(wxEraseEvent &event)
 {
 	// nothing to do
 }
 
-void PatternBrowser::OnSize(wxSizeEvent &event)
+void PCGBrowser::OnSize(wxSizeEvent &event)
 {
 	event.Skip();
 }
 
-void PatternBrowser::OnPaint(wxPaintEvent &event)
+void PCGBrowser::OnPaint(wxPaintEvent &event)
 {
 	wxRect rcClient = GetClientRect();
 	const int wdItemMin = 48;
@@ -63,7 +63,7 @@ void PatternBrowser::OnPaint(wxPaintEvent &event)
 	dc.SetBrush(_brushSelected);
 	bool firstFlag = true;
 	for (auto pItem : _itemOwner) {
-		wxBitmap &bmp = pItem->GetPatternInfo()->MakeBitmap(sizeDot);
+		wxBitmap &bmp = pItem->GetPCGInfo()->MakeBitmap(sizeDot);
 		int htItem = mgnTop + bmp.GetHeight() + mgnBottom;
 		int yBmp = y + mgnTop;
 		if (htItem < htItemMin) {
@@ -81,19 +81,19 @@ void PatternBrowser::OnPaint(wxPaintEvent &event)
 	}
 }
 
-void PatternBrowser::OnSetFocus(wxFocusEvent &event)
+void PCGBrowser::OnSetFocus(wxFocusEvent &event)
 {
 }
 
-void PatternBrowser::OnKillFocus(wxFocusEvent &event)
+void PCGBrowser::OnKillFocus(wxFocusEvent &event)
 {
 }
 
-void PatternBrowser::OnMotion(wxMouseEvent &event)
+void PCGBrowser::OnMotion(wxMouseEvent &event)
 {
 }
 
-void PatternBrowser::OnLeftDown(wxMouseEvent &event)
+void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
 	for (auto pItem : _itemOwner) {
 		pItem->SetSelectedFlag(pItem->HitWhole(event.GetPosition()));
@@ -101,51 +101,51 @@ void PatternBrowser::OnLeftDown(wxMouseEvent &event)
 	Refresh();
 }
 
-void PatternBrowser::OnLeftUp(wxMouseEvent &event)
+void PCGBrowser::OnLeftUp(wxMouseEvent &event)
 {
 }
 
-void PatternBrowser::OnLeftDClick(wxMouseEvent &event)
+void PCGBrowser::OnLeftDClick(wxMouseEvent &event)
 {
 }
 
-void PatternBrowser::OnRightDown(wxMouseEvent &event)
+void PCGBrowser::OnRightDown(wxMouseEvent &event)
 {
 }
 
-void PatternBrowser::OnRightUp(wxMouseEvent &event)
+void PCGBrowser::OnRightUp(wxMouseEvent &event)
 {
 }
 
-void PatternBrowser::OnLeaveWindow(wxMouseEvent &event)
+void PCGBrowser::OnLeaveWindow(wxMouseEvent &event)
 {
 }
 
-void PatternBrowser::OnKeyDown(wxKeyEvent &event)
+void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 {
 }
 
-void PatternBrowser::OnKeyUp(wxKeyEvent &event)
+void PCGBrowser::OnKeyUp(wxKeyEvent &event)
 {
 }
 
 //-----------------------------------------------------------------------------
-// PatternBrowser::Item
+// PCGBrowser::Item
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// PatternBrowser::ItemList
+// PCGBrowser::ItemList
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// PatternBrowser::ItemOwner
+// PCGBrowser::ItemOwner
 //-----------------------------------------------------------------------------
-PatternBrowser::ItemOwner::~ItemOwner()
+PCGBrowser::ItemOwner::~ItemOwner()
 {
 	Clear();
 }
 
-void PatternBrowser::ItemOwner::Clear()
+void PCGBrowser::ItemOwner::Clear()
 {
 	for (auto pItem : *this) {
 		delete pItem;

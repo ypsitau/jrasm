@@ -1,26 +1,26 @@
 //=============================================================================
-// PatternBrowser.h
+// PCGBrowser.h
 //=============================================================================
-#ifndef __JRPCGEDIT_PATTERNBROWSER_H__
-#define __JRPCGEDIT_PATTERNBROWSER_H__
+#ifndef __JRPCGEDIT_PCGBROWSER_H__
+#define __JRPCGEDIT_PCGBROWSER_H__
 
 #include "PageInfo.h"
 
 //-----------------------------------------------------------------------------
-// PatternBrowser
+// PCGBrowser
 //-----------------------------------------------------------------------------
-class PatternBrowser : public wxPanel {
+class PCGBrowser : public wxPanel {
 public:
 	class Item {
 	private:
-		AutoPtr<PatternInfo> _pPatternInfo;
+		AutoPtr<PCGInfo> _pPCGInfo;
 		bool _selectedFlag;
 		wxRect _rcWhole;
 	public:
-		inline Item(PatternInfo *pPatternInfo) : _pPatternInfo(pPatternInfo), _selectedFlag(false) {}
+		inline Item(PCGInfo *pPCGInfo) : _pPCGInfo(pPCGInfo), _selectedFlag(false) {}
 		inline void SetSelectedFlag(bool selectedFlag) { _selectedFlag = selectedFlag; }
 		inline bool GetSelectedFlag() { return _selectedFlag; }
-		PatternInfo *GetPatternInfo() { return _pPatternInfo.get(); }
+		PCGInfo *GetPCGInfo() { return _pPCGInfo.get(); }
 		inline bool HitWhole(const wxPoint &pt) const { return _rcWhole.Contains(pt); }
 		inline void SetRectWhole(int x, int y, int width, int height) {
 			_rcWhole = wxRect(x, y, width, height);
@@ -39,7 +39,7 @@ private:
 	wxBrush _brushSelected;
 	ItemOwner _itemOwner;
 public:
-	PatternBrowser(wxWindow *pParent, PageInfo *pPageInfo);
+	PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo);
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnEraseBackground(wxEraseEvent &event);

@@ -4,15 +4,15 @@
 #ifndef __JRPCGEDIT_PANELMAIN_H__
 #define __JRPCGEDIT_PANELMAIN_H__
 
-#include "PatternBrowser.h"
-#include "PatternEditor.h"
+#include "PCGBrowser.h"
+#include "PCGEditor.h"
 
 //-----------------------------------------------------------------------------
 // PanelMain
 //-----------------------------------------------------------------------------
 class PanelMain : public wxPanel {
 public:
-	class Page : public wxPanel, public PatternEditor::Listener {
+	class Page : public wxPanel, public PCGEditor::Listener {
 	public:
 		enum {
 			ID_SASH_Vert = 1000,
@@ -21,8 +21,8 @@ public:
 		};
 	private:
 		wxSashLayoutWindow *_pSashVert;
-		PatternEditor *_pPatternEditor;
-		PatternBrowser *_pPatternBrowser;
+		PCGEditor *_pPCGEditor;
+		PCGBrowser *_pPCGBrowser;
 		wxWindow *_pMainWindow;
 		AutoPtr<PageInfo> _pPageInfo;
 	public:
@@ -34,8 +34,8 @@ public:
 		void OnCommandScroll_SLIDER(wxScrollEvent &event);
 		void OnButton_NewPCG(wxCommandEvent &event);
 	public:
-		// virtual function of PatternEditor::Listener
-		virtual void NotifyPatternModified();
+		// virtual function of PCGEditor::Listener
+		virtual void NotifyPCGModified();
 	};
 private:
 	AutoPtr<Document> _pDocument;

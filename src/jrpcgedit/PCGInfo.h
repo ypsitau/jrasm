@@ -1,13 +1,13 @@
 //=============================================================================
-// PatternInfo.h
+// PCGInfo.h
 //=============================================================================
-#ifndef __JRPCGEDIT_PATTERNINFO_H__
-#define __JRPCGEDIT_PATTERNINFO_H__
+#ifndef __JRPCGEDIT_PCGINFO_H__
+#define __JRPCGEDIT_PCGINFO_H__
 
 //-----------------------------------------------------------------------------
-// PatternInfo
+// PCGInfo
 //-----------------------------------------------------------------------------
-class PatternInfo {
+class PCGInfo {
 private:
 	int _cntRef;
 	String _symbol;
@@ -17,11 +17,11 @@ private:
 	std::unique_ptr<bool[]> _dotTbl;
 	std::unique_ptr<wxBitmap> _pBitmap;
 public:
-	DeclareReferenceAccessor(PatternInfo);
+	DeclareReferenceAccessor(PCGInfo);
 public:
-	PatternInfo(const String &symbol, int nDotsX, int nDotsY);
+	PCGInfo(const String &symbol, int nDotsX, int nDotsY);
 protected:
-	inline ~PatternInfo() {};
+	inline ~PCGInfo() {};
 public:
 	inline int GetNDotsX() const { return _nDotsX; }
 	inline int GetNDotsY() const { return _nDotsY; }
@@ -41,17 +41,17 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// PatternInfoList
+// PCGInfoList
 //-----------------------------------------------------------------------------
-class PatternInfoList : public std::vector<PatternInfo *> {
+class PCGInfoList : public std::vector<PCGInfo *> {
 };
 
 //-----------------------------------------------------------------------------
-// PatternInfoOwner
+// PCGInfoOwner
 //-----------------------------------------------------------------------------
-class PatternInfoOwner : public PatternInfoList {
+class PCGInfoOwner : public PCGInfoList {
 public:
-	~PatternInfoOwner();
+	~PCGInfoOwner();
 	void Clear();
 };
 

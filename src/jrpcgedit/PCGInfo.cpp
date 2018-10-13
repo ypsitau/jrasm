@@ -1,19 +1,19 @@
 //=============================================================================
-// PatternInfo.cpp
+// PCGInfo.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// PatternInfo
+// PCGInfo
 //-----------------------------------------------------------------------------
-PatternInfo::PatternInfo(const String &symbol, int nDotsX, int nDotsY) :
+PCGInfo::PCGInfo(const String &symbol, int nDotsX, int nDotsY) :
 	_cntRef(1), _symbol(symbol), _nDotsX(nDotsX), _nDotsY(nDotsY),
 	_sizeDot(0), _dotTbl(new bool [nDotsX * nDotsY])
 {
 	ClearAll();
 }
 
-wxBitmap &PatternInfo::MakeBitmap(int sizeDot)
+wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 {
 	if (_pBitmap.get() == nullptr || _sizeDot != sizeDot) {
 		_pBitmap.reset(new wxBitmap(sizeDot * _nDotsX, sizeDot * _nDotsY));
@@ -39,21 +39,21 @@ wxBitmap &PatternInfo::MakeBitmap(int sizeDot)
 }
 
 //-----------------------------------------------------------------------------
-// PatternInfoList
+// PCGInfoList
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// PatternInfoOwner
+// PCGInfoOwner
 //-----------------------------------------------------------------------------
-PatternInfoOwner::~PatternInfoOwner()
+PCGInfoOwner::~PCGInfoOwner()
 {
 	Clear();
 }
 
-void PatternInfoOwner::Clear()
+void PCGInfoOwner::Clear()
 {
-	for (auto pPatternInfo : *this) {
-		PatternInfo::Delete(pPatternInfo);
+	for (auto pPCGInfo : *this) {
+		PCGInfo::Delete(pPCGInfo);
 	}
 	clear();
 }

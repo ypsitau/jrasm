@@ -4,7 +4,7 @@
 #ifndef __JRPCGEDIT_PAGEINFO_H__
 #define __JRPCGEDIT_PAGEINFO_H__
 
-#include "PatternInfo.h"
+#include "PCGInfo.h"
 
 //-----------------------------------------------------------------------------
 // PageInfo
@@ -12,7 +12,7 @@
 class PageInfo {
 private:
 	int _cntRef;
-	PatternInfoOwner _patternInfoOwner;
+	PCGInfoOwner _pcgInfoOwner;
 public:
 	DeclareReferenceAccessor(PageInfo);
 public:
@@ -20,8 +20,8 @@ public:
 protected:
 	inline ~PageInfo() {};
 public:
-	void NewPatternInfo();
-	const PatternInfoOwner &GetPatternInfoOwner() const { return _patternInfoOwner; }
+	void NewPCGInfo();
+	const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
 };
 
 //-----------------------------------------------------------------------------

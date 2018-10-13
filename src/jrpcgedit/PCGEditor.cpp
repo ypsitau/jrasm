@@ -1,15 +1,15 @@
 //=============================================================================
-// PatternEditor.cpp
+// PCGEditor.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// PatternEditor
+// PCGEditor
 //-----------------------------------------------------------------------------
-PatternEditor::PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo) :
+PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
-	_sizeDot(20), _iDotXCur(0), _iDotYCur(0), _pPatternInfo(pPatternInfo),
+	_sizeDot(20), _iDotXCur(0), _iDotYCur(0), _pPCGInfo(pPCGInfo),
 	_penBorder(wxColour("light grey"), 1, wxPENSTYLE_SOLID),
 	_penGrid(wxColour("light grey"), 1, wxPENSTYLE_DOT),
 	_penGridHL(wxColour("grey"), 1, wxPENSTYLE_SOLID),
@@ -20,28 +20,28 @@ PatternEditor::PatternEditor(wxWindow *pParent, PatternInfo *pPatternInfo) :
 	UpdateMatrix(false);
 }
 
-void PatternEditor::SetSizeDot(int sizeDot)
+void PCGEditor::SetSizeDot(int sizeDot)
 {
 	_sizeDot = sizeDot;
 	PrepareMatrix();
 }
 
-void PatternEditor::PrepareMatrix()
+void PCGEditor::PrepareMatrix()
 {
 	_pBmpMatrix.reset
 		(new wxBitmap(
-			_mgnLeft + _sizeDot * _pPatternInfo->GetNDotsX() + 1 + _mgnRight,
-			_mgnTop + _sizeDot * _pPatternInfo->GetNDotsY() + 1 + _mgnBottom));
+			_mgnLeft + _sizeDot * _pPCGInfo->GetNDotsX() + 1 + _mgnRight,
+			_mgnTop + _sizeDot * _pPCGInfo->GetNDotsY() + 1 + _mgnBottom));
 }
 
-void PatternEditor::UpdateMatrix(bool refreshFlag)
+void PCGEditor::UpdateMatrix(bool refreshFlag)
 {
 	wxMemoryDC dc(*_pBmpMatrix);
 	wxBrush brushDot(wxColour("white"), wxBRUSHSTYLE_SOLID);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
-	int nDotsX = _pPatternInfo->GetNDotsX();
-	int nDotsY = _pPatternInfo->GetNDotsY();
+	int nDotsX = _pPCGInfo->GetNDotsX();
+	int nDotsY = _pPCGInfo->GetNDotsY();
 	int xLeft = DotXToMatrixCoord(0);
 	int xRight = DotXToMatrixCoord(nDotsX);
 	int yTop = DotYToMatrixCoord(0);
@@ -74,7 +74,7 @@ void PatternEditor::UpdateMatrix(bool refreshFlag)
 		int y = DotYToMatrixCoord(iDotY);
 		for (int iDotX = 0; iDotX < nDotsX; iDotX++) {
 			int x = DotXToMatrixCoord(iDotX);
-			if (_pPatternInfo->GetDot(iDotX, iDotY)) {
+			if (_pPCGInfo->GetDot(iDotX, iDotY)) {
 				dc.SetPen(*wxTRANSPARENT_PEN);
 				dc.DrawRectangle(x + 1, y + 1, _sizeDot - 1, _sizeDot - 1);
 			}
@@ -83,62 +83,62 @@ void PatternEditor::UpdateMatrix(bool refreshFlag)
 	if (refreshFlag) Refresh();
 }
 
-void PatternEditor::PutDot(int iDotX, int iDotY, bool data)
+void PCGEditor::PutDot(int iDotX, int iDotY, bool data)
 {
-	_pPatternInfo->PutDot(_iDotXCur, _iDotYCur, data);
-	_listenerList.NotifyPatternModified();
+	_pPCGInfo->PutDot(_iDotXCur, _iDotYCur, data);
+	_listenerList.NotifyPCGModified();
 	UpdateMatrix(true);
 }
 
-wxRect PatternEditor::DotXYToCursorRect(int iDotX, int iDotY)
+wxRect PCGEditor::DotXYToCursorRect(int iDotX, int iDotY)
 {
 	return wxRect(
 		_rcMatrix.x + DotXToMatrixCoord(iDotX), _rcMatrix.y + DotYToMatrixCoord(iDotY),
 		_sizeDot + 1, _sizeDot + 1);
 }
 
-void PatternEditor::PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const
+void PCGEditor::PointToDotXY(const wxPoint &pt, int *piDotX, int *piDotY) const
 {
 	int iDotX = (pt.x - _rcMatrix.x - _mgnLeft) / _sizeDot;
 	int iDotY = (pt.y - _rcMatrix.y - _mgnTop) / _sizeDot;
 	if (iDotX < 0) iDotX = 0;
-	if (iDotX > _pPatternInfo->GetDotXMax()) iDotX = _pPatternInfo->GetDotXMax();
+	if (iDotX > _pPCGInfo->GetDotXMax()) iDotX = _pPCGInfo->GetDotXMax();
 	if (iDotY < 0) iDotY = 0;
-	if (iDotY > _pPatternInfo->GetDotYMax()) iDotX = _pPatternInfo->GetDotYMax();
+	if (iDotY > _pPCGInfo->GetDotYMax()) iDotX = _pPCGInfo->GetDotYMax();
 	*piDotX = iDotX, *piDotY = iDotY;
 }
 
 //-----------------------------------------------------------------------------
-// Event Handler for PatternEditor
+// Event Handler for PCGEditor
 //-----------------------------------------------------------------------------
-wxBEGIN_EVENT_TABLE(PatternEditor, wxPanel)
-	EVT_ERASE_BACKGROUND(PatternEditor::OnEraseBackground)
-	EVT_SIZE(PatternEditor::OnSize)
-	EVT_PAINT(PatternEditor::OnPaint)
-	EVT_SET_FOCUS(PatternEditor::OnSetFocus)
-	EVT_KILL_FOCUS(PatternEditor::OnKillFocus)
-	EVT_MOTION(PatternEditor::OnMotion)
-	EVT_LEFT_DOWN(PatternEditor::OnLeftDown)
-	EVT_LEFT_UP(PatternEditor::OnLeftUp)
-	EVT_LEFT_DCLICK(PatternEditor::OnLeftDClick)
-	EVT_RIGHT_DOWN(PatternEditor::OnRightDown)
-	EVT_RIGHT_UP(PatternEditor::OnRightUp)
-	EVT_LEAVE_WINDOW(PatternEditor::OnLeaveWindow)
-	EVT_KEY_DOWN(PatternEditor::OnKeyDown)
-	EVT_KEY_UP(PatternEditor::OnKeyUp)
+wxBEGIN_EVENT_TABLE(PCGEditor, wxPanel)
+	EVT_ERASE_BACKGROUND(PCGEditor::OnEraseBackground)
+	EVT_SIZE(PCGEditor::OnSize)
+	EVT_PAINT(PCGEditor::OnPaint)
+	EVT_SET_FOCUS(PCGEditor::OnSetFocus)
+	EVT_KILL_FOCUS(PCGEditor::OnKillFocus)
+	EVT_MOTION(PCGEditor::OnMotion)
+	EVT_LEFT_DOWN(PCGEditor::OnLeftDown)
+	EVT_LEFT_UP(PCGEditor::OnLeftUp)
+	EVT_LEFT_DCLICK(PCGEditor::OnLeftDClick)
+	EVT_RIGHT_DOWN(PCGEditor::OnRightDown)
+	EVT_RIGHT_UP(PCGEditor::OnRightUp)
+	EVT_LEAVE_WINDOW(PCGEditor::OnLeaveWindow)
+	EVT_KEY_DOWN(PCGEditor::OnKeyDown)
+	EVT_KEY_UP(PCGEditor::OnKeyUp)
 wxEND_EVENT_TABLE()
 
-void PatternEditor::OnEraseBackground(wxEraseEvent &event)
+void PCGEditor::OnEraseBackground(wxEraseEvent &event)
 {
 	// nothing to do
 }
 
-void PatternEditor::OnSize(wxSizeEvent &event)
+void PCGEditor::OnSize(wxSizeEvent &event)
 {
 	event.Skip();
 }
 
-void PatternEditor::OnPaint(wxPaintEvent &event)
+void PCGEditor::OnPaint(wxPaintEvent &event)
 {
 	wxSize sizeClient = GetClientSize();
 	wxPaintDC dc(this);
@@ -156,17 +156,17 @@ void PatternEditor::OnPaint(wxPaintEvent &event)
 	dc.DrawRectangle(DotXYToCursorRect(_iDotXCur, _iDotYCur));
 }
 
-void PatternEditor::OnSetFocus(wxFocusEvent &event)
+void PCGEditor::OnSetFocus(wxFocusEvent &event)
 {
 	Refresh();
 }
 
-void PatternEditor::OnKillFocus(wxFocusEvent &event)
+void PCGEditor::OnKillFocus(wxFocusEvent &event)
 {
 	Refresh();
 }
 
-void PatternEditor::OnMotion(wxMouseEvent &event)
+void PCGEditor::OnMotion(wxMouseEvent &event)
 {
 	wxPoint pt = event.GetPosition();
 	if (event.Dragging() && _rcMatrix.Contains(event.GetPosition())) {
@@ -175,7 +175,7 @@ void PatternEditor::OnMotion(wxMouseEvent &event)
 	}
 }
 
-void PatternEditor::OnLeftDown(wxMouseEvent &event)
+void PCGEditor::OnLeftDown(wxMouseEvent &event)
 {
 	wxPoint pt = event.GetPosition();
 	if (_rcMatrix.Contains(event.GetPosition())) {
@@ -184,27 +184,27 @@ void PatternEditor::OnLeftDown(wxMouseEvent &event)
 	}
 }
 
-void PatternEditor::OnLeftUp(wxMouseEvent &event)
+void PCGEditor::OnLeftUp(wxMouseEvent &event)
 {
 }
 
-void PatternEditor::OnLeftDClick(wxMouseEvent &event)
+void PCGEditor::OnLeftDClick(wxMouseEvent &event)
 {
 }
 
-void PatternEditor::OnRightDown(wxMouseEvent &event)
+void PCGEditor::OnRightDown(wxMouseEvent &event)
 {
 }
 
-void PatternEditor::OnRightUp(wxMouseEvent &event)
+void PCGEditor::OnRightUp(wxMouseEvent &event)
 {
 }
 
-void PatternEditor::OnLeaveWindow(wxMouseEvent &event)
+void PCGEditor::OnLeaveWindow(wxMouseEvent &event)
 {
 }
 
-void PatternEditor::OnKeyDown(wxKeyEvent &event)
+void PCGEditor::OnKeyDown(wxKeyEvent &event)
 {
 	int keyCode = event.GetKeyCode();
 	if (keyCode == WXK_LEFT) {
@@ -213,7 +213,7 @@ void PatternEditor::OnKeyDown(wxKeyEvent &event)
 		}
 		Refresh();
 	} else if (keyCode == WXK_RIGHT) {
-		if (_iDotXCur < _pPatternInfo->GetNDotsX() - 1) {
+		if (_iDotXCur < _pPCGInfo->GetNDotsX() - 1) {
 			_iDotXCur++;
 		}
 		Refresh();
@@ -223,7 +223,7 @@ void PatternEditor::OnKeyDown(wxKeyEvent &event)
 		}
 		Refresh();
 	} else if (keyCode == WXK_DOWN) {
-		if (_iDotYCur < _pPatternInfo->GetNDotsY() - 1) {
+		if (_iDotYCur < _pPCGInfo->GetNDotsY() - 1) {
 			_iDotYCur++;
 		}
 		Refresh();
@@ -235,14 +235,14 @@ void PatternEditor::OnKeyDown(wxKeyEvent &event)
 	}
 }
 
-void PatternEditor::OnKeyUp(wxKeyEvent &event)
+void PCGEditor::OnKeyUp(wxKeyEvent &event)
 {
 }
 
 //-----------------------------------------------------------------------------
-// PatternEditor::ListenerList
+// PCGEditor::ListenerList
 //-----------------------------------------------------------------------------
-void PatternEditor::ListenerList::NotifyPatternModified()
+void PCGEditor::ListenerList::NotifyPCGModified()
 {
-	for (auto pListener : *this) pListener->NotifyPatternModified();
+	for (auto pListener : *this) pListener->NotifyPCGModified();
 }
