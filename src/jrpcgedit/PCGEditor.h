@@ -41,16 +41,16 @@ private:
 public:
 	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
-	inline int DotXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * _sizeDot; }
-	inline int DotYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * _sizeDot; }
+	inline int DotPosXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * _sizeDot; }
+	inline int DotPosYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * _sizeDot; }
 	inline int GetSizeDot() const { return _sizeDot; }
 	void SetSizeDot(int sizeDot);
 	void SetPCGInfo(PCGInfo *pPCGInfo);
 	void PrepareMatrix();
 	void UpdateMatrix(bool refreshFlag);
 	void PutDot(int dotPosX, int dotPosY, bool data);
-	wxRect DotXYToCursorRect(int dotPosX, int dotPosY);
-	void PointToDotXY(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const;
+	wxRect DotPosToCursorRect(int dotPosX, int dotPosY);
+	void PointToDotPos(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const;
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnEraseBackground(wxEraseEvent &event);

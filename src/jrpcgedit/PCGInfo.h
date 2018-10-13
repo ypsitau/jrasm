@@ -25,17 +25,17 @@ protected:
 public:
 	inline int GetNDotsX() const { return _nDotsX; }
 	inline int GetNDotsY() const { return _nDotsY; }
-	inline int GetDotXMax() const { return _nDotsX - 1; }
-	inline int GetDotYMax() const { return _nDotsY - 1; }
+	inline int GetDotPosXMax() const { return _nDotsX - 1; }
+	inline int GetDotPosYMax() const { return _nDotsY - 1; }
 	inline void ClearAll() { ::memset(_dotTbl.get(), 0x00, _nDotsX * _nDotsY); }
-	inline bool IsWithin(int iDotX, int iDotY) const {
-		return 0 <= iDotX && iDotX < _nDotsX && 0 <= iDotY && iDotY < _nDotsY;
+	inline bool IsWithin(int dotPosX, int dotPosY) const {
+		return 0 <= dotPosX && dotPosX < _nDotsX && 0 <= dotPosY && dotPosY < _nDotsY;
 	}
-	inline void PutDot(int iDotX, int iDotY, bool data) {
-		if (IsWithin(iDotX, iDotY)) _dotTbl[iDotX + iDotY * _nDotsX] = data;
+	inline void PutDot(int dotPosX, int dotPosY, bool data) {
+		if (IsWithin(dotPosX, dotPosY)) _dotTbl[dotPosX + dotPosY * _nDotsX] = data;
 	}
-	inline bool GetDot(int iDotX, int iDotY) const {
-		return IsWithin(iDotX, iDotY)? _dotTbl[iDotX + iDotY * _nDotsX] : false;
+	inline bool GetDot(int dotPosX, int dotPosY) const {
+		return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _nDotsX] : false;
 	}
 	wxBitmap &MakeBitmap(int sizeDot);
 };

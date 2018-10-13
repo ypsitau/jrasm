@@ -26,11 +26,11 @@ wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 	dc.Clear();
 	dc.SetPen(wxNullPen);
 	dc.SetBrush(brushFg);
-	for (int iDotY = 0; iDotY < _nDotsY; iDotY++) {
-		int y = iDotY * _sizeDot;
-		for (int iDotX = 0; iDotX < _nDotsX; iDotX++) {
-			int x = iDotX * _sizeDot;
-			if (GetDot(iDotX, iDotY)) {
+	for (int dotPosY = 0; dotPosY < _nDotsY; dotPosY++) {
+		int y = dotPosY * _sizeDot;
+		for (int dotPosX = 0; dotPosX < _nDotsX; dotPosX++) {
+			int x = dotPosX * _sizeDot;
+			if (GetDot(dotPosX, dotPosY)) {
 				dc.DrawRectangle(x, y, _sizeDot, _sizeDot);
 			}
 		}

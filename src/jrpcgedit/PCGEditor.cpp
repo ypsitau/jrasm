@@ -50,15 +50,15 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 	dc.Clear();
 	int nDotsX = _pPCGInfo->GetNDotsX();
 	int nDotsY = _pPCGInfo->GetNDotsY();
-	int xLeft = DotXToMatrixCoord(0);
-	int xRight = DotXToMatrixCoord(nDotsX);
-	int yTop = DotYToMatrixCoord(0);
-	int yBottom = DotYToMatrixCoord(nDotsY);
+	int xLeft = DotPosXToMatrixCoord(0);
+	int xRight = DotPosXToMatrixCoord(nDotsX);
+	int yTop = DotPosYToMatrixCoord(0);
+	int yBottom = DotPosYToMatrixCoord(nDotsY);
 	dc.SetPen(_penBorder);
 	dc.SetBrush(_brushMatrix);
 	dc.DrawRectangle(xLeft, yTop, xRight - xLeft + 1, yBottom - yTop + 1);
 	for (int dotPosX = 1; dotPosX < nDotsX; dotPosX++) {
-		int x = DotXToMatrixCoord(dotPosX);
+		int x = DotPosXToMatrixCoord(dotPosX);
 		if (dotPosX % 8 == 0) {
 			dc.SetPen(_penGridHL);
 			dc.DrawLine(x, yTop - _mgnTop, x, yBottom + _mgnBottom);
@@ -68,7 +68,7 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 		}
 	}
 	for (int dotPosY = 1; dotPosY < nDotsY; dotPosY++) {
-		int y = DotYToMatrixCoord(dotPosY);
+		int y = DotPosYToMatrixCoord(dotPosY);
 		if (dotPosY % 8 == 0) {
 			dc.SetPen(_penGridHL);
 			dc.DrawLine(xLeft - _mgnLeft, y, xRight + _mgnRight, y);
@@ -79,9 +79,9 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 	}
 	dc.SetBrush(brushDot);
 	for (int dotPosY = 0; dotPosY < nDotsY; dotPosY++) {
-		int y = DotYToMatrixCoord(dotPosY);
+		int y = DotPosYToMatrixCoord(dotPosY);
 		for (int dotPosX = 0; dotPosX < nDotsX; dotPosX++) {
-			int x = DotXToMatrixCoord(dotPosX);
+			int x = DotPosXToMatrixCoord(dotPosX);
 			if (_pPCGInfo->GetDot(dotPosX, dotPosY)) {
 				dc.SetPen(*wxTRANSPARENT_PEN);
 				dc.DrawRectangle(x + 1, y + 1, _sizeDot - 1, _sizeDot - 1);
@@ -98,21 +98,21 @@ void PCGEditor::PutDot(int dotPosX, int dotPosY, bool data)
 	UpdateMatrix(true);
 }
 
-wxRect PCGEditor::DotXYToCursorRect(int dotPosX, int dotPosY)
+wxRect PCGEditor::DotPosToCursorRect(int dotPosX, int dotPosY)
 {
 	return wxRect(
-		_rcMatrix.x + DotXToMatrixCoord(dotPosX), _rcMatrix.y + DotYToMatrixCoord(dotPosY),
+		_rcMatrix.x + DotPosXToMatrixCoord(dotPosX), _rcMatrix.y + DotPosYToMatrixCoord(dotPosY),
 		_sizeDot + 1, _sizeDot + 1);
 }
 
-void PCGEditor::PointToDotXY(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const
+void PCGEditor::PointToDotPos(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const
 {
 	int dotPosX = (pt.x - _rcMatrix.x - _mgnLeft) / _sizeDot;
 	int dotPosY = (pt.y - _rcMatrix.y - _mgnTop) / _sizeDot;
 	if (dotPosX < 0) dotPosX = 0;
-	if (dotPosX > _pPCGInfo->GetDotXMax()) dotPosX = _pPCGInfo->GetDotXMax();
+	if (dotPosX > _pPCGInfo->GetDotPosXMax()) dotPosX = _pPCGInfo->GetDotPosXMax();
 	if (dotPosY < 0) dotPosY = 0;
-	if (dotPosY > _pPCGInfo->GetDotYMax()) dotPosX = _pPCGInfo->GetDotYMax();
+	if (dotPosY > _pPCGInfo->GetDotPosYMax()) dotPosX = _pPCGInfo->GetDotPosYMax();
 	*pDotPosX = dotPosX, *pDotPosY = dotPosY;
 }
 
@@ -161,7 +161,7 @@ void PCGEditor::OnPaint(wxPaintEvent &event)
 	wxPen penCursor(wxColour(HasFocus()? "red" : "pink"), 2, wxPENSTYLE_SOLID);
 	dc.SetPen(penCursor);
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	dc.DrawRectangle(DotXYToCursorRect(_dotPosXCur, _dotPosYCur));
+	dc.DrawRectangle(DotPosToCursorRect(_dotPosXCur, _dotPosYCur));
 }
 
 void PCGEditor::OnSetFocus(wxFocusEvent &event)
@@ -178,7 +178,7 @@ void PCGEditor::OnMotion(wxMouseEvent &event)
 {
 	wxPoint pt = event.GetPosition();
 	if (event.Dragging() && _rcMatrix.Contains(event.GetPosition())) {
-		PointToDotXY(pt, &_dotPosXCur, &_dotPosYCur);
+		PointToDotPos(pt, &_dotPosXCur, &_dotPosYCur);
 		PutDot(_dotPosXCur, _dotPosYCur, true);
 	}
 }
@@ -187,7 +187,7 @@ void PCGEditor::OnLeftDown(wxMouseEvent &event)
 {
 	wxPoint pt = event.GetPosition();
 	if (_rcMatrix.Contains(event.GetPosition())) {
-		PointToDotXY(pt, &_dotPosXCur, &_dotPosYCur);
+		PointToDotPos(pt, &_dotPosXCur, &_dotPosYCur);
 		PutDot(_dotPosXCur, _dotPosYCur, true);
 	}
 }
