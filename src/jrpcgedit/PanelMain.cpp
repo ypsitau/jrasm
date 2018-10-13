@@ -44,7 +44,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		pSash->SetSashVisible(wxSASH_RIGHT, true);
 		_pSashVert = pSash;
 	} while (0);
-	do {
+	do { // panel on left
 		wxPanel *pPanel = new wxPanel(_pSashVert);
 		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
 		pPanel->SetSizer(pVBox);
@@ -54,18 +54,23 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 			_pPatternBrowser = pCtrl;
 		} while (0);
 	} while (0);
-	do {
+	do { // panel on right (main)
 		wxPanel *pPanel = new wxPanel(this);
-		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
-		pPanel->SetSizer(pVBox);
+		wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
+		pPanel->SetSizer(pHBox);
+		_pMainWindow = pPanel;
 		do {
 			PatternEditor *pCtrl = new PatternEditor(
 				pPanel, pPageInfo->GetPatternInfoOwner().front()->Reference());
-			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+			pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			_pPatternEditor = pCtrl;
 			_pPatternEditor->AddListener(this);
 		} while (0);
-		_pMainWindow = pPanel;
+		do {
+			wxSlider *pCtrl = new wxSlider(pPanel, wxID_ANY, 0, 0, 100,
+										   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL);
+			pHBox->Add(pCtrl, wxSizerFlags().Expand());
+		} while (0);
 	} while (0);
 }
 
