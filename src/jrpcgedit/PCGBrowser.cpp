@@ -124,6 +124,39 @@ void PCGBrowser::OnLeaveWindow(wxMouseEvent &event)
 
 void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 {
+	int keyCode = event.GetKeyCode();
+	const PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
+	PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
+	for ( ; ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
+		PCGInfo *pPCGInfo = *ppPCGInfo;
+		if (pPCGInfo->GetSelectedFlag()) {
+			pPCGInfo->SetSelectedFlag(false);
+			break;
+		}
+	}
+	if (pcgInfoOwner.empty()) {
+		// nothing to do
+	} else if (keyCode == WXK_UP) {
+		if (ppPCGInfo == pcgInfoOwner.begin()) {
+			// nothing to do
+		} else if (ppPCGInfo == pcgInfoOwner.end()) {
+			pcgInfoOwner.back()->SetSelectedFlag(true);
+		} else {
+			ppPCGInfo--;
+			(*ppPCGInfo)->SetSelectedFlag(true);
+		}
+	} else if (keyCode == WXK_DOWN) {
+		if (ppPCGInfo == pcgInfoOwner.end()) {
+			pcgInfoOwner.front()->SetSelectedFlag(true);
+		} else if (ppPCGInfo + 1 == pcgInfoOwner.end()) {
+			// nothing to do
+		} else {
+			ppPCGInfo++;
+			(*ppPCGInfo)->SetSelectedFlag(true);
+		}
+	}
+	Refresh();
+	
 }
 
 void PCGBrowser::OnKeyUp(wxKeyEvent &event)
