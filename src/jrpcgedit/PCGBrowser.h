@@ -23,6 +23,7 @@ public:
 	enum {
 		_sizeDot = 4,
 		_htBmpMin = 48,
+		_wdOperation = 16,
 		_mgnTop = 4,
 		_mgnBottom = 4,
 		_mgnLeft = 4,

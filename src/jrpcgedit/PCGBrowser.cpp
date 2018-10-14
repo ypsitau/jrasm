@@ -56,7 +56,7 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	bool firstFlag = true;
 	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
 		wxBitmap &bmp = pPCGInfo->MakeBitmap(_sizeDot);
-		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + _mgnRight);
+		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + _wdOperation + _mgnRight);
 		int yBmp = y + _mgnTop;
 		int htBmp = bmp.GetHeight();
 		if (htBmp < _htBmpMin) {
