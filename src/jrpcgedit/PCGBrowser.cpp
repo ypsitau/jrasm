@@ -127,28 +127,27 @@ void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 	PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
 	for ( ; ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
 		PCGInfo *pPCGInfo = *ppPCGInfo;
-		if (pPCGInfo->GetSelectedFlag()) {
-			pPCGInfo->SetSelectedFlag(false);
-			break;
-		}
+		if (pPCGInfo->GetSelectedFlag()) break;
 	}
 	PCGInfo *pPCGInfoTo = nullptr;
 	if (pcgInfoOwner.empty()) {
 		// nothing to do
 	} else if (keyCode == WXK_UP) {
 		if (ppPCGInfo == pcgInfoOwner.begin()) {
-			(*ppPCGInfo)->SetSelectedFlag(true);
+			// nothing to do
 		} else if (ppPCGInfo == pcgInfoOwner.end()) {
 			pPCGInfoTo = pcgInfoOwner.back();
 		} else {
+			(*ppPCGInfo)->SetSelectedFlag(false);
 			pPCGInfoTo = *(ppPCGInfo - 1);
 		}
 	} else if (keyCode == WXK_DOWN) {
 		if (ppPCGInfo == pcgInfoOwner.end()) {
 			pPCGInfoTo = pcgInfoOwner.front();
 		} else if (ppPCGInfo + 1 == pcgInfoOwner.end()) {
-			(*ppPCGInfo)->SetSelectedFlag(true);
+			// nothing to do
 		} else {
+			(*ppPCGInfo)->SetSelectedFlag(false);
 			pPCGInfoTo = *(ppPCGInfo + 1);
 		}
 	}

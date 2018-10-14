@@ -9,6 +9,7 @@
 #include <wx/laywin.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
+#include <wx/tglbtn.h>
 #include "lib/jrasmcore.h"
 #include "Document.h"
 #include "FrameMain.h"

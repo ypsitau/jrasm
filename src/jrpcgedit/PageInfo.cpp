@@ -9,10 +9,12 @@
 PageInfo::PageInfo() : _cntRef(1)
 {
 	_pcgInfoOwner.push_back(new PCGInfo("pcg1", 16, 16));
+#if 0
 	_pcgInfoOwner.push_back(new PCGInfo("pcg2", 8, 8));
 	_pcgInfoOwner.push_back(new PCGInfo("pcg3", 16, 8));
 	_pcgInfoOwner.push_back(new PCGInfo("pcg4", 24, 24));
 	_pcgInfoOwner.push_back(new PCGInfo("pcg5", 32, 32));
+#endif
 	_pcgInfoOwner.front()->SetSelectedFlag(true);
 }
 
