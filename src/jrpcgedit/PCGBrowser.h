@@ -19,6 +19,15 @@ public:
 	public:
 		void NotifyPCGSelected(const PCGInfo *pPCGInfo);
 	};
+public:
+	enum {
+		_sizeDot = 4,
+		_htBmpMin = 48,
+		_mgnTop = 4,
+		_mgnBottom = 4,
+		_mgnLeft = 4,
+		_mgnRight = 4,
+	};	
 private:
 	AutoPtr<PageInfo> _pPageInfo;
 	wxBrush _brushBg;

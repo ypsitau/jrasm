@@ -13,7 +13,7 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 	_pDocument.reset(new Document());
 	_pDocument->ReadFile("pcgsimple.asm");
 	do {
-		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM);
+		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
 		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());
 		pNotebook->AddPage(new Page(pNotebook, new PageInfo()), wxT("Page1"));
 		pNotebook->AddPage(new Page(pNotebook, new PageInfo()), wxT("Page2"));
@@ -70,7 +70,27 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		pPanel->SetSizer(pVBox);
 		do {
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
-			pVBox->Add(pHBox, wxSizerFlags().Expand());
+			pVBox->Add(pHBox, wxSizerFlags(1).Expand());
+			_pMainWindow = pPanel;
+			do {
+				PCGEditor *pCtrl = new PCGEditor(pPanel, pPCGInfoSelected->Reference());
+				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
+				_pPCGEditor = pCtrl;
+				_pPCGEditor->AddListener(this);
+			} while (0);
+			do {
+				wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
+				pHBox->Add(pVBox, wxSizerFlags().Expand());
+				do {
+					wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
+												   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL | wxSL_INVERSE);
+					pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+				} while (0);
+			} while (0);
+		} while (0);
+		do {
+			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
+			pVBox->Add(pHBox, wxSizerFlags().Expand().Border(wxTOP, 2));
 			do {
 				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Size"));
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL));
@@ -92,26 +112,6 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 					wxSP_ARROW_KEYS | wxALIGN_CENTRE_HORIZONTAL, 1, 16, 1);
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
 				_pSpin_Height = pCtrl;
-			} while (0);
-		} while (0);
-		do {
-			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
-			pVBox->Add(pHBox, wxSizerFlags(1).Expand().Border(wxTOP, 2));
-			_pMainWindow = pPanel;
-			do {
-				PCGEditor *pCtrl = new PCGEditor(pPanel, pPCGInfoSelected->Reference());
-				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
-				_pPCGEditor = pCtrl;
-				_pPCGEditor->AddListener(this);
-			} while (0);
-			do {
-				wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
-				pHBox->Add(pVBox, wxSizerFlags().Expand());
-				do {
-					wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
-												   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL | wxSL_INVERSE);
-					pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
-				} while (0);
 			} while (0);
 		} while (0);
 	} while (0);

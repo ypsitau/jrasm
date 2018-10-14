@@ -47,10 +47,6 @@ void PCGBrowser::OnSize(wxSizeEvent &event)
 void PCGBrowser::OnPaint(wxPaintEvent &event)
 {
 	wxRect rcClient = GetClientRect();
-	const int sizeDot = 4;
-	const int htBmpMin = 48;
-	const int mgnTop = 4, mgnBottom = 4;
-	const int mgnLeft = 8, mgnRight = 8;
 	wxPaintDC dc(this);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
@@ -59,21 +55,21 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	dc.SetBrush(_brushSelected);
 	bool firstFlag = true;
 	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
-		wxBitmap &bmp = pPCGInfo->MakeBitmap(sizeDot);
-		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + mgnRight);
-		int yBmp = y + mgnTop;
+		wxBitmap &bmp = pPCGInfo->MakeBitmap(_sizeDot);
+		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + _mgnRight);
+		int yBmp = y + _mgnTop;
 		int htBmp = bmp.GetHeight();
-		if (htBmp < htBmpMin) {
-			yBmp += (htBmpMin - htBmp) / 2;
-			htBmp = htBmpMin;
+		if (htBmp < _htBmpMin) {
+			yBmp += (_htBmpMin - htBmp) / 2;
+			htBmp = _htBmpMin;
 		}
-		int htItem = mgnTop + htBmp + mgnBottom;
+		int htItem = _mgnTop + htBmp + _mgnBottom;
 		pPCGInfo->SetRectItem(0, y, rcClient.GetWidth(), htItem);
 		if (pPCGInfo->GetSelectedFlag()) {
 			dc.DrawRectangle(0, y, rcClient.GetWidth(), htItem);
 			firstFlag = false;
 		}
-		dc.DrawText(pPCGInfo->GetSymbol(), mgnLeft, yBmp);
+		dc.DrawText(pPCGInfo->GetSymbol(), _mgnLeft, yBmp);
 		dc.DrawBitmap(bmp, xBmp, yBmp);
 		y += htItem;
 	}
