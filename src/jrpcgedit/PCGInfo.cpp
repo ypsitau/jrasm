@@ -11,7 +11,17 @@ PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
 	_dotNumX(dotNumX), _dotNumY(dotNumY), _dotPosX(0), _dotPosY(0), _selectedFlag(false),
 	_dotTbl(new bool [dotNumX * dotNumY])
 {
-	ClearAll();
+	ClearPattern();
+}
+
+void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
+{
+	_dotNumX = dotNumX, _dotNumY = dotNumY;
+	if (_dotPosX >= _dotNumX) _dotPosX = _dotNumX - 1;
+	if (_dotPosY >= _dotNumY) _dotPosY = _dotNumY - 1;
+	_dotTbl.reset(new bool [dotNumX * dotNumY]);
+	_pBitmap.reset(nullptr);
+	ClearPattern();
 }
 
 wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
@@ -37,6 +47,14 @@ wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 		}
 	}
 	return *_pBitmap;
+}
+
+//-----------------------------------------------------------------------------
+// PCGInfo::Pattern
+//-----------------------------------------------------------------------------
+PCGInfo::Pattern::Pattern(int dotNumX, int dotNumY) :
+	_cntRef(1), _dotNumX(dotNumX), _dotNumY(dotNumY), _dotTbl(new bool [dotNumX * dotNumY])
+{
 }
 
 //-----------------------------------------------------------------------------

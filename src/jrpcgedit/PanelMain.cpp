@@ -159,7 +159,9 @@ void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 {
 	AutoPtr<PCGInfo> pPCGInfoSelected(_pPageInfo->GetPCGInfoOwner().FindSelected()->Reference());
-	//pPCGInfoSelected
+	pPCGInfoSelected->ChangeDotNum(_pSpin_Width->GetValue() * 8, _pSpin_Height->GetValue() * 8);
+	_pPCGEditor->PrepareMatrix(true);
+	_pPCGBrowser->Refresh();
 }
 
 void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)

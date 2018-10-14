@@ -8,6 +8,30 @@
 // PCGInfo
 //-----------------------------------------------------------------------------
 class PCGInfo {
+public:
+	class Pattern {
+	private:
+		int _cntRef;
+		int _dotNumX;
+		int _dotNumY;
+		std::unique_ptr<bool[]> _dotTbl;
+	public:
+		DeclareReferenceAccessor(Pattern);
+	public:
+		Pattern(int dotNumX, int dotNumY);
+	private:
+		inline ~Pattern() {}
+	public:
+		inline int GetDotNumX() const { return _dotNumX; }
+		inline int GetDotNumY() const { return _dotNumY; }
+		inline void ClearPattern() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
+		inline bool IsWithin(int dotPosX, int dotPosY) const {
+			return 0 <= dotPosX && dotPosX < _dotNumX && 0 <= dotPosY && dotPosY < _dotNumY;
+		}
+		inline bool GetDot(int dotPosX, int dotPosY) const {
+			return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _dotNumX] : false;
+		}
+	};
 private:
 	int _cntRef;
 	String _symbol;
@@ -37,7 +61,7 @@ public:
 	inline void SetDotPosX(int dotPosX) { _dotPosX = dotPosX; }
 	inline void SetDotPosY(int dotPosY) { _dotPosY = dotPosY; }
 	inline void SetDotPos(int dotPosX, int dotPosY) { _dotPosX = dotPosX, _dotPosY = dotPosY; }
-	inline void ClearAll() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
+	inline void ClearPattern() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
 	inline bool IsWithin(int dotPosX, int dotPosY) const {
 		return 0 <= dotPosX && dotPosX < _dotNumX && 0 <= dotPosY && dotPosY < _dotNumY;
 	}
@@ -53,7 +77,7 @@ public:
 	inline void SetRectItem(int x, int y, int width, int height) {
 		_rcItem = wxRect(x, y, width, height);
 	}
-	//void ChangeDotNum(int dotNumX, int dotNumY);
+	void ChangeDotNum(int dotNumX, int dotNumY);
 	wxBitmap &MakeBitmap(int sizeDot);
 };
 

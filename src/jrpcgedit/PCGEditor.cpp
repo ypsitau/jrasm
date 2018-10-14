@@ -16,30 +16,28 @@ PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 	_brushBg(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
 	_brushMatrix(wxColour("black"), wxBRUSHSTYLE_SOLID)
 {
-	PrepareMatrix();
-	UpdateMatrix(false);
+	PrepareMatrix(false);
 }
 
 void PCGEditor::SetSizeDot(int sizeDot)
 {
 	_sizeDot = sizeDot;
-	PrepareMatrix();
-	UpdateMatrix(true);
+	PrepareMatrix(true);
 }
 
 void PCGEditor::SetPCGInfo(PCGInfo *pPCGInfo)
 {
 	_pPCGInfo.reset(pPCGInfo);
-	PrepareMatrix();
-	UpdateMatrix(true);
+	PrepareMatrix(true);
 }
 
-void PCGEditor::PrepareMatrix()
+void PCGEditor::PrepareMatrix(bool refreshFlag)
 {
 	_pBmpMatrix.reset
 		(new wxBitmap(
 			_mgnLeft + _sizeDot * _pPCGInfo->GetDotNumX() + 1 + _mgnRight,
 			_mgnTop + _sizeDot * _pPCGInfo->GetDotNumY() + 1 + _mgnBottom));
+	UpdateMatrix(refreshFlag);
 }
 
 void PCGEditor::UpdateMatrix(bool refreshFlag)

@@ -45,7 +45,7 @@ public:
 	inline int GetSizeDot() const { return _sizeDot; }
 	void SetSizeDot(int sizeDot);
 	void SetPCGInfo(PCGInfo *pPCGInfo);
-	void PrepareMatrix();
+	void PrepareMatrix(bool refreshFlag);
 	void UpdateMatrix(bool refreshFlag);
 	void PutDot(int dotPosX, int dotPosY, bool data);
 	wxRect DotPosToCursorRect(int dotPosX, int dotPosY);
