@@ -64,10 +64,11 @@ public:
 	inline void SetDotPosX(int dotPosX) { _dotPosX = dotPosX; }
 	inline void SetDotPosY(int dotPosY) { _dotPosY = dotPosY; }
 	inline void SetDotPos(int dotPosX, int dotPosY) { _dotPosX = dotPosX, _dotPosY = dotPosY; }
-	inline void ClearPattern() { _pPattern->Clear(); }
+	inline void InvalidatePatternOrg() { _pPatternOrg.reset(nullptr); }
+	inline void ClearPattern() { _pPattern->Clear(); InvalidatePatternOrg(); }
 	inline bool IsWithin(int dotPosX, int dotPosY) const { return _pPattern->IsWithin(dotPosX, dotPosY); }
 	inline void PutDot(int dotPosX, int dotPosY, bool flag) {
-		_pPattern->PutDot(dotPosX, dotPosY, flag);
+		_pPattern->PutDot(dotPosX, dotPosY, flag); InvalidatePatternOrg();
 	}
 	inline bool GetDot(int dotPosX, int dotPosY) const {
 		return _pPattern->GetDot(dotPosX, dotPosY);

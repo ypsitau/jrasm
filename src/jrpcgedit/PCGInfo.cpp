@@ -14,7 +14,9 @@ PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
 
 void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
 {
-	_pPatternOrg.reset(_pPattern.release());
+	if (_pPatternOrg.IsNull() || dotNumX < _pPatternOrg->GetDotNumX() || dotNumY < _pPatternOrg->GetDotNumY()) {
+		_pPatternOrg.reset(_pPattern.release());
+	}
 	_pPattern.reset(new Pattern(dotNumX, dotNumY));
 	_pPattern->Paste(0, 0, _pPatternOrg.get());
 	if (_dotPosX >= dotNumX) _dotPosX = dotNumX - 1;

@@ -72,23 +72,23 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
 			pVBox->Add(pHBox, wxSizerFlags().Expand());
 			do {
-				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Width"));
+				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Size"));
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL));
 			} while (0);
 			do {
 				wxSpinCtrl *pCtrl = new wxSpinCtrl(
-					pPanel, ID_SPIN_Width, wxEmptyString, wxDefaultPosition, wxSize(60, -1),
+					pPanel, ID_SPIN_Width, wxEmptyString, wxDefaultPosition, wxSize(50, -1),
 					wxSP_ARROW_KEYS | wxALIGN_CENTRE_HORIZONTAL, 1, 16, 1);
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
 				_pSpin_Width = pCtrl;
 			} while (0);
 			do {
-				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Height"));
-				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 8));
+				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("x"));
+				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 2));
 			} while (0);
 			do {
 				wxSpinCtrl *pCtrl = new wxSpinCtrl(
-					pPanel, ID_SPIN_Height, wxEmptyString, wxDefaultPosition, wxSize(60, -1),
+					pPanel, ID_SPIN_Height, wxEmptyString, wxDefaultPosition, wxSize(50, -1),
 					wxSP_ARROW_KEYS | wxALIGN_CENTRE_HORIZONTAL, 1, 16, 1);
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
 				_pSpin_Height = pCtrl;
@@ -96,7 +96,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		} while (0);
 		do {
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
-			pVBox->Add(pHBox, wxSizerFlags(1).Expand());
+			pVBox->Add(pHBox, wxSizerFlags(1).Expand().Border(wxTOP, 2));
 			_pMainWindow = pPanel;
 			do {
 				PCGEditor *pCtrl = new PCGEditor(pPanel, pPCGInfoSelected->Reference());
@@ -167,6 +167,8 @@ void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)
 {
 	_pPCGEditor->SetPCGInfo(pPCGInfo->Reference());
+	_pSpin_Width->SetValue(pPCGInfo->GetDotNumX() / 8);
+	_pSpin_Height->SetValue(pPCGInfo->GetDotNumY() / 8);
 }
 
 void PanelMain::Page::NotifyPCGModified()
