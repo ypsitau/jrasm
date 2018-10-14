@@ -114,6 +114,14 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 				_pSpin_Height = pCtrl;
 			} while (0);
 		} while (0);
+		do {
+			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
+			pVBox->Add(pHBox, wxSizerFlags().Expand().Border(wxTOP, 2));
+			do {
+				wxButton *pCtrl = new wxButton(pPanel, wxID_ANY, wxT("push"));
+				pHBox->Add(pCtrl, wxSizerFlags());
+			} while (0);
+		} while (0);
 	} while (0);
 	_pSpin_Width->SetValue(pPCGInfoSelected->GetDotNumX() / 8);
 	_pSpin_Height->SetValue(pPCGInfoSelected->GetDotNumY() / 8);
