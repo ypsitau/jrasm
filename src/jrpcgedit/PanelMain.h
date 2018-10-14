@@ -18,12 +18,16 @@ public:
 			ID_SASH_Vert = 1000,
 			ID_SLIDER,
 			ID_BTN_NewPCG,
+			ID_SPIN_Width,
+			ID_SPIN_Height,
 		};
 	private:
 		wxSashLayoutWindow *_pSashVert;
 		PCGEditor *_pPCGEditor;
 		PCGBrowser *_pPCGBrowser;
 		wxWindow *_pMainWindow;
+		wxSpinCtrl *_pSpin_Width;
+		wxSpinCtrl *_pSpin_Height;
 		AutoPtr<PageInfo> _pPageInfo;
 	public:
 		Page(wxWindow *pParent, PageInfo *pPageInfo);
@@ -33,6 +37,7 @@ public:
 		void OnSashDrag_Vert(wxSashEvent &event);
 		void OnCommandScroll_SLIDER(wxScrollEvent &event);
 		void OnButton_NewPCG(wxCommandEvent &event);
+		void OnSpin_WidthHeight(wxSpinEvent &event);
 	public:
 		// virtual function of PCGBrowser::Listener
 		virtual void NotifyPCGSelected(const PCGInfo *pPCGInfo);

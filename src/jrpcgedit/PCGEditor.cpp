@@ -38,8 +38,8 @@ void PCGEditor::PrepareMatrix()
 {
 	_pBmpMatrix.reset
 		(new wxBitmap(
-			_mgnLeft + _sizeDot * _pPCGInfo->GetNDotsX() + 1 + _mgnRight,
-			_mgnTop + _sizeDot * _pPCGInfo->GetNDotsY() + 1 + _mgnBottom));
+			_mgnLeft + _sizeDot * _pPCGInfo->GetDotNumX() + 1 + _mgnRight,
+			_mgnTop + _sizeDot * _pPCGInfo->GetDotNumY() + 1 + _mgnBottom));
 }
 
 void PCGEditor::UpdateMatrix(bool refreshFlag)
@@ -48,16 +48,16 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 	wxBrush brushDot(wxColour("white"), wxBRUSHSTYLE_SOLID);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
-	int nDotsX = _pPCGInfo->GetNDotsX();
-	int nDotsY = _pPCGInfo->GetNDotsY();
+	int dotNumX = _pPCGInfo->GetDotNumX();
+	int dotNumY = _pPCGInfo->GetDotNumY();
 	int xLeft = DotPosXToMatrixCoord(0);
-	int xRight = DotPosXToMatrixCoord(nDotsX);
+	int xRight = DotPosXToMatrixCoord(dotNumX);
 	int yTop = DotPosYToMatrixCoord(0);
-	int yBottom = DotPosYToMatrixCoord(nDotsY);
+	int yBottom = DotPosYToMatrixCoord(dotNumY);
 	dc.SetPen(_penBorder);
 	dc.SetBrush(_brushMatrix);
 	dc.DrawRectangle(xLeft, yTop, xRight - xLeft + 1, yBottom - yTop + 1);
-	for (int dotPosX = 1; dotPosX < nDotsX; dotPosX++) {
+	for (int dotPosX = 1; dotPosX < dotNumX; dotPosX++) {
 		int x = DotPosXToMatrixCoord(dotPosX);
 		if (dotPosX % 8 == 0) {
 			dc.SetPen(_penGridHL);
@@ -67,7 +67,7 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 			dc.DrawLine(x, yTop, x, yBottom);
 		}
 	}
-	for (int dotPosY = 1; dotPosY < nDotsY; dotPosY++) {
+	for (int dotPosY = 1; dotPosY < dotNumY; dotPosY++) {
 		int y = DotPosYToMatrixCoord(dotPosY);
 		if (dotPosY % 8 == 0) {
 			dc.SetPen(_penGridHL);
@@ -78,9 +78,9 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 		}
 	}
 	dc.SetBrush(brushDot);
-	for (int dotPosY = 0; dotPosY < nDotsY; dotPosY++) {
+	for (int dotPosY = 0; dotPosY < dotNumY; dotPosY++) {
 		int y = DotPosYToMatrixCoord(dotPosY);
-		for (int dotPosX = 0; dotPosX < nDotsX; dotPosX++) {
+		for (int dotPosX = 0; dotPosX < dotNumX; dotPosX++) {
 			int x = DotPosXToMatrixCoord(dotPosX);
 			if (_pPCGInfo->GetDot(dotPosX, dotPosY)) {
 				dc.SetPen(*wxTRANSPARENT_PEN);
@@ -225,13 +225,13 @@ void PCGEditor::OnKeyDown(wxKeyEvent &event)
 		if (dotPosX > 0) _pPCGInfo->SetDotPosX(dotPosX - 1);
 		Refresh();
 	} else if (keyCode == WXK_RIGHT) {
-		if (dotPosX < _pPCGInfo->GetNDotsX() - 1) _pPCGInfo->SetDotPosX(dotPosX + 1);
+		if (dotPosX < _pPCGInfo->GetDotNumX() - 1) _pPCGInfo->SetDotPosX(dotPosX + 1);
 		Refresh();
 	} else if (keyCode == WXK_UP) {
 		if (dotPosY > 0) _pPCGInfo->SetDotPosY(dotPosY - 1);
 		Refresh();
 	} else if (keyCode == WXK_DOWN) {
-		if (dotPosY < _pPCGInfo->GetNDotsY() - 1) _pPCGInfo->SetDotPosY(dotPosY + 1);
+		if (dotPosY < _pPCGInfo->GetDotNumY() - 1) _pPCGInfo->SetDotPosY(dotPosY + 1);
 		Refresh();
 	} else if (keyCode == WXK_SPACE || keyCode == 'Z') {
 		PutDot(dotPosX, dotPosY, true);

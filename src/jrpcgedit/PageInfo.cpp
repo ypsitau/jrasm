@@ -13,6 +13,7 @@ PageInfo::PageInfo() : _cntRef(1)
 	_pcgInfoOwner.push_back(new PCGInfo("pcg3", 16, 8));
 	_pcgInfoOwner.push_back(new PCGInfo("pcg4", 24, 24));
 	_pcgInfoOwner.push_back(new PCGInfo("pcg5", 32, 32));
+	_pcgInfoOwner.front()->SetSelectedFlag(true);
 }
 
 void PageInfo::NewPCGInfo()

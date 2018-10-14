@@ -8,6 +8,7 @@
 #include <wx/bookctrl.h>
 #include <wx/laywin.h>
 #include <wx/listctrl.h>
+#include <wx/spinctrl.h>
 #include "lib/jrasmcore.h"
 #include "Document.h"
 #include "FrameMain.h"

@@ -34,6 +34,7 @@ wxEND_EVENT_TABLE()
 PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 	wxPanel(pParent, wxID_ANY), _pPageInfo(pPageInfo)
 {
+	const PCGInfo *pPCGInfoSelected = _pPageInfo->GetPCGInfoOwner().FindSelected();
 	do {
 		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
 			this, ID_SASH_Vert, wxDefaultPosition, wxDefaultSize,
@@ -65,26 +66,57 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 	} while (0);
 	do { // panel on right (main)
 		wxPanel *pPanel = new wxPanel(this);
-		wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
-		pPanel->SetSizer(pHBox);
-		_pMainWindow = pPanel;
+		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
+		pPanel->SetSizer(pVBox);
 		do {
-			PCGEditor *pCtrl = new PCGEditor(
-				pPanel, _pPageInfo->GetPCGInfoOwner().front()->Reference());
-			pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
-			_pPCGEditor = pCtrl;
-			_pPCGEditor->AddListener(this);
+			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
+			pVBox->Add(pHBox, wxSizerFlags().Expand());
+			do {
+				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Width"));
+				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL));
+			} while (0);
+			do {
+				wxSpinCtrl *pCtrl = new wxSpinCtrl(
+					pPanel, ID_SPIN_Width, wxEmptyString, wxDefaultPosition, wxSize(60, -1),
+					wxSP_ARROW_KEYS | wxALIGN_CENTRE_HORIZONTAL, 1, 16, 1);
+				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
+				_pSpin_Width = pCtrl;
+			} while (0);
+			do {
+				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Height"));
+				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 8));
+			} while (0);
+			do {
+				wxSpinCtrl *pCtrl = new wxSpinCtrl(
+					pPanel, ID_SPIN_Height, wxEmptyString, wxDefaultPosition, wxSize(60, -1),
+					wxSP_ARROW_KEYS | wxALIGN_CENTRE_HORIZONTAL, 1, 16, 1);
+				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
+				_pSpin_Height = pCtrl;
+			} while (0);
 		} while (0);
 		do {
-			wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
-			pHBox->Add(pVBox, wxSizerFlags().Expand());
+			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
+			pVBox->Add(pHBox, wxSizerFlags(1).Expand());
+			_pMainWindow = pPanel;
 			do {
-				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
-											   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL | wxSL_INVERSE);
-				pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+				PCGEditor *pCtrl = new PCGEditor(pPanel, pPCGInfoSelected->Reference());
+				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
+				_pPCGEditor = pCtrl;
+				_pPCGEditor->AddListener(this);
+			} while (0);
+			do {
+				wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
+				pHBox->Add(pVBox, wxSizerFlags().Expand());
+				do {
+					wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
+												   wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL | wxSL_INVERSE);
+					pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
+				} while (0);
 			} while (0);
 		} while (0);
 	} while (0);
+	_pSpin_Width->SetValue(pPCGInfoSelected->GetDotNumX() / 8);
+	_pSpin_Height->SetValue(pPCGInfoSelected->GetDotNumY() / 8);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +127,8 @@ wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
 	EVT_SASH_DRAGGED(ID_SASH_Vert, PanelMain::Page::OnSashDrag_Vert)
 	EVT_COMMAND_SCROLL(ID_SLIDER, PanelMain::Page::OnCommandScroll_SLIDER)
 	EVT_BUTTON(ID_BTN_NewPCG, PanelMain::Page::OnButton_NewPCG)
+	EVT_SPINCTRL(ID_SPIN_Width, PanelMain::Page::OnSpin_WidthHeight)
+	EVT_SPINCTRL(ID_SPIN_Height, PanelMain::Page::OnSpin_WidthHeight)
 wxEND_EVENT_TABLE()
 
 void PanelMain::Page::OnSize(wxSizeEvent &event)
@@ -120,6 +154,12 @@ void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 {
 	_pPageInfo->NewPCGInfo();
 	_pPCGBrowser->Refresh();
+}
+
+void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
+{
+	AutoPtr<PCGInfo> pPCGInfoSelected(_pPageInfo->GetPCGInfoOwner().FindSelected()->Reference());
+	//pPCGInfoSelected
 }
 
 void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)
