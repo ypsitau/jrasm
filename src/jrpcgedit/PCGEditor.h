@@ -47,7 +47,7 @@ public:
 	void SetPCGInfo(PCGInfo *pPCGInfo);
 	void PrepareMatrix(bool refreshFlag);
 	void UpdateMatrix(bool refreshFlag);
-	void PutDot(int dotPosX, int dotPosY, bool data);
+	void PutDot(int dotPosX, int dotPosY, bool flag);
 	wxRect DotPosToCursorRect(int dotPosX, int dotPosY);
 	void PointToDotPos(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const;
 private:

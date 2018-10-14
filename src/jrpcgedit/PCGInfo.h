@@ -28,6 +28,9 @@ public:
 		inline bool IsWithin(int dotPosX, int dotPosY) const {
 			return 0 <= dotPosX && dotPosX < _dotNumX && 0 <= dotPosY && dotPosY < _dotNumY;
 		}
+		inline void PutDot(int dotPosX, int dotPosY, bool flag) {
+			if (IsWithin(dotPosX, dotPosY)) _dotTbl[dotPosX + dotPosY * _dotNumX] = flag;
+		}
 		inline bool GetDot(int dotPosX, int dotPosY) const {
 			return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _dotNumX] : false;
 		}
@@ -36,13 +39,11 @@ private:
 	int _cntRef;
 	String _symbol;
 	int _sizeDot;
-	int _dotNumX;
-	int _dotNumY;
 	int _dotPosX;
 	int _dotPosY;
 	bool _selectedFlag;
 	wxRect _rcItem;
-	std::unique_ptr<bool[]> _dotTbl;
+	AutoPtr<Pattern> _pPattern;
 	std::unique_ptr<wxBitmap> _pBitmap;
 public:
 	DeclareReferenceAccessor(PCGInfo);
@@ -52,24 +53,22 @@ protected:
 	inline ~PCGInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline int GetDotNumX() const { return _dotNumX; }
-	inline int GetDotNumY() const { return _dotNumY; }
-	inline int GetDotPosXMax() const { return _dotNumX - 1; }
-	inline int GetDotPosYMax() const { return _dotNumY - 1; }
+	inline int GetDotNumX() const { return _pPattern->GetDotNumX(); }
+	inline int GetDotNumY() const { return _pPattern->GetDotNumY(); }
+	inline int GetDotPosXMax() const { return _pPattern->GetDotNumX() - 1; }
+	inline int GetDotPosYMax() const { return _pPattern->GetDotNumY() - 1; }
 	inline int GetDotPosX() const { return _dotPosX; }
 	inline int GetDotPosY() const { return _dotPosY; }
 	inline void SetDotPosX(int dotPosX) { _dotPosX = dotPosX; }
 	inline void SetDotPosY(int dotPosY) { _dotPosY = dotPosY; }
 	inline void SetDotPos(int dotPosX, int dotPosY) { _dotPosX = dotPosX, _dotPosY = dotPosY; }
-	inline void ClearPattern() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
-	inline bool IsWithin(int dotPosX, int dotPosY) const {
-		return 0 <= dotPosX && dotPosX < _dotNumX && 0 <= dotPosY && dotPosY < _dotNumY;
-	}
-	inline void PutDot(int dotPosX, int dotPosY, bool data) {
-		if (IsWithin(dotPosX, dotPosY)) _dotTbl[dotPosX + dotPosY * _dotNumX] = data;
+	inline void ClearPattern() { _pPattern->ClearPattern(); }
+	inline bool IsWithin(int dotPosX, int dotPosY) const { return _pPattern->IsWithin(dotPosX, dotPosY); }
+	inline void PutDot(int dotPosX, int dotPosY, bool flag) {
+		_pPattern->PutDot(dotPosX, dotPosY, flag);
 	}
 	inline bool GetDot(int dotPosX, int dotPosY) const {
-		return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _dotNumX] : false;
+		return _pPattern->GetDot(dotPosX, dotPosY);
 	}
 	inline void SetSelectedFlag(bool selectedFlag) { _selectedFlag = selectedFlag; }
 	inline bool GetSelectedFlag() { return _selectedFlag; }

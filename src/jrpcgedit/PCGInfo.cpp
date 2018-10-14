@@ -7,27 +7,23 @@
 // PCGInfo
 //-----------------------------------------------------------------------------
 PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
-	_cntRef(1), _symbol(symbol), _sizeDot(0),
-	_dotNumX(dotNumX), _dotNumY(dotNumY), _dotPosX(0), _dotPosY(0), _selectedFlag(false),
-	_dotTbl(new bool [dotNumX * dotNumY])
+	_cntRef(1), _symbol(symbol), _sizeDot(0), _dotPosX(0), _dotPosY(0), _selectedFlag(false),
+	_pPattern(new Pattern(dotNumX, dotNumY))
 {
-	ClearPattern();
 }
 
 void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
 {
-	_dotNumX = dotNumX, _dotNumY = dotNumY;
-	if (_dotPosX >= _dotNumX) _dotPosX = _dotNumX - 1;
-	if (_dotPosY >= _dotNumY) _dotPosY = _dotNumY - 1;
-	_dotTbl.reset(new bool [dotNumX * dotNumY]);
+	_pPattern.reset(new Pattern(dotNumX, dotNumY));
+	if (_dotPosX >= dotNumX) _dotPosX = dotNumX - 1;
+	if (_dotPosY >= dotNumY) _dotPosY = dotNumY - 1;
 	_pBitmap.reset(nullptr);
-	ClearPattern();
 }
 
 wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 {
 	if (_pBitmap.get() == nullptr || _sizeDot != sizeDot) {
-		_pBitmap.reset(new wxBitmap(sizeDot * _dotNumX, sizeDot * _dotNumY));
+		_pBitmap.reset(new wxBitmap(sizeDot * _pPattern->GetDotNumX(), sizeDot * _pPattern->GetDotNumY()));
 		_sizeDot = sizeDot;
 	}
 	wxBrush brushBg(wxColour("black"), wxBRUSHSTYLE_SOLID);
@@ -37,9 +33,9 @@ wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 	dc.Clear();
 	dc.SetPen(wxNullPen);
 	dc.SetBrush(brushFg);
-	for (int dotPosY = 0; dotPosY < _dotNumY; dotPosY++) {
+	for (int dotPosY = 0; dotPosY < _pPattern->GetDotNumY(); dotPosY++) {
 		int y = dotPosY * _sizeDot;
-		for (int dotPosX = 0; dotPosX < _dotNumX; dotPosX++) {
+		for (int dotPosX = 0; dotPosX < _pPattern->GetDotNumX(); dotPosX++) {
 			int x = dotPosX * _sizeDot;
 			if (GetDot(dotPosX, dotPosY)) {
 				dc.DrawRectangle(x, y, _sizeDot, _sizeDot);
@@ -55,6 +51,7 @@ wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 PCGInfo::Pattern::Pattern(int dotNumX, int dotNumY) :
 	_cntRef(1), _dotNumX(dotNumX), _dotNumY(dotNumY), _dotTbl(new bool [dotNumX * dotNumY])
 {
+	ClearPattern();
 }
 
 //-----------------------------------------------------------------------------

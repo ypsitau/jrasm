@@ -89,9 +89,9 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 	if (refreshFlag) Refresh();
 }
 
-void PCGEditor::PutDot(int dotPosX, int dotPosY, bool data)
+void PCGEditor::PutDot(int dotPosX, int dotPosY, bool flag)
 {
-	_pPCGInfo->PutDot(_pPCGInfo->GetDotPosX(), _pPCGInfo->GetDotPosY(), data);
+	_pPCGInfo->PutDot(_pPCGInfo->GetDotPosX(), _pPCGInfo->GetDotPosY(), flag);
 	_listenerList.NotifyPCGModified();
 	UpdateMatrix(true);
 }
