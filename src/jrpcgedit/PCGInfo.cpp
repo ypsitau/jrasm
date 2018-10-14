@@ -14,7 +14,9 @@ PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
 
 void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
 {
+	_pPatternOrg.reset(_pPattern.release());
 	_pPattern.reset(new Pattern(dotNumX, dotNumY));
+	_pPattern->Paste(0, 0, _pPatternOrg.get());
 	if (_dotPosX >= dotNumX) _dotPosX = dotNumX - 1;
 	if (_dotPosY >= dotNumY) _dotPosY = dotNumY - 1;
 	_pBitmap.reset(nullptr);
@@ -51,7 +53,22 @@ wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
 PCGInfo::Pattern::Pattern(int dotNumX, int dotNumY) :
 	_cntRef(1), _dotNumX(dotNumX), _dotNumY(dotNumY), _dotTbl(new bool [dotNumX * dotNumY])
 {
-	ClearPattern();
+	Clear();
+}
+
+void PCGInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPatternSrc)
+{
+	int dotPosSrcX = 0, dotPosSrcY = 0;
+	for (int dotOffY = 0;
+		 dotPosSrcY + dotOffY < pPatternSrc->GetDotNumY() && dotPosDstY + dotOffY < GetDotNumY();
+		 dotOffY++) {
+		for (int dotOffX = 0;
+			 dotPosSrcX + dotOffX < pPatternSrc->GetDotNumX() && dotPosDstX + dotOffX < GetDotNumX();
+			 dotOffX++) {
+			PutDot(dotPosDstX + dotOffX, dotPosDstY + dotOffY,
+				   pPatternSrc->GetDot(dotPosSrcX + dotOffX, dotPosSrcY + dotOffY));
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

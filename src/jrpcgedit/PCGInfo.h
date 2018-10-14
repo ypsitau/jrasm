@@ -24,7 +24,7 @@ public:
 	public:
 		inline int GetDotNumX() const { return _dotNumX; }
 		inline int GetDotNumY() const { return _dotNumY; }
-		inline void ClearPattern() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
+		inline void Clear() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
 		inline bool IsWithin(int dotPosX, int dotPosY) const {
 			return 0 <= dotPosX && dotPosX < _dotNumX && 0 <= dotPosY && dotPosY < _dotNumY;
 		}
@@ -34,6 +34,7 @@ public:
 		inline bool GetDot(int dotPosX, int dotPosY) const {
 			return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _dotNumX] : false;
 		}
+		void Paste(int dotPosX, int dotPosY, const Pattern *pPatternSrc);
 	};
 private:
 	int _cntRef;
@@ -44,6 +45,7 @@ private:
 	bool _selectedFlag;
 	wxRect _rcItem;
 	AutoPtr<Pattern> _pPattern;
+	AutoPtr<Pattern> _pPatternOrg;
 	std::unique_ptr<wxBitmap> _pBitmap;
 public:
 	DeclareReferenceAccessor(PCGInfo);
@@ -62,7 +64,7 @@ public:
 	inline void SetDotPosX(int dotPosX) { _dotPosX = dotPosX; }
 	inline void SetDotPosY(int dotPosY) { _dotPosY = dotPosY; }
 	inline void SetDotPos(int dotPosX, int dotPosY) { _dotPosX = dotPosX, _dotPosY = dotPosY; }
-	inline void ClearPattern() { _pPattern->ClearPattern(); }
+	inline void ClearPattern() { _pPattern->Clear(); }
 	inline bool IsWithin(int dotPosX, int dotPosY) const { return _pPattern->IsWithin(dotPosX, dotPosY); }
 	inline void PutDot(int dotPosX, int dotPosY, bool flag) {
 		_pPattern->PutDot(dotPosX, dotPosY, flag);
