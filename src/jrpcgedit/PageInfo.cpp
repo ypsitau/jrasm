@@ -18,13 +18,6 @@ void PageInfo::AddPCGInfo(PCGInfo *pPCGInfo)
 	_pcgInfoOwner.push_back(pPCGInfo);
 }
 
-void PageInfo::NewPCGInfo()
-{
-	char symbol[256];
-	::sprintf_s(symbol, "pcg%d", static_cast<int>(_pcgInfoOwner.size()) + 1);
-	_pcgInfoOwner.push_back(new PCGInfo(symbol, 16, 16));
-}
-
 //-----------------------------------------------------------------------------
 // PageInfoList
 //-----------------------------------------------------------------------------
@@ -43,4 +36,11 @@ void PageInfoOwner::Clear()
 		PageInfo::Delete(pPageInfo);
 	}
 	clear();
+}
+
+void PageInfoOwner::NewPageInfo()
+{
+	char symbol[256];
+	::sprintf_s(symbol, "page%d", static_cast<int>(size()) + 1);
+	push_back(new PageInfo(symbol, PCGTYPE_User, 0x20));
 }

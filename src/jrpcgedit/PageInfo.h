@@ -28,8 +28,9 @@ public:
 	inline int GetCharCodeStart() const { return _charCodeStart; }
 	inline PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
 	inline const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
+	inline bool IsEmptyPCGInfo() const { return _pcgInfoOwner.empty(); }
+	inline void NewPCGInfo() { _pcgInfoOwner.NewPCGInfo(); }
 	void AddPCGInfo(PCGInfo *pPCGInfo);
-	void NewPCGInfo();
 };
 
 //-----------------------------------------------------------------------------
@@ -45,6 +46,7 @@ class PageInfoOwner : public PageInfoList {
 public:
 	~PageInfoOwner();
 	void Clear();
+	void NewPageInfo();
 };
 
 #endif

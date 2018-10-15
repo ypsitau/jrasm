@@ -114,6 +114,7 @@ public:
 	~PCGInfoOwner();
 	void Clear();
 	bool DeleteSelection();
+	void NewPCGInfo();
 };
 
 #endif

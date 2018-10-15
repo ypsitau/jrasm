@@ -6,15 +6,16 @@
 //-----------------------------------------------------------------------------
 // Document
 //-----------------------------------------------------------------------------
-Document::Document() : _cntRef(1)
+Document::Document() : _cntRef(1), _pPageInfoOwner(new PageInfoOwner())
 {
-	_pageInfoOwner.push_back(new PageInfo("page1", PCGTYPE_User, 0x20));
+	_pPageInfoOwner->NewPageInfo();
 }
 
 bool Document::ReadFile(const char *pathName)
 {
 	Context context(pathName);
 	if (!context.ParseFile()) return false;
+	std::unique_ptr<PageInfoOwner> pPageInfoOwner(new PageInfoOwner());
 	const Expr *pExprRoot = context.GetExprRoot();
 	for (auto pExpr : pExprRoot->GetExprChildren()) {
 		if (!pExpr->IsTypeDirective(Directive::PCGPAGE)) continue;
@@ -35,8 +36,9 @@ bool Document::ReadFile(const char *pathName)
 											  &wdChar, &htChar, &stepX, &stepY, buff)) return false;
 			pPageInfo->AddPCGInfo(new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(wdChar, htChar, buff)));
 		}
-		_pageInfoOwner.push_back(pPageInfo.release());
+		pPageInfoOwner->push_back(pPageInfo.release());
 	}
+	_pPageInfoOwner.reset(pPageInfoOwner.release());
 	return true;
 }
 
@@ -44,4 +46,3 @@ bool Document::WriteFile(const char *pathName)
 {
 	return true;
 }
-

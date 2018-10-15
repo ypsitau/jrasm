@@ -160,3 +160,10 @@ bool PCGInfoOwner::DeleteSelection()
 	}
 	return true;
 }
+
+void PCGInfoOwner::NewPCGInfo()
+{
+	char symbol[256];
+	::sprintf_s(symbol, "pcg%d", static_cast<int>(size()) + 1);
+	push_back(new PCGInfo(symbol, 16, 16));
+}

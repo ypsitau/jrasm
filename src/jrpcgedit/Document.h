@@ -12,7 +12,7 @@
 class Document {
 private:
 	int _cntRef;
-	PageInfoOwner _pageInfoOwner;
+	std::unique_ptr<PageInfoOwner> _pPageInfoOwner;
 public:
 	DeclareReferenceAccessor(Document);
 public:
@@ -20,7 +20,9 @@ public:
 protected:
 	inline ~Document() {};
 public:
-	const PageInfoOwner &GetPageInfoOwner() const { return _pageInfoOwner; }
+	inline PageInfoOwner &GetPageInfoOwner() { return *_pPageInfoOwner; }
+	inline const PageInfoOwner &GetPageInfoOwner() const { return *_pPageInfoOwner; }
+	inline void NewPageInfo() { _pPageInfoOwner->NewPageInfo(); }
 	bool ReadFile(const char *pathName);
 	bool WriteFile(const char *pathName);
 };
