@@ -11,9 +11,11 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
 	SetSizer(pOuterBox);
 	_pDocument.reset(new Document());
+#if 1
 	if (!_pDocument->ReadFile("pcgsimple.asm")) {
 		ErrorLog::Print(stderr);
 	}
+#endif
 	do {
 		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
 		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());
