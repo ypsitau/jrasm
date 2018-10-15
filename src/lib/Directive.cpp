@@ -737,6 +737,12 @@ Directive *Directive_PCG::Factory::Create() const
 	return new Directive_PCG();
 }
 
+bool Directive_PCG::ExtractParams(const Expr *pExpr, String *pSymbol,
+								  int *pWdChar, int *pHtChar, int *pXStep, int *pYStep)
+{
+	return true;
+}
+
 bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
