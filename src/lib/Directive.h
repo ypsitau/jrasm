@@ -382,6 +382,7 @@ public:
 	inline void SetPCGPage(PCGPage *pPCGPage) { _pPCGPage.reset(pPCGPage); }
 	inline PCGPage *GetPCGPage() { return _pPCGPage.get(); }
 	inline const PCGPage *GetPCGPage() const { return _pPCGPage.get(); }
+	static bool ExtractParams(const Expr *pExpr, String *pSymbol, PCGType *pPCGType, int *pCharCodeStart);
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);

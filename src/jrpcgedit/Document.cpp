@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 Document::Document() : _cntRef(1)
 {
-	_pageInfoOwner.push_back(new PageInfo());
+	_pageInfoOwner.push_back(new PageInfo("page1", PCGTYPE_User, 0x20));
 }
 
 bool Document::ReadFile(const char *pathName)
@@ -21,7 +21,13 @@ bool Document::ReadFile(const char *pathName)
 	::printf("ReadFile\n");
 	const Expr *pExprRoot = parser.GetRoot();
 	for (auto pExpr : pExprRoot->GetExprChildren()) {
+		if (!pExpr->IsTypeDirective(Directive::PCGPAGE)) continue;
+		pExpr->GetExprOperands();
 		pExpr->Print();
+		for (auto pExprChild : pExpr->GetExprChildren()) {
+			pExprChild->Print();
+		}
+		//_pageInfoOwner.push_back(new PageInfo());
 	}
 	return true;
 }

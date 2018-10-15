@@ -15,10 +15,9 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 	do {
 		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
 		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());
-		pNotebook->AddPage(new Page(pNotebook, new PageInfo()), wxT("Page1"));
-		pNotebook->AddPage(new Page(pNotebook, new PageInfo()), wxT("Page2"));
-		pNotebook->AddPage(new Page(pNotebook, new PageInfo()), wxT("Page3"));
-		pNotebook->AddPage(new Page(pNotebook, new PageInfo()), wxT("Page4"));
+		pNotebook->AddPage(new Page(pNotebook, new PageInfo("Page1", PCGTYPE_User, 0x20)), wxT("Page1"));
+		pNotebook->AddPage(new Page(pNotebook, new PageInfo("Page2", PCGTYPE_User, 0x20)), wxT("Page2"));
+		pNotebook->AddPage(new Page(pNotebook, new PageInfo("Page3", PCGTYPE_User, 0x20)), wxT("Page3"));
 	} while (0);
 }
 

@@ -878,17 +878,7 @@ Directive *Directive_PCGPAGE::Factory::Create() const
 	return new Directive_PCGPAGE();
 }
 
-bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
-{
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
-	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	exprStack.push_back(pExpr->Reference());		// for children
-	exprStack.push_back(pExpr.release());			// for operands
-	return true;
-}
-
-bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
+bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGType *pPCGType, int *pCharCodeStart)
 {
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::PCG) && !pExprChild->IsTypeDirective(Directive::END)) {
@@ -949,6 +939,28 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 			}
 		}
 	} while (0);
+	*pSymbol = symbol;
+	*pPCGType = pcgType;
+	*pCharCodeStart = charCodeStart;
+	return true;
+}
+
+bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+{
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
+	return true;
+}
+
+bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
+{
+	String symbol;
+	PCGType pcgType;
+	int charCodeStart;
+	if (!ExtractParams(pExpr, &symbol, &pcgType, &charCodeStart)) return false;
 	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
 	context.AddPCGPage(_pPCGPage->Reference());
 	return true;
