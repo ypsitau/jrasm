@@ -89,6 +89,8 @@ public:
 class PCGInfoList : public std::vector<PCGInfo *> {
 public:
 	const PCGInfo *FindSelected() const;
+	bool IsFirst(const PCGInfo *pPCGInfo) const;
+	bool IsLast(const PCGInfo *pPCGInfo) const;
 };
 
 //-----------------------------------------------------------------------------

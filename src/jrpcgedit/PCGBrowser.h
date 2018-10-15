@@ -23,7 +23,6 @@ public:
 	enum {
 		_sizeDot = 4,
 		_htBmpMin = 48,
-		_wdOperation = 16,
 		_mgnTop = 4,
 		_mgnBottom = 4,
 		_mgnLeft = 4,
@@ -33,6 +32,12 @@ private:
 	AutoPtr<PageInfo> _pPageInfo;
 	wxBrush _brushBg;
 	wxBrush _brushSelected;
+	wxBitmap _bmpBtnUp;
+	wxBitmap _bmpBtnDown;
+	wxBitmap _bmpBtnDelete;
+	wxRect _rcBtnUp;
+	wxRect _rcBtnDown;
+	wxRect _rcBtnDelete;
 	ListenerList _listenerList;
 public:
 	PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo);

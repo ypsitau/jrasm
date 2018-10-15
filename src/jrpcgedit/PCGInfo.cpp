@@ -84,6 +84,18 @@ const PCGInfo *PCGInfoList::FindSelected() const
 	return front();
 }
 
+bool PCGInfoList::IsFirst(const PCGInfo *pPCGInfo) const
+{
+	const_iterator ppPCGInfo = std::find(begin(), end(), const_cast<PCGInfo *>(pPCGInfo));
+	return ppPCGInfo == begin();
+}
+
+bool PCGInfoList::IsLast(const PCGInfo *pPCGInfo) const
+{
+	const_iterator ppPCGInfo = std::find(begin(), end(), const_cast<PCGInfo *>(pPCGInfo));
+	return ppPCGInfo != end() && ppPCGInfo + 1 == end();
+}
+
 //-----------------------------------------------------------------------------
 // PCGInfoOwner
 //-----------------------------------------------------------------------------
