@@ -25,6 +25,7 @@ public:
 		inline int GetDotNumX() const { return _dotNumX; }
 		inline int GetDotNumY() const { return _dotNumY; }
 		inline void Clear() { ::memset(_dotTbl.get(), 0x00, _dotNumX * _dotNumY); }
+		inline bool *GetDotTbl() { return _dotTbl.get(); }
 		inline bool IsWithin(int dotPosX, int dotPosY) const {
 			return 0 <= dotPosX && dotPosX < _dotNumX && 0 <= dotPosY && dotPosY < _dotNumY;
 		}
@@ -34,6 +35,7 @@ public:
 		inline bool GetDot(int dotPosX, int dotPosY) const {
 			return IsWithin(dotPosX, dotPosY)? _dotTbl[dotPosX + dotPosY * _dotNumX] : false;
 		}
+		static Pattern *CreateFromBuff(int wdChar, int htChar, Binary &buff);
 		void Paste(int dotPosX, int dotPosY, const Pattern *pPatternSrc);
 	};
 private:
@@ -51,6 +53,7 @@ private:
 public:
 	DeclareReferenceAccessor(PCGInfo);
 public:
+	PCGInfo(const String &symbol, Pattern *pPattern);
 	PCGInfo(const String &symbol, int dotNumX, int dotNumY);
 protected:
 	inline ~PCGInfo() {};

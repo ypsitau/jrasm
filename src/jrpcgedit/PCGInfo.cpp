@@ -6,10 +6,15 @@
 //-----------------------------------------------------------------------------
 // PCGInfo
 //-----------------------------------------------------------------------------
+PCGInfo::PCGInfo(const String &symbol, Pattern *pPattern) :
+	_cntRef(1), _symbol(symbol), _dotSizeBrowser(0), _dotSizeEditor(20),
+	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(pPattern)
+{
+}
+
 PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
 	_cntRef(1), _symbol(symbol), _dotSizeBrowser(0), _dotSizeEditor(20),
-	_dotPosX(0), _dotPosY(0), _selectedFlag(false),
-	_pPattern(new Pattern(dotNumX, dotNumY))
+	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(new Pattern(dotNumX, dotNumY))
 {
 }
 
@@ -59,6 +64,18 @@ PCGInfo::Pattern::Pattern(int dotNumX, int dotNumY) :
 	_cntRef(1), _dotNumX(dotNumX), _dotNumY(dotNumY), _dotTbl(new bool [dotNumX * dotNumY])
 {
 	Clear();
+}
+
+PCGInfo::Pattern *PCGInfo::Pattern::CreateFromBuff(int wdChar, int htChar, Binary &buff)
+{
+	AutoPtr<Pattern> pPattern(new Pattern(wdChar * 8, htChar * 8));
+	bool *dotTbl = pPattern->GetDotTbl();
+	for (auto data : buff) {
+		for (int nBits = 0; nBits < 8; nBits++, data <<= 1) {
+			*dotTbl++ = (data & 0x80)? true : false;
+		}
+	}
+	return pPattern.release();
 }
 
 void PCGInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPatternSrc)

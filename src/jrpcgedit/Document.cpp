@@ -22,7 +22,7 @@ bool Document::ReadFile(const char *pathName)
 		PCGType pcgType;
 		int charCodeStart;
 		if (!Directive_PCGPAGE::ExtractParams(pExpr, &symbol, &pcgType, &charCodeStart)) return false;
-		_pageInfoOwner.push_back(new PageInfo(symbol, pcgType, charCodeStart));
+		AutoPtr<PageInfo> pPageInfo(new PageInfo(symbol, pcgType, charCodeStart));
 		pExpr->Print();
 		for (auto pExprChild : pExpr->GetExprChildren()) {
 			if (!pExprChild->IsTypeDirective(Directive::PCG)) continue;
@@ -30,10 +30,12 @@ bool Document::ReadFile(const char *pathName)
 			int wdChar, htChar;
 			int stepX, stepY;
 			Binary buff;
-			if (!Directive_PCG::ExtractParams(context, pExpr, &symbol,
-											  &wdChar, &htChar, &stepX, &stepY, buff)) return false;
 			pExprChild->Print();
+			if (!Directive_PCG::ExtractParams(context, pExprChild, &symbol,
+											  &wdChar, &htChar, &stepX, &stepY, buff)) return false;
+			pPageInfo->AddPCGInfo(new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(wdChar, htChar, buff)));
 		}
+		_pageInfoOwner.push_back(pPageInfo.release());
 	}
 	return true;
 }

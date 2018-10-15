@@ -752,7 +752,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
-			ErrorLog::AddError(pExpr, errMsg);
+			ErrorLog::AddError(pExpr, "parameter symbol expects a symbol value");
 			return false;
 		}
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
@@ -760,7 +760,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	do {
 		Expr *pExprOperand = exprOperands[1];
 		if (!pExprOperand->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, errMsg);
+			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
 			return false;
 		}
 		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
@@ -768,7 +768,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	do {
 		Expr *pExprOperand = exprOperands[2];
 		if (!pExprOperand->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, errMsg);
+			ErrorLog::AddError(pExpr, "parameter height expects an integer value");
 			return false;
 		}
 		htChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
@@ -776,7 +776,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	if (exprOperands.size() >= 4) {
 		Expr *pExprOperand = exprOperands[3];
 		if (!pExprOperand->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, errMsg);
+			ErrorLog::AddError(pExpr, "parameter stepx expects an integer value");
 			return false;
 		}
 		stepX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
@@ -784,7 +784,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	if (exprOperands.size() >= 5) {
 		Expr *pExprOperand = exprOperands[4];
 		if (!pExprOperand->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, errMsg);
+			ErrorLog::AddError(pExpr, "parameter stepy expects an integer value");
 			return false;
 		}
 		stepY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();

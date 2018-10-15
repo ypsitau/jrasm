@@ -26,9 +26,10 @@ public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCodeStart() const { return _charCodeStart; }
+	inline PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
+	inline const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
+	void AddPCGInfo(PCGInfo *pPCGInfo);
 	void NewPCGInfo();
-	PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
-	const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
 };
 
 //-----------------------------------------------------------------------------
