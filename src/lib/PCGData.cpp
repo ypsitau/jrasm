@@ -23,7 +23,7 @@ Expr *PCGData::ComposeExpr() const
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _xStep + iRow * _yStep;
+			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -68,7 +68,7 @@ Expr *PCGData::ComposeExpr() const
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			int offsetBase = iCol * _xStep + iRow * _yStep;
+			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -93,7 +93,7 @@ Expr *PCGData::ComposeExpr() const
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			int offsetBase = iCol * _xStep + iRow * _yStep;
+			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -123,7 +123,7 @@ Expr *PCGData::ComposeExpr() const
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			int offsetBase = iCol * _xStep + iRow * _yStep;
+			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -149,7 +149,7 @@ Expr *PCGData::ComposeExpr() const
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
 		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
-			int offsetBase = iCol * _xStep + iRow * _yStep;
+			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;

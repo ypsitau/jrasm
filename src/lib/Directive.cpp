@@ -738,17 +738,17 @@ Directive *Directive_PCG::Factory::Create() const
 }
 
 bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *pSymbol,
-								  int *pWdChar, int *pHtChar, int *pXStep, int *pYStep, Binary &buff)
+								  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY, Binary &buff)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
-	const char *errMsg = "directive syntax: .PCG symbol,width,height,[xstep,[ystep]]";
+	const char *errMsg = "directive syntax: .PCG symbol,width,height,[stepx,[stepy]]";
 	if (exprOperands.size() < 3 || exprOperands.size() > 6) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
 	String symbol;
 	int wdChar = 0, htChar = 0;
-	int xStep = 1, yStep = 32;
+	int stepX = 1, stepY = 32;
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -779,7 +779,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		xStep = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
+		stepX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	if (exprOperands.size() >= 5) {
 		Expr *pExprOperand = exprOperands[4];
@@ -787,7 +787,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		yStep = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
+		stepY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
@@ -807,8 +807,8 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	*pSymbol = symbol;
 	*pWdChar = wdChar;
 	*pHtChar = htChar;
-	*pXStep = xStep;
-	*pYStep = yStep;
+	*pStepX = stepX;
+	*pStepY = stepY;
 	return true;
 }
 
@@ -826,11 +826,11 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	String symbol;
 	int wdChar, htChar;
-	int xStep, yStep;
+	int stepX, stepY;
 	Binary buffOrg;
-	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar, &xStep, &yStep, buffOrg)) return false;
+	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar, &stepX, &stepY, buffOrg)) return false;
 	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
-	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, xStep, yStep));
+	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, stepX, stepY));
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
