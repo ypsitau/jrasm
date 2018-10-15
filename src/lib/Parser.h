@@ -26,7 +26,7 @@ private:
 public:
 	Parser(const String &pathNameSrc);
 	inline const char *GetPathNameSrc() const { return _tokenizer.GetPathNameSrc(); }
-	inline const Expr *GetRoot() const { return _pExprStack->front(); }
+	inline const Expr *GetExprRoot() const { return _pExprStack->front(); }
 	inline bool FeedChar(char ch) { return _tokenizer.FeedChar(ch); }
 	inline void SetExprSourceInfo(Expr *pExpr, const Token *pToken) const {
 		pExpr->SetSourceInfo(_tokenizer.GetPathNameSrcShared()->Reference(), pToken->GetLineNo());

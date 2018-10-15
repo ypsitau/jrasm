@@ -41,7 +41,7 @@ Expr *PCGPage::ComposeExpr() const
 	::sprintf_s(asmCode, asmCodeTmpl, GetSymbol(), GetSymbol(), GetSymbol(), dstAddrStart, dstAddrEnd);
 	Parser parser("***PCGPage.cpp***");
 	if (!parser.ParseString(asmCode)) return nullptr;
-	return parser.GetRoot()->Reference();
+	return parser.GetExprRoot()->Reference();
 }
 
 const char *PCGPage::_asmCodeTmpl1 = R"**(pcgpage.%s.src:

@@ -47,10 +47,6 @@ int main(int argc, const char *argv[])
 		::fprintf(stderr, "%s\n", strErr.c_str());
 		return 1;
 	}
-	ErrorLog::Clear();
-	Directive::Initialize();
-	Operator::Initialize();
-	Generator::Initialize(new Generator_M6800());
 	if (cmdLine.IsSet("help")) {
 		fprintf(stderr, "%s%s%s", strBanner, strUsage, strOption);
 		return 1;
@@ -59,9 +55,10 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "%s%s", strBanner, strUsage);
 		return 1;
 	}
+	Context::Initialize(new Generator_M6800());
 	const char *pathNameSrc = argv[1];
 	Context context(pathNameSrc);
-	if (!context.Prepare()) goto errorDone;
+	if (!context.ParseFile() || !context.Prepare()) goto errorDone;
 	upperCaseFlag = false;
 	if (cmdLine.IsSet("print-disasm-l") || (upperCaseFlag = cmdLine.IsSet("print-disasm-u"))) {
 		if (!context.DumpDisasm(stdout, upperCaseFlag,

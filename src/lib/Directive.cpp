@@ -515,7 +515,7 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	String pathNameIncluded = JoinPathName(dirName.c_str(), fileNameIncluded.c_str());
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
-	AutoPtr<Expr> pExprRoot(parser.GetRoot()->Reference());
+	AutoPtr<Expr> pExprRoot(parser.GetExprRoot()->Reference());
 	if (!pExprRoot->OnPhasePreprocess(context)) return false;
 	_pExprIncluded.reset(pExprRoot.release());
 	return true;

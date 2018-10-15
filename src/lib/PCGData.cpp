@@ -167,5 +167,5 @@ Expr *PCGData::ComposeExpr() const
 	} while (0);
 	Parser parser("***PCGData.cpp***");
 	if (!parser.ParseString(asmCode.c_str())) return nullptr;
-	return parser.GetRoot()->Reference();
+	return parser.GetExprRoot()->Reference();
 }

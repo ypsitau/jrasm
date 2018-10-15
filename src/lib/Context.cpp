@@ -25,12 +25,25 @@ Context::Context(const String &pathNameSrc) :
 	SelectCodeSegment();
 }
 
-bool Context::Prepare()
+void Context::Initialize(Generator *pGenerator)
+{
+	ErrorLog::Clear();
+	Directive::Initialize();
+	Operator::Initialize();
+	Generator::Initialize(pGenerator);
+}
+
+bool Context::ParseFile()
 {
 	SetPhase(PHASE_Parse);
 	Parser parser(_pathNameSrc);
 	if (!parser.ParseFile()) return false;
-	_pExprRoot.reset(parser.GetRoot()->Reference());
+	_pExprRoot.reset(parser.GetExprRoot()->Reference());
+	return true;
+}
+
+bool Context::Prepare()
+{
 	SetPhase(PHASE_Preprocess);
 	if (!_pExprRoot->OnPhasePreprocess(*this)) return false;
 	SetPhase(PHASE_AssignMacro);

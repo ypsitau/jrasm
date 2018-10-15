@@ -13,9 +13,9 @@ Document::Document() : _cntRef(1)
 
 bool Document::ReadFile(const char *pathName)
 {
-	Parser parser(pathName);
-	if (!parser.ParseFile()) return false;
-	const Expr *pExprRoot = parser.GetRoot();
+	Context context(pathName);
+	if (!context.ParseFile()) return false;
+	const Expr *pExprRoot = context.GetExprRoot();
 	for (auto pExpr : pExprRoot->GetExprChildren()) {
 		if (!pExpr->IsTypeDirective(Directive::PCGPAGE)) continue;
 		String symbol;
