@@ -20,7 +20,9 @@ PageInfo::PageInfo() : _cntRef(1)
 
 void PageInfo::NewPCGInfo()
 {
-	_pcgInfoOwner.push_back(new PCGInfo("pcgX", 16, 16));
+	char symbol[256];
+	::sprintf_s(symbol, "pcg%d", static_cast<int>(_pcgInfoOwner.size()) + 1);
+	_pcgInfoOwner.push_back(new PCGInfo(symbol, 16, 16));
 }
 
 //-----------------------------------------------------------------------------

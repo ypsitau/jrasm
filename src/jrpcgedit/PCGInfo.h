@@ -88,6 +88,7 @@ public:
 //-----------------------------------------------------------------------------
 class PCGInfoList : public std::vector<PCGInfo *> {
 public:
+	iterator FindSelected();
 	const_iterator FindSelected() const;
 	inline bool IsFirst(const_iterator ppPCGInfo) const {
 		return ppPCGInfo == begin();
@@ -95,8 +96,8 @@ public:
 	inline bool IsLast(const_iterator ppPCGInfo) const {
 		return ppPCGInfo != end() && ppPCGInfo + 1 == end();
 	}
-	void MoveSelectionUp();
-	void MoveSelectionDown();
+	bool MoveSelectionUp();
+	bool MoveSelectionDown();
 };
 
 //-----------------------------------------------------------------------------
@@ -106,6 +107,7 @@ class PCGInfoOwner : public PCGInfoList {
 public:
 	~PCGInfoOwner();
 	void Clear();
+	bool DeleteSelection();
 };
 
 #endif

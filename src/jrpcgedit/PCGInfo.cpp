@@ -76,6 +76,14 @@ void PCGInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPat
 //-----------------------------------------------------------------------------
 // PCGInfoList
 //-----------------------------------------------------------------------------
+PCGInfoList::iterator PCGInfoList::FindSelected()
+{
+	for (iterator ppPCGInfo = begin(); ppPCGInfo != end(); ppPCGInfo++) {
+		if ((*ppPCGInfo)->GetSelectedFlag()) return ppPCGInfo;
+	}
+	return begin();
+}
+
 PCGInfoList::const_iterator PCGInfoList::FindSelected() const
 {
 	for (const_iterator ppPCGInfo = begin(); ppPCGInfo != end(); ppPCGInfo++) {
@@ -84,14 +92,23 @@ PCGInfoList::const_iterator PCGInfoList::FindSelected() const
 	return begin();
 }
 
-void PCGInfoList::MoveSelectionUp()
+bool PCGInfoList::MoveSelectionUp()
 {
-	
+	iterator ppPCGInfo = FindSelected();
+	if (ppPCGInfo == begin()) return false;
+	ppPCGInfo = insert(ppPCGInfo - 1, *ppPCGInfo);
+	erase(ppPCGInfo + 2);
+	return true;
 }
 
-void PCGInfoList::MoveSelectionDown()
+bool PCGInfoList::MoveSelectionDown()
 {
-	
+	iterator ppPCGInfo = FindSelected();
+	if (ppPCGInfo + 1 == end()) return false;
+	PCGInfo *pPCGInfo = *ppPCGInfo;
+	ppPCGInfo = erase(ppPCGInfo);
+	insert(ppPCGInfo + 1, pPCGInfo);
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -108,4 +125,18 @@ void PCGInfoOwner::Clear()
 		PCGInfo::Delete(pPCGInfo);
 	}
 	clear();
+}
+
+bool PCGInfoOwner::DeleteSelection()
+{
+	if (size() <= 1) return false;
+	iterator ppPCGInfo = FindSelected();
+	PCGInfo::Delete(*ppPCGInfo);
+	ppPCGInfo = erase(ppPCGInfo);
+	if (ppPCGInfo == end()) {
+		back()->SetSelectedFlag(true);
+	} else {
+		(*ppPCGInfo)->SetSelectedFlag(true);
+	}
+	return true;
 }

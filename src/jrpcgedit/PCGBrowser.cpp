@@ -75,17 +75,19 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 			dc.SetPen(*wxTRANSPARENT_PEN);
 			dc.DrawRectangle(0, y, rcClient.GetWidth(), htItem);
 			if (HasFocus()) {
-				_rcBtnDelete = wxRect(
-					xBmp - _bmpBtnDelete.GetWidth() - 4, y + (htItem - _bmpBtnDelete.GetHeight()) / 2,
-					_bmpBtnDelete.GetWidth(), _bmpBtnDelete.GetHeight());
-				dc.DrawBitmap(_bmpBtnDelete, _rcBtnDelete.GetTopLeft());
-				if (!_pPageInfo->GetPCGInfoOwner().IsFirst(ppPCGInfo)) {
+				if (pcgInfoOwner.size() > 1) {
+					_rcBtnDelete = wxRect(
+						xBmp - _bmpBtnDelete.GetWidth() - 4, y + (htItem - _bmpBtnDelete.GetHeight()) / 2,
+						_bmpBtnDelete.GetWidth(), _bmpBtnDelete.GetHeight());
+					dc.DrawBitmap(_bmpBtnDelete, _rcBtnDelete.GetTopLeft());
+				}
+				if (!pcgInfoOwner.IsFirst(ppPCGInfo)) {
 					_rcBtnUp = wxRect(
 						2, y + 2,
 						_bmpBtnUp.GetWidth(), _bmpBtnDown.GetHeight());
 					dc.DrawBitmap(_bmpBtnUp, _rcBtnUp.GetTopLeft());
 				}
-				if (!_pPageInfo->GetPCGInfoOwner().IsLast(ppPCGInfo)) {
+				if (!pcgInfoOwner.IsLast(ppPCGInfo)) {
 					_rcBtnDown = wxRect(
 						2, y + htItem - 2 - _bmpBtnDown.GetHeight(),
 						_bmpBtnUp.GetWidth(), _bmpBtnDown.GetHeight());
@@ -126,28 +128,28 @@ void PCGBrowser::OnMotion(wxMouseEvent &event)
 void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
 	const wxPoint &pt = event.GetPosition();
+	PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
 	PCGInfo *pPCGInfoSelected = nullptr;
-	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
+	for (auto pPCGInfo : pcgInfoOwner) {
 		if (pPCGInfo->GetRectItem().Contains(pt)) {
 			pPCGInfoSelected = pPCGInfo;
 			break;
 		}
 	}
 	if (pPCGInfoSelected != nullptr) {
-		for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
+		for (auto pPCGInfo : pcgInfoOwner) {
 			pPCGInfo->SetSelectedFlag(false);
 		}
 		pPCGInfoSelected->SetSelectedFlag(true);
 		Refresh();
 		_listenerList.NotifyPCGSelected(pPCGInfoSelected);
-	} else if (_rcBtnUp.Contains(pt)) {
-		_pPageInfo->GetPCGInfoOwner().MoveSelectionUp();
-		Refresh();
+	}
+	if (_rcBtnUp.Contains(pt)) {
+		if (pcgInfoOwner.MoveSelectionUp()) Refresh();
 	} else if (_rcBtnDown.Contains(pt)) {
-		_pPageInfo->GetPCGInfoOwner().MoveSelectionDown();
-		Refresh();
+		if (pcgInfoOwner.MoveSelectionDown()) Refresh();
 	} else if (_rcBtnDelete.Contains(pt)) {
-		
+		if (pcgInfoOwner.DeleteSelection()) Refresh();
 	}
 }
 
