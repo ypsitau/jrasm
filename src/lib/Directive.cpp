@@ -737,23 +737,8 @@ Directive *Directive_PCG::Factory::Create() const
 	return new Directive_PCG();
 }
 
-bool Directive_PCG::ExtractParams(const Expr *pExpr, String *pSymbol,
-								  int *pWdChar, int *pHtChar, int *pXStep, int *pYStep)
-{
-	return true;
-}
-
-bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
-{
-	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
-	pParser->SetExprSourceInfo(pExpr.get(), pToken);
-	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	exprStack.push_back(pExpr->Reference());		// for children
-	exprStack.push_back(pExpr.release());			// for operands
-	return true;
-}
-
-bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
+bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *pSymbol,
+								  int *pWdChar, int *pHtChar, int *pXStep, int *pYStep, Binary &buff)
 {
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	const char *errMsg = "directive syntax: .PCG symbol,width,height,[xstep,[ystep]]";
@@ -762,9 +747,8 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		return false;
 	}
 	String symbol;
-	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
-	size_t wdChar = 0, htChar = 0;
-	size_t xStep = 1, yStep = 32;
+	int wdChar = 0, htChar = 0;
+	int xStep = 1, yStep = 32;
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -805,23 +789,48 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		yStep = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
-	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, xStep, yStep));
-	Binary buffOrg;
-	Integer bytes = 0;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
 			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCG");
 			return false;
 		}
+		Integer bytes = 0;
 		if (!Directive_DB::DoDirective(
-				context, dynamic_cast<Expr_Directive *>(pExprChild), &buffOrg, &bytes)) return false;
+				context, dynamic_cast<Expr_Directive *>(pExprChild), &buff, &bytes)) return false;
 	}
 	size_t bytesExpected = wdChar * htChar * 8;
-	if (bytesExpected != buffOrg.size()) {
+	if (bytesExpected != buff.size()) {
 		ErrorLog::AddError(pExpr, "stored data is %zu bytes, different from the expected %zu bytes",
-						   buffOrg.size(), bytesExpected);
+						   buff.size(), bytesExpected);
 		return false;
 	}
+	*pSymbol = symbol;
+	*pWdChar = wdChar;
+	*pHtChar = htChar;
+	*pXStep = xStep;
+	*pYStep = yStep;
+	return true;
+}
+
+bool Directive_PCG::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+{
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
+	return true;
+}
+
+bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
+{
+	String symbol;
+	int wdChar, htChar;
+	int xStep, yStep;
+	Binary buffOrg;
+	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar, &xStep, &yStep, buffOrg)) return false;
+	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
+	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, xStep, yStep));
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
