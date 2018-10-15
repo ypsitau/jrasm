@@ -54,7 +54,10 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	dc.Clear();
 	int y = 0;
 	_rcBtnUp = _rcBtnDown = _rcBtnDelete = wxRect();
-	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
+	const PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
+	for (PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
+		 ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
+		PCGInfo *pPCGInfo = *ppPCGInfo;
 		wxBitmap &bmp = pPCGInfo->MakeBitmap(_sizeDot);
 		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + _mgnRight);
 		int yBmp = y + _mgnTop;
@@ -76,13 +79,13 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 					xBmp - _bmpBtnDelete.GetWidth() - 4, y + (htItem - _bmpBtnDelete.GetHeight()) / 2,
 					_bmpBtnDelete.GetWidth(), _bmpBtnDelete.GetHeight());
 				dc.DrawBitmap(_bmpBtnDelete, _rcBtnDelete.GetTopLeft());
-				if (!_pPageInfo->GetPCGInfoOwner().IsFirst(pPCGInfo)) {
+				if (!_pPageInfo->GetPCGInfoOwner().IsFirst(ppPCGInfo)) {
 					_rcBtnUp = wxRect(
 						2, y + 2,
 						_bmpBtnUp.GetWidth(), _bmpBtnDown.GetHeight());
 					dc.DrawBitmap(_bmpBtnUp, _rcBtnUp.GetTopLeft());
 				}
-				if (!_pPageInfo->GetPCGInfoOwner().IsLast(pPCGInfo)) {
+				if (!_pPageInfo->GetPCGInfoOwner().IsLast(ppPCGInfo)) {
 					_rcBtnDown = wxRect(
 						2, y + htItem - 2 - _bmpBtnDown.GetHeight(),
 						_bmpBtnUp.GetWidth(), _bmpBtnDown.GetHeight());
@@ -122,9 +125,10 @@ void PCGBrowser::OnMotion(wxMouseEvent &event)
 
 void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
+	const wxPoint &pt = event.GetPosition();
 	PCGInfo *pPCGInfoSelected = nullptr;
 	for (auto pPCGInfo : _pPageInfo->GetPCGInfoOwner()) {
-		if (pPCGInfo->GetRectItem().Contains(event.GetPosition())) {
+		if (pPCGInfo->GetRectItem().Contains(pt)) {
 			pPCGInfoSelected = pPCGInfo;
 			break;
 		}
@@ -136,6 +140,14 @@ void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 		pPCGInfoSelected->SetSelectedFlag(true);
 		Refresh();
 		_listenerList.NotifyPCGSelected(pPCGInfoSelected);
+	} else if (_rcBtnUp.Contains(pt)) {
+		_pPageInfo->GetPCGInfoOwner().MoveSelectionUp();
+		Refresh();
+	} else if (_rcBtnDown.Contains(pt)) {
+		_pPageInfo->GetPCGInfoOwner().MoveSelectionDown();
+		Refresh();
+	} else if (_rcBtnDelete.Contains(pt)) {
+		
 	}
 }
 

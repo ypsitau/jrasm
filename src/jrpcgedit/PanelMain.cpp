@@ -34,7 +34,7 @@ wxEND_EVENT_TABLE()
 PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 	wxPanel(pParent, wxID_ANY), _pPageInfo(pPageInfo)
 {
-	const PCGInfo *pPCGInfoSelected = _pPageInfo->GetPCGInfoOwner().FindSelected();
+	const PCGInfo *pPCGInfoSelected = *_pPageInfo->GetPCGInfoOwner().FindSelected();
 	do {
 		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
 			this, ID_SASH_Vert, wxDefaultPosition, wxDefaultSize,
@@ -167,7 +167,7 @@ void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 
 void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 {
-	AutoPtr<PCGInfo> pPCGInfoSelected(_pPageInfo->GetPCGInfoOwner().FindSelected()->Reference());
+	AutoPtr<PCGInfo> pPCGInfoSelected((*_pPageInfo->GetPCGInfoOwner().FindSelected())->Reference());
 	pPCGInfoSelected->ChangeDotNum(_pSpin_Width->GetValue() * 8, _pSpin_Height->GetValue() * 8);
 	_pPCGEditor->PrepareMatrix(true);
 	_pPCGBrowser->Refresh();

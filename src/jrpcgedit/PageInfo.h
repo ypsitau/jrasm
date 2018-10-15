@@ -21,6 +21,7 @@ protected:
 	inline ~PageInfo() {};
 public:
 	void NewPCGInfo();
+	PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
 	const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
 };
 

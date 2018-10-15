@@ -88,9 +88,15 @@ public:
 //-----------------------------------------------------------------------------
 class PCGInfoList : public std::vector<PCGInfo *> {
 public:
-	const PCGInfo *FindSelected() const;
-	bool IsFirst(const PCGInfo *pPCGInfo) const;
-	bool IsLast(const PCGInfo *pPCGInfo) const;
+	const_iterator FindSelected() const;
+	inline bool IsFirst(const_iterator ppPCGInfo) const {
+		return ppPCGInfo == begin();
+	}
+	inline bool IsLast(const_iterator ppPCGInfo) const {
+		return ppPCGInfo != end() && ppPCGInfo + 1 == end();
+	}
+	void MoveSelectionUp();
+	void MoveSelectionDown();
 };
 
 //-----------------------------------------------------------------------------

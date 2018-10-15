@@ -76,24 +76,22 @@ void PCGInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPat
 //-----------------------------------------------------------------------------
 // PCGInfoList
 //-----------------------------------------------------------------------------
-const PCGInfo *PCGInfoList::FindSelected() const
+PCGInfoList::const_iterator PCGInfoList::FindSelected() const
 {
-	for (auto pPCGInfo : *this) {
-		if (pPCGInfo->GetSelectedFlag()) return pPCGInfo;
+	for (const_iterator ppPCGInfo = begin(); ppPCGInfo != end(); ppPCGInfo++) {
+		if ((*ppPCGInfo)->GetSelectedFlag()) return ppPCGInfo;
 	}
-	return front();
+	return begin();
 }
 
-bool PCGInfoList::IsFirst(const PCGInfo *pPCGInfo) const
+void PCGInfoList::MoveSelectionUp()
 {
-	const_iterator ppPCGInfo = std::find(begin(), end(), const_cast<PCGInfo *>(pPCGInfo));
-	return ppPCGInfo == begin();
+	
 }
 
-bool PCGInfoList::IsLast(const PCGInfo *pPCGInfo) const
+void PCGInfoList::MoveSelectionDown()
 {
-	const_iterator ppPCGInfo = std::find(begin(), end(), const_cast<PCGInfo *>(pPCGInfo));
-	return ppPCGInfo != end() && ppPCGInfo + 1 == end();
+	
 }
 
 //-----------------------------------------------------------------------------
