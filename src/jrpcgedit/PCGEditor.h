@@ -27,7 +27,6 @@ private:
 		_mgnBottom = 8,
 	};
 private:
-	int _sizeDot;
 	wxRect _rcMatrix;
 	AutoPtr<PCGInfo> _pPCGInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
@@ -40,9 +39,9 @@ private:
 public:
 	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
-	inline int DotPosXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * _sizeDot; }
-	inline int DotPosYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * _sizeDot; }
-	inline int GetSizeDot() const { return _sizeDot; }
+	inline int DotPosXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * GetSizeDot(); }
+	inline int DotPosYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * GetSizeDot(); }
+	inline int GetSizeDot() const { return _pPCGInfo->GetSizeDotEditor(); }
 	void SetSizeDot(int sizeDot);
 	void SetPCGInfo(PCGInfo *pPCGInfo);
 	void PrepareMatrix(bool refreshFlag);

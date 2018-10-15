@@ -87,9 +87,10 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
 			pVBox->Add(pHBox, wxSizerFlags().Expand().Border(wxTOP, 2));
 			do {
-				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
+				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER_DotSize, 4, 4, 24,
 											   wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
 				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
+				_pSlider_DotSize = pCtrl;
 			} while (0);
 			do {
 				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Size"));
@@ -124,6 +125,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 #endif
 		} while (0);
 	} while (0);
+	_pSlider_DotSize->SetValue(pPCGInfoSelected->GetSizeDotEditor());
 	_pSpin_Width->SetValue(pPCGInfoSelected->GetDotNumX() / 8);
 	_pSpin_Height->SetValue(pPCGInfoSelected->GetDotNumY() / 8);
 }
@@ -134,7 +136,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
 	EVT_SIZE(PanelMain::Page::OnSize)
 	EVT_SASH_DRAGGED(ID_SASH_Vert, PanelMain::Page::OnSashDrag_Vert)
-	EVT_COMMAND_SCROLL(ID_SLIDER, PanelMain::Page::OnCommandScroll_SLIDER)
+	EVT_COMMAND_SCROLL(ID_SLIDER_DotSize, PanelMain::Page::OnSlider_DotSize)
 	EVT_BUTTON(ID_BTN_NewPCG, PanelMain::Page::OnButton_NewPCG)
 	EVT_SPINCTRL(ID_SPIN_Width, PanelMain::Page::OnSpin_WidthHeight)
 	EVT_SPINCTRL(ID_SPIN_Height, PanelMain::Page::OnSpin_WidthHeight)
@@ -154,7 +156,7 @@ void PanelMain::Page::OnSashDrag_Vert(wxSashEvent &event)
     Refresh();
 }
 
-void PanelMain::Page::OnCommandScroll_SLIDER(wxScrollEvent &event)
+void PanelMain::Page::OnSlider_DotSize(wxScrollEvent &event)
 {
 	_pPCGEditor->SetSizeDot(event.GetPosition());
 }
@@ -176,6 +178,7 @@ void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)
 {
 	_pPCGEditor->SetPCGInfo(pPCGInfo->Reference());
+	_pSlider_DotSize->SetValue(pPCGInfo->GetSizeDotEditor());
 	_pSpin_Width->SetValue(pPCGInfo->GetDotNumX() / 8);
 	_pSpin_Height->SetValue(pPCGInfo->GetDotNumY() / 8);
 }

@@ -9,7 +9,7 @@
 PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
-	_sizeDot(20), _pPCGInfo(pPCGInfo),
+	_pPCGInfo(pPCGInfo),
 	_penBorder(wxColour("light grey"), 1, wxPENSTYLE_SOLID),
 	_penGrid(wxColour("light grey"), 1, wxPENSTYLE_DOT),
 	_penGridHL(wxColour("grey"), 1, wxPENSTYLE_SOLID),
@@ -21,7 +21,7 @@ PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 
 void PCGEditor::SetSizeDot(int sizeDot)
 {
-	_sizeDot = sizeDot;
+	_pPCGInfo->SetSizeDotEditor(sizeDot);
 	PrepareMatrix(true);
 }
 
@@ -33,10 +33,11 @@ void PCGEditor::SetPCGInfo(PCGInfo *pPCGInfo)
 
 void PCGEditor::PrepareMatrix(bool refreshFlag)
 {
+	int sizeDot = _pPCGInfo->GetSizeDotEditor();
 	_pBmpMatrix.reset
 		(new wxBitmap(
-			_mgnLeft + _sizeDot * _pPCGInfo->GetDotNumX() + 1 + _mgnRight,
-			_mgnTop + _sizeDot * _pPCGInfo->GetDotNumY() + 1 + _mgnBottom));
+			_mgnLeft + sizeDot * _pPCGInfo->GetDotNumX() + 1 + _mgnRight,
+			_mgnTop + sizeDot * _pPCGInfo->GetDotNumY() + 1 + _mgnBottom));
 	UpdateMatrix(refreshFlag);
 }
 
@@ -75,6 +76,7 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 			dc.DrawLine(xLeft, y, xRight, y);
 		}
 	}
+	int sizeDot = _pPCGInfo->GetSizeDotEditor();
 	dc.SetBrush(brushDot);
 	for (int dotPosY = 0; dotPosY < dotNumY; dotPosY++) {
 		int y = DotPosYToMatrixCoord(dotPosY);
@@ -82,7 +84,7 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 			int x = DotPosXToMatrixCoord(dotPosX);
 			if (_pPCGInfo->GetDot(dotPosX, dotPosY)) {
 				dc.SetPen(*wxTRANSPARENT_PEN);
-				dc.DrawRectangle(x + 1, y + 1, _sizeDot - 1, _sizeDot - 1);
+				dc.DrawRectangle(x + 1, y + 1, sizeDot - 1, sizeDot - 1);
 			}
 		}
 	}
@@ -98,15 +100,17 @@ void PCGEditor::PutDot(int dotPosX, int dotPosY, bool flag)
 
 wxRect PCGEditor::DotPosToCursorRect(int dotPosX, int dotPosY)
 {
+	int sizeDot = _pPCGInfo->GetSizeDotEditor();
 	return wxRect(
 		_rcMatrix.x + DotPosXToMatrixCoord(dotPosX), _rcMatrix.y + DotPosYToMatrixCoord(dotPosY),
-		_sizeDot + 1, _sizeDot + 1);
+		sizeDot + 1, sizeDot + 1);
 }
 
 void PCGEditor::PointToDotPos(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const
 {
-	int dotPosX = (pt.x - _rcMatrix.x - _mgnLeft) / _sizeDot;
-	int dotPosY = (pt.y - _rcMatrix.y - _mgnTop) / _sizeDot;
+	int sizeDot = _pPCGInfo->GetSizeDotEditor();
+	int dotPosX = (pt.x - _rcMatrix.x - _mgnLeft) / sizeDot;
+	int dotPosY = (pt.y - _rcMatrix.y - _mgnTop) / sizeDot;
 	if (dotPosX < 0) dotPosX = 0;
 	if (dotPosX > _pPCGInfo->GetDotPosXMax()) dotPosX = _pPCGInfo->GetDotPosXMax();
 	if (dotPosY < 0) dotPosY = 0;

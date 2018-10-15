@@ -7,7 +7,7 @@
 // PCGInfo
 //-----------------------------------------------------------------------------
 PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
-	_cntRef(1), _symbol(symbol), _sizeDotBrowser(0), _sizeDotEditor(0),
+	_cntRef(1), _symbol(symbol), _sizeDotBrowser(0), _sizeDotEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false),
 	_pPattern(new Pattern(dotNumX, dotNumY))
 {

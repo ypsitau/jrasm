@@ -16,7 +16,7 @@ public:
 	public:
 		enum {
 			ID_SASH_Vert = 1000,
-			ID_SLIDER,
+			ID_SLIDER_DotSize,
 			ID_BTN_NewPCG,
 			ID_SPIN_Width,
 			ID_SPIN_Height,
@@ -26,6 +26,7 @@ public:
 		PCGEditor *_pPCGEditor;
 		PCGBrowser *_pPCGBrowser;
 		wxWindow *_pMainWindow;
+		wxSlider *_pSlider_DotSize;
 		wxSpinCtrl *_pSpin_Width;
 		wxSpinCtrl *_pSpin_Height;
 		AutoPtr<PageInfo> _pPageInfo;
@@ -35,7 +36,7 @@ public:
 		wxDECLARE_EVENT_TABLE();
 		void OnSize(wxSizeEvent &event);
 		void OnSashDrag_Vert(wxSashEvent &event);
-		void OnCommandScroll_SLIDER(wxScrollEvent &event);
+		void OnSlider_DotSize(wxScrollEvent &event);
 		void OnButton_NewPCG(wxCommandEvent &event);
 		void OnSpin_WidthHeight(wxSpinEvent &event);
 	public:
