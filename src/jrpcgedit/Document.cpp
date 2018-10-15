@@ -25,6 +25,13 @@ bool Document::ReadFile(const char *pathName)
 		_pageInfoOwner.push_back(new PageInfo(symbol, pcgType, charCodeStart));
 		pExpr->Print();
 		for (auto pExprChild : pExpr->GetExprChildren()) {
+			if (!pExprChild->IsTypeDirective(Directive::PCG)) continue;
+			String symbol;
+			int dotNumX, dotNumY;
+			int stepX, stepY;
+			Binary buff;
+			if (!Directive_PCG::ExtractParams(context, pExpr, &symbol,
+											  &dotNumX, &dotNumY, &stepX, &stepY, buff)) return false;
 			pExprChild->Print();
 		}
 	}
