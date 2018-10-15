@@ -87,8 +87,13 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 			wxBoxSizer *pHBox = new wxBoxSizer(wxHORIZONTAL);
 			pVBox->Add(pHBox, wxSizerFlags().Expand().Border(wxTOP, 2));
 			do {
+				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
+											   wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
+				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
+			} while (0);
+			do {
 				wxStaticText *pCtrl = new wxStaticText(pPanel, wxID_ANY, wxT("Size"));
-				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL));
+				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 8));
 			} while (0);
 			do {
 				wxSpinCtrl *pCtrl = new wxSpinCtrl(
@@ -107,11 +112,6 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 					wxSP_ARROW_KEYS | wxALIGN_CENTRE_HORIZONTAL, 1, 16, 1);
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
 				_pSpin_Height = pCtrl;
-			} while (0);
-			do {
-				wxSlider *pCtrl = new wxSlider(pPanel, ID_SLIDER, _pPCGEditor->GetSizeDot(), 4, 24,
-											   wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL | wxSL_INVERSE);
-				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			} while (0);
 #if 0
 			pHBox->AddSpacer(4);
