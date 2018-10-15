@@ -36,8 +36,10 @@ bool Document::ReadFile(const char *pathName)
 											  &wdChar, &htChar, &stepX, &stepY, buff)) return false;
 			pPageInfo->AddPCGInfo(new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(wdChar, htChar, buff)));
 		}
+		if (pPageInfo->IsEmptyPCGInfo()) pPageInfo->NewPCGInfo();
 		pPageInfoOwner->push_back(pPageInfo.release());
 	}
+	if (pPageInfoOwner->empty()) pPageInfoOwner->NewPageInfo();
 	_pPageInfoOwner.reset(pPageInfoOwner.release());
 	return true;
 }
