@@ -35,6 +35,7 @@ private:
 	wxBitmap _bmpBtnUp;
 	wxBitmap _bmpBtnDown;
 	wxBitmap _bmpBtnDelete;
+	wxRect _rcLabel;
 	wxRect _rcBtnUp;
 	wxRect _rcBtnDown;
 	wxRect _rcBtnDelete;

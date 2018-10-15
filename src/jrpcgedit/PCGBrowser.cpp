@@ -53,7 +53,7 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	dc.SetBackground(_brushBg);
 	dc.Clear();
 	int y = 0;
-	_rcBtnUp = _rcBtnDown = _rcBtnDelete = wxRect();
+	_rcLabel = _rcBtnUp = _rcBtnDown = _rcBtnDelete = wxRect();
 	const PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
 	for (PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
 		 ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
@@ -95,7 +95,14 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 				}
 			}
 		}
-		dc.DrawText(strLabel, _mgnLeft, y + (htItem - sizeLabel.GetHeight()) / 2);
+		int xLabel = _mgnLeft, yLabel = y + (htItem - sizeLabel.GetHeight()) / 2;
+#if 0
+		if (HasFocus()) {
+			_rcLabel = wxRect(
+				xLabel, yLabel, xBmp - _bmpBtnDelete.GetWidth() - 4, sizeLabel.GetHeight());
+		}
+#endif
+		dc.DrawText(strLabel, xLabel, yLabel);
 		dc.DrawBitmap(bmp, xBmp, yBmp);
 		y += htItem;
 	}
@@ -114,7 +121,9 @@ void PCGBrowser::OnKillFocus(wxFocusEvent &event)
 void PCGBrowser::OnMotion(wxMouseEvent &event)
 {
 	const wxPoint &pt = event.GetPosition();
-	if (_rcBtnUp.Contains(pt)) {
+	if (_rcLabel.Contains(pt)) {
+		SetCursor(wxCursor(wxCURSOR_IBEAM));
+	} else if (_rcBtnUp.Contains(pt)) {
 		SetCursor(wxCursor(wxCURSOR_HAND));
 	} else if (_rcBtnDown.Contains(pt)) {
 		SetCursor(wxCursor(wxCURSOR_HAND));
@@ -136,21 +145,26 @@ void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 			break;
 		}
 	}
+	bool refreshFlag = false;
+	PCGInfo *pPCGInfoToNotify = nullptr;
 	if (pPCGInfoSelected != nullptr) {
 		for (auto pPCGInfo : pcgInfoOwner) {
 			pPCGInfo->SetSelectedFlag(false);
 		}
 		pPCGInfoSelected->SetSelectedFlag(true);
-		Refresh();
-		_listenerList.NotifyPCGSelected(pPCGInfoSelected);
+		refreshFlag = true;
+		pPCGInfoToNotify = pPCGInfoSelected;
 	}
 	if (_rcBtnUp.Contains(pt)) {
-		if (pcgInfoOwner.MoveSelectionUp()) Refresh();
+		refreshFlag = pcgInfoOwner.MoveSelectionUp();
 	} else if (_rcBtnDown.Contains(pt)) {
-		if (pcgInfoOwner.MoveSelectionDown()) Refresh();
+		refreshFlag = pcgInfoOwner.MoveSelectionDown();
 	} else if (_rcBtnDelete.Contains(pt)) {
-		if (pcgInfoOwner.DeleteSelection()) Refresh();
+		refreshFlag = pcgInfoOwner.DeleteSelection();
+		pPCGInfoToNotify = *pcgInfoOwner.FindSelected();
 	}
+	if (refreshFlag) Refresh();
+	if (pPCGInfoToNotify != nullptr) _listenerList.NotifyPCGSelected(pPCGInfoToNotify);
 }
 
 void PCGBrowser::OnLeftUp(wxMouseEvent &event)
