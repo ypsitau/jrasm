@@ -19,9 +19,9 @@ PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 	PrepareMatrix(false);
 }
 
-void PCGEditor::SetSizeDot(int sizeDot)
+void PCGEditor::SetDotSize(int dotSize)
 {
-	_pPCGInfo->SetSizeDotEditor(sizeDot);
+	_pPCGInfo->SetDotSizeEditor(dotSize);
 	PrepareMatrix(true);
 }
 
@@ -33,11 +33,11 @@ void PCGEditor::SetPCGInfo(PCGInfo *pPCGInfo)
 
 void PCGEditor::PrepareMatrix(bool refreshFlag)
 {
-	int sizeDot = _pPCGInfo->GetSizeDotEditor();
+	int dotSize = _pPCGInfo->GetDotSizeEditor();
 	_pBmpMatrix.reset
 		(new wxBitmap(
-			_mgnLeft + sizeDot * _pPCGInfo->GetDotNumX() + 1 + _mgnRight,
-			_mgnTop + sizeDot * _pPCGInfo->GetDotNumY() + 1 + _mgnBottom));
+			_mgnLeft + dotSize * _pPCGInfo->GetDotNumX() + 1 + _mgnRight,
+			_mgnTop + dotSize * _pPCGInfo->GetDotNumY() + 1 + _mgnBottom));
 	UpdateMatrix(refreshFlag);
 }
 
@@ -76,7 +76,7 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 			dc.DrawLine(xLeft, y, xRight, y);
 		}
 	}
-	int sizeDot = _pPCGInfo->GetSizeDotEditor();
+	int dotSize = _pPCGInfo->GetDotSizeEditor();
 	dc.SetBrush(brushDot);
 	for (int dotPosY = 0; dotPosY < dotNumY; dotPosY++) {
 		int y = DotPosYToMatrixCoord(dotPosY);
@@ -84,7 +84,7 @@ void PCGEditor::UpdateMatrix(bool refreshFlag)
 			int x = DotPosXToMatrixCoord(dotPosX);
 			if (_pPCGInfo->GetDot(dotPosX, dotPosY)) {
 				dc.SetPen(*wxTRANSPARENT_PEN);
-				dc.DrawRectangle(x + 1, y + 1, sizeDot - 1, sizeDot - 1);
+				dc.DrawRectangle(x + 1, y + 1, dotSize - 1, dotSize - 1);
 			}
 		}
 	}
@@ -100,17 +100,17 @@ void PCGEditor::PutDot(int dotPosX, int dotPosY, bool flag)
 
 wxRect PCGEditor::DotPosToCursorRect(int dotPosX, int dotPosY)
 {
-	int sizeDot = _pPCGInfo->GetSizeDotEditor();
+	int dotSize = _pPCGInfo->GetDotSizeEditor();
 	return wxRect(
 		_rcMatrix.x + DotPosXToMatrixCoord(dotPosX), _rcMatrix.y + DotPosYToMatrixCoord(dotPosY),
-		sizeDot + 1, sizeDot + 1);
+		dotSize + 1, dotSize + 1);
 }
 
 void PCGEditor::PointToDotPos(const wxPoint &pt, int *pDotPosX, int *pDotPosY) const
 {
-	int sizeDot = _pPCGInfo->GetSizeDotEditor();
-	int dotPosX = (pt.x - _rcMatrix.x - _mgnLeft) / sizeDot;
-	int dotPosY = (pt.y - _rcMatrix.y - _mgnTop) / sizeDot;
+	int dotSize = _pPCGInfo->GetDotSizeEditor();
+	int dotPosX = (pt.x - _rcMatrix.x - _mgnLeft) / dotSize;
+	int dotPosY = (pt.y - _rcMatrix.y - _mgnTop) / dotSize;
 	if (dotPosX < 0) dotPosX = 0;
 	if (dotPosX > _pPCGInfo->GetDotPosXMax()) dotPosX = _pPCGInfo->GetDotPosXMax();
 	if (dotPosY < 0) dotPosY = 0;

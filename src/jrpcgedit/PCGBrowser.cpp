@@ -58,7 +58,7 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	for (PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
 		 ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
 		PCGInfo *pPCGInfo = *ppPCGInfo;
-		wxBitmap &bmp = pPCGInfo->MakeBitmapForBrowser(_sizeDot);
+		wxBitmap &bmp = pPCGInfo->MakeBitmapForBrowser(_dotSize);
 		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + _mgnRight);
 		int yBmp = y + _mgnTop;
 		int htBmp = bmp.GetHeight();

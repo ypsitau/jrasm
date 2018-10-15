@@ -125,7 +125,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 #endif
 		} while (0);
 	} while (0);
-	_pSlider_DotSize->SetValue(pPCGInfoSelected->GetSizeDotEditor());
+	_pSlider_DotSize->SetValue(pPCGInfoSelected->GetDotSizeEditor());
 	_pSpin_Width->SetValue(pPCGInfoSelected->GetDotNumX() / 8);
 	_pSpin_Height->SetValue(pPCGInfoSelected->GetDotNumY() / 8);
 }
@@ -158,7 +158,7 @@ void PanelMain::Page::OnSashDrag_Vert(wxSashEvent &event)
 
 void PanelMain::Page::OnSlider_DotSize(wxScrollEvent &event)
 {
-	_pPCGEditor->SetSizeDot(event.GetPosition());
+	_pPCGEditor->SetDotSize(event.GetPosition());
 }
 
 void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
@@ -178,7 +178,7 @@ void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)
 {
 	_pPCGEditor->SetPCGInfo(pPCGInfo->Reference());
-	_pSlider_DotSize->SetValue(pPCGInfo->GetSizeDotEditor());
+	_pSlider_DotSize->SetValue(pPCGInfo->GetDotSizeEditor());
 	_pSpin_Width->SetValue(pPCGInfo->GetDotNumX() / 8);
 	_pSpin_Height->SetValue(pPCGInfo->GetDotNumY() / 8);
 }

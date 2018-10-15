@@ -39,10 +39,10 @@ private:
 public:
 	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
-	inline int DotPosXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * GetSizeDot(); }
-	inline int DotPosYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * GetSizeDot(); }
-	inline int GetSizeDot() const { return _pPCGInfo->GetSizeDotEditor(); }
-	void SetSizeDot(int sizeDot);
+	inline int DotPosXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * GetDotSize(); }
+	inline int DotPosYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * GetDotSize(); }
+	inline int GetDotSize() const { return _pPCGInfo->GetDotSizeEditor(); }
+	void SetDotSize(int dotSize);
 	void SetPCGInfo(PCGInfo *pPCGInfo);
 	void PrepareMatrix(bool refreshFlag);
 	void UpdateMatrix(bool refreshFlag);

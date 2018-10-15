@@ -39,8 +39,8 @@ public:
 private:
 	int _cntRef;
 	String _symbol;
-	int _sizeDotBrowser;
-	int _sizeDotEditor;
+	int _dotSizeBrowser;
+	int _dotSizeEditor;
 	int _dotPosX;
 	int _dotPosY;
 	bool _selectedFlag;
@@ -56,8 +56,8 @@ protected:
 	inline ~PCGInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline void SetSizeDotEditor(int sizeDotEditor) { _sizeDotEditor = sizeDotEditor; }
-	inline int GetSizeDotEditor() const { return _sizeDotEditor; }
+	inline void SetDotSizeEditor(int dotSizeEditor) { _dotSizeEditor = dotSizeEditor; }
+	inline int GetDotSizeEditor() const { return _dotSizeEditor; }
 	inline int GetDotNumX() const { return _pPattern->GetDotNumX(); }
 	inline int GetDotNumY() const { return _pPattern->GetDotNumY(); }
 	inline int GetDotPosXMax() const { return _pPattern->GetDotNumX() - 1; }
@@ -83,7 +83,7 @@ public:
 		_rcItem = wxRect(x, y, width, height);
 	}
 	void ChangeDotNum(int dotNumX, int dotNumY);
-	wxBitmap &MakeBitmapForBrowser(int sizeDotBrowser);
+	wxBitmap &MakeBitmapForBrowser(int dotSizeBrowser);
 };
 
 //-----------------------------------------------------------------------------

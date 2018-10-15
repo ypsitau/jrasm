@@ -7,7 +7,7 @@
 // PCGInfo
 //-----------------------------------------------------------------------------
 PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
-	_cntRef(1), _symbol(symbol), _sizeDotBrowser(0), _sizeDotEditor(20),
+	_cntRef(1), _symbol(symbol), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false),
 	_pPattern(new Pattern(dotNumX, dotNumY))
 {
@@ -25,13 +25,13 @@ void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
 	_pBitmapForBrowser.reset(nullptr);
 }
 
-wxBitmap &PCGInfo::MakeBitmapForBrowser(int sizeDotBrowser)
+wxBitmap &PCGInfo::MakeBitmapForBrowser(int dotSizeBrowser)
 {
-	if (_pBitmapForBrowser.get() == nullptr || _sizeDotBrowser != sizeDotBrowser) {
-		_sizeDotBrowser = sizeDotBrowser;
+	if (_pBitmapForBrowser.get() == nullptr || _dotSizeBrowser != dotSizeBrowser) {
+		_dotSizeBrowser = dotSizeBrowser;
 		_pBitmapForBrowser.reset(
 			new wxBitmap(
-				_sizeDotBrowser * _pPattern->GetDotNumX(), _sizeDotBrowser * _pPattern->GetDotNumY()));
+				_dotSizeBrowser * _pPattern->GetDotNumX(), _dotSizeBrowser * _pPattern->GetDotNumY()));
 	}
 	wxBrush brushBg(wxColour("black"), wxBRUSHSTYLE_SOLID);
 	wxBrush brushFg(wxColour("white"), wxBRUSHSTYLE_SOLID);
@@ -41,11 +41,11 @@ wxBitmap &PCGInfo::MakeBitmapForBrowser(int sizeDotBrowser)
 	dc.SetPen(wxNullPen);
 	dc.SetBrush(brushFg);
 	for (int dotPosY = 0; dotPosY < _pPattern->GetDotNumY(); dotPosY++) {
-		int y = dotPosY * _sizeDotBrowser;
+		int y = dotPosY * _dotSizeBrowser;
 		for (int dotPosX = 0; dotPosX < _pPattern->GetDotNumX(); dotPosX++) {
-			int x = dotPosX * _sizeDotBrowser;
+			int x = dotPosX * _dotSizeBrowser;
 			if (GetDot(dotPosX, dotPosY)) {
-				dc.DrawRectangle(x, y, _sizeDotBrowser, _sizeDotBrowser);
+				dc.DrawRectangle(x, y, _dotSizeBrowser, _dotSizeBrowser);
 			}
 		}
 	}

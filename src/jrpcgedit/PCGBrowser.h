@@ -21,7 +21,7 @@ public:
 	};
 public:
 	enum {
-		_sizeDot = 4,
+		_dotSize = 4,
 		_htBmpMin = 48,
 		_mgnTop = 4,
 		_mgnBottom = 4,
