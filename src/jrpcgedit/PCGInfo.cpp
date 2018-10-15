@@ -7,7 +7,8 @@
 // PCGInfo
 //-----------------------------------------------------------------------------
 PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
-	_cntRef(1), _symbol(symbol), _sizeDot(0), _dotPosX(0), _dotPosY(0), _selectedFlag(false),
+	_cntRef(1), _symbol(symbol), _sizeDotBrowser(0), _sizeDotEditor(0),
+	_dotPosX(0), _dotPosY(0), _selectedFlag(false),
 	_pPattern(new Pattern(dotNumX, dotNumY))
 {
 }
@@ -21,32 +22,34 @@ void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
 	_pPattern->Paste(0, 0, _pPatternOrg.get());
 	if (_dotPosX >= dotNumX) _dotPosX = dotNumX - 1;
 	if (_dotPosY >= dotNumY) _dotPosY = dotNumY - 1;
-	_pBitmap.reset(nullptr);
+	_pBitmapForBrowser.reset(nullptr);
 }
 
-wxBitmap &PCGInfo::MakeBitmap(int sizeDot)
+wxBitmap &PCGInfo::MakeBitmapForBrowser(int sizeDotBrowser)
 {
-	if (_pBitmap.get() == nullptr || _sizeDot != sizeDot) {
-		_pBitmap.reset(new wxBitmap(sizeDot * _pPattern->GetDotNumX(), sizeDot * _pPattern->GetDotNumY()));
-		_sizeDot = sizeDot;
+	if (_pBitmapForBrowser.get() == nullptr || _sizeDotBrowser != sizeDotBrowser) {
+		_sizeDotBrowser = sizeDotBrowser;
+		_pBitmapForBrowser.reset(
+			new wxBitmap(
+				_sizeDotBrowser * _pPattern->GetDotNumX(), _sizeDotBrowser * _pPattern->GetDotNumY()));
 	}
 	wxBrush brushBg(wxColour("black"), wxBRUSHSTYLE_SOLID);
 	wxBrush brushFg(wxColour("white"), wxBRUSHSTYLE_SOLID);
-	wxMemoryDC dc(*_pBitmap);
+	wxMemoryDC dc(*_pBitmapForBrowser);
 	dc.SetBackground(brushBg);
 	dc.Clear();
 	dc.SetPen(wxNullPen);
 	dc.SetBrush(brushFg);
 	for (int dotPosY = 0; dotPosY < _pPattern->GetDotNumY(); dotPosY++) {
-		int y = dotPosY * _sizeDot;
+		int y = dotPosY * _sizeDotBrowser;
 		for (int dotPosX = 0; dotPosX < _pPattern->GetDotNumX(); dotPosX++) {
-			int x = dotPosX * _sizeDot;
+			int x = dotPosX * _sizeDotBrowser;
 			if (GetDot(dotPosX, dotPosY)) {
-				dc.DrawRectangle(x, y, _sizeDot, _sizeDot);
+				dc.DrawRectangle(x, y, _sizeDotBrowser, _sizeDotBrowser);
 			}
 		}
 	}
-	return *_pBitmap;
+	return *_pBitmapForBrowser;
 }
 
 //-----------------------------------------------------------------------------
