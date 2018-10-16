@@ -53,7 +53,13 @@ void FrameMain::OnAbout(wxCommandEvent &event)
 
 void FrameMain::OnOpen(wxCommandEvent &event)
 {
-	if (!_pDocument->ReadFile("test.asm")) {
+#if 0
+	wxFileDialog dlg(this, _("Open JR-200 Assembler Source"), "", "",
+					 "ASM files (*.asm)|*.asm", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (dlg.ShowModal() == wxID_CANCEL) return;
+#endif
+	const char *pathName = "test.asm";
+	if (!_pDocument->ReadFile(pathName)) {
 		ErrorDialog dlg(this);
 		dlg.ShowModal();
 		return;
@@ -64,12 +70,15 @@ void FrameMain::OnOpen(wxCommandEvent &event)
 void FrameMain::OnSave(wxCommandEvent &event)
 {
 	if (!_pDocument->WriteFile("test.asm")) {
-		ErrorLog::Print(stderr);
+		ErrorDialog dlg(this);
+		dlg.ShowModal();
 		return;
 	}
-	
 }
 
 void FrameMain::OnSaveAs(wxCommandEvent &event)
 {
+	//wxFileDialog dlg(this, _("Open JR-200 Assembler Source"), "", "",
+	//				 "ASM files (*.asm)|*.asm", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	//if (dlg.ShowModal() == wxID_CANCEL) return;
 }
