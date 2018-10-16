@@ -6,10 +6,17 @@
 //-----------------------------------------------------------------------------
 // PCGBrowser
 //-----------------------------------------------------------------------------
+int PCGBrowser::_dotSize = 4;
+int PCGBrowser::_htBmpMin = 48;
+int PCGBrowser::_mgnTop = 4;
+int PCGBrowser::_mgnBottom = 4;
+int PCGBrowser::_mgnLeft = 8;
+int PCGBrowser::_mgnRight = 8;
+
 PCGBrowser::PCGBrowser(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPCGPageInfo(pPCGPageInfo),
-	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID),
+	_brushBg(wxColour("grey"), wxBRUSHSTYLE_SOLID),
 	_brushSelected(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
 	_bmpBtnUp(64, 12), _bmpBtnDown(64, 12), _bmpBtnDelete(16, 16)
 {

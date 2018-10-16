@@ -6,6 +6,11 @@
 //-----------------------------------------------------------------------------
 // PCGEditor
 //-----------------------------------------------------------------------------
+int PCGEditor::_mgnLeft = 8;
+int PCGEditor::_mgnRight = 8;
+int PCGEditor::_mgnTop = 8;
+int PCGEditor::_mgnBottom = 8;
+
 PCGEditor::PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),

@@ -20,13 +20,6 @@ public:
 		void NotifyPCGModified();
 	};
 private:
-	enum {
-		_mgnLeft = 8,
-		_mgnRight = 8,
-		_mgnTop = 8,
-		_mgnBottom = 8,
-	};
-private:
 	wxRect _rcMatrix;
 	AutoPtr<PCGInfo> _pPCGInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
@@ -36,6 +29,11 @@ private:
 	wxBrush _brushBg;
 	wxBrush _brushMatrix;
 	ListenerList _listenerList;
+private:
+	static int _mgnLeft;
+	static int _mgnRight;
+	static int _mgnTop;
+	static int _mgnBottom;
 public:
 	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }

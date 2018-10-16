@@ -19,15 +19,6 @@ public:
 	public:
 		void NotifyPCGSelected(const PCGInfo *pPCGInfo);
 	};
-public:
-	enum {
-		_dotSize = 4,
-		_htBmpMin = 48,
-		_mgnTop = 4,
-		_mgnBottom = 4,
-		_mgnLeft = 4,
-		_mgnRight = 4,
-	};	
 private:
 	AutoPtr<PCGPageInfo> _pPCGPageInfo;
 	wxBrush _brushBg;
@@ -40,6 +31,13 @@ private:
 	wxRect _rcBtnDown;
 	wxRect _rcBtnDelete;
 	ListenerList _listenerList;
+private:
+	static int _dotSize;
+	static int _htBmpMin;
+	static int _mgnTop;
+	static int _mgnBottom;
+	static int _mgnLeft;
+	static int _mgnRight;
 public:
 	PCGBrowser(wxWindow *pParent, PCGPageInfo *pPCGPageInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }

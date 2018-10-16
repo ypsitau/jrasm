@@ -13,6 +13,7 @@ Document::Document() : _cntRef(1), _pPCGPageInfoOwner(new PCGPageInfoOwner())
 
 bool Document::ReadFile(const char *pathName)
 {
+	bool upperCaseFlag = true;
 	Context context(pathName);
 	if (!context.ParseFile()) return false;
 	std::unique_ptr<PCGPageInfoOwner> pPCGPageInfoOwner(new PCGPageInfoOwner());
@@ -23,18 +24,22 @@ bool Document::ReadFile(const char *pathName)
 		PCGType pcgType;
 		int charCodeStart;
 		if (!Directive_PCGPAGE::ExtractParams(pExpr, &symbol, &pcgType, &charCodeStart)) return false;
-		AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pcgType, charCodeStart));
-		pExpr->Print();
+		AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pcgType, charCodeStart, upperCaseFlag));
+		bool firstFlag = true;
 		for (auto pExprChild : pExpr->GetExprChildren()) {
 			if (!pExprChild->IsTypeDirective(Directive::PCG)) continue;
 			String symbol;
 			int wdChar, htChar;
 			int stepX, stepY;
 			Binary buff;
-			pExprChild->Print();
 			if (!Directive_PCG::ExtractParams(context, pExprChild, &symbol,
 											  &wdChar, &htChar, &stepX, &stepY, buff)) return false;
-			pPCGPageInfo->AddPCGInfo(new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(wdChar, htChar, buff)));
+			AutoPtr<PCGInfo> pPCGInfo(
+				new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(
+								wdChar, htChar, buff), stepX, stepY, upperCaseFlag));
+			pPCGInfo->SetSelectedFlag(firstFlag);
+			firstFlag = false;
+			pPCGPageInfo->AddPCGInfo(pPCGInfo.release());
 		}
 		if (pPCGPageInfo->IsEmptyPCGInfo()) pPCGPageInfo->NewPCGInfo();
 		pPCGPageInfoOwner->push_back(pPCGPageInfo.release());
@@ -46,12 +51,13 @@ bool Document::ReadFile(const char *pathName)
 
 bool Document::WriteFile(const char *pathName)
 {
+	bool rtn = true;
 	FILE *fp = stdout;
 	for (auto pPCGPageInfo : GetPCGPageInfoOwner()) {
-		::fprintf(fp, "\t.pcgpage\n");
-		for (auto pPCGInfo : pPCGPageInfo->GetPCGInfoOwner()) {
-			::fprintf(fp, "\t.pcg\n");
+		if (!pPCGPageInfo->WriteFile(fp)) {
+			rtn = false;
+			break;
 		}
 	}
-	return true;
+	return rtn;
 }

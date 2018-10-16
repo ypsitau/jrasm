@@ -6,14 +6,16 @@
 //-----------------------------------------------------------------------------
 // PCGInfo
 //-----------------------------------------------------------------------------
-PCGInfo::PCGInfo(const String &symbol, Pattern *pPattern) :
-	_cntRef(1), _symbol(symbol), _dotSizeBrowser(0), _dotSizeEditor(20),
+PCGInfo::PCGInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag) :
+	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY),
+	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(pPattern)
 {
 }
 
-PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY) :
-	_cntRef(1), _symbol(symbol), _dotSizeBrowser(0), _dotSizeEditor(20),
+PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag) :
+	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY),
+	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(new Pattern(dotNumX, dotNumY))
 {
 }
@@ -55,6 +57,30 @@ wxBitmap &PCGInfo::MakeBitmapForBrowser(int dotSizeBrowser)
 		}
 	}
 	return *_pBitmapForBrowser;
+}
+
+bool PCGInfo::WriteFile(FILE *fp)
+{
+	const char *strPCG = ".pcg";
+	const char *strDB = ".db";
+	const char *strEND = ".end";
+	if (_upperCaseFlag) {
+		strPCG = ".PCG";
+		strDB = ".DB";
+		strEND = ".END";
+	}
+	::fprintf(fp, "\t%s\t%s,%d,%d,%d,%d\n",
+			  strPCG, GetSymbol(), GetDotNumX() / 8, GetDotNumY() / 8, GetStepX(), GetStepY());
+	for (int dotPosY = 0; dotPosY < GetDotNumY(); dotPosY++) {
+		String str = "b\"";
+		for (int dotPosX = 0; dotPosX < GetDotNumX(); dotPosX++) {
+			str += GetDot(dotPosX, dotPosY)? "#" : ".";
+		}
+		str += "\"";
+		::fprintf(fp, "\t%s\t%s\n", strDB, str.c_str());
+	}
+	::fprintf(fp, "\t%s\n", strEND);
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -163,7 +189,8 @@ bool PCGInfoOwner::DeleteSelection()
 
 void PCGInfoOwner::NewPCGInfo()
 {
+	bool upperCaseFlag = true;
 	char symbol[256];
 	::sprintf_s(symbol, "pcg%d", static_cast<int>(size()) + 1);
-	push_back(new PCGInfo(symbol, 16, 16));
+	push_back(new PCGInfo(symbol, 16, 16, 1, 32, upperCaseFlag));
 }

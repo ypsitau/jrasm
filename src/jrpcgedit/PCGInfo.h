@@ -41,6 +41,9 @@ public:
 private:
 	int _cntRef;
 	String _symbol;
+	int _stepX;
+	int _stepY;
+	bool _upperCaseFlag;
 	int _dotSizeBrowser;
 	int _dotSizeEditor;
 	int _dotPosX;
@@ -53,12 +56,14 @@ private:
 public:
 	DeclareReferenceAccessor(PCGInfo);
 public:
-	PCGInfo(const String &symbol, Pattern *pPattern);
-	PCGInfo(const String &symbol, int dotNumX, int dotNumY);
+	PCGInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag);
+	PCGInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag);
 protected:
 	inline ~PCGInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	inline int GetStepX() const { return _stepX; }
+	inline int GetStepY() const { return _stepY; }
 	inline void SetDotSizeEditor(int dotSizeEditor) { _dotSizeEditor = dotSizeEditor; }
 	inline int GetDotSizeEditor() const { return _dotSizeEditor; }
 	inline int GetDotNumX() const { return _pPattern->GetDotNumX(); }
@@ -87,6 +92,7 @@ public:
 	}
 	void ChangeDotNum(int dotNumX, int dotNumY);
 	wxBitmap &MakeBitmapForBrowser(int dotSizeBrowser);
+	bool WriteFile(FILE *fp);
 };
 
 //-----------------------------------------------------------------------------
