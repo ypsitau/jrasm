@@ -48,7 +48,7 @@ public:
 private:
 	AutoPtr<Document> _pDocument;
 public:
-	PanelMain(wxWindow *pParent);
+	PanelMain(wxWindow *pParent, Document *pDocument);
 private:
     wxDECLARE_EVENT_TABLE();
 };

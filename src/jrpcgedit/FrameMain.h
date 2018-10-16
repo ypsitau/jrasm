@@ -16,11 +16,12 @@ public:
 	};
 private:
 	PanelMain *_pPanelMain;
+	AutoPtr<Document> _pDocument;
 public:
 	FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &pos, const wxSize &size);
 private:
     wxDECLARE_EVENT_TABLE();
-    void OnHello(wxCommandEvent &event);
+    void OnSave(wxCommandEvent &event);
     void OnExit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
 };

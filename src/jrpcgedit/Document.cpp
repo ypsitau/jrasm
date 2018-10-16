@@ -46,5 +46,12 @@ bool Document::ReadFile(const char *pathName)
 
 bool Document::WriteFile(const char *pathName)
 {
+	FILE *fp = stdout;
+	for (auto pPCGPageInfo : GetPCGPageInfoOwner()) {
+		::fprintf(fp, "\t.pcgpage\n");
+		for (auto pPCGInfo : pPCGPageInfo->GetPCGInfoOwner()) {
+			::fprintf(fp, "\t.pcg\n");
+		}
+	}
 	return true;
 }
