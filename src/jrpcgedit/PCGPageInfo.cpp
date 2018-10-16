@@ -1,46 +1,46 @@
 //=============================================================================
-// PageInfo.cpp
+// PCGPageInfo.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// PageInfo
+// PCGPageInfo
 //-----------------------------------------------------------------------------
-PageInfo::PageInfo(const String &symbol, PCGType pcgType, int charCodeStart) :
+PCGPageInfo::PCGPageInfo(const String &symbol, PCGType pcgType, int charCodeStart) :
 	_cntRef(1), _symbol(symbol), _pcgType(pcgType), _charCodeStart(charCodeStart)
 {
 }
 
-void PageInfo::AddPCGInfo(PCGInfo *pPCGInfo)
+void PCGPageInfo::AddPCGInfo(PCGInfo *pPCGInfo)
 {
 	_pcgInfoOwner.push_back(pPCGInfo);
 }
 
 //-----------------------------------------------------------------------------
-// PageInfoList
+// PCGPageInfoList
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// PageInfoOwner
+// PCGPageInfoOwner
 //-----------------------------------------------------------------------------
-PageInfoOwner::~PageInfoOwner()
+PCGPageInfoOwner::~PCGPageInfoOwner()
 {
 	Clear();
 }
 
-void PageInfoOwner::Clear()
+void PCGPageInfoOwner::Clear()
 {
-	for (auto pPageInfo : *this) {
-		PageInfo::Delete(pPageInfo);
+	for (auto pPCGPageInfo : *this) {
+		PCGPageInfo::Delete(pPCGPageInfo);
 	}
 	clear();
 }
 
-void PageInfoOwner::NewPageInfo()
+void PCGPageInfoOwner::NewPCGPageInfo()
 {
 	char symbol[256];
 	::sprintf_s(symbol, "page%d", static_cast<int>(size()) + 1);
-	AutoPtr<PageInfo> pPageInfo(new PageInfo(symbol, PCGTYPE_User, 0x20));
-	pPageInfo->NewPCGInfo();
-	push_back(pPageInfo.release());
+	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, PCGTYPE_User, 0x20));
+	pPCGPageInfo->NewPCGInfo();
+	push_back(pPCGPageInfo.release());
 }

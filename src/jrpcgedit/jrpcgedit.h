@@ -13,10 +13,10 @@
 #include "lib/jrasmcore.h"
 #include "Document.h"
 #include "FrameMain.h"
-#include "PageInfo.h"
 #include "PanelMain.h"
 #include "PCGBrowser.h"
 #include "PCGEditor.h"
 #include "PCGInfo.h"
+#include "PCGPageInfo.h"
 
 #endif

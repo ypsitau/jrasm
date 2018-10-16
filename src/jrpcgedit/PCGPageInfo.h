@@ -1,15 +1,15 @@
 //=============================================================================
-// PageInfo.h
+// PCGPageInfo.h
 //=============================================================================
-#ifndef __JRPCGEDIT_PAGEINFO_H__
-#define __JRPCGEDIT_PAGEINFO_H__
+#ifndef __JRPCGEDIT_PCGPAGEINFO_H__
+#define __JRPCGEDIT_PCGPAGEINFO_H__
 
 #include "PCGInfo.h"
 
 //-----------------------------------------------------------------------------
-// PageInfo
+// PCGPageInfo
 //-----------------------------------------------------------------------------
-class PageInfo {
+class PCGPageInfo {
 private:
 	int _cntRef;
 	String _symbol;
@@ -17,11 +17,11 @@ private:
 	int _charCodeStart;
 	PCGInfoOwner _pcgInfoOwner;
 public:
-	DeclareReferenceAccessor(PageInfo);
+	DeclareReferenceAccessor(PCGPageInfo);
 public:
-	PageInfo(const String &symbol, PCGType pcgType, int charCodeStart);
+	PCGPageInfo(const String &symbol, PCGType pcgType, int charCodeStart);
 protected:
-	inline ~PageInfo() {};
+	inline ~PCGPageInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline PCGType GetPCGType() const { return _pcgType; }
@@ -34,19 +34,19 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// PageInfoList
+// PCGPageInfoList
 //-----------------------------------------------------------------------------
-class PageInfoList : public std::vector<PageInfo *> {
+class PCGPageInfoList : public std::vector<PCGPageInfo *> {
 };
 
 //-----------------------------------------------------------------------------
-// PageInfoOwner
+// PCGPageInfoOwner
 //-----------------------------------------------------------------------------
-class PageInfoOwner : public PageInfoList {
+class PCGPageInfoOwner : public PCGPageInfoList {
 public:
-	~PageInfoOwner();
+	~PCGPageInfoOwner();
 	void Clear();
-	void NewPageInfo();
+	void NewPCGPageInfo();
 };
 
 #endif

@@ -2,11 +2,11 @@ add_executable(jrpcgedit
 	jrpcgedit.cpp
 	Document.cpp
 	FrameMain.cpp
-	PageInfo.cpp
 	PanelMain.cpp
 	PCGBrowser.cpp
 	PCGEditor.cpp
 	PCGInfo.cpp
+	PCGPageInfo.cpp
 )
 
 include_directories(

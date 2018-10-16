@@ -4,7 +4,7 @@
 #ifndef __JRPCGEDIT_PCGBROWSER_H__
 #define __JRPCGEDIT_PCGBROWSER_H__
 
-#include "PageInfo.h"
+#include "PCGPageInfo.h"
 
 //-----------------------------------------------------------------------------
 // PCGBrowser
@@ -29,7 +29,7 @@ public:
 		_mgnRight = 4,
 	};	
 private:
-	AutoPtr<PageInfo> _pPageInfo;
+	AutoPtr<PCGPageInfo> _pPCGPageInfo;
 	wxBrush _brushBg;
 	wxBrush _brushSelected;
 	wxBitmap _bmpBtnUp;
@@ -41,7 +41,7 @@ private:
 	wxRect _rcBtnDelete;
 	ListenerList _listenerList;
 public:
-	PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo);
+	PCGBrowser(wxWindow *pParent, PCGPageInfo *pPCGPageInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
 private:
     wxDECLARE_EVENT_TABLE();

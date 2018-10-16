@@ -19,8 +19,8 @@ PanelMain::PanelMain(wxWindow *pParent) : wxPanel(pParent, wxID_ANY)
 	do {
 		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
 		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());
-		for (auto pPageInfo : _pDocument->GetPageInfoOwner()) {
-			pNotebook->AddPage(new Page(pNotebook, pPageInfo->Reference()), pPageInfo->GetSymbol());
+		for (auto pPCGPageInfo : _pDocument->GetPCGPageInfoOwner()) {
+			pNotebook->AddPage(new Page(pNotebook, pPCGPageInfo->Reference()), pPCGPageInfo->GetSymbol());
 		}
 	} while (0);
 }
@@ -34,10 +34,10 @@ wxEND_EVENT_TABLE()
 //-----------------------------------------------------------------------------
 // PanelMain::Page
 //-----------------------------------------------------------------------------
-PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
-	wxPanel(pParent, wxID_ANY), _pPageInfo(pPageInfo)
+PanelMain::Page::Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
+	wxPanel(pParent, wxID_ANY), _pPCGPageInfo(pPCGPageInfo)
 {
-	const PCGInfo *pPCGInfoSelected = *_pPageInfo->GetPCGInfoOwner().FindSelected();
+	const PCGInfo *pPCGInfoSelected = *_pPCGPageInfo->GetPCGInfoOwner().FindSelected();
 	do {
 		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
 			this, ID_SASH_Vert, wxDefaultPosition, wxDefaultSize,
@@ -53,7 +53,7 @@ PanelMain::Page::Page(wxWindow *pParent, PageInfo *pPageInfo) :
 		wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
 		pPanel->SetSizer(pVBox);
 		do {
-			PCGBrowser *pCtrl= new PCGBrowser(pPanel, _pPageInfo->Reference());
+			PCGBrowser *pCtrl= new PCGBrowser(pPanel, _pPCGPageInfo->Reference());
 			pVBox->Add(pCtrl, wxSizerFlags(1).Expand());
 			_pPCGBrowser = pCtrl;
 			_pPCGBrowser->AddListener(this);
@@ -166,13 +166,13 @@ void PanelMain::Page::OnSlider_DotSize(wxScrollEvent &event)
 
 void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 {
-	_pPageInfo->NewPCGInfo();
+	_pPCGPageInfo->NewPCGInfo();
 	_pPCGBrowser->Refresh();
 }
 
 void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 {
-	AutoPtr<PCGInfo> pPCGInfoSelected((*_pPageInfo->GetPCGInfoOwner().FindSelected())->Reference());
+	AutoPtr<PCGInfo> pPCGInfoSelected((*_pPCGPageInfo->GetPCGInfoOwner().FindSelected())->Reference());
 	pPCGInfoSelected->ChangeDotNum(_pSpin_Width->GetValue() * 8, _pSpin_Height->GetValue() * 8);
 	_pPCGEditor->PrepareMatrix(true);
 	_pPCGBrowser->Refresh();

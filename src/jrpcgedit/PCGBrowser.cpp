@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 // PCGBrowser
 //-----------------------------------------------------------------------------
-PCGBrowser::PCGBrowser(wxWindow *pParent, PageInfo *pPageInfo) :
+PCGBrowser::PCGBrowser(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPageInfo(pPageInfo),
+			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPCGPageInfo(pPCGPageInfo),
 	_brushBg(wxColour("white"), wxBRUSHSTYLE_SOLID),
 	_brushSelected(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
 	_bmpBtnUp(64, 12), _bmpBtnDown(64, 12), _bmpBtnDelete(16, 16)
@@ -54,7 +54,7 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	dc.Clear();
 	int y = 0;
 	_rcLabel = _rcBtnUp = _rcBtnDown = _rcBtnDelete = wxRect();
-	const PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
+	const PCGInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGInfoOwner();
 	for (PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
 		 ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
 		PCGInfo *pPCGInfo = *ppPCGInfo;
@@ -137,7 +137,7 @@ void PCGBrowser::OnMotion(wxMouseEvent &event)
 void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
 	const wxPoint &pt = event.GetPosition();
-	PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
+	PCGInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGInfoOwner();
 	PCGInfo *pPCGInfoSelected = nullptr;
 	for (auto pPCGInfo : pcgInfoOwner) {
 		if (pPCGInfo->GetRectItem().Contains(pt)) {
@@ -190,7 +190,7 @@ void PCGBrowser::OnLeaveWindow(wxMouseEvent &event)
 void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 {
 	int keyCode = event.GetKeyCode();
-	const PCGInfoOwner &pcgInfoOwner = _pPageInfo->GetPCGInfoOwner();
+	const PCGInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGInfoOwner();
 	PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
 	for ( ; ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
 		PCGInfo *pPCGInfo = *ppPCGInfo;

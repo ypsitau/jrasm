@@ -6,16 +6,16 @@
 //-----------------------------------------------------------------------------
 // Document
 //-----------------------------------------------------------------------------
-Document::Document() : _cntRef(1), _pPageInfoOwner(new PageInfoOwner())
+Document::Document() : _cntRef(1), _pPCGPageInfoOwner(new PCGPageInfoOwner())
 {
-	_pPageInfoOwner->NewPageInfo();
+	_pPCGPageInfoOwner->NewPCGPageInfo();
 }
 
 bool Document::ReadFile(const char *pathName)
 {
 	Context context(pathName);
 	if (!context.ParseFile()) return false;
-	std::unique_ptr<PageInfoOwner> pPageInfoOwner(new PageInfoOwner());
+	std::unique_ptr<PCGPageInfoOwner> pPCGPageInfoOwner(new PCGPageInfoOwner());
 	const Expr *pExprRoot = context.GetExprRoot();
 	for (auto pExpr : pExprRoot->GetExprChildren()) {
 		if (!pExpr->IsTypeDirective(Directive::PCGPAGE)) continue;
@@ -23,7 +23,7 @@ bool Document::ReadFile(const char *pathName)
 		PCGType pcgType;
 		int charCodeStart;
 		if (!Directive_PCGPAGE::ExtractParams(pExpr, &symbol, &pcgType, &charCodeStart)) return false;
-		AutoPtr<PageInfo> pPageInfo(new PageInfo(symbol, pcgType, charCodeStart));
+		AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pcgType, charCodeStart));
 		pExpr->Print();
 		for (auto pExprChild : pExpr->GetExprChildren()) {
 			if (!pExprChild->IsTypeDirective(Directive::PCG)) continue;
@@ -34,13 +34,13 @@ bool Document::ReadFile(const char *pathName)
 			pExprChild->Print();
 			if (!Directive_PCG::ExtractParams(context, pExprChild, &symbol,
 											  &wdChar, &htChar, &stepX, &stepY, buff)) return false;
-			pPageInfo->AddPCGInfo(new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(wdChar, htChar, buff)));
+			pPCGPageInfo->AddPCGInfo(new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(wdChar, htChar, buff)));
 		}
-		if (pPageInfo->IsEmptyPCGInfo()) pPageInfo->NewPCGInfo();
-		pPageInfoOwner->push_back(pPageInfo.release());
+		if (pPCGPageInfo->IsEmptyPCGInfo()) pPCGPageInfo->NewPCGInfo();
+		pPCGPageInfoOwner->push_back(pPCGPageInfo.release());
 	}
-	if (pPageInfoOwner->empty()) pPageInfoOwner->NewPageInfo();
-	_pPageInfoOwner.reset(pPageInfoOwner.release());
+	if (pPCGPageInfoOwner->empty()) pPCGPageInfoOwner->NewPCGPageInfo();
+	_pPCGPageInfoOwner.reset(pPCGPageInfoOwner.release());
 	return true;
 }
 

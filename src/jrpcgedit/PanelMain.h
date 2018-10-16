@@ -29,9 +29,9 @@ public:
 		wxSlider *_pSlider_DotSize;
 		wxSpinCtrl *_pSpin_Width;
 		wxSpinCtrl *_pSpin_Height;
-		AutoPtr<PageInfo> _pPageInfo;
+		AutoPtr<PCGPageInfo> _pPCGPageInfo;
 	public:
-		Page(wxWindow *pParent, PageInfo *pPageInfo);
+		Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo);
 	private:
 		wxDECLARE_EVENT_TABLE();
 		void OnSize(wxSizeEvent &event);
