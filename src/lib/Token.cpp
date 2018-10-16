@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 const TokenInfo TOKEN_Expr =			{  0, "Expr",			"[Exp]"	};	// for parsing
 const TokenInfo TOKEN_Empty =			{  1, "Empty",			"[Emp]"	};	// for parsing
-const TokenInfo TOKEN_Colon =			{  2, "Pair",			":"		};
+const TokenInfo TOKEN_Colon =			{  2, "Colon",			":"		};
 const TokenInfo TOKEN_Eq =				{  3, "Eq",				"="		};
 const TokenInfo TOKEN_VBarVBar =		{  4, "VBarVBar",		"||"	};
 const TokenInfo TOKEN_AmpAmp =			{  5, "AmpAmp",			"&&"	};

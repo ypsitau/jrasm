@@ -265,6 +265,8 @@ bool Parser::ReduceThree()
 			pExpr.reset(new Expr_BinOp(Operator::ShiftL, pExprL.release(), pExprR.release()));
 		} else if (pToken2->IsType(TOKEN_GtGt)) {
 			pExpr.reset(new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release()));
+		} else if (pToken2->IsType(TOKEN_Colon)) {
+			pExpr.reset(new Expr_BinOp(Operator::Pair, pExprL.release(), pExprR.release()));
 		} else {
 			AddError("unacceptable binary operator: %s", pToken2->GetSymbol());
 			return false;

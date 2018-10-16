@@ -1059,7 +1059,7 @@ ptrdst2:           | .equ $+1
     1401 86 07     | ldaa 7+(0<<3)
     1403 a7 00     | staa [x+0x00+0]
                    | .end
-                   .pcgpage test,user,0x20
+                   .pcgpage test,user:0x20
     1405 ff ff     | .db  0xff,0xff,0x20,0x20,0x20,0x20,0xff,0xff
     1407 20 20     |
     1409 20 20     |

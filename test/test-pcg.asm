@@ -11,7 +11,7 @@
 	;pcg.circle1x1.putattr 7,0
 	;pcg.circle1x1.erase
 	
-	.pcgpage circles,user,60
+	.pcgpage circles,user:60
 	
 	.pcg	circle1x1,1,1
 	.db	b"..####.."

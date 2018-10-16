@@ -4114,7 +4114,7 @@ ptrdst:            | .equ $+1
     1f1e 86 07     | ldaa 7+(0<<3)
     1f20 a7 00     | staa [x+0x00+0]
                    | .end
-                   .pcgpage test,cram,0x00
+                   .pcgpage test,cram:0x00
     1f22 ff ff     | .db  0xff,0xff,0x00,0x00,0x00,0x00,0xff,0xff
     1f24 00 00     |
     1f26 00 00     |

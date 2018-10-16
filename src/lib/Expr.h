@@ -299,6 +299,8 @@ public:
 	inline Expr_Assign(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren) {}
 	inline Expr_Assign(const Expr_Assign &expr) : Expr(expr) {}
+	inline Expr *GetLeft() { return GetExprOperands()[0]; }
+	inline Expr *GetRight(){ return GetExprOperands()[1]; }
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
 	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	virtual Expr *Resolve(Context &context) const;
@@ -326,6 +328,8 @@ public:
 	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren), _pOperator(pOperator) {}
 	inline Expr_BinOp(const Expr_BinOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
+	inline Expr *GetLeft() { return GetExprOperands()[0]; }
+	inline Expr *GetRight(){ return GetExprOperands()[1]; }
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
 	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }

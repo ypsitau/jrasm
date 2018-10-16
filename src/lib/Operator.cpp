@@ -25,6 +25,7 @@ const Operator *Operator::Gt		= nullptr;
 const Operator *Operator::Ge		= nullptr;
 const Operator *Operator::ShiftL	= nullptr;
 const Operator *Operator::ShiftR	= nullptr;
+const Operator *Operator::Pair		= nullptr;
 
 void Operator::Initialize()
 {
@@ -47,6 +48,7 @@ void Operator::Initialize()
 	Ge			= new Operator_Ge();
 	ShiftL		= new Operator_ShiftL();
 	ShiftR		= new Operator_ShiftR();
+	Pair		= new Operator_Pair();
 }
 
 //-----------------------------------------------------------------------------
@@ -326,4 +328,12 @@ Expr *Operator_ShiftR::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 		return new Expr_Integer(numL >> numR);
 	}
 	return new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release());
+}
+
+//-----------------------------------------------------------------------------
+// Operator_Pair
+//-----------------------------------------------------------------------------
+Expr *Operator_Pair::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+{
+	return new Expr_BinOp(Operator::Pair, pExprL.release(), pExprR.release());
 }

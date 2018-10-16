@@ -12,7 +12,7 @@ repeat (0x100) {|code|
     printf('\tpcg.cram%02x.eraseattr\n', code)
 }
 
-println('\t.pcgpage test,cram,0x00')
+println('\t.pcgpage test,cram:0x00')
 repeat (0x100) {|code|
     printf('\t.pcg\tcram%02x,1,1\n', code)
     printf('\t.db\t0xff,0xff,0x%02x,0x%02x,0x%02x,0x%02x,0xff,0xff\n', code, code, code, code)
@@ -1046,7 +1046,7 @@ println('\t.end')
 	pcg.cramff.putattr
 	pcg.cramff.erase
 	pcg.cramff.eraseattr
-	.pcgpage test,cram,0x00
+	.pcgpage test,cram:0x00
 	.pcg	cram00,1,1
 	.db	0xff,0xff,0x00,0x00,0x00,0x00,0xff,0xff
 	.end

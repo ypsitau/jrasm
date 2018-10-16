@@ -12,7 +12,7 @@ repeat (0x40) {|code|
     printf('\tpcg.user%02x.eraseattr\n', code)
 }
 
-println('\t.pcgpage test,user,0x20')
+println('\t.pcgpage test,user:0x20')
 repeat (0x40) {|code|
     code += 0x20
     printf('\t.pcg\tuser%02x,1,1\n', code)
@@ -279,7 +279,7 @@ println('\t.end')
 	pcg.user5f.putattr
 	pcg.user5f.erase
 	pcg.user5f.eraseattr
-	.pcgpage test,user,0x20
+	.pcgpage test,user:0x20
 	.pcg	user20,1,1
 	.db	0xff,0xff,0x20,0x20,0x20,0x20,0xff,0xff
 	.end

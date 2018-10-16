@@ -33,6 +33,7 @@ public:
 	static const Operator *Ge;
 	static const Operator *ShiftL;
 	static const Operator *ShiftR;
+	static const Operator *Pair;
 private:
 	const TokenInfo &_tokenInfo;
 public:
@@ -215,6 +216,15 @@ public:
 class Operator_ShiftR : public Operator {
 public:
 	inline Operator_ShiftR() : Operator(TOKEN_GtGt) {}
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+};
+
+//-----------------------------------------------------------------------------
+// Operator_Pair
+//-----------------------------------------------------------------------------
+class Operator_Pair : public Operator {
+public:
+	inline Operator_Pair() : Operator(TOKEN_Colon) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
