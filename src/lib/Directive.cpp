@@ -909,7 +909,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGTyp
 	}
 	String symbol;
 	PCGType pcgType = PCGTYPE_None;
-	int charCodeStart = 0;
+	Integer charCodes[2];
 	do {
 		Expr *pExprOperand = exprOperands[0];
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -920,13 +920,13 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGTyp
 	} while (0);
 	do {
 		Expr *pExprOperand = exprOperands[1];
-		if (!pExprOperand->IsTypeBinOp(Operator::Pair)) {
+		if (!pExprOperand->IsTypeBinOp(Operator::FieldSep)) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
 		ExprList exprFields;
 		Expr_BinOp *pExprOperandEx = dynamic_cast<Expr_BinOp *>(pExprOperand);
-		if (pExprOperandEx->GetLeft()->IsTypeBinOp(Operator::Pair)) {
+		if (pExprOperandEx->GetLeft()->IsTypeBinOp(Operator::FieldSep)) {
 			Expr_BinOp *pExprLeftEx = dynamic_cast<Expr_BinOp *>(pExprOperandEx->GetLeft());
 			exprFields.push_back(pExprLeftEx->GetLeft());
 			exprFields.push_back(pExprLeftEx->GetRight());
@@ -938,7 +938,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGTyp
 		do {
 			Expr *pExprField = exprFields[0];
 			if (!pExprField->IsTypeSymbol()) {
-				ErrorLog::AddError(pExpr, errMsg);
+				ErrorLog::AddError(pExpr, "specify a symbol CRAM or USER as PCG type");
 				return false;
 			}
 			const char *symbolType = dynamic_cast<const Expr_Symbol *>(pExprField)->GetSymbol();
@@ -947,34 +947,41 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGTyp
 			} else if (::strcasecmp(symbolType, "user") == 0) {
 				pcgType = PCGTYPE_User;
 			} else {
-				ErrorLog::AddError(pExpr, errMsg);
+				ErrorLog::AddError(pExpr, "specify a symbol CRAM or USER as PCG type");
 				return false;
 			}
 		} while (0);
-		do {
-			Expr *pExprField = exprFields[1];
+		size_t nFields = exprFields.size() - 1;
+		for (size_t i = 0; i < nFields; i++) {
+			Expr *pExprField = exprFields[1 + i];
 			if (!pExprField->IsTypeInteger()) {
-				ErrorLog::AddError(pExpr, errMsg);
+				ErrorLog::AddError(pExpr, "character code must be an integer");
 				return false;
 			}
-			charCodeStart = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
+			Integer charCode = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
 			if (pcgType == PCGTYPE_CRAM) {
-				if (charCodeStart < 0 || charCodeStart > 255) {
+				if (charCode < 0 || charCode > 255) {
 					ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
 					return false;
 				}
 			} else { // pcgType == PCGTYPE_User
-				charCodeStart -= 32;
-				if (charCodeStart < 0 || charCodeStart > 63) {
+				charCode -= 32;
+				if (charCode < 0 || charCode > 63) {
 					ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
 					return false;
 				}
 			}
-		} while (0);
+			charCodes[i] = charCode;
+		}
+		if (nFields == 1) {
+			charCodes[1] = (pcgType == PCGTYPE_CRAM)? 255 : 63;
+		} else if (charCodes[0] > charCodes[1]) {
+			std::swap(charCodes[0], charCodes[1]);
+		}
 	} while (0);
 	*pSymbol = symbol;
 	*pPCGType = pcgType;
-	*pCharCodeStart = charCodeStart;
+	*pCharCodeStart = charCodes[0];
 	return true;
 }
 

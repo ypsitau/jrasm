@@ -33,7 +33,7 @@ public:
 	static const Operator *Ge;
 	static const Operator *ShiftL;
 	static const Operator *ShiftR;
-	static const Operator *Pair;
+	static const Operator *FieldSep;
 private:
 	const TokenInfo &_tokenInfo;
 public:
@@ -220,11 +220,11 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Operator_Pair
+// Operator_FieldSep
 //-----------------------------------------------------------------------------
-class Operator_Pair : public Operator {
+class Operator_FieldSep : public Operator {
 public:
-	inline Operator_Pair() : Operator(TOKEN_Colon) {}
+	inline Operator_FieldSep() : Operator(TOKEN_Colon) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
