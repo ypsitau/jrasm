@@ -34,6 +34,7 @@ public:
 	inline void NewPCGInfo() { _pcgInfoOwner.NewPCGInfo(); }
 	void AddPCGInfo(PCGInfo *pPCGInfo);
 	bool WriteFile(FILE *fp);
+	static PCGPageInfo *CreateFromExpr(Context &context, const Expr *pExpr);
 };
 
 //-----------------------------------------------------------------------------
