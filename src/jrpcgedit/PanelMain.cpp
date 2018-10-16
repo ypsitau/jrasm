@@ -12,12 +12,18 @@ PanelMain::PanelMain(wxWindow *pParent, Document *pDocument) :
 	wxBoxSizer *pOuterBox = new wxBoxSizer(wxVERTICAL);
 	SetSizer(pOuterBox);
 	do {
-		wxNotebook *pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
-		pOuterBox->Add(pNotebook, wxSizerFlags(1).Expand());
-		for (auto pPCGPageInfo : _pDocument->GetPCGPageInfoOwner()) {
-			pNotebook->AddPage(new Page(pNotebook, pPCGPageInfo->Reference()), pPCGPageInfo->GetSymbol());
-		}
+		_pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+		pOuterBox->Add(_pNotebook, wxSizerFlags(1).Expand());
 	} while (0);
+	UpdateDocument();
+}
+
+void PanelMain::UpdateDocument()
+{
+	_pNotebook->DeleteAllPages();
+	for (auto pPCGPageInfo : _pDocument->GetPCGPageInfoOwner()) {
+		_pNotebook->AddPage(new Page(_pNotebook, pPCGPageInfo->Reference()), pPCGPageInfo->GetSymbol());
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -161,7 +167,7 @@ void PanelMain::Page::OnSlider_DotSize(wxScrollEvent &event)
 
 void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 {
-	_pPCGPageInfo->NewPCGInfo();
+	_pPCGPageInfo->NewPCGInfo(true);
 	_pPCGBrowser->Refresh();
 }
 

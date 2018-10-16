@@ -120,7 +120,7 @@ public:
 	~PCGInfoOwner();
 	void Clear();
 	bool DeleteSelection();
-	void NewPCGInfo();
+	void NewPCGInfo(bool selectedFlag);
 };
 
 #endif

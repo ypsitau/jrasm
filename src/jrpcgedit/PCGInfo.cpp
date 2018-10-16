@@ -187,10 +187,15 @@ bool PCGInfoOwner::DeleteSelection()
 	return true;
 }
 
-void PCGInfoOwner::NewPCGInfo()
+void PCGInfoOwner::NewPCGInfo(bool selectedFlag)
 {
 	bool upperCaseFlag = true;
 	char symbol[256];
 	::sprintf_s(symbol, "pcg%d", static_cast<int>(size()) + 1);
-	push_back(new PCGInfo(symbol, 16, 16, 1, 32, upperCaseFlag));
+	if (selectedFlag) {
+		for (auto pPCGInfo : *this) pPCGInfo->SetSelectedFlag(false);
+	}
+	AutoPtr<PCGInfo> pPCGInfo(new PCGInfo(symbol, 16, 16, 1, 32, upperCaseFlag));
+	pPCGInfo->SetSelectedFlag(selectedFlag);
+	push_back(pPCGInfo.release());
 }

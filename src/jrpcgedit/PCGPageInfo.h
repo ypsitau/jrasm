@@ -31,7 +31,7 @@ public:
 	inline PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
 	inline const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
 	inline bool IsEmptyPCGInfo() const { return _pcgInfoOwner.empty(); }
-	inline void NewPCGInfo() { _pcgInfoOwner.NewPCGInfo(); }
+	inline void NewPCGInfo(bool selectedFlag) { _pcgInfoOwner.NewPCGInfo(selectedFlag); }
 	void AddPCGInfo(PCGInfo *pPCGInfo);
 	bool WriteFile(FILE *fp);
 	static PCGPageInfo *CreateFromExpr(Context &context, const Expr *pExpr);

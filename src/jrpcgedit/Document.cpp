@@ -8,6 +8,14 @@
 //-----------------------------------------------------------------------------
 Document::Document() : _cntRef(1), _pPCGPageInfoOwner(new PCGPageInfoOwner())
 {
+	InitAsBlank();
+}
+
+void Document::InitAsBlank()
+{
+	_pathName.clear();
+	_strSrcSegs.clear();
+	_pPCGPageInfoOwner->Clear();
 	_pPCGPageInfoOwner->NewPCGPageInfo();
 }
 
@@ -22,7 +30,7 @@ bool Document::ReadFile(const char *pathName)
 		ErrorLog::AddError("failed to open file %s", pathName);
 		return false;
 	}
-	_strSrcSegs.clear();
+	StringList strSrcSegs;
 	int lineNoPrev = 1;
 	for (auto pExpr : pExprRoot->GetExprChildren()) {
 		if (!pExpr->IsTypeDirective(Directive::PCGPAGE)) continue;
@@ -30,11 +38,11 @@ bool Document::ReadFile(const char *pathName)
 		int lineNoEnd = pExpr->GetExprChildren().empty()?
 			lineNoStart : pExpr->GetExprChildren().back()->GetLineNo();
 		String strSrcSeg = ReadLines(fp, lineNoStart - lineNoPrev);
-		_strSrcSegs.push_back(strSrcSeg);
+		strSrcSegs.push_back(strSrcSeg);
 		SkipLines(fp, lineNoEnd - lineNoStart + 1);
 		lineNoPrev = lineNoEnd + 1;
 	}
-	_strSrcSegs.push_back(ReadRest(fp));
+	strSrcSegs.push_back(ReadRest(fp));
 	::fclose(fp);
 	for (auto pExpr : pExprRoot->GetExprChildren()) {
 		if (!pExpr->IsTypeDirective(Directive::PCGPAGE)) continue;
@@ -43,6 +51,9 @@ bool Document::ReadFile(const char *pathName)
 		pPCGPageInfoOwner->push_back(pPCGPageInfo.release());
 	}
 	if (pPCGPageInfoOwner->empty()) pPCGPageInfoOwner->NewPCGPageInfo();
+	// Update all properties here after all process has been done without error.
+	_pathName = pathName;
+	_strSrcSegs = strSrcSegs;
 	_pPCGPageInfoOwner.reset(pPCGPageInfoOwner.release());
 	return true;
 }

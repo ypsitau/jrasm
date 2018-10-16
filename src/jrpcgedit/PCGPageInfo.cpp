@@ -58,7 +58,7 @@ PCGPageInfo *PCGPageInfo::CreateFromExpr(Context &context, const Expr *pExpr)
 		firstFlag = false;
 		pPCGPageInfo->AddPCGInfo(pPCGInfo.release());
 	}
-	if (pPCGPageInfo->IsEmptyPCGInfo()) pPCGPageInfo->NewPCGInfo();
+	if (pPCGPageInfo->IsEmptyPCGInfo()) pPCGPageInfo->NewPCGInfo(true);
 	return pPCGPageInfo.release();
 }
 
@@ -88,6 +88,6 @@ void PCGPageInfoOwner::NewPCGPageInfo()
 	char symbol[256];
 	::sprintf_s(symbol, "page%d", static_cast<int>(size()) + 1);
 	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, PCGTYPE_User, 0x20, upperCaseFlag));
-	pPCGPageInfo->NewPCGInfo();
+	pPCGPageInfo->NewPCGInfo(true);
 	push_back(pPCGPageInfo.release());
 }

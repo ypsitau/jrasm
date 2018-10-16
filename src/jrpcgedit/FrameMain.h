@@ -10,10 +10,6 @@
 // FrameMain
 //-----------------------------------------------------------------------------
 class FrameMain: public wxFrame {
-public:
-	enum {
-		ID_Hello = 1
-	};
 private:
 	PanelMain *_pPanelMain;
 	AutoPtr<Document> _pDocument;
@@ -21,9 +17,11 @@ public:
 	FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &pos, const wxSize &size);
 private:
     wxDECLARE_EVENT_TABLE();
-    void OnSave(wxCommandEvent &event);
-    void OnExit(wxCommandEvent &event);
-    void OnAbout(wxCommandEvent &event);
+	void OnOpen(wxCommandEvent &event);
+	void OnSave(wxCommandEvent &event);
+	void OnSaveAs(wxCommandEvent &event);
+	void OnExit(wxCommandEvent &event);
+	void OnAbout(wxCommandEvent &event);
 };
 
 #endif

@@ -46,9 +46,11 @@ public:
 		virtual void NotifyPCGModified();
 	};
 private:
+	wxNotebook *_pNotebook;
 	AutoPtr<Document> _pDocument;
 public:
 	PanelMain(wxWindow *pParent, Document *pDocument);
+	void UpdateDocument();
 private:
     wxDECLARE_EVENT_TABLE();
 };

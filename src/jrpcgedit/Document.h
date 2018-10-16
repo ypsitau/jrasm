@@ -26,6 +26,7 @@ public:
 	inline PCGPageInfoOwner &GetPCGPageInfoOwner() { return *_pPCGPageInfoOwner; }
 	inline const PCGPageInfoOwner &GetPCGPageInfoOwner() const { return *_pPCGPageInfoOwner; }
 	inline void NewPCGPageInfo() { _pPCGPageInfoOwner->NewPCGPageInfo(); }
+	void InitAsBlank();
 	bool ReadFile(const char *pathName);
 	bool WriteFile(const char *pathName);
 public:
