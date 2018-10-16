@@ -26,7 +26,7 @@ FrameMain::FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &po
 	CreateStatusBar();
 	SetStatusText(wxT("Welcome to wxWidgets!"));
 #if 1
-	if (!_pDocument->ReadFile("pcgsimple.asm")) {
+	if (!_pDocument->ReadFile("test.asm")) {
 		ErrorLog::Print(stderr);
 	}
 #endif
@@ -55,5 +55,5 @@ void FrameMain::OnAbout(wxCommandEvent &event)
 
 void FrameMain::OnSave(wxCommandEvent &event)
 {
-	_pDocument->WriteFile("");
+	_pDocument->WriteFile("test.asm");
 }
