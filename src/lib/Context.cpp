@@ -115,11 +115,13 @@ void Context::PrintPCGUsage(FILE *fp, bool upperCaseFlag)
 {
 	if (GetPCGPageOwner().empty()) return;
 	::fprintf(fp, "[PCG Usage]\n");
-	for (auto pPCGOwner : GetPCGPageOwner()) {
-		if (pPCGOwner->IsEmpty()) continue;
-		::fprintf(fp, "%s: %s .. 0x%02x-0x%02x\n",
-				  pPCGOwner->GetSymbol(), (pPCGOwner->GetPCGType() == PCGTYPE_User)? "User" : "CRAM",
-				  pPCGOwner->GetCharCodeStart(), pPCGOwner->GetCharCodeEnd());
+	for (auto pPCGPage : GetPCGPageOwner()) {
+		if (pPCGPage->IsEmpty()) continue;
+		for (auto pPCGRange : pPCGPage->GetPCGRangeOwner()) {
+			::fprintf(fp, "%s: %s .. 0x%02x-0x%02x\n",
+					  pPCGPage->GetSymbol(), pPCGRange->GetPCGTypeName(upperCaseFlag),
+					  pPCGRange->GetCharCodeStart(), pPCGRange->GetCharCodeEnd());
+		}
 	}
 }
 

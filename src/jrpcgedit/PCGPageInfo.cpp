@@ -6,8 +6,8 @@
 //-----------------------------------------------------------------------------
 // PCGPageInfo
 //-----------------------------------------------------------------------------
-PCGPageInfo::PCGPageInfo(const String &symbol, PCGType pcgType, int charCodeStart, bool upperCaseFlag) :
-	_cntRef(1), _symbol(symbol), _pcgType(pcgType), _charCodeStart(charCodeStart), _upperCaseFlag(upperCaseFlag)
+PCGPageInfo::PCGPageInfo(const String &symbol, PCGRangeOwner *pPCGRangeOwner, bool upperCaseFlag) :
+	_cntRef(1), _symbol(symbol), _upperCaseFlag(upperCaseFlag), _pPCGRangeOwner(pPCGRangeOwner)
 {
 }
 
@@ -38,10 +38,9 @@ PCGPageInfo *PCGPageInfo::CreateFromExpr(Context &context, const Expr *pExpr)
 {
 	bool upperCaseFlag = true;
 	String symbol;
-	PCGType pcgType;
-	int charCodeStart;
-	if (!Directive_PCGPAGE::ExtractParams(pExpr, &symbol, &pcgType, &charCodeStart)) return nullptr;
-	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pcgType, charCodeStart, upperCaseFlag));
+	std::unique_ptr<PCGRangeOwner> pPCGRangeOwner;
+	if (!Directive_PCGPAGE::ExtractParams(pExpr, &symbol, &pPCGRangeOwner)) return nullptr;
+	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pPCGRangeOwner.release(), upperCaseFlag));
 	bool firstFlag = true;
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::PCG)) continue;
@@ -87,7 +86,9 @@ void PCGPageInfoOwner::NewPCGPageInfo()
 	bool upperCaseFlag = true;
 	char symbol[256];
 	::sprintf_s(symbol, "page%d", static_cast<int>(size()) + 1);
-	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, PCGTYPE_User, 0x20, upperCaseFlag));
+	std::unique_ptr<PCGRangeOwner> pPCGRangeOwner(new PCGRangeOwner());
+	pPCGRangeOwner->push_back(new PCGRange(PCGTYPE_User, 0x20, 0x60));
+	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pPCGRangeOwner.release(), upperCaseFlag));
 	pPCGPageInfo->NewPCGInfo(true);
 	push_back(pPCGPageInfo.release());
 }

@@ -6,6 +6,14 @@
 //-----------------------------------------------------------------------------
 // PCGRange
 //-----------------------------------------------------------------------------
+const char *PCGRange::GetPCGTypeName(bool upperCaseFlag) const
+{
+	if (_pcgType == PCGTYPE_CRAM) {
+		return upperCaseFlag? "CRAM" : "cram";
+	} else {
+		return upperCaseFlag? "USER" : "user";
+	}
+}
 
 //-----------------------------------------------------------------------------
 // PCGRangeList

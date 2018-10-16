@@ -20,6 +20,7 @@ public:
 	inline PCGType GetPCGType() const { return _pcgType; }
 	inline int GetCharCodeStart() const { return _charCodeStart; }
 	inline int GetCharCodeEnd() const { return _charCodeEnd; }
+	const char *GetPCGTypeName(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------

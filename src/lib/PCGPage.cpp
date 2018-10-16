@@ -10,7 +10,7 @@ PCGChar *PCGPage::CreatePCGChar(const Binary &buff)
 {
 	const PCGChar *pPCGCharFound = _pcgCharOwner.FindSamePattern(buff);
 	if (pPCGCharFound != nullptr) return pPCGCharFound->Reference();
-	AutoPtr<PCGChar> pPCGChar(new PCGChar(_pcgType, GetCharCodeCur(), buff));
+	AutoPtr<PCGChar> pPCGChar(new PCGChar(GetPCGType(), GetCharCodeCur(), buff));
 	_pcgCharOwner.push_back(pPCGChar->Reference());
 	return pPCGChar.release();
 }
@@ -21,21 +21,22 @@ Expr *PCGPage::ComposeExpr() const
 	const char *asmCodeTmpl = "";
 	UInt16 dstAddrStart = 0x0000;
 	UInt16 dstAddrEnd = 0x0000;
-	if (_pcgType == PCGTYPE_CRAM) {
+	int charCodeStart = _pPCGRangeOwner->front()->GetCharCodeStart();
+	if (GetPCGType() == PCGTYPE_CRAM) {
 		asmCodeTmpl = _asmCodeTmpl1;
-		dstAddrStart = 0xd000 + _charCodeStart * 8;
+		dstAddrStart = 0xd000 + charCodeStart * 8;
 		dstAddrEnd = 0xd000 + GetCharCodeCur() * 8;
-	} else if (_charCodeStart < 32 && GetCharCodeCur() <= 32) { // _pcgType == PCGTYPE_User
+	} else if (charCodeStart < 32 && GetCharCodeCur() <= 32) { // _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl1;
-		dstAddrStart = 0xc000 + _charCodeStart * 8;
+		dstAddrStart = 0xc000 + charCodeStart * 8;
 		dstAddrEnd = 0xc000 + GetCharCodeCur() * 8;
-	} else if (_charCodeStart < 32 && GetCharCodeCur() > 32) { // _pcgType == PCGTYPE_User
+	} else if (charCodeStart < 32 && GetCharCodeCur() > 32) { // _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl2;
-		dstAddrStart = 0xc000 + _charCodeStart * 8;
+		dstAddrStart = 0xc000 + charCodeStart * 8;
 		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 32) * 8;
-	} else { // _charCodeStart >= 32 && _pcgType == PCGTYPE_User
+	} else { // charCodeStart >= 32 && _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl1;
-		dstAddrStart = 0xc400 + (_charCodeStart - 32) * 8;
+		dstAddrStart = 0xc400 + (charCodeStart - 32) * 8;
 		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 32) * 8;
 	}
 	::sprintf_s(asmCode, asmCodeTmpl, GetSymbol(), GetSymbol(), GetSymbol(), dstAddrStart, dstAddrEnd);

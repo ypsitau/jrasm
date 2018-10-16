@@ -13,21 +13,20 @@ class PCGPageInfo {
 private:
 	int _cntRef;
 	String _symbol;
-	PCGType _pcgType;
-	int _charCodeStart;
 	bool _upperCaseFlag;
+	std::unique_ptr<PCGRangeOwner> _pPCGRangeOwner;
 	PCGInfoOwner _pcgInfoOwner;
 public:
 	DeclareReferenceAccessor(PCGPageInfo);
 public:
-	PCGPageInfo(const String &symbol, PCGType pcgType, int charCodeStart, bool upperCaseFlag);
+	PCGPageInfo(const String &symbol, PCGRangeOwner *pPCGRangeOwner, bool upperCaseFlag);
 protected:
 	inline ~PCGPageInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline PCGType GetPCGType() const { return _pcgType; }
-	inline const char *GetPCGTypeName() const { return (_pcgType == PCGTYPE_User)? "USER" : "CRAM"; }
-	inline int GetCharCodeStart() const { return _charCodeStart; }
+	inline PCGType GetPCGType() const { return _pPCGRangeOwner->front()->GetPCGType(); }
+	inline const char *GetPCGTypeName() const { return (GetPCGType() == PCGTYPE_CRAM)? "CRAM" : "USER"; }
+	inline int GetCharCodeStart() const { return _pPCGRangeOwner->front()->GetCharCodeStart(); }
 	inline PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
 	inline const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
 	inline bool IsEmptyPCGInfo() const { return _pcgInfoOwner.empty(); }

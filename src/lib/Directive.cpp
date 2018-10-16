@@ -893,8 +893,11 @@ Directive *Directive_PCGPAGE::Factory::Create() const
 	return new Directive_PCGPAGE();
 }
 
-bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGType *pPCGType, int *pCharCodeStart)
+bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
+									  std::unique_ptr<PCGRangeOwner> *ppPCGRangeOwner)
 {
+	std::unique_ptr<PCGRangeOwner> &pPCGRangeOwner = *ppPCGRangeOwner;
+	pPCGRangeOwner.reset(new PCGRangeOwner());
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::PCG) && !pExprChild->IsTypeDirective(Directive::END)) {
 			ErrorLog::AddError(pExprChild, "only .PCG directive can be stored in .PCGPAGE");
@@ -980,8 +983,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol, PCGTyp
 		}
 	} while (0);
 	*pSymbol = symbol;
-	*pPCGType = pcgType;
-	*pCharCodeStart = charCodes[0];
+	pPCGRangeOwner->push_back(new PCGRange(pcgType, charCodes[0], charCodes[1] + 1));
 	return true;
 }
 
@@ -998,10 +1000,9 @@ bool Directive_PCGPAGE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	String symbol;
-	PCGType pcgType;
-	int charCodeStart;
-	if (!ExtractParams(pExpr, &symbol, &pcgType, &charCodeStart)) return false;
-	_pPCGPage.reset(new PCGPage(symbol, pcgType, charCodeStart));
+	std::unique_ptr<PCGRangeOwner> pPCGRangeOwner;
+	if (!ExtractParams(pExpr, &symbol, &pPCGRangeOwner)) return false;
+	_pPCGPage.reset(new PCGPage(symbol, pPCGRangeOwner.release()));
 	context.AddPCGPage(_pPCGPage->Reference());
 	return true;
 }
