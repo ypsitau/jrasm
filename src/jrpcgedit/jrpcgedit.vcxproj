@@ -157,6 +157,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="jrpcgedit.h" />
     <ClInclude Include="Document.h" />
+    <ClInclude Include="ErrorDialog.h" />
     <ClInclude Include="FrameMain.h" />
     <ClInclude Include="PanelMain.h" />
     <ClInclude Include="PCGBrowser.h" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClCompile Include="jrpcgedit.cpp" />
     <ClCompile Include="Document.cpp" />
+    <ClCompile Include="ErrorDialog.cpp" />
     <ClCompile Include="FrameMain.cpp" />
     <ClCompile Include="PanelMain.cpp" />
     <ClCompile Include="PCGBrowser.cpp" />

@@ -43,6 +43,7 @@ private:
 public:
 	inline ErrorLog() {}
 	inline EntryOwner &GetEntryOwner() { return _entryOwner; }
+	inline static ErrorLog &GetInstance() { return _instance; }
 	inline static bool HasError() { return !_instance.GetEntryOwner().empty(); }
 	inline static void Clear() { _instance._entryOwner.Clear(); }
 	static void AddError(const Expr *pExpr, const char *format, ...);
@@ -50,6 +51,7 @@ public:
 	static void AddError(const String &fileName, int lineNo, const char *format, ...);
 	static void AddErrorV(const String &fileName, int lineNo, const char *format, va_list ap);
 	static void Print(FILE *fp);
+	static String MakeResultText();
 };
 
 #endif

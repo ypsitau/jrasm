@@ -45,6 +45,16 @@ void ErrorLog::Print(FILE *fp)
 	}
 }
 
+String ErrorLog::MakeResultText()
+{
+	String str;
+	for (auto pEntry : _instance.GetEntryOwner()) {
+		str += pEntry->GetString();
+		str += "\n";
+	}
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // ErrorLog::Entry
 //-----------------------------------------------------------------------------

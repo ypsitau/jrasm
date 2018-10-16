@@ -12,6 +12,7 @@
 #include <wx/tglbtn.h>
 #include "lib/jrasmcore.h"
 #include "Document.h"
+#include "ErrorDialog.h"
 #include "FrameMain.h"
 #include "PanelMain.h"
 #include "PCGBrowser.h"

@@ -54,7 +54,8 @@ void FrameMain::OnAbout(wxCommandEvent &event)
 void FrameMain::OnOpen(wxCommandEvent &event)
 {
 	if (!_pDocument->ReadFile("test.asm")) {
-		ErrorLog::Print(stderr);
+		ErrorDialog dlg(this);
+		dlg.ShowModal();
 		return;
 	}
 	_pPanelMain->UpdateDocument();
