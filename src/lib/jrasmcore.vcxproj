@@ -170,6 +170,7 @@
     <ClInclude Include="PCGChar.h" />
     <ClInclude Include="PCGData.h" />
     <ClInclude Include="PCGPage.h" />
+    <ClInclude Include="PCGRange.h" />
     <ClInclude Include="Region.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="stdafx.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="PCGChar.cpp" />
     <ClCompile Include="PCGData.cpp" />
     <ClCompile Include="PCGPage.cpp" />
+    <ClCompile Include="PCGRange.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="stdafx.cpp">

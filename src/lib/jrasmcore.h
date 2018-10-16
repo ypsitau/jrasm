@@ -21,6 +21,7 @@
 #include "PCGChar.h"
 #include "PCGData.h"
 #include "PCGPage.h"
+#include "PCGRange.h"
 #include "Region.h"
 #include "Segment.h"
 #include "Token.h"

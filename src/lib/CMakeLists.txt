@@ -17,6 +17,7 @@ add_library(jrasmcore STATIC
 	PCGChar.cpp
 	PCGData.cpp
 	PCGPage.cpp
+	PCGRange.cpp
 	Region.cpp
 	Segment.cpp
 	Token.cpp
