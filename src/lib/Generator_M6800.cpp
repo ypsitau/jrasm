@@ -189,7 +189,7 @@ bool Generator_M6800::DoGenCodeSave(Context &context, Expr *pExpr, const StringL
 		do {
 			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
 			pExprInst->DeriveSourceInfo(pExpr);
-			do { // [__scopesave_X+1]
+			do { // [__saveN_R+1]
 				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
 				pExprOperand->GetExprOperands().push_back(
 					new Expr_BinOp(

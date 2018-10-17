@@ -1137,33 +1137,13 @@ bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 	return true;
 }
 
-bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
-{
-	bool rtn = true;
-	const ExprList &exprOperands = pExpr->GetExprOperands();
-	ExprOwner &exprChildren = pExpr->GetExprChildren();
-	StringList regNames;
-	for (auto pExprOperand : exprOperands) {
-		if (!pExprOperand->IsTypeSymbol()) {
-			ErrorLog::AddError("only symbols are acceptable");
-			return false;
-		}
-		const char *regName = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
-		if (std::find(regNames.begin(), regNames.end(), regName) != regNames.end()) {
-			ErrorLog::AddError("duplicated register name");
-			return false;
-		}
-		regNames.push_back(regName);
-	}
-	AutoPtr<Expr> pExpr_end(exprChildren.back());
-	exprChildren.pop_back();						// remove .end directive
-	rtn = Generator::GetInstance().GenCodeSave(context, pExpr, regNames);
-	exprChildren.push_back(pExpr_end.release());	// restore .end directive
-	return rtn;
-}
-
 bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .SCOPE needs no operands");
+		return false;
+	}
 	context.BeginScope();
 	bool rtn = pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 	context.EndScope();
