@@ -16,6 +16,7 @@ bool PCGPage::GenerateCharCode(int *pCharCode)
 			return true;
 		}
 	}
+	ErrorLog::AddError("number of characters exceeds the range specified by .PCGPAGE");
 	return false;
 }
 
@@ -30,7 +31,7 @@ PCGChar *PCGPage::CreatePCGChar(const Binary &buff, int)
 	return pPCGChar.release();
 }
 
-#if 0
+#if 1
 Expr *PCGPage::ComposeExpr() const
 {
 	char buff[1024];
@@ -75,9 +76,9 @@ Expr *PCGPage::ComposeExpr() const
 	if (!parser.ParseString(asmCode.c_str())) return nullptr;
 	return parser.GetExprRoot()->Reference();
 }
-#endif
 
-#if 1
+#else
+
 Expr *PCGPage::ComposeExpr() const
 {
 	char asmCode[1024];

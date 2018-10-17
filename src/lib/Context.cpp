@@ -119,9 +119,11 @@ void Context::PrintPCGUsage(FILE *fp, bool upperCaseFlag)
 	for (auto pPCGPage : GetPCGPageOwner()) {
 		::fprintf(fp, "PCG Page: %s\n", pPCGPage->GetSymbol());
 		for (auto pPCGRange : pPCGPage->GetPCGRangeOwner()) {
-			::fprintf(fp, "  %s:0x%02x-0x%02x\n",
+			int nChars = pPCGRange->GetCharCodeCur() - pPCGRange->GetCharCodeStart();
+			if (nChars == 0) continue;
+			::fprintf(fp, "  %s:0x%02x-0x%02x (%dchars)\n",
 					  pPCGRange->GetPCGTypeName(upperCaseFlag),
-					  pPCGRange->GetCharCodeStart(), pPCGRange->GetCharCodeEnd());
+					  pPCGRange->GetCharCodeStart(), pPCGRange->GetCharCodeCur() - 1, nChars);
 		}
 	}
 }

@@ -36,9 +36,6 @@ Expr *PCGData::ComposeExpr() const
 					charCode = charCode - 32 + 0x80;
 				}
 			}
-			//if (_pcgType == PCGTYPE_User && charCode >= 0x20) {
-			//	charCode = charCode - 0x20 + 0x80;
-			//}
 			if (charCode == 0) {
 				::sprintf_s(str, "        CLRA\n");
 				asmCode += str;
