@@ -116,10 +116,10 @@ void Context::PrintPCGUsage(FILE *fp, bool upperCaseFlag)
 	if (GetPCGPageOwner().empty()) return;
 	::fprintf(fp, "[PCG Usage]\n");
 	for (auto pPCGPage : GetPCGPageOwner()) {
-		if (pPCGPage->IsEmpty()) continue;
+		::fprintf(fp, "PCG Page: %s\n", pPCGPage->GetSymbol());
 		for (auto pPCGRange : pPCGPage->GetPCGRangeOwner()) {
-			::fprintf(fp, "%s: %s .. 0x%02x-0x%02x\n",
-					  pPCGPage->GetSymbol(), pPCGRange->GetPCGTypeName(upperCaseFlag),
+			::fprintf(fp, "  %s:0x%02x-0x%02x\n",
+					  pPCGRange->GetPCGTypeName(upperCaseFlag),
 					  pPCGRange->GetCharCodeStart(), pPCGRange->GetCharCodeEnd());
 		}
 	}

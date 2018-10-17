@@ -852,7 +852,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 						return false;
 					}
 				} else { // pcgType == PCGTYPE_User
-					if (charCodeCur < 0 || charCodeCur > 63) {
+					if (charCodeCur < 32 || charCodeCur > 95) {
 						ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
 						return false;
 					}
@@ -906,23 +906,21 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 	}
 	const char *errMsg = "directive syntax: .PCGPAGE symbol,range,...";
 	const ExprList &exprOperands = pExpr->GetExprOperands();
-	if (exprOperands.size() != 2) {
+	if (exprOperands.size() < 2) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
-	String symbol;
-	PCGType pcgType = PCGTYPE_None;
-	Integer charCodes[2];
+	ExprList::const_iterator ppExprOperand = exprOperands.begin();
 	do {
-		Expr *pExprOperand = exprOperands[0];
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeSymbol()) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		symbol = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
+		*pSymbol = dynamic_cast<const Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
-	do {
-		Expr *pExprOperand = exprOperands[1];
+	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {
+		Expr *pExprOperand = *ppExprOperand;
 		if (!pExprOperand->IsTypeBinOp(Operator::FieldSep)) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
@@ -938,6 +936,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 			exprFields.push_back(pExprOperandEx->GetLeft());
 			exprFields.push_back(pExprOperandEx->GetRight());
 		}
+		PCGType pcgType = PCGTYPE_None;
 		do {
 			Expr *pExprField = exprFields[0];
 			if (!pExprField->IsTypeSymbol()) {
@@ -954,6 +953,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 				return false;
 			}
 		} while (0);
+		Integer charCodes[2];
 		size_t nFields = exprFields.size() - 1;
 		for (size_t i = 0; i < nFields; i++) {
 			Expr *pExprField = exprFields[1 + i];
@@ -968,8 +968,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 					return false;
 				}
 			} else { // pcgType == PCGTYPE_User
-				charCode -= 32;
-				if (charCode < 0 || charCode > 63) {
+				if (charCode < 32 || charCode > 95) {
 					ErrorLog::AddError(pExpr, "user-defined character code must be between 32 and 95");
 					return false;
 				}
@@ -977,13 +976,12 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 			charCodes[i] = charCode;
 		}
 		if (nFields == 1) {
-			charCodes[1] = (pcgType == PCGTYPE_CRAM)? 255 : 63;
+			charCodes[1] = (pcgType == PCGTYPE_CRAM)? 255 : 95;
 		} else if (charCodes[0] > charCodes[1]) {
 			std::swap(charCodes[0], charCodes[1]);
 		}
-	} while (0);
-	*pSymbol = symbol;
-	pPCGRangeOwner->push_back(new PCGRange(pcgType, charCodes[0], charCodes[1] + 1));
+		pPCGRangeOwner->push_back(new PCGRange(pcgType, charCodes[0], charCodes[1] + 1));
+	}
 	return true;
 }
 
