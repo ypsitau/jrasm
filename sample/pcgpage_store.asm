@@ -39,14 +39,13 @@ pcgpage.XXXX.src:
 	
 pcgpage.XXXX.store:
 	.macro
-        ldx     pcgpage.XXXX.src
-        stx     [srcp]
+	ldx     pcgpage.XXXX.src
+	stx     [srcp]
 	ldx	entries
 loop_nextentry:
 	.save	x
 	.save	x
 	ldx	[x]
-	tsx
 	beq	done
 	stx	[dstp]
 	.end
@@ -55,24 +54,24 @@ loop_nextentry:
 loop_copy:
 srcp:
 	.equ    $+1
-        ldx     0x0000
-        ldaa    [x]
-        ldab    [x+1]
-        inx
+	ldx     0x0000
+	ldaa    [x]
+	ldab    [x+1]
 	inx
-        stx     [srcp]
+	inx
+	stx     [srcp]
 dstp:
 	.equ    $+1
-        ldx     0x0000
-        staa    [x]
+	ldx     0x0000
+	staa    [x]
 	stab	[x+1]
-        inx
 	inx
-        stx     [dstp]
+	inx
+	stx     [dstp]
 dstp_end:
 	.equ	$+1
-        cpx     0x0000
-        bne     loop_copy
+	cpx     0x0000
+	bne     loop_copy
 	.end
 	inx
 	inx
