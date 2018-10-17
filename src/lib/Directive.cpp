@@ -838,12 +838,12 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		return false;
 	}
 	int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
-	for (size_t yChar = 0; yChar < htChar; yChar++) {
+	for (int yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
-		for (size_t xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
+		for (int xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
 			Binary buffDst;
 			Binary::iterator pDataOrg = pDataColOrg;
-			for (size_t i = 0; i < 8; i++, pDataOrg += wdChar) {
+			for (int i = 0; i < 8; i++, pDataOrg += wdChar) {
 				buffDst += *pDataOrg;
 			}
 			const PCGChar *pPCGChar = context.GetPCGCharsBuiltIn().FindSamePattern(buffDst);
@@ -956,8 +956,8 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 			}
 		} while (0);
 		Integer charCodes[2];
-		size_t nFields = exprFields.size() - 1;
-		for (size_t i = 0; i < nFields; i++) {
+		int nFields = static_cast<int>(exprFields.size()) - 1;
+		for (int i = 0; i < nFields; i++) {
 			Expr *pExprField = exprFields[1 + i];
 			if (!pExprField->IsTypeInteger()) {
 				ErrorLog::AddError(pExpr, "character code must be an integer");

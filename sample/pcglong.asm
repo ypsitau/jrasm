@@ -1,5 +1,7 @@
 	.org	0x1000
-
+	
+	pcgpage.page1.store
+	
 	ldx	0xc100
 	pcg.pattern1x8.put
 	ldx	0xc500
