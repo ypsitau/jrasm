@@ -832,7 +832,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 	Binary buffOrg;
 	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar, &stepX, &stepY, buffOrg)) return false;
 	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
-	_pPCGData.reset(new PCGData(symbol, pcgType, wdChar, htChar, stepX, stepY));
+	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY));
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;

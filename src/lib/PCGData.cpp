@@ -30,7 +30,7 @@ Expr *PCGData::ComposeExpr() const
 				iBoundary++;
 			}
 			int charCode = pPCGChar->GetCharCode();
-			if (_pcgType == PCGTYPE_User) {
+			if (pPCGChar->GetPCGType() == PCGTYPE_User) {
 				charCode -= 32;
 				if (charCode >= 32) {
 					charCode = charCode - 32 + 0x80;
@@ -117,15 +117,19 @@ Expr *PCGData::ComposeExpr() const
 		asmCode += str;
 		::sprintf_s(str, "        .MACRO fg=7,bg=0,offset=0\n");
 		asmCode += str;
-		if (_pcgType == PCGTYPE_CRAM) {
-			::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
-		} else { // _pcgType == PCGTYPE_User
-			::sprintf_s(str, "        LDAA    (1<<6)+fg+(bg<<3)\n");
-		}
-		asmCode += str;
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
-		for (size_t i = 0; i < _pcgCharOwner.size(); i++) {
+		PCGType pcgTypePrev = PCGTYPE_None;
+		for (auto pPCGChar : _pcgCharOwner) {
+			if (pcgTypePrev != pPCGChar->GetPCGType()) {
+				if (pPCGChar->GetPCGType() == PCGTYPE_CRAM) {
+					::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
+				} else { // _pcgType == PCGTYPE_User
+					::sprintf_s(str, "        LDAA    (1<<6)+fg+(bg<<3)\n");
+				}
+				asmCode += str;
+				pcgTypePrev = pPCGChar->GetPCGType();
+			}
 			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
