@@ -1,0 +1,99 @@
+                   .org 0x1000
+                   .save a
+    1000 b7 10 0b  | staa [__save1_a+1]
+    1003 86 11     | ldaa 0x11
+    1005 c6 22     | ldab 0x22
+    1007 ce 33 33  | ldx  0x3333
+__save1_a:         | 
+    100a 86 00     | ldaa 0x00
+                   | .end
+                   .save b
+    100c f7 10 17  | stab [__save2_b+1]
+    100f 86 11     | ldaa 0x11
+    1011 c6 22     | ldab 0x22
+    1013 ce 33 33  | ldx  0x3333
+__save2_b:         | 
+    1016 c6 00     | ldab 0x00
+                   | .end
+                   .save x
+    1018 ff 10 23  | stx  [__save3_x+1]
+    101b 86 11     | ldaa 0x11
+    101d c6 22     | ldab 0x22
+    101f ce 33 33  | ldx  0x3333
+__save3_x:         | 
+    1022 ce 00 00  | ldx  0x00
+                   | .end
+                   .save a,b
+    1025 b7 10 33  | staa [__save4_a+1]
+    1028 f7 10 35  | stab [__save4_b+1]
+    102b 86 11     | ldaa 0x11
+    102d c6 22     | ldab 0x22
+    102f ce 33 33  | ldx  0x3333
+__save4_a:         | 
+    1032 86 00     | ldaa 0x00
+__save4_b:         | 
+    1034 c6 00     | ldab 0x00
+                   | .end
+    1036 86 11     ldaa 0x11
+    1038 c6 22     ldab 0x22
+    103a ce 33 33  ldx  0x3333
+                   .save a,b,x
+    103d b7 10 7c  | staa [__save5_a+1]
+    1040 f7 10 7e  | stab [__save5_b+1]
+    1043 ff 10 80  | stx  [__save5_x+1]
+    1046 86 44     | ldaa 0x44
+    1048 c6 55     | ldab 0x55
+    104a ce 66 66  | ldx  0x6666
+                   | .save a,b,x
+    104d b7 10 75  | | staa [__save6_a+1]
+    1050 f7 10 77  | | stab [__save6_b+1]
+    1053 ff 10 79  | | stx  [__save6_x+1]
+    1056 86 77     | | ldaa 0x77
+    1058 c6 88     | | ldab 0x88
+    105a ce 99 99  | | ldx  0x9999
+                   | | .save a,b,x
+    105d b7 10 6e  | | | staa [__save7_a+1]
+    1060 f7 10 70  | | | stab [__save7_b+1]
+    1063 ff 10 72  | | | stx  [__save7_x+1]
+    1066 86 aa     | | | ldaa 0xaa
+    1068 c6 bb     | | | ldab 0xbb
+    106a ce cc cc  | | | ldx  0xcccc
+__save7_a:         | | | 
+    106d 86 00     | | | ldaa 0x00
+__save7_b:         | | | 
+    106f c6 00     | | | ldab 0x00
+__save7_x:         | | | 
+    1071 ce 00 00  | | | ldx  0x00
+                   | | | .end
+__save6_a:         | | 
+    1074 86 00     | | ldaa 0x00
+__save6_b:         | | 
+    1076 c6 00     | | ldab 0x00
+__save6_x:         | | 
+    1078 ce 00 00  | | ldx  0x00
+                   | | .end
+__save5_a:         | 
+    107b 86 00     | ldaa 0x00
+__save5_b:         | 
+    107d c6 00     | ldab 0x00
+__save5_x:         | 
+    107f ce 00 00  | ldx  0x00
+                   | .end
+[Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
+100a  __save1_a
+1016  __save2_b
+1022  __save3_x
+1032  __save4_a
+1034  __save4_b
+106d  __save7_a
+106f  __save7_b
+1071  __save7_x
+1074  __save6_a
+1076  __save6_b
+1078  __save6_x
+107b  __save5_a
+107d  __save5_b
+107f  __save5_x

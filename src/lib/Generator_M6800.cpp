@@ -165,22 +165,23 @@ bool Generator_M6800::DoGenCodeSave(Context &context, Expr *pExpr, const StringL
 {
 	ExprOwner &exprChildren = pExpr->GetExprChildren();
 	size_t i = 0;
+	int iSavePoint = context.NextSavePoint();
 	for (auto regName : regNames) {
 		const char *instStore = nullptr;
 		const char *instLoad = nullptr;
-		const char *labelName = nullptr;
+		char labelName[128];
 		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instStore = "staa";
 			instLoad = "ldaa";
-			labelName = "__scopesave_a";
+			::sprintf_s(labelName, "__save%d_a", iSavePoint);
 		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
 			instStore = "stab";
 			instLoad = "ldab";
-			labelName = "__scopesave_b";
+			::sprintf_s(labelName, "__save%d_b", iSavePoint);
 		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
 			instStore = "stx";
 			instLoad = "ldx";
-			labelName = "__scopesave_x";
+			::sprintf_s(labelName, "__save%d_x", iSavePoint);
 		} else {
 			ErrorLog::AddError("acceptable register names are: a, b, x");
 			break;

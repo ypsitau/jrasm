@@ -7,7 +7,8 @@
 // Context
 //-----------------------------------------------------------------------------
 Context::Context(const String &pathNameSrc) :
-	_pathNameSrc(pathNameSrc), _phaseCur(PHASE_None), _pExprListResolved(new ExprList())
+	_pathNameSrc(pathNameSrc), _phaseCur(PHASE_None), _iSavePoint(0),
+	_pExprListResolved(new ExprList())
 {
 	String fileNameSrc;
 	SplitFileName(pathNameSrc.c_str(), &_dirNameSrc, &fileNameSrc);

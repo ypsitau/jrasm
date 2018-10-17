@@ -66,6 +66,7 @@ private:
 	Segment *_pSegmentCur;
 	SegmentOwner _segmentOwner;
 	Phase _phaseCur;
+	int _iSavePoint;
 	ExprDictStack _exprDictStack;
 	MacroDict _macroDict;
 	AutoPtr<Expr> _pExprRoot;
@@ -91,6 +92,7 @@ public:
 	inline const SegmentOwner &GetSegmentOwner() const { return _segmentOwner; }
 	inline void SetPhase(Phase phase) { _phaseCur = phase; }
 	inline bool IsPhase(Phase phase) const { return _phaseCur == phase; }
+	inline int NextSavePoint() { return ++_iSavePoint; }
 	inline ExprDict &GetExprDictCurrent() { return *_exprDictStack.back(); }
 	inline const ExprDict &GetExprDictCurrent() const { return *_exprDictStack.back(); }
 	inline ExprDict &GetExprDictGlobal() { return *_exprDictStack.front(); }
