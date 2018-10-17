@@ -28,9 +28,9 @@ bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary
 	return DoGenerate(context, pExpr, *pBuffDst);
 }
 
-bool Generator::GenCodeScope(Context &context, Expr *pExpr, const StringList &regNames) const
+bool Generator::GenCodeSave(Context &context, Expr *pExpr, const StringList &regNames) const
 {
-	return DoGenCodeScope(context, pExpr, regNames);
+	return DoGenCodeSave(context, pExpr, regNames);
 }
 
 void Generator::DumpDisasmHelper(

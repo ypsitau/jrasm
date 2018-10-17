@@ -1097,7 +1097,7 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	}
 	AutoPtr<Expr> pExpr_end(exprChildren.back());
 	exprChildren.pop_back();						// remove .end directive
-	rtn = Generator::GetInstance().GenCodeScope(context, pExpr, regNames);
+	rtn = Generator::GetInstance().GenCodeSave(context, pExpr, regNames);
 	exprChildren.push_back(pExpr_end.release());	// restore .end directive
 	return rtn;
 }
@@ -1157,7 +1157,7 @@ bool Directive_SCOPE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	}
 	AutoPtr<Expr> pExpr_end(exprChildren.back());
 	exprChildren.pop_back();						// remove .end directive
-	rtn = Generator::GetInstance().GenCodeScope(context, pExpr, regNames);
+	rtn = Generator::GetInstance().GenCodeSave(context, pExpr, regNames);
 	exprChildren.push_back(pExpr_end.release());	// restore .end directive
 	return rtn;
 }

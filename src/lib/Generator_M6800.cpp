@@ -161,7 +161,7 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 	return pEntry->ApplyRule(context, pExpr, &buffDst);
 }
 
-bool Generator_M6800::DoGenCodeScope(Context &context, Expr *pExpr, const StringList &regNames) const
+bool Generator_M6800::DoGenCodeSave(Context &context, Expr *pExpr, const StringList &regNames) const
 {
 	ExprOwner &exprChildren = pExpr->GetExprChildren();
 	size_t i = 0;
