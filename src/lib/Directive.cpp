@@ -983,6 +983,10 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 			std::swap(charCodes[0], charCodes[1]);
 		}
 		pPCGRangeOwner->push_back(new PCGRange(pcgType, charCodes[0], charCodes[1] + 1));
+		if (pPCGRangeOwner->size() > 16) {
+			ErrorLog::AddError(pExpr, "number of range is up to 16");
+			return false;
+		}
 	}
 	return true;
 }
