@@ -79,6 +79,46 @@ __save5_b:         |
 __save5_x:         | 
     107f ce 00 00  | ldx  0x00
                    | .end
+                   macro1
+                   | .save a
+    1082 b7 10 88  | | staa [__save8_a+1]
+    1085 86 aa     | | ldaa 0xaa
+__save8_a:         | | 
+    1087 86 00     | | ldaa 0x00
+                   | | .end
+                   | .end
+                   macro1
+                   | .save a
+    1089 b7 10 8f  | | staa [__save8_a+1]
+    108c 86 aa     | | ldaa 0xaa
+__save8_a:         | | 
+    108e 86 00     | | ldaa 0x00
+                   | | .end
+                   | .end
+                   macro1
+                   | .save a
+    1090 b7 10 96  | | staa [__save8_a+1]
+    1093 86 aa     | | ldaa 0xaa
+__save8_a:         | | 
+    1095 86 00     | | ldaa 0x00
+                   | | .end
+                   | .end
+                   macro2
+                   | .save a
+    1097 b7 10 9d  | | staa [__save9_a+1]
+    109a 86 aa     | | ldaa 0xaa
+__save9_a:         | | 
+    109c 86 00     | | ldaa 0x00
+                   | | .end
+                   | .end
+                   macro2
+                   | .save a
+    109e b7 10 a4  | | staa [__save9_a+1]
+    10a1 86 aa     | | ldaa 0xaa
+__save9_a:         | | 
+    10a3 86 00     | | ldaa 0x00
+                   | | .end
+                   | .end
 [Symbol List]
 0001  @BYTE
 0002  @WORD

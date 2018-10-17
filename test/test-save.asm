@@ -45,5 +45,25 @@
 	.end
 
 	.end
-	
+
 	.end
+
+	macro1
+	macro1
+	macro1
+	macro2
+	macro2
+macro1:
+	.macro
+	.save	a
+	ldaa	0xaa
+	.end
+	.end
+
+macro2:
+	.macro
+	.save	a
+	ldaa	0xaa
+	.end
+	.end
+
