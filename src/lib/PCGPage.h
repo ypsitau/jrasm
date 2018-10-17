@@ -16,6 +16,7 @@ class PCGPage {
 private:
 	int _cntRef;
 	String _symbol;
+	size_t _iPCGRangeCur;
 	std::unique_ptr<PCGRangeOwner> _pPCGRangeOwner;
 	PCGCharOwner _pcgCharOwner;
 	static const char *_asmCodeTmpl;
@@ -25,19 +26,20 @@ public:
 	DeclareReferenceAccessor(PCGPage);
 public:
 	inline PCGPage(const String &symbol, PCGRangeOwner *pPCGRangeOwner) :
-		_cntRef(1), _symbol(symbol), _pPCGRangeOwner(pPCGRangeOwner) {}
+		_cntRef(1), _symbol(symbol), _iPCGRangeCur(0), _pPCGRangeOwner(pPCGRangeOwner) {}
 private:
 	inline ~PCGPage() {}
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline PCGType GetPCGType() const { return _pPCGRangeOwner->front()->GetPCGType(); }
 	inline bool IsEmpty() const { return _pcgCharOwner.empty(); }
-	inline int GetCharCodeCur() const {
-		return _pPCGRangeOwner->front()->GetCharCodeStart() + static_cast<int>(_pcgCharOwner.size());
-	}
+	//inline int GetCharCodeCur() const {
+	//	return _pPCGRangeOwner->front()->GetCharCodeStart() + static_cast<int>(_pcgCharOwner.size());
+	//}
 	inline const PCGRangeOwner &GetPCGRangeOwner() const { return *_pPCGRangeOwner; }
 	inline const PCGCharOwner &GetPCGCharOwner() const { return _pcgCharOwner; }
-	PCGChar *CreatePCGChar(const Binary &buff);
+	bool GenerateCharCode(int *pCharCode);
+	PCGChar *CreatePCGChar(const Binary &buff, int);
 	Expr *ComposeExpr() const;
 };
 

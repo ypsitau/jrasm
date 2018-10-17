@@ -837,7 +837,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
-	int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
+	//int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
 	for (int yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (int xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
@@ -848,6 +848,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 			}
 			const PCGChar *pPCGChar = context.GetPCGCharsBuiltIn().FindSamePattern(buffDst);
 			if (pPCGChar == nullptr) {
+#if 0
 				if (pcgType == PCGTYPE_CRAM) {
 					if (charCodeCur < 0 || charCodeCur > 255) {
 						ErrorLog::AddError(pExpr, "CRAM character code must be between 0 and 255");
@@ -859,7 +860,10 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 						return false;
 					}
 				}
-				_pPCGData->AddPCGChar(context.GetPCGPageCur()->CreatePCGChar(buffDst));
+#endif
+				PCGChar *pPCGChar = context.GetPCGPageCur()->CreatePCGChar(buffDst, 1);
+				if (pPCGChar == nullptr) return false;
+				_pPCGData->AddPCGChar(pPCGChar);
 			} else {
 				_pPCGData->AddPCGChar(pPCGChar->Reference());
 			}

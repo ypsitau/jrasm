@@ -6,11 +6,26 @@
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
-PCGChar *PCGPage::CreatePCGChar(const Binary &buff)
+bool PCGPage::GenerateCharCode(int *pCharCode)
+{
+	for ( ; _iPCGRangeCur < _pPCGRangeOwner->size(); _iPCGRangeCur++) {
+		PCGRange *pPCGRange = (*_pPCGRangeOwner)[_iPCGRangeCur];
+		if (pPCGRange->GetCharCodeCur() < pPCGRange->GetCharCodeEnd()) {
+			*pCharCode = pPCGRange->GetCharCodeCur();
+			pPCGRange->ForwardCharCodeCur();
+			return true;
+		}
+	}
+	return false;
+}
+
+PCGChar *PCGPage::CreatePCGChar(const Binary &buff, int)
 {
 	const PCGChar *pPCGCharFound = _pcgCharOwner.FindSamePattern(buff);
 	if (pPCGCharFound != nullptr) return pPCGCharFound->Reference();
-	AutoPtr<PCGChar> pPCGChar(new PCGChar(GetPCGType(), GetCharCodeCur(), buff));
+	int charCode;
+	if (!GenerateCharCode(&charCode)) return nullptr;
+	AutoPtr<PCGChar> pPCGChar(new PCGChar(GetPCGType(), charCode, buff));
 	_pcgCharOwner.push_back(pPCGChar->Reference());
 	return pPCGChar.release();
 }
@@ -70,22 +85,23 @@ Expr *PCGPage::ComposeExpr() const
 	UInt16 dstAddrStart = 0x0000;
 	UInt16 dstAddrEnd = 0x0000;
 	int charCodeStart = _pPCGRangeOwner->front()->GetCharCodeStart();
+	int charCodeCur = _pPCGRangeOwner->front()->GetCharCodeCur();
 	if (GetPCGType() == PCGTYPE_CRAM) {
 		asmCodeTmpl = _asmCodeTmpl1;
 		dstAddrStart = 0xd000 + charCodeStart * 8;
-		dstAddrEnd = 0xd000 + GetCharCodeCur() * 8;
-	} else if (charCodeStart < 64 && GetCharCodeCur() <= 64) { // _pcgType == PCGTYPE_User
+		dstAddrEnd = 0xd000 + charCodeCur * 8;
+	} else if (charCodeStart < 64 && charCodeCur <= 64) { // _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl1;
 		dstAddrStart = 0xc000 + (charCodeStart - 32) * 8;
-		dstAddrEnd = 0xc000 + (GetCharCodeCur() - 32) * 8;
-	} else if (charCodeStart < 64 && GetCharCodeCur() > 64) { // _pcgType == PCGTYPE_User
+		dstAddrEnd = 0xc000 + (charCodeCur - 32) * 8;
+	} else if (charCodeStart < 64 && charCodeCur > 64) { // _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl2;
 		dstAddrStart = 0xc000 + (charCodeStart - 32) * 8;
-		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 64) * 8;
+		dstAddrEnd = 0xc400 + (charCodeCur - 64) * 8;
 	} else { // charCodeStart >= 64 && _pcgType == PCGTYPE_User
 		asmCodeTmpl = _asmCodeTmpl1;
 		dstAddrStart = 0xc400 + (charCodeStart - 64) * 8;
-		dstAddrEnd = 0xc400 + (GetCharCodeCur() - 64) * 8;
+		dstAddrEnd = 0xc400 + (charCodeCur - 64) * 8;
 	}
 	::sprintf_s(asmCode, asmCodeTmpl, GetSymbol(), GetSymbol(), GetSymbol(), dstAddrStart, dstAddrEnd);
 	Parser parser("***PCGPage.cpp***");
