@@ -136,7 +136,7 @@ bool Parser::ParseByPrec(AutoPtr<Token> pToken)
 {
 	for (;;) {
 		TokenStack::reverse_iterator ppTokenTop = _tokenStack.SeekTerminal(_tokenStack.rbegin());
-		//::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
+		::printf("%s  << %s\n", _tokenStack.ToString().c_str(), pToken->GetSymbol());
 		Token::Precedence prec = Token::LookupPrec(**ppTokenTop, *pToken);
 		if (prec == Token::PREC_LT || prec == Token::PREC_EQ) {
 			_tokenStack.push_back(pToken.release());

@@ -831,13 +831,11 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 	int stepX, stepY;
 	Binary buffOrg;
 	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar, &stepX, &stepY, buffOrg)) return false;
-	PCGType pcgType = context.GetPCGPageCur()->GetPCGType();
 	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY));
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
-	//int charCodeCur = context.GetPCGPageCur()->GetCharCodeCur();
 	for (int yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (int xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
