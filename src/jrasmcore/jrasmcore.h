@@ -19,6 +19,7 @@
 #include "MmlParser.h"
 #include "Parser.h"
 #include "PCGChar.h"
+#include "PCGColor.h"
 #include "PCGData.h"
 #include "PCGPage.h"
 #include "PCGRange.h"
