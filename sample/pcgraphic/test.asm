@@ -2,9 +2,9 @@
 
 	pcgpage.page.store
 	ldx	0xc100
-	pcg.screen.put
+	pcg.screen.putx
 	ldx	0xc500
-	pcg.screen.putattr
+	pcg.screen.putattrx
 infinite:
 	bra	infinite
 	
