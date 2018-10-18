@@ -7,7 +7,7 @@
         PCG.circle2x2.PUTATTR 5,0
         RTS
 
-        .PCGPAGE page1,CRAM,0x80
+        .PCGPAGE page1,CRAM:0x80
 
         .PCG    circle2x2,2,2
         .DB     b".....######....."

@@ -113,6 +113,7 @@ Expr *PCGPage::ComposeExpr() const
 }
 #endif
 
+// DON'T use .SAVE macro here
 const char *PCGPage::_asmCodeTmpl = R"**(pcgpage.%s.src:
 pcgpage.%s.store:
         .macro
@@ -120,12 +121,14 @@ pcgpage.%s.store:
         stx     [srcp]
         ldx     entries
 loop_nextentry:
-        .save   x
-        .save   x
+        stx     [save2_x]
+        stx     [save1_x]
         ldx     [x]
         beq     done
         stx     [dstp]
-        .end
+save1_x:
+        .equ    $+1
+        ldx     0x0000
         ldx     [x+2]
         stx     [dstp_end]
 loop_copy:
@@ -149,7 +152,9 @@ dstp_end:
         .equ    $+1
         cpx     0x0000
         bne     loop_copy
-        .end
+save2_x:
+        .equ    $+1
+        ldx     0x0000
         inx
         inx
         inx
