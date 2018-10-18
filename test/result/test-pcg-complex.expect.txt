@@ -1,200 +1,202 @@
                    .org 0x1000
                    pcgpage.page1.store
-    1000 ce 11 03  | ldx  pcgpage.page1.src
-    1003 ff 10 16  | stx  [srcp]
-    1006 ce 10 38  | ldx  entries
+    1000 ce 11 0f  | ldx  pcgpage.page1.src
+    1003 ff 10 1f  | stx  [srcp]
+    1006 ce 10 44  | ldx  entries
 loop_nextentry:    | 
-                   | .save x
-                   | | .save x
-    1009 ee 00     | | | ldx  [x]
-    100b 27 3d     | | | beq  done
-    100d ff 10 22  | | | stx  [dstp]
-                   | | | .end
-    1010 ee 02     | | ldx  [x+2]
-    1012 ff 10 2e  | | stx  [dstp_end]
-loop_copy:         | | 
-srcp:              | | .equ $+1
-    1015 ce 00 00  | | ldx  0x0000
-    1018 a6 00     | | ldaa [x]
-    101a e6 01     | | ldab [x+1]
-    101c 08        | | inx 
-    101d 08        | | inx 
-    101e ff 10 16  | | stx  [srcp]
-dstp:              | | .equ $+1
-    1021 ce 00 00  | | ldx  0x0000
-    1024 a7 00     | | staa [x]
-    1026 e7 01     | | stab [x+1]
-    1028 08        | | inx 
-    1029 08        | | inx 
-    102a ff 10 22  | | stx  [dstp]
-dstp_end:          | | .equ $+1
-    102d 8c 00 00  | | cpx  0x0000
-    1030 26 e3     | | bne  loop_copy
-                   | | .end
+    1009 ff 10 3c  | stx  [save2_x]
+    100c ff 10 17  | stx  [save1_x]
+    100f ee 00     | ldx  [x]
+    1011 27 43     | beq  done
+    1013 ff 10 2b  | stx  [dstp]
+save1_x:           | .equ $+1
+    1016 ce 00 00  | ldx  0x0000
+    1019 ee 02     | ldx  [x+2]
+    101b ff 10 37  | stx  [dstp_end]
+loop_copy:         | 
+srcp:              | .equ $+1
+    101e ce 00 00  | ldx  0x0000
+    1021 a6 00     | ldaa [x]
+    1023 e6 01     | ldab [x+1]
+    1025 08        | inx 
+    1026 08        | inx 
+    1027 ff 10 1f  | stx  [srcp]
+dstp:              | .equ $+1
+    102a ce 00 00  | ldx  0x0000
+    102d a7 00     | staa [x]
+    102f e7 01     | stab [x+1]
+    1031 08        | inx 
     1032 08        | inx 
-    1033 08        | inx 
-    1034 08        | inx 
-    1035 08        | inx 
-    1036 20 d1     | bra  loop_nextentry
+    1033 ff 10 2b  | stx  [dstp]
+dstp_end:          | .equ $+1
+    1036 8c 00 00  | cpx  0x0000
+    1039 26 e3     | bne  loop_copy
+save2_x:           | .equ $+1
+    103b ce 00 00  | ldx  0x0000
+    103e 08        | inx 
+    103f 08        | inx 
+    1040 08        | inx 
+    1041 08        | inx 
+    1042 20 c5     | bra  loop_nextentry
 entries:           | 
-    1038 c0 00     | .dw  0xc000,0xc010
-    103a c0 10     |
-    103c d4 00     | .dw  0xd400,0xd410
-    103e d4 10     |
-    1040 c0 f0     | .dw  0xc0f0,0xc100
-    1042 c1 00     |
-    1044 c4 00     | .dw  0xc400,0xc418
-    1046 c4 18     |
-    1048 00 00     | .dw  0x0000
+    1044 c0 00     | .dw  0xc000,0xc010
+    1046 c0 10     |
+    1048 d4 00     | .dw  0xd400,0xd410
+    104a d4 10     |
+    104c c0 f0     | .dw  0xc0f0,0xc100
+    104e c1 00     |
+    1050 c4 00     | .dw  0xc400,0xc418
+    1052 c4 18     |
+    1054 00 00     | .dw  0x0000
 done:              | 
                    | .end
                    pcg.pcg1.put
-    104a 4f        | clra
-    104b a7 00     | staa [x+0x00+0]
-    104d 4c        | inca
-    104e a7 01     | staa [x+0x01+0]
-    1050 86 80     | ldaa 0x80
-    1052 a7 02     | staa [x+0x02+0]
-    1054 4c        | inca
-    1055 a7 20     | staa [x+0x20+0]
-    1057 86 1e     | ldaa 0x1e
-    1059 a7 21     | staa [x+0x21+0]
-    105b 4c        | inca
-    105c a7 22     | staa [x+0x22+0]
-    105e 86 80     | ldaa 0x80
-    1060 a7 40     | staa [x+0x40+0]
-    1062 4c        | inca
-    1063 a7 41     | staa [x+0x41+0]
-    1065 4c        | inca
-    1066 a7 42     | staa [x+0x42+0]
+    1056 4f        | clra
+    1057 a7 00     | staa [x+0x00+0]
+    1059 4c        | inca
+    105a a7 01     | staa [x+0x01+0]
+    105c 86 80     | ldaa 0x80
+    105e a7 02     | staa [x+0x02+0]
+    1060 4c        | inca
+    1061 a7 20     | staa [x+0x20+0]
+    1063 86 1e     | ldaa 0x1e
+    1065 a7 21     | staa [x+0x21+0]
+    1067 4c        | inca
+    1068 a7 22     | staa [x+0x22+0]
+    106a 86 80     | ldaa 0x80
+    106c a7 40     | staa [x+0x40+0]
+    106e 4c        | inca
+    106f a7 41     | staa [x+0x41+0]
+    1071 4c        | inca
+    1072 a7 42     | staa [x+0x42+0]
                    | .end
                    pcg.pcg1.erase
-    1068 4f        | clra
-    1069 a7 00     | staa [x+0x00+0]
-    106b a7 01     | staa [x+0x01+0]
-    106d a7 02     | staa [x+0x02+0]
-    106f a7 20     | staa [x+0x20+0]
-    1071 a7 21     | staa [x+0x21+0]
-    1073 a7 22     | staa [x+0x22+0]
-    1075 a7 40     | staa [x+0x40+0]
-    1077 a7 41     | staa [x+0x41+0]
-    1079 a7 42     | staa [x+0x42+0]
+    1074 4f        | clra
+    1075 a7 00     | staa [x+0x00+0]
+    1077 a7 01     | staa [x+0x01+0]
+    1079 a7 02     | staa [x+0x02+0]
+    107b a7 20     | staa [x+0x20+0]
+    107d a7 21     | staa [x+0x21+0]
+    107f a7 22     | staa [x+0x22+0]
+    1081 a7 40     | staa [x+0x40+0]
+    1083 a7 41     | staa [x+0x41+0]
+    1085 a7 42     | staa [x+0x42+0]
                    | .end
                    pcg.pcg1.fill 0xaa
-    107b 86 aa     | ldaa 0xaa
-    107d a7 00     | staa [x+0x00+0]
-    107f a7 01     | staa [x+0x01+0]
-    1081 a7 02     | staa [x+0x02+0]
-    1083 a7 20     | staa [x+0x20+0]
-    1085 a7 21     | staa [x+0x21+0]
-    1087 a7 22     | staa [x+0x22+0]
-    1089 a7 40     | staa [x+0x40+0]
-    108b a7 41     | staa [x+0x41+0]
-    108d a7 42     | staa [x+0x42+0]
+    1087 86 aa     | ldaa 0xaa
+    1089 a7 00     | staa [x+0x00+0]
+    108b a7 01     | staa [x+0x01+0]
+    108d a7 02     | staa [x+0x02+0]
+    108f a7 20     | staa [x+0x20+0]
+    1091 a7 21     | staa [x+0x21+0]
+    1093 a7 22     | staa [x+0x22+0]
+    1095 a7 40     | staa [x+0x40+0]
+    1097 a7 41     | staa [x+0x41+0]
+    1099 a7 42     | staa [x+0x42+0]
                    | .end
                    pcg.pcg1.putattr
-    108f 86 47     | ldaa (1<<6)+7+(0<<3)
-    1091 a7 00     | staa [x+0x00+0]
-    1093 a7 01     | staa [x+0x01+0]
-    1095 86 07     | ldaa 7+(0<<3)
-    1097 a7 02     | staa [x+0x02+0]
-    1099 a7 20     | staa [x+0x20+0]
     109b 86 47     | ldaa (1<<6)+7+(0<<3)
-    109d a7 21     | staa [x+0x21+0]
-    109f a7 22     | staa [x+0x22+0]
-    10a1 a7 40     | staa [x+0x40+0]
-    10a3 a7 41     | staa [x+0x41+0]
-    10a5 a7 42     | staa [x+0x42+0]
+    109d a7 00     | staa [x+0x00+0]
+    109f a7 01     | staa [x+0x01+0]
+    10a1 86 07     | ldaa 7+(0<<3)
+    10a3 a7 02     | staa [x+0x02+0]
+    10a5 a7 20     | staa [x+0x20+0]
+    10a7 86 47     | ldaa (1<<6)+7+(0<<3)
+    10a9 a7 21     | staa [x+0x21+0]
+    10ab a7 22     | staa [x+0x22+0]
+    10ad a7 40     | staa [x+0x40+0]
+    10af a7 41     | staa [x+0x41+0]
+    10b1 a7 42     | staa [x+0x42+0]
                    | .end
                    pcg.pcg1.putattrfg
-    10a7 a6 00     | ldaa [x+0x00+0]
-    10a9 84 38     | anda 0x38
-    10ab 8a 47     | oraa (1<<6)+7
-    10ad a7 00     | staa [x+0x00+0]
-    10af a6 01     | ldaa [x+0x01+0]
-    10b1 84 38     | anda 0x38
-    10b3 8a 47     | oraa (1<<6)+7
-    10b5 a7 01     | staa [x+0x01+0]
-    10b7 a6 02     | ldaa [x+0x02+0]
-    10b9 84 38     | anda 0x38
-    10bb 8a 07     | oraa 7
-    10bd a7 02     | staa [x+0x02+0]
-    10bf a6 20     | ldaa [x+0x20+0]
-    10c1 84 38     | anda 0x38
-    10c3 8a 07     | oraa 7
-    10c5 a7 20     | staa [x+0x20+0]
-    10c7 a6 21     | ldaa [x+0x21+0]
-    10c9 84 38     | anda 0x38
-    10cb 8a 47     | oraa (1<<6)+7
-    10cd a7 21     | staa [x+0x21+0]
-    10cf a6 22     | ldaa [x+0x22+0]
-    10d1 84 38     | anda 0x38
-    10d3 8a 47     | oraa (1<<6)+7
-    10d5 a7 22     | staa [x+0x22+0]
-    10d7 a6 40     | ldaa [x+0x40+0]
-    10d9 84 38     | anda 0x38
-    10db 8a 47     | oraa (1<<6)+7
-    10dd a7 40     | staa [x+0x40+0]
-    10df a6 41     | ldaa [x+0x41+0]
-    10e1 84 38     | anda 0x38
-    10e3 8a 47     | oraa (1<<6)+7
-    10e5 a7 41     | staa [x+0x41+0]
-    10e7 a6 42     | ldaa [x+0x42+0]
-    10e9 84 38     | anda 0x38
-    10eb 8a 47     | oraa (1<<6)+7
-    10ed a7 42     | staa [x+0x42+0]
+    10b3 a6 00     | ldaa [x+0x00+0]
+    10b5 84 38     | anda 0x38
+    10b7 8a 47     | oraa (1<<6)+7
+    10b9 a7 00     | staa [x+0x00+0]
+    10bb a6 01     | ldaa [x+0x01+0]
+    10bd 84 38     | anda 0x38
+    10bf 8a 47     | oraa (1<<6)+7
+    10c1 a7 01     | staa [x+0x01+0]
+    10c3 a6 02     | ldaa [x+0x02+0]
+    10c5 84 38     | anda 0x38
+    10c7 8a 07     | oraa 7
+    10c9 a7 02     | staa [x+0x02+0]
+    10cb a6 20     | ldaa [x+0x20+0]
+    10cd 84 38     | anda 0x38
+    10cf 8a 07     | oraa 7
+    10d1 a7 20     | staa [x+0x20+0]
+    10d3 a6 21     | ldaa [x+0x21+0]
+    10d5 84 38     | anda 0x38
+    10d7 8a 47     | oraa (1<<6)+7
+    10d9 a7 21     | staa [x+0x21+0]
+    10db a6 22     | ldaa [x+0x22+0]
+    10dd 84 38     | anda 0x38
+    10df 8a 47     | oraa (1<<6)+7
+    10e1 a7 22     | staa [x+0x22+0]
+    10e3 a6 40     | ldaa [x+0x40+0]
+    10e5 84 38     | anda 0x38
+    10e7 8a 47     | oraa (1<<6)+7
+    10e9 a7 40     | staa [x+0x40+0]
+    10eb a6 41     | ldaa [x+0x41+0]
+    10ed 84 38     | anda 0x38
+    10ef 8a 47     | oraa (1<<6)+7
+    10f1 a7 41     | staa [x+0x41+0]
+    10f3 a6 42     | ldaa [x+0x42+0]
+    10f5 84 38     | anda 0x38
+    10f7 8a 47     | oraa (1<<6)+7
+    10f9 a7 42     | staa [x+0x42+0]
                    | .end
                    pcg.pcg1.eraseattr
-    10ef 86 07     | ldaa 7+(0<<3)
-    10f1 a7 00     | staa [x+0x00+0]
-    10f3 a7 01     | staa [x+0x01+0]
-    10f5 a7 02     | staa [x+0x02+0]
-    10f7 a7 20     | staa [x+0x20+0]
-    10f9 a7 21     | staa [x+0x21+0]
-    10fb a7 22     | staa [x+0x22+0]
-    10fd a7 40     | staa [x+0x40+0]
-    10ff a7 41     | staa [x+0x41+0]
-    1101 a7 42     | staa [x+0x42+0]
+    10fb 86 07     | ldaa 7+(0<<3)
+    10fd a7 00     | staa [x+0x00+0]
+    10ff a7 01     | staa [x+0x01+0]
+    1101 a7 02     | staa [x+0x02+0]
+    1103 a7 20     | staa [x+0x20+0]
+    1105 a7 21     | staa [x+0x21+0]
+    1107 a7 22     | staa [x+0x22+0]
+    1109 a7 40     | staa [x+0x40+0]
+    110b a7 41     | staa [x+0x41+0]
+    110d a7 42     | staa [x+0x42+0]
                    | .end
                    .pcgpage page1,user:0x20:0x21,cram:0x80:0x81,user:0x3e
-    1103 ff 01     | .db  0xff,0x01,0xff,0xff,0xff,0xff,0xff,0xff
-    1105 ff ff     |
-    1107 ff ff     |
-    1109 ff ff     |
-    110b ff 02     | .db  0xff,0x02,0xff,0xff,0xff,0xff,0xff,0xff
-    110d ff ff     |
-    110f ff ff     |
+    110f ff 01     | .db  0xff,0x01,0xff,0xff,0xff,0xff,0xff,0xff
     1111 ff ff     |
-    1113 ff 03     | .db  0xff,0x03,0xff,0xff,0xff,0xff,0xff,0xff
+    1113 ff ff     |
     1115 ff ff     |
-    1117 ff ff     |
+    1117 ff 02     | .db  0xff,0x02,0xff,0xff,0xff,0xff,0xff,0xff
     1119 ff ff     |
-    111b ff 04     | .db  0xff,0x04,0xff,0xff,0xff,0xff,0xff,0xff
+    111b ff ff     |
     111d ff ff     |
-    111f ff ff     |
+    111f ff 03     | .db  0xff,0x03,0xff,0xff,0xff,0xff,0xff,0xff
     1121 ff ff     |
-    1123 ff 05     | .db  0xff,0x05,0xff,0xff,0xff,0xff,0xff,0xff
+    1123 ff ff     |
     1125 ff ff     |
-    1127 ff ff     |
+    1127 ff 04     | .db  0xff,0x04,0xff,0xff,0xff,0xff,0xff,0xff
     1129 ff ff     |
-    112b ff 06     | .db  0xff,0x06,0xff,0xff,0xff,0xff,0xff,0xff
+    112b ff ff     |
     112d ff ff     |
-    112f ff ff     |
+    112f ff 05     | .db  0xff,0x05,0xff,0xff,0xff,0xff,0xff,0xff
     1131 ff ff     |
-    1133 ff 07     | .db  0xff,0x07,0xff,0xff,0xff,0xff,0xff,0xff
+    1133 ff ff     |
     1135 ff ff     |
-    1137 ff ff     |
+    1137 ff 06     | .db  0xff,0x06,0xff,0xff,0xff,0xff,0xff,0xff
     1139 ff ff     |
-    113b ff 08     | .db  0xff,0x08,0xff,0xff,0xff,0xff,0xff,0xff
+    113b ff ff     |
     113d ff ff     |
-    113f ff ff     |
+    113f ff 07     | .db  0xff,0x07,0xff,0xff,0xff,0xff,0xff,0xff
     1141 ff ff     |
-    1143 ff 09     | .db  0xff,0x09,0xff,0xff,0xff,0xff,0xff,0xff
+    1143 ff ff     |
     1145 ff ff     |
-    1147 ff ff     |
+    1147 ff 08     | .db  0xff,0x08,0xff,0xff,0xff,0xff,0xff,0xff
     1149 ff ff     |
+    114b ff ff     |
+    114d ff ff     |
+    114f ff 09     | .db  0xff,0x09,0xff,0xff,0xff,0xff,0xff,0xff
+    1151 ff ff     |
+    1153 ff ff     |
+    1155 ff ff     |
 [Symbol List]
 0001  @BYTE
 0002  @WORD
 0004  @DWORD
-1103  pcgpage.page1.src
+110f  pcgpage.page1.src

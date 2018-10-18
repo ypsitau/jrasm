@@ -1,1332 +1,1334 @@
                    .org 0x1000
                    pcgpage.test.store
-    1000 ce 14 01  | ldx  pcgpage.test.src
-    1003 ff 10 16  | stx  [srcp]
-    1006 ce 10 38  | ldx  entries
+    1000 ce 14 0d  | ldx  pcgpage.test.src
+    1003 ff 10 1f  | stx  [srcp]
+    1006 ce 10 44  | ldx  entries
 loop_nextentry:    | 
-                   | .save x
-                   | | .save x
-    1009 ee 00     | | | ldx  [x]
-    100b 27 35     | | | beq  done
-    100d ff 10 22  | | | stx  [dstp]
-                   | | | .end
-    1010 ee 02     | | ldx  [x+2]
-    1012 ff 10 2e  | | stx  [dstp_end]
-loop_copy:         | | 
-srcp:              | | .equ $+1
-    1015 ce 00 00  | | ldx  0x0000
-    1018 a6 00     | | ldaa [x]
-    101a e6 01     | | ldab [x+1]
-    101c 08        | | inx 
-    101d 08        | | inx 
-    101e ff 10 16  | | stx  [srcp]
-dstp:              | | .equ $+1
-    1021 ce 00 00  | | ldx  0x0000
-    1024 a7 00     | | staa [x]
-    1026 e7 01     | | stab [x+1]
-    1028 08        | | inx 
-    1029 08        | | inx 
-    102a ff 10 22  | | stx  [dstp]
-dstp_end:          | | .equ $+1
-    102d 8c 00 00  | | cpx  0x0000
-    1030 26 e3     | | bne  loop_copy
-                   | | .end
+    1009 ff 10 3c  | stx  [save2_x]
+    100c ff 10 17  | stx  [save1_x]
+    100f ee 00     | ldx  [x]
+    1011 27 3b     | beq  done
+    1013 ff 10 2b  | stx  [dstp]
+save1_x:           | .equ $+1
+    1016 ce 00 00  | ldx  0x0000
+    1019 ee 02     | ldx  [x+2]
+    101b ff 10 37  | stx  [dstp_end]
+loop_copy:         | 
+srcp:              | .equ $+1
+    101e ce 00 00  | ldx  0x0000
+    1021 a6 00     | ldaa [x]
+    1023 e6 01     | ldab [x+1]
+    1025 08        | inx 
+    1026 08        | inx 
+    1027 ff 10 1f  | stx  [srcp]
+dstp:              | .equ $+1
+    102a ce 00 00  | ldx  0x0000
+    102d a7 00     | staa [x]
+    102f e7 01     | stab [x+1]
+    1031 08        | inx 
     1032 08        | inx 
-    1033 08        | inx 
-    1034 08        | inx 
-    1035 08        | inx 
-    1036 20 d1     | bra  loop_nextentry
+    1033 ff 10 2b  | stx  [dstp]
+dstp_end:          | .equ $+1
+    1036 8c 00 00  | cpx  0x0000
+    1039 26 e3     | bne  loop_copy
+save2_x:           | .equ $+1
+    103b ce 00 00  | ldx  0x0000
+    103e 08        | inx 
+    103f 08        | inx 
+    1040 08        | inx 
+    1041 08        | inx 
+    1042 20 c5     | bra  loop_nextentry
 entries:           | 
-    1038 c0 00     | .dw  0xc000,0xc100
-    103a c1 00     |
-    103c c4 00     | .dw  0xc400,0xc500
-    103e c5 00     |
-    1040 00 00     | .dw  0x0000
+    1044 c0 00     | .dw  0xc000,0xc100
+    1046 c1 00     |
+    1048 c4 00     | .dw  0xc400,0xc500
+    104a c5 00     |
+    104c 00 00     | .dw  0x0000
 done:              | 
                    | .end
                    pcg.user20.put
-    1042 4f        | clra
-    1043 a7 00     | staa [x+0x00+0]
+    104e 4f        | clra
+    104f a7 00     | staa [x+0x00+0]
                    | .end
                    pcg.user20.putattr
-    1045 86 47     | ldaa (1<<6)+7+(0<<3)
-    1047 a7 00     | staa [x+0x00+0]
+    1051 86 47     | ldaa (1<<6)+7+(0<<3)
+    1053 a7 00     | staa [x+0x00+0]
                    | .end
                    pcg.user20.erase
-    1049 4f        | clra
-    104a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user20.eraseattr
-    104c 86 07     | ldaa 7+(0<<3)
-    104e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user21.put
-    1050 86 01     | ldaa 0x01
-    1052 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user21.putattr
-    1054 86 47     | ldaa (1<<6)+7+(0<<3)
+    1055 4f        | clra
     1056 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user20.eraseattr
+    1058 86 07     | ldaa 7+(0<<3)
+    105a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user21.put
+    105c 86 01     | ldaa 0x01
+    105e a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user21.putattr
+    1060 86 47     | ldaa (1<<6)+7+(0<<3)
+    1062 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user21.erase
-    1058 4f        | clra
-    1059 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user21.eraseattr
-    105b 86 07     | ldaa 7+(0<<3)
-    105d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user22.put
-    105f 86 02     | ldaa 0x02
-    1061 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user22.putattr
-    1063 86 47     | ldaa (1<<6)+7+(0<<3)
+    1064 4f        | clra
     1065 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user21.eraseattr
+    1067 86 07     | ldaa 7+(0<<3)
+    1069 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user22.put
+    106b 86 02     | ldaa 0x02
+    106d a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user22.putattr
+    106f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1071 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user22.erase
-    1067 4f        | clra
-    1068 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user22.eraseattr
-    106a 86 07     | ldaa 7+(0<<3)
-    106c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user23.put
-    106e 86 03     | ldaa 0x03
-    1070 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user23.putattr
-    1072 86 47     | ldaa (1<<6)+7+(0<<3)
+    1073 4f        | clra
     1074 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user22.eraseattr
+    1076 86 07     | ldaa 7+(0<<3)
+    1078 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user23.put
+    107a 86 03     | ldaa 0x03
+    107c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user23.putattr
+    107e 86 47     | ldaa (1<<6)+7+(0<<3)
+    1080 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user23.erase
-    1076 4f        | clra
-    1077 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user23.eraseattr
-    1079 86 07     | ldaa 7+(0<<3)
-    107b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user24.put
-    107d 86 04     | ldaa 0x04
-    107f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user24.putattr
-    1081 86 47     | ldaa (1<<6)+7+(0<<3)
+    1082 4f        | clra
     1083 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user23.eraseattr
+    1085 86 07     | ldaa 7+(0<<3)
+    1087 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user24.put
+    1089 86 04     | ldaa 0x04
+    108b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user24.putattr
+    108d 86 47     | ldaa (1<<6)+7+(0<<3)
+    108f a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user24.erase
-    1085 4f        | clra
-    1086 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user24.eraseattr
-    1088 86 07     | ldaa 7+(0<<3)
-    108a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user25.put
-    108c 86 05     | ldaa 0x05
-    108e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user25.putattr
-    1090 86 47     | ldaa (1<<6)+7+(0<<3)
+    1091 4f        | clra
     1092 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user24.eraseattr
+    1094 86 07     | ldaa 7+(0<<3)
+    1096 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user25.put
+    1098 86 05     | ldaa 0x05
+    109a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user25.putattr
+    109c 86 47     | ldaa (1<<6)+7+(0<<3)
+    109e a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user25.erase
-    1094 4f        | clra
-    1095 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user25.eraseattr
-    1097 86 07     | ldaa 7+(0<<3)
-    1099 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user26.put
-    109b 86 06     | ldaa 0x06
-    109d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user26.putattr
-    109f 86 47     | ldaa (1<<6)+7+(0<<3)
+    10a0 4f        | clra
     10a1 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user25.eraseattr
+    10a3 86 07     | ldaa 7+(0<<3)
+    10a5 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user26.put
+    10a7 86 06     | ldaa 0x06
+    10a9 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user26.putattr
+    10ab 86 47     | ldaa (1<<6)+7+(0<<3)
+    10ad a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user26.erase
-    10a3 4f        | clra
-    10a4 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user26.eraseattr
-    10a6 86 07     | ldaa 7+(0<<3)
-    10a8 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user27.put
-    10aa 86 07     | ldaa 0x07
-    10ac a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user27.putattr
-    10ae 86 47     | ldaa (1<<6)+7+(0<<3)
+    10af 4f        | clra
     10b0 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user26.eraseattr
+    10b2 86 07     | ldaa 7+(0<<3)
+    10b4 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user27.put
+    10b6 86 07     | ldaa 0x07
+    10b8 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user27.putattr
+    10ba 86 47     | ldaa (1<<6)+7+(0<<3)
+    10bc a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user27.erase
-    10b2 4f        | clra
-    10b3 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user27.eraseattr
-    10b5 86 07     | ldaa 7+(0<<3)
-    10b7 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user28.put
-    10b9 86 08     | ldaa 0x08
-    10bb a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user28.putattr
-    10bd 86 47     | ldaa (1<<6)+7+(0<<3)
+    10be 4f        | clra
     10bf a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user27.eraseattr
+    10c1 86 07     | ldaa 7+(0<<3)
+    10c3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user28.put
+    10c5 86 08     | ldaa 0x08
+    10c7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user28.putattr
+    10c9 86 47     | ldaa (1<<6)+7+(0<<3)
+    10cb a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user28.erase
-    10c1 4f        | clra
-    10c2 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user28.eraseattr
-    10c4 86 07     | ldaa 7+(0<<3)
-    10c6 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user29.put
-    10c8 86 09     | ldaa 0x09
-    10ca a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user29.putattr
-    10cc 86 47     | ldaa (1<<6)+7+(0<<3)
+    10cd 4f        | clra
     10ce a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user28.eraseattr
+    10d0 86 07     | ldaa 7+(0<<3)
+    10d2 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user29.put
+    10d4 86 09     | ldaa 0x09
+    10d6 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user29.putattr
+    10d8 86 47     | ldaa (1<<6)+7+(0<<3)
+    10da a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user29.erase
-    10d0 4f        | clra
-    10d1 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user29.eraseattr
-    10d3 86 07     | ldaa 7+(0<<3)
-    10d5 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2a.put
-    10d7 86 0a     | ldaa 0x0a
-    10d9 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2a.putattr
-    10db 86 47     | ldaa (1<<6)+7+(0<<3)
+    10dc 4f        | clra
     10dd a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user29.eraseattr
+    10df 86 07     | ldaa 7+(0<<3)
+    10e1 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2a.put
+    10e3 86 0a     | ldaa 0x0a
+    10e5 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2a.putattr
+    10e7 86 47     | ldaa (1<<6)+7+(0<<3)
+    10e9 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user2a.erase
-    10df 4f        | clra
-    10e0 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2a.eraseattr
-    10e2 86 07     | ldaa 7+(0<<3)
-    10e4 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2b.put
-    10e6 86 0b     | ldaa 0x0b
-    10e8 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2b.putattr
-    10ea 86 47     | ldaa (1<<6)+7+(0<<3)
+    10eb 4f        | clra
     10ec a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user2a.eraseattr
+    10ee 86 07     | ldaa 7+(0<<3)
+    10f0 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2b.put
+    10f2 86 0b     | ldaa 0x0b
+    10f4 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2b.putattr
+    10f6 86 47     | ldaa (1<<6)+7+(0<<3)
+    10f8 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user2b.erase
-    10ee 4f        | clra
-    10ef a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2b.eraseattr
-    10f1 86 07     | ldaa 7+(0<<3)
-    10f3 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2c.put
-    10f5 86 0c     | ldaa 0x0c
-    10f7 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2c.putattr
-    10f9 86 47     | ldaa (1<<6)+7+(0<<3)
+    10fa 4f        | clra
     10fb a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user2b.eraseattr
+    10fd 86 07     | ldaa 7+(0<<3)
+    10ff a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2c.put
+    1101 86 0c     | ldaa 0x0c
+    1103 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2c.putattr
+    1105 86 47     | ldaa (1<<6)+7+(0<<3)
+    1107 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user2c.erase
-    10fd 4f        | clra
-    10fe a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2c.eraseattr
-    1100 86 07     | ldaa 7+(0<<3)
-    1102 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2d.put
-    1104 86 0d     | ldaa 0x0d
-    1106 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2d.putattr
-    1108 86 47     | ldaa (1<<6)+7+(0<<3)
+    1109 4f        | clra
     110a a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user2c.eraseattr
+    110c 86 07     | ldaa 7+(0<<3)
+    110e a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2d.put
+    1110 86 0d     | ldaa 0x0d
+    1112 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2d.putattr
+    1114 86 47     | ldaa (1<<6)+7+(0<<3)
+    1116 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user2d.erase
-    110c 4f        | clra
-    110d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2d.eraseattr
-    110f 86 07     | ldaa 7+(0<<3)
-    1111 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2e.put
-    1113 86 0e     | ldaa 0x0e
-    1115 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2e.putattr
-    1117 86 47     | ldaa (1<<6)+7+(0<<3)
+    1118 4f        | clra
     1119 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user2d.eraseattr
+    111b 86 07     | ldaa 7+(0<<3)
+    111d a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2e.put
+    111f 86 0e     | ldaa 0x0e
+    1121 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2e.putattr
+    1123 86 47     | ldaa (1<<6)+7+(0<<3)
+    1125 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user2e.erase
-    111b 4f        | clra
-    111c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2e.eraseattr
-    111e 86 07     | ldaa 7+(0<<3)
-    1120 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2f.put
-    1122 86 0f     | ldaa 0x0f
-    1124 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2f.putattr
-    1126 86 47     | ldaa (1<<6)+7+(0<<3)
+    1127 4f        | clra
     1128 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user2e.eraseattr
+    112a 86 07     | ldaa 7+(0<<3)
+    112c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2f.put
+    112e 86 0f     | ldaa 0x0f
+    1130 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user2f.putattr
+    1132 86 47     | ldaa (1<<6)+7+(0<<3)
+    1134 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user2f.erase
-    112a 4f        | clra
-    112b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user2f.eraseattr
-    112d 86 07     | ldaa 7+(0<<3)
-    112f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user30.put
-    1131 86 10     | ldaa 0x10
-    1133 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user30.putattr
-    1135 86 47     | ldaa (1<<6)+7+(0<<3)
+    1136 4f        | clra
     1137 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user2f.eraseattr
+    1139 86 07     | ldaa 7+(0<<3)
+    113b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user30.put
+    113d 86 10     | ldaa 0x10
+    113f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user30.putattr
+    1141 86 47     | ldaa (1<<6)+7+(0<<3)
+    1143 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user30.erase
-    1139 4f        | clra
-    113a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user30.eraseattr
-    113c 86 07     | ldaa 7+(0<<3)
-    113e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user31.put
-    1140 86 11     | ldaa 0x11
-    1142 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user31.putattr
-    1144 86 47     | ldaa (1<<6)+7+(0<<3)
+    1145 4f        | clra
     1146 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user30.eraseattr
+    1148 86 07     | ldaa 7+(0<<3)
+    114a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user31.put
+    114c 86 11     | ldaa 0x11
+    114e a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user31.putattr
+    1150 86 47     | ldaa (1<<6)+7+(0<<3)
+    1152 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user31.erase
-    1148 4f        | clra
-    1149 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user31.eraseattr
-    114b 86 07     | ldaa 7+(0<<3)
-    114d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user32.put
-    114f 86 12     | ldaa 0x12
-    1151 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user32.putattr
-    1153 86 47     | ldaa (1<<6)+7+(0<<3)
+    1154 4f        | clra
     1155 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user31.eraseattr
+    1157 86 07     | ldaa 7+(0<<3)
+    1159 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user32.put
+    115b 86 12     | ldaa 0x12
+    115d a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user32.putattr
+    115f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1161 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user32.erase
-    1157 4f        | clra
-    1158 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user32.eraseattr
-    115a 86 07     | ldaa 7+(0<<3)
-    115c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user33.put
-    115e 86 13     | ldaa 0x13
-    1160 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user33.putattr
-    1162 86 47     | ldaa (1<<6)+7+(0<<3)
+    1163 4f        | clra
     1164 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user32.eraseattr
+    1166 86 07     | ldaa 7+(0<<3)
+    1168 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user33.put
+    116a 86 13     | ldaa 0x13
+    116c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user33.putattr
+    116e 86 47     | ldaa (1<<6)+7+(0<<3)
+    1170 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user33.erase
-    1166 4f        | clra
-    1167 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user33.eraseattr
-    1169 86 07     | ldaa 7+(0<<3)
-    116b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user34.put
-    116d 86 14     | ldaa 0x14
-    116f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user34.putattr
-    1171 86 47     | ldaa (1<<6)+7+(0<<3)
+    1172 4f        | clra
     1173 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user33.eraseattr
+    1175 86 07     | ldaa 7+(0<<3)
+    1177 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user34.put
+    1179 86 14     | ldaa 0x14
+    117b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user34.putattr
+    117d 86 47     | ldaa (1<<6)+7+(0<<3)
+    117f a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user34.erase
-    1175 4f        | clra
-    1176 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user34.eraseattr
-    1178 86 07     | ldaa 7+(0<<3)
-    117a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user35.put
-    117c 86 15     | ldaa 0x15
-    117e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user35.putattr
-    1180 86 47     | ldaa (1<<6)+7+(0<<3)
+    1181 4f        | clra
     1182 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user34.eraseattr
+    1184 86 07     | ldaa 7+(0<<3)
+    1186 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user35.put
+    1188 86 15     | ldaa 0x15
+    118a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user35.putattr
+    118c 86 47     | ldaa (1<<6)+7+(0<<3)
+    118e a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user35.erase
-    1184 4f        | clra
-    1185 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user35.eraseattr
-    1187 86 07     | ldaa 7+(0<<3)
-    1189 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user36.put
-    118b 86 16     | ldaa 0x16
-    118d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user36.putattr
-    118f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1190 4f        | clra
     1191 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user35.eraseattr
+    1193 86 07     | ldaa 7+(0<<3)
+    1195 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user36.put
+    1197 86 16     | ldaa 0x16
+    1199 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user36.putattr
+    119b 86 47     | ldaa (1<<6)+7+(0<<3)
+    119d a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user36.erase
-    1193 4f        | clra
-    1194 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user36.eraseattr
-    1196 86 07     | ldaa 7+(0<<3)
-    1198 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user37.put
-    119a 86 17     | ldaa 0x17
-    119c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user37.putattr
-    119e 86 47     | ldaa (1<<6)+7+(0<<3)
+    119f 4f        | clra
     11a0 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user36.eraseattr
+    11a2 86 07     | ldaa 7+(0<<3)
+    11a4 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user37.put
+    11a6 86 17     | ldaa 0x17
+    11a8 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user37.putattr
+    11aa 86 47     | ldaa (1<<6)+7+(0<<3)
+    11ac a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user37.erase
-    11a2 4f        | clra
-    11a3 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user37.eraseattr
-    11a5 86 07     | ldaa 7+(0<<3)
-    11a7 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user38.put
-    11a9 86 18     | ldaa 0x18
-    11ab a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user38.putattr
-    11ad 86 47     | ldaa (1<<6)+7+(0<<3)
+    11ae 4f        | clra
     11af a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user37.eraseattr
+    11b1 86 07     | ldaa 7+(0<<3)
+    11b3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user38.put
+    11b5 86 18     | ldaa 0x18
+    11b7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user38.putattr
+    11b9 86 47     | ldaa (1<<6)+7+(0<<3)
+    11bb a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user38.erase
-    11b1 4f        | clra
-    11b2 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user38.eraseattr
-    11b4 86 07     | ldaa 7+(0<<3)
-    11b6 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user39.put
-    11b8 86 19     | ldaa 0x19
-    11ba a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user39.putattr
-    11bc 86 47     | ldaa (1<<6)+7+(0<<3)
+    11bd 4f        | clra
     11be a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user38.eraseattr
+    11c0 86 07     | ldaa 7+(0<<3)
+    11c2 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user39.put
+    11c4 86 19     | ldaa 0x19
+    11c6 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user39.putattr
+    11c8 86 47     | ldaa (1<<6)+7+(0<<3)
+    11ca a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user39.erase
-    11c0 4f        | clra
-    11c1 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user39.eraseattr
-    11c3 86 07     | ldaa 7+(0<<3)
-    11c5 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3a.put
-    11c7 86 1a     | ldaa 0x1a
-    11c9 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3a.putattr
-    11cb 86 47     | ldaa (1<<6)+7+(0<<3)
+    11cc 4f        | clra
     11cd a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user39.eraseattr
+    11cf 86 07     | ldaa 7+(0<<3)
+    11d1 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3a.put
+    11d3 86 1a     | ldaa 0x1a
+    11d5 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3a.putattr
+    11d7 86 47     | ldaa (1<<6)+7+(0<<3)
+    11d9 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user3a.erase
-    11cf 4f        | clra
-    11d0 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3a.eraseattr
-    11d2 86 07     | ldaa 7+(0<<3)
-    11d4 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3b.put
-    11d6 86 1b     | ldaa 0x1b
-    11d8 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3b.putattr
-    11da 86 47     | ldaa (1<<6)+7+(0<<3)
+    11db 4f        | clra
     11dc a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user3a.eraseattr
+    11de 86 07     | ldaa 7+(0<<3)
+    11e0 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3b.put
+    11e2 86 1b     | ldaa 0x1b
+    11e4 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3b.putattr
+    11e6 86 47     | ldaa (1<<6)+7+(0<<3)
+    11e8 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user3b.erase
-    11de 4f        | clra
-    11df a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3b.eraseattr
-    11e1 86 07     | ldaa 7+(0<<3)
-    11e3 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3c.put
-    11e5 86 1c     | ldaa 0x1c
-    11e7 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3c.putattr
-    11e9 86 47     | ldaa (1<<6)+7+(0<<3)
+    11ea 4f        | clra
     11eb a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user3b.eraseattr
+    11ed 86 07     | ldaa 7+(0<<3)
+    11ef a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3c.put
+    11f1 86 1c     | ldaa 0x1c
+    11f3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3c.putattr
+    11f5 86 47     | ldaa (1<<6)+7+(0<<3)
+    11f7 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user3c.erase
-    11ed 4f        | clra
-    11ee a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3c.eraseattr
-    11f0 86 07     | ldaa 7+(0<<3)
-    11f2 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3d.put
-    11f4 86 1d     | ldaa 0x1d
-    11f6 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3d.putattr
-    11f8 86 47     | ldaa (1<<6)+7+(0<<3)
+    11f9 4f        | clra
     11fa a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user3c.eraseattr
+    11fc 86 07     | ldaa 7+(0<<3)
+    11fe a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3d.put
+    1200 86 1d     | ldaa 0x1d
+    1202 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3d.putattr
+    1204 86 47     | ldaa (1<<6)+7+(0<<3)
+    1206 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user3d.erase
-    11fc 4f        | clra
-    11fd a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3d.eraseattr
-    11ff 86 07     | ldaa 7+(0<<3)
-    1201 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3e.put
-    1203 86 1e     | ldaa 0x1e
-    1205 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3e.putattr
-    1207 86 47     | ldaa (1<<6)+7+(0<<3)
+    1208 4f        | clra
     1209 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user3d.eraseattr
+    120b 86 07     | ldaa 7+(0<<3)
+    120d a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3e.put
+    120f 86 1e     | ldaa 0x1e
+    1211 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3e.putattr
+    1213 86 47     | ldaa (1<<6)+7+(0<<3)
+    1215 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user3e.erase
-    120b 4f        | clra
-    120c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3e.eraseattr
-    120e 86 07     | ldaa 7+(0<<3)
-    1210 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3f.put
-    1212 86 1f     | ldaa 0x1f
-    1214 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3f.putattr
-    1216 86 47     | ldaa (1<<6)+7+(0<<3)
+    1217 4f        | clra
     1218 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user3e.eraseattr
+    121a 86 07     | ldaa 7+(0<<3)
+    121c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3f.put
+    121e 86 1f     | ldaa 0x1f
+    1220 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user3f.putattr
+    1222 86 47     | ldaa (1<<6)+7+(0<<3)
+    1224 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user3f.erase
-    121a 4f        | clra
-    121b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user3f.eraseattr
-    121d 86 07     | ldaa 7+(0<<3)
-    121f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user40.put
-    1221 86 80     | ldaa 0x80
-    1223 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user40.putattr
-    1225 86 47     | ldaa (1<<6)+7+(0<<3)
+    1226 4f        | clra
     1227 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user3f.eraseattr
+    1229 86 07     | ldaa 7+(0<<3)
+    122b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user40.put
+    122d 86 80     | ldaa 0x80
+    122f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user40.putattr
+    1231 86 47     | ldaa (1<<6)+7+(0<<3)
+    1233 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user40.erase
-    1229 4f        | clra
-    122a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user40.eraseattr
-    122c 86 07     | ldaa 7+(0<<3)
-    122e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user41.put
-    1230 86 81     | ldaa 0x81
-    1232 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user41.putattr
-    1234 86 47     | ldaa (1<<6)+7+(0<<3)
+    1235 4f        | clra
     1236 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user40.eraseattr
+    1238 86 07     | ldaa 7+(0<<3)
+    123a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user41.put
+    123c 86 81     | ldaa 0x81
+    123e a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user41.putattr
+    1240 86 47     | ldaa (1<<6)+7+(0<<3)
+    1242 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user41.erase
-    1238 4f        | clra
-    1239 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user41.eraseattr
-    123b 86 07     | ldaa 7+(0<<3)
-    123d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user42.put
-    123f 86 82     | ldaa 0x82
-    1241 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user42.putattr
-    1243 86 47     | ldaa (1<<6)+7+(0<<3)
+    1244 4f        | clra
     1245 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user41.eraseattr
+    1247 86 07     | ldaa 7+(0<<3)
+    1249 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user42.put
+    124b 86 82     | ldaa 0x82
+    124d a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user42.putattr
+    124f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1251 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user42.erase
-    1247 4f        | clra
-    1248 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user42.eraseattr
-    124a 86 07     | ldaa 7+(0<<3)
-    124c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user43.put
-    124e 86 83     | ldaa 0x83
-    1250 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user43.putattr
-    1252 86 47     | ldaa (1<<6)+7+(0<<3)
+    1253 4f        | clra
     1254 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user42.eraseattr
+    1256 86 07     | ldaa 7+(0<<3)
+    1258 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user43.put
+    125a 86 83     | ldaa 0x83
+    125c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user43.putattr
+    125e 86 47     | ldaa (1<<6)+7+(0<<3)
+    1260 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user43.erase
-    1256 4f        | clra
-    1257 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user43.eraseattr
-    1259 86 07     | ldaa 7+(0<<3)
-    125b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user44.put
-    125d 86 84     | ldaa 0x84
-    125f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user44.putattr
-    1261 86 47     | ldaa (1<<6)+7+(0<<3)
+    1262 4f        | clra
     1263 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user43.eraseattr
+    1265 86 07     | ldaa 7+(0<<3)
+    1267 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user44.put
+    1269 86 84     | ldaa 0x84
+    126b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user44.putattr
+    126d 86 47     | ldaa (1<<6)+7+(0<<3)
+    126f a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user44.erase
-    1265 4f        | clra
-    1266 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user44.eraseattr
-    1268 86 07     | ldaa 7+(0<<3)
-    126a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user45.put
-    126c 86 85     | ldaa 0x85
-    126e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user45.putattr
-    1270 86 47     | ldaa (1<<6)+7+(0<<3)
+    1271 4f        | clra
     1272 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user44.eraseattr
+    1274 86 07     | ldaa 7+(0<<3)
+    1276 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user45.put
+    1278 86 85     | ldaa 0x85
+    127a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user45.putattr
+    127c 86 47     | ldaa (1<<6)+7+(0<<3)
+    127e a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user45.erase
-    1274 4f        | clra
-    1275 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user45.eraseattr
-    1277 86 07     | ldaa 7+(0<<3)
-    1279 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user46.put
-    127b 86 86     | ldaa 0x86
-    127d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user46.putattr
-    127f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1280 4f        | clra
     1281 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user45.eraseattr
+    1283 86 07     | ldaa 7+(0<<3)
+    1285 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user46.put
+    1287 86 86     | ldaa 0x86
+    1289 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user46.putattr
+    128b 86 47     | ldaa (1<<6)+7+(0<<3)
+    128d a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user46.erase
-    1283 4f        | clra
-    1284 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user46.eraseattr
-    1286 86 07     | ldaa 7+(0<<3)
-    1288 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user47.put
-    128a 86 87     | ldaa 0x87
-    128c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user47.putattr
-    128e 86 47     | ldaa (1<<6)+7+(0<<3)
+    128f 4f        | clra
     1290 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user46.eraseattr
+    1292 86 07     | ldaa 7+(0<<3)
+    1294 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user47.put
+    1296 86 87     | ldaa 0x87
+    1298 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user47.putattr
+    129a 86 47     | ldaa (1<<6)+7+(0<<3)
+    129c a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user47.erase
-    1292 4f        | clra
-    1293 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user47.eraseattr
-    1295 86 07     | ldaa 7+(0<<3)
-    1297 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user48.put
-    1299 86 88     | ldaa 0x88
-    129b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user48.putattr
-    129d 86 47     | ldaa (1<<6)+7+(0<<3)
+    129e 4f        | clra
     129f a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user47.eraseattr
+    12a1 86 07     | ldaa 7+(0<<3)
+    12a3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user48.put
+    12a5 86 88     | ldaa 0x88
+    12a7 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user48.putattr
+    12a9 86 47     | ldaa (1<<6)+7+(0<<3)
+    12ab a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user48.erase
-    12a1 4f        | clra
-    12a2 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user48.eraseattr
-    12a4 86 07     | ldaa 7+(0<<3)
-    12a6 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user49.put
-    12a8 86 89     | ldaa 0x89
-    12aa a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user49.putattr
-    12ac 86 47     | ldaa (1<<6)+7+(0<<3)
+    12ad 4f        | clra
     12ae a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user48.eraseattr
+    12b0 86 07     | ldaa 7+(0<<3)
+    12b2 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user49.put
+    12b4 86 89     | ldaa 0x89
+    12b6 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user49.putattr
+    12b8 86 47     | ldaa (1<<6)+7+(0<<3)
+    12ba a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user49.erase
-    12b0 4f        | clra
-    12b1 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user49.eraseattr
-    12b3 86 07     | ldaa 7+(0<<3)
-    12b5 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4a.put
-    12b7 86 8a     | ldaa 0x8a
-    12b9 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4a.putattr
-    12bb 86 47     | ldaa (1<<6)+7+(0<<3)
+    12bc 4f        | clra
     12bd a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user49.eraseattr
+    12bf 86 07     | ldaa 7+(0<<3)
+    12c1 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4a.put
+    12c3 86 8a     | ldaa 0x8a
+    12c5 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4a.putattr
+    12c7 86 47     | ldaa (1<<6)+7+(0<<3)
+    12c9 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user4a.erase
-    12bf 4f        | clra
-    12c0 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4a.eraseattr
-    12c2 86 07     | ldaa 7+(0<<3)
-    12c4 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4b.put
-    12c6 86 8b     | ldaa 0x8b
-    12c8 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4b.putattr
-    12ca 86 47     | ldaa (1<<6)+7+(0<<3)
+    12cb 4f        | clra
     12cc a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user4a.eraseattr
+    12ce 86 07     | ldaa 7+(0<<3)
+    12d0 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4b.put
+    12d2 86 8b     | ldaa 0x8b
+    12d4 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4b.putattr
+    12d6 86 47     | ldaa (1<<6)+7+(0<<3)
+    12d8 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user4b.erase
-    12ce 4f        | clra
-    12cf a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4b.eraseattr
-    12d1 86 07     | ldaa 7+(0<<3)
-    12d3 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4c.put
-    12d5 86 8c     | ldaa 0x8c
-    12d7 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4c.putattr
-    12d9 86 47     | ldaa (1<<6)+7+(0<<3)
+    12da 4f        | clra
     12db a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user4b.eraseattr
+    12dd 86 07     | ldaa 7+(0<<3)
+    12df a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4c.put
+    12e1 86 8c     | ldaa 0x8c
+    12e3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4c.putattr
+    12e5 86 47     | ldaa (1<<6)+7+(0<<3)
+    12e7 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user4c.erase
-    12dd 4f        | clra
-    12de a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4c.eraseattr
-    12e0 86 07     | ldaa 7+(0<<3)
-    12e2 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4d.put
-    12e4 86 8d     | ldaa 0x8d
-    12e6 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4d.putattr
-    12e8 86 47     | ldaa (1<<6)+7+(0<<3)
+    12e9 4f        | clra
     12ea a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user4c.eraseattr
+    12ec 86 07     | ldaa 7+(0<<3)
+    12ee a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4d.put
+    12f0 86 8d     | ldaa 0x8d
+    12f2 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4d.putattr
+    12f4 86 47     | ldaa (1<<6)+7+(0<<3)
+    12f6 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user4d.erase
-    12ec 4f        | clra
-    12ed a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4d.eraseattr
-    12ef 86 07     | ldaa 7+(0<<3)
-    12f1 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4e.put
-    12f3 86 8e     | ldaa 0x8e
-    12f5 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4e.putattr
-    12f7 86 47     | ldaa (1<<6)+7+(0<<3)
+    12f8 4f        | clra
     12f9 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user4d.eraseattr
+    12fb 86 07     | ldaa 7+(0<<3)
+    12fd a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4e.put
+    12ff 86 8e     | ldaa 0x8e
+    1301 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4e.putattr
+    1303 86 47     | ldaa (1<<6)+7+(0<<3)
+    1305 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user4e.erase
-    12fb 4f        | clra
-    12fc a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4e.eraseattr
-    12fe 86 07     | ldaa 7+(0<<3)
-    1300 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4f.put
-    1302 86 8f     | ldaa 0x8f
-    1304 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4f.putattr
-    1306 86 47     | ldaa (1<<6)+7+(0<<3)
+    1307 4f        | clra
     1308 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user4e.eraseattr
+    130a 86 07     | ldaa 7+(0<<3)
+    130c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4f.put
+    130e 86 8f     | ldaa 0x8f
+    1310 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user4f.putattr
+    1312 86 47     | ldaa (1<<6)+7+(0<<3)
+    1314 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user4f.erase
-    130a 4f        | clra
-    130b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user4f.eraseattr
-    130d 86 07     | ldaa 7+(0<<3)
-    130f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user50.put
-    1311 86 90     | ldaa 0x90
-    1313 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user50.putattr
-    1315 86 47     | ldaa (1<<6)+7+(0<<3)
+    1316 4f        | clra
     1317 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user4f.eraseattr
+    1319 86 07     | ldaa 7+(0<<3)
+    131b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user50.put
+    131d 86 90     | ldaa 0x90
+    131f a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user50.putattr
+    1321 86 47     | ldaa (1<<6)+7+(0<<3)
+    1323 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user50.erase
-    1319 4f        | clra
-    131a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user50.eraseattr
-    131c 86 07     | ldaa 7+(0<<3)
-    131e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user51.put
-    1320 86 91     | ldaa 0x91
-    1322 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user51.putattr
-    1324 86 47     | ldaa (1<<6)+7+(0<<3)
+    1325 4f        | clra
     1326 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user50.eraseattr
+    1328 86 07     | ldaa 7+(0<<3)
+    132a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user51.put
+    132c 86 91     | ldaa 0x91
+    132e a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user51.putattr
+    1330 86 47     | ldaa (1<<6)+7+(0<<3)
+    1332 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user51.erase
-    1328 4f        | clra
-    1329 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user51.eraseattr
-    132b 86 07     | ldaa 7+(0<<3)
-    132d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user52.put
-    132f 86 92     | ldaa 0x92
-    1331 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user52.putattr
-    1333 86 47     | ldaa (1<<6)+7+(0<<3)
+    1334 4f        | clra
     1335 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user51.eraseattr
+    1337 86 07     | ldaa 7+(0<<3)
+    1339 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user52.put
+    133b 86 92     | ldaa 0x92
+    133d a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user52.putattr
+    133f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1341 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user52.erase
-    1337 4f        | clra
-    1338 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user52.eraseattr
-    133a 86 07     | ldaa 7+(0<<3)
-    133c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user53.put
-    133e 86 93     | ldaa 0x93
-    1340 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user53.putattr
-    1342 86 47     | ldaa (1<<6)+7+(0<<3)
+    1343 4f        | clra
     1344 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user52.eraseattr
+    1346 86 07     | ldaa 7+(0<<3)
+    1348 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user53.put
+    134a 86 93     | ldaa 0x93
+    134c a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user53.putattr
+    134e 86 47     | ldaa (1<<6)+7+(0<<3)
+    1350 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user53.erase
-    1346 4f        | clra
-    1347 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user53.eraseattr
-    1349 86 07     | ldaa 7+(0<<3)
-    134b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user54.put
-    134d 86 94     | ldaa 0x94
-    134f a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user54.putattr
-    1351 86 47     | ldaa (1<<6)+7+(0<<3)
+    1352 4f        | clra
     1353 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user53.eraseattr
+    1355 86 07     | ldaa 7+(0<<3)
+    1357 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user54.put
+    1359 86 94     | ldaa 0x94
+    135b a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user54.putattr
+    135d 86 47     | ldaa (1<<6)+7+(0<<3)
+    135f a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user54.erase
-    1355 4f        | clra
-    1356 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user54.eraseattr
-    1358 86 07     | ldaa 7+(0<<3)
-    135a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user55.put
-    135c 86 95     | ldaa 0x95
-    135e a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user55.putattr
-    1360 86 47     | ldaa (1<<6)+7+(0<<3)
+    1361 4f        | clra
     1362 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user54.eraseattr
+    1364 86 07     | ldaa 7+(0<<3)
+    1366 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user55.put
+    1368 86 95     | ldaa 0x95
+    136a a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user55.putattr
+    136c 86 47     | ldaa (1<<6)+7+(0<<3)
+    136e a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user55.erase
-    1364 4f        | clra
-    1365 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user55.eraseattr
-    1367 86 07     | ldaa 7+(0<<3)
-    1369 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user56.put
-    136b 86 96     | ldaa 0x96
-    136d a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user56.putattr
-    136f 86 47     | ldaa (1<<6)+7+(0<<3)
+    1370 4f        | clra
     1371 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user55.eraseattr
+    1373 86 07     | ldaa 7+(0<<3)
+    1375 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user56.put
+    1377 86 96     | ldaa 0x96
+    1379 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user56.putattr
+    137b 86 47     | ldaa (1<<6)+7+(0<<3)
+    137d a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user56.erase
-    1373 4f        | clra
-    1374 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user56.eraseattr
-    1376 86 07     | ldaa 7+(0<<3)
-    1378 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user57.put
-    137a 86 97     | ldaa 0x97
-    137c a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user57.putattr
-    137e 86 47     | ldaa (1<<6)+7+(0<<3)
+    137f 4f        | clra
     1380 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user56.eraseattr
+    1382 86 07     | ldaa 7+(0<<3)
+    1384 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user57.put
+    1386 86 97     | ldaa 0x97
+    1388 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user57.putattr
+    138a 86 47     | ldaa (1<<6)+7+(0<<3)
+    138c a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user57.erase
-    1382 4f        | clra
-    1383 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user57.eraseattr
-    1385 86 07     | ldaa 7+(0<<3)
-    1387 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user58.put
-    1389 86 98     | ldaa 0x98
-    138b a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user58.putattr
-    138d 86 47     | ldaa (1<<6)+7+(0<<3)
+    138e 4f        | clra
     138f a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user57.eraseattr
+    1391 86 07     | ldaa 7+(0<<3)
+    1393 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user58.put
+    1395 86 98     | ldaa 0x98
+    1397 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user58.putattr
+    1399 86 47     | ldaa (1<<6)+7+(0<<3)
+    139b a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user58.erase
-    1391 4f        | clra
-    1392 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user58.eraseattr
-    1394 86 07     | ldaa 7+(0<<3)
-    1396 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user59.put
-    1398 86 99     | ldaa 0x99
-    139a a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user59.putattr
-    139c 86 47     | ldaa (1<<6)+7+(0<<3)
+    139d 4f        | clra
     139e a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user58.eraseattr
+    13a0 86 07     | ldaa 7+(0<<3)
+    13a2 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user59.put
+    13a4 86 99     | ldaa 0x99
+    13a6 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user59.putattr
+    13a8 86 47     | ldaa (1<<6)+7+(0<<3)
+    13aa a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user59.erase
-    13a0 4f        | clra
-    13a1 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user59.eraseattr
-    13a3 86 07     | ldaa 7+(0<<3)
-    13a5 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5a.put
-    13a7 86 9a     | ldaa 0x9a
-    13a9 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5a.putattr
-    13ab 86 47     | ldaa (1<<6)+7+(0<<3)
+    13ac 4f        | clra
     13ad a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user59.eraseattr
+    13af 86 07     | ldaa 7+(0<<3)
+    13b1 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5a.put
+    13b3 86 9a     | ldaa 0x9a
+    13b5 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5a.putattr
+    13b7 86 47     | ldaa (1<<6)+7+(0<<3)
+    13b9 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user5a.erase
-    13af 4f        | clra
-    13b0 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5a.eraseattr
-    13b2 86 07     | ldaa 7+(0<<3)
-    13b4 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5b.put
-    13b6 86 9b     | ldaa 0x9b
-    13b8 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5b.putattr
-    13ba 86 47     | ldaa (1<<6)+7+(0<<3)
+    13bb 4f        | clra
     13bc a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user5a.eraseattr
+    13be 86 07     | ldaa 7+(0<<3)
+    13c0 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5b.put
+    13c2 86 9b     | ldaa 0x9b
+    13c4 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5b.putattr
+    13c6 86 47     | ldaa (1<<6)+7+(0<<3)
+    13c8 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user5b.erase
-    13be 4f        | clra
-    13bf a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5b.eraseattr
-    13c1 86 07     | ldaa 7+(0<<3)
-    13c3 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5c.put
-    13c5 86 9c     | ldaa 0x9c
-    13c7 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5c.putattr
-    13c9 86 47     | ldaa (1<<6)+7+(0<<3)
+    13ca 4f        | clra
     13cb a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user5b.eraseattr
+    13cd 86 07     | ldaa 7+(0<<3)
+    13cf a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5c.put
+    13d1 86 9c     | ldaa 0x9c
+    13d3 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5c.putattr
+    13d5 86 47     | ldaa (1<<6)+7+(0<<3)
+    13d7 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user5c.erase
-    13cd 4f        | clra
-    13ce a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5c.eraseattr
-    13d0 86 07     | ldaa 7+(0<<3)
-    13d2 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5d.put
-    13d4 86 9d     | ldaa 0x9d
-    13d6 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5d.putattr
-    13d8 86 47     | ldaa (1<<6)+7+(0<<3)
+    13d9 4f        | clra
     13da a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user5c.eraseattr
+    13dc 86 07     | ldaa 7+(0<<3)
+    13de a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5d.put
+    13e0 86 9d     | ldaa 0x9d
+    13e2 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5d.putattr
+    13e4 86 47     | ldaa (1<<6)+7+(0<<3)
+    13e6 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user5d.erase
-    13dc 4f        | clra
-    13dd a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5d.eraseattr
-    13df 86 07     | ldaa 7+(0<<3)
-    13e1 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5e.put
-    13e3 86 9e     | ldaa 0x9e
-    13e5 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5e.putattr
-    13e7 86 47     | ldaa (1<<6)+7+(0<<3)
+    13e8 4f        | clra
     13e9 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user5d.eraseattr
+    13eb 86 07     | ldaa 7+(0<<3)
+    13ed a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5e.put
+    13ef 86 9e     | ldaa 0x9e
+    13f1 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5e.putattr
+    13f3 86 47     | ldaa (1<<6)+7+(0<<3)
+    13f5 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user5e.erase
-    13eb 4f        | clra
-    13ec a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5e.eraseattr
-    13ee 86 07     | ldaa 7+(0<<3)
-    13f0 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5f.put
-    13f2 86 9f     | ldaa 0x9f
-    13f4 a7 00     | staa [x+0x00+0]
-                   | .end
-                   pcg.user5f.putattr
-    13f6 86 47     | ldaa (1<<6)+7+(0<<3)
+    13f7 4f        | clra
     13f8 a7 00     | staa [x+0x00+0]
                    | .end
+                   pcg.user5e.eraseattr
+    13fa 86 07     | ldaa 7+(0<<3)
+    13fc a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5f.put
+    13fe 86 9f     | ldaa 0x9f
+    1400 a7 00     | staa [x+0x00+0]
+                   | .end
+                   pcg.user5f.putattr
+    1402 86 47     | ldaa (1<<6)+7+(0<<3)
+    1404 a7 00     | staa [x+0x00+0]
+                   | .end
                    pcg.user5f.erase
-    13fa 4f        | clra
-    13fb a7 00     | staa [x+0x00+0]
+    1406 4f        | clra
+    1407 a7 00     | staa [x+0x00+0]
                    | .end
                    pcg.user5f.eraseattr
-    13fd 86 07     | ldaa 7+(0<<3)
-    13ff a7 00     | staa [x+0x00+0]
+    1409 86 07     | ldaa 7+(0<<3)
+    140b a7 00     | staa [x+0x00+0]
                    | .end
                    .pcgpage test,user:0x20
-    1401 ff ff     | .db  0xff,0xff,0x20,0x20,0x20,0x20,0xff,0xff
-    1403 20 20     |
-    1405 20 20     |
-    1407 ff ff     |
-    1409 ff ff     | .db  0xff,0xff,0x21,0x21,0x21,0x21,0xff,0xff
-    140b 21 21     |
-    140d 21 21     |
-    140f ff ff     |
-    1411 ff ff     | .db  0xff,0xff,0x22,0x22,0x22,0x22,0xff,0xff
-    1413 22 22     |
-    1415 22 22     |
-    1417 ff ff     |
-    1419 ff ff     | .db  0xff,0xff,0x23,0x23,0x23,0x23,0xff,0xff
-    141b 23 23     |
-    141d 23 23     |
-    141f ff ff     |
-    1421 ff ff     | .db  0xff,0xff,0x24,0x24,0x24,0x24,0xff,0xff
-    1423 24 24     |
-    1425 24 24     |
-    1427 ff ff     |
-    1429 ff ff     | .db  0xff,0xff,0x25,0x25,0x25,0x25,0xff,0xff
-    142b 25 25     |
-    142d 25 25     |
-    142f ff ff     |
-    1431 ff ff     | .db  0xff,0xff,0x26,0x26,0x26,0x26,0xff,0xff
-    1433 26 26     |
-    1435 26 26     |
-    1437 ff ff     |
-    1439 ff ff     | .db  0xff,0xff,0x27,0x27,0x27,0x27,0xff,0xff
-    143b 27 27     |
-    143d 27 27     |
-    143f ff ff     |
-    1441 ff ff     | .db  0xff,0xff,0x28,0x28,0x28,0x28,0xff,0xff
-    1443 28 28     |
-    1445 28 28     |
-    1447 ff ff     |
-    1449 ff ff     | .db  0xff,0xff,0x29,0x29,0x29,0x29,0xff,0xff
-    144b 29 29     |
-    144d 29 29     |
-    144f ff ff     |
-    1451 ff ff     | .db  0xff,0xff,0x2a,0x2a,0x2a,0x2a,0xff,0xff
-    1453 2a 2a     |
-    1455 2a 2a     |
-    1457 ff ff     |
-    1459 ff ff     | .db  0xff,0xff,0x2b,0x2b,0x2b,0x2b,0xff,0xff
-    145b 2b 2b     |
-    145d 2b 2b     |
-    145f ff ff     |
-    1461 ff ff     | .db  0xff,0xff,0x2c,0x2c,0x2c,0x2c,0xff,0xff
-    1463 2c 2c     |
-    1465 2c 2c     |
-    1467 ff ff     |
-    1469 ff ff     | .db  0xff,0xff,0x2d,0x2d,0x2d,0x2d,0xff,0xff
-    146b 2d 2d     |
-    146d 2d 2d     |
-    146f ff ff     |
-    1471 ff ff     | .db  0xff,0xff,0x2e,0x2e,0x2e,0x2e,0xff,0xff
-    1473 2e 2e     |
-    1475 2e 2e     |
-    1477 ff ff     |
-    1479 ff ff     | .db  0xff,0xff,0x2f,0x2f,0x2f,0x2f,0xff,0xff
-    147b 2f 2f     |
-    147d 2f 2f     |
-    147f ff ff     |
-    1481 ff ff     | .db  0xff,0xff,0x30,0x30,0x30,0x30,0xff,0xff
-    1483 30 30     |
-    1485 30 30     |
-    1487 ff ff     |
-    1489 ff ff     | .db  0xff,0xff,0x31,0x31,0x31,0x31,0xff,0xff
-    148b 31 31     |
-    148d 31 31     |
-    148f ff ff     |
-    1491 ff ff     | .db  0xff,0xff,0x32,0x32,0x32,0x32,0xff,0xff
-    1493 32 32     |
-    1495 32 32     |
-    1497 ff ff     |
-    1499 ff ff     | .db  0xff,0xff,0x33,0x33,0x33,0x33,0xff,0xff
-    149b 33 33     |
-    149d 33 33     |
-    149f ff ff     |
-    14a1 ff ff     | .db  0xff,0xff,0x34,0x34,0x34,0x34,0xff,0xff
-    14a3 34 34     |
-    14a5 34 34     |
-    14a7 ff ff     |
-    14a9 ff ff     | .db  0xff,0xff,0x35,0x35,0x35,0x35,0xff,0xff
-    14ab 35 35     |
-    14ad 35 35     |
-    14af ff ff     |
-    14b1 ff ff     | .db  0xff,0xff,0x36,0x36,0x36,0x36,0xff,0xff
-    14b3 36 36     |
-    14b5 36 36     |
-    14b7 ff ff     |
-    14b9 ff ff     | .db  0xff,0xff,0x37,0x37,0x37,0x37,0xff,0xff
-    14bb 37 37     |
-    14bd 37 37     |
-    14bf ff ff     |
-    14c1 ff ff     | .db  0xff,0xff,0x38,0x38,0x38,0x38,0xff,0xff
-    14c3 38 38     |
-    14c5 38 38     |
-    14c7 ff ff     |
-    14c9 ff ff     | .db  0xff,0xff,0x39,0x39,0x39,0x39,0xff,0xff
-    14cb 39 39     |
-    14cd 39 39     |
-    14cf ff ff     |
-    14d1 ff ff     | .db  0xff,0xff,0x3a,0x3a,0x3a,0x3a,0xff,0xff
-    14d3 3a 3a     |
-    14d5 3a 3a     |
-    14d7 ff ff     |
-    14d9 ff ff     | .db  0xff,0xff,0x3b,0x3b,0x3b,0x3b,0xff,0xff
-    14db 3b 3b     |
-    14dd 3b 3b     |
-    14df ff ff     |
-    14e1 ff ff     | .db  0xff,0xff,0x3c,0x3c,0x3c,0x3c,0xff,0xff
-    14e3 3c 3c     |
-    14e5 3c 3c     |
-    14e7 ff ff     |
-    14e9 ff ff     | .db  0xff,0xff,0x3d,0x3d,0x3d,0x3d,0xff,0xff
-    14eb 3d 3d     |
-    14ed 3d 3d     |
-    14ef ff ff     |
-    14f1 ff ff     | .db  0xff,0xff,0x3e,0x3e,0x3e,0x3e,0xff,0xff
-    14f3 3e 3e     |
-    14f5 3e 3e     |
-    14f7 ff ff     |
-    14f9 ff ff     | .db  0xff,0xff,0x3f,0x3f,0x3f,0x3f,0xff,0xff
-    14fb 3f 3f     |
-    14fd 3f 3f     |
-    14ff ff ff     |
-    1501 ff ff     | .db  0xff,0xff,0x40,0x40,0x40,0x40,0xff,0xff
-    1503 40 40     |
-    1505 40 40     |
-    1507 ff ff     |
-    1509 ff ff     | .db  0xff,0xff,0x41,0x41,0x41,0x41,0xff,0xff
-    150b 41 41     |
-    150d 41 41     |
-    150f ff ff     |
-    1511 ff ff     | .db  0xff,0xff,0x42,0x42,0x42,0x42,0xff,0xff
-    1513 42 42     |
-    1515 42 42     |
-    1517 ff ff     |
-    1519 ff ff     | .db  0xff,0xff,0x43,0x43,0x43,0x43,0xff,0xff
-    151b 43 43     |
-    151d 43 43     |
-    151f ff ff     |
-    1521 ff ff     | .db  0xff,0xff,0x44,0x44,0x44,0x44,0xff,0xff
-    1523 44 44     |
-    1525 44 44     |
-    1527 ff ff     |
-    1529 ff ff     | .db  0xff,0xff,0x45,0x45,0x45,0x45,0xff,0xff
-    152b 45 45     |
-    152d 45 45     |
-    152f ff ff     |
-    1531 ff ff     | .db  0xff,0xff,0x46,0x46,0x46,0x46,0xff,0xff
-    1533 46 46     |
-    1535 46 46     |
-    1537 ff ff     |
-    1539 ff ff     | .db  0xff,0xff,0x47,0x47,0x47,0x47,0xff,0xff
-    153b 47 47     |
-    153d 47 47     |
-    153f ff ff     |
-    1541 ff ff     | .db  0xff,0xff,0x48,0x48,0x48,0x48,0xff,0xff
-    1543 48 48     |
-    1545 48 48     |
-    1547 ff ff     |
-    1549 ff ff     | .db  0xff,0xff,0x49,0x49,0x49,0x49,0xff,0xff
-    154b 49 49     |
-    154d 49 49     |
-    154f ff ff     |
-    1551 ff ff     | .db  0xff,0xff,0x4a,0x4a,0x4a,0x4a,0xff,0xff
-    1553 4a 4a     |
-    1555 4a 4a     |
-    1557 ff ff     |
-    1559 ff ff     | .db  0xff,0xff,0x4b,0x4b,0x4b,0x4b,0xff,0xff
-    155b 4b 4b     |
-    155d 4b 4b     |
-    155f ff ff     |
-    1561 ff ff     | .db  0xff,0xff,0x4c,0x4c,0x4c,0x4c,0xff,0xff
-    1563 4c 4c     |
-    1565 4c 4c     |
-    1567 ff ff     |
-    1569 ff ff     | .db  0xff,0xff,0x4d,0x4d,0x4d,0x4d,0xff,0xff
-    156b 4d 4d     |
-    156d 4d 4d     |
-    156f ff ff     |
-    1571 ff ff     | .db  0xff,0xff,0x4e,0x4e,0x4e,0x4e,0xff,0xff
-    1573 4e 4e     |
-    1575 4e 4e     |
-    1577 ff ff     |
-    1579 ff ff     | .db  0xff,0xff,0x4f,0x4f,0x4f,0x4f,0xff,0xff
-    157b 4f 4f     |
-    157d 4f 4f     |
-    157f ff ff     |
-    1581 ff ff     | .db  0xff,0xff,0x50,0x50,0x50,0x50,0xff,0xff
-    1583 50 50     |
-    1585 50 50     |
-    1587 ff ff     |
-    1589 ff ff     | .db  0xff,0xff,0x51,0x51,0x51,0x51,0xff,0xff
-    158b 51 51     |
-    158d 51 51     |
-    158f ff ff     |
-    1591 ff ff     | .db  0xff,0xff,0x52,0x52,0x52,0x52,0xff,0xff
-    1593 52 52     |
-    1595 52 52     |
-    1597 ff ff     |
-    1599 ff ff     | .db  0xff,0xff,0x53,0x53,0x53,0x53,0xff,0xff
-    159b 53 53     |
-    159d 53 53     |
-    159f ff ff     |
-    15a1 ff ff     | .db  0xff,0xff,0x54,0x54,0x54,0x54,0xff,0xff
-    15a3 54 54     |
-    15a5 54 54     |
-    15a7 ff ff     |
-    15a9 ff ff     | .db  0xff,0xff,0x55,0x55,0x55,0x55,0xff,0xff
-    15ab 55 55     |
-    15ad 55 55     |
-    15af ff ff     |
-    15b1 ff ff     | .db  0xff,0xff,0x56,0x56,0x56,0x56,0xff,0xff
-    15b3 56 56     |
-    15b5 56 56     |
-    15b7 ff ff     |
-    15b9 ff ff     | .db  0xff,0xff,0x57,0x57,0x57,0x57,0xff,0xff
-    15bb 57 57     |
-    15bd 57 57     |
-    15bf ff ff     |
-    15c1 ff ff     | .db  0xff,0xff,0x58,0x58,0x58,0x58,0xff,0xff
-    15c3 58 58     |
-    15c5 58 58     |
-    15c7 ff ff     |
-    15c9 ff ff     | .db  0xff,0xff,0x59,0x59,0x59,0x59,0xff,0xff
-    15cb 59 59     |
-    15cd 59 59     |
-    15cf ff ff     |
-    15d1 ff ff     | .db  0xff,0xff,0x5a,0x5a,0x5a,0x5a,0xff,0xff
-    15d3 5a 5a     |
-    15d5 5a 5a     |
-    15d7 ff ff     |
-    15d9 ff ff     | .db  0xff,0xff,0x5b,0x5b,0x5b,0x5b,0xff,0xff
-    15db 5b 5b     |
-    15dd 5b 5b     |
-    15df ff ff     |
-    15e1 ff ff     | .db  0xff,0xff,0x5c,0x5c,0x5c,0x5c,0xff,0xff
-    15e3 5c 5c     |
-    15e5 5c 5c     |
-    15e7 ff ff     |
-    15e9 ff ff     | .db  0xff,0xff,0x5d,0x5d,0x5d,0x5d,0xff,0xff
-    15eb 5d 5d     |
-    15ed 5d 5d     |
-    15ef ff ff     |
-    15f1 ff ff     | .db  0xff,0xff,0x5e,0x5e,0x5e,0x5e,0xff,0xff
-    15f3 5e 5e     |
-    15f5 5e 5e     |
-    15f7 ff ff     |
-    15f9 ff ff     | .db  0xff,0xff,0x5f,0x5f,0x5f,0x5f,0xff,0xff
-    15fb 5f 5f     |
-    15fd 5f 5f     |
-    15ff ff ff     |
+    140d ff ff     | .db  0xff,0xff,0x20,0x20,0x20,0x20,0xff,0xff
+    140f 20 20     |
+    1411 20 20     |
+    1413 ff ff     |
+    1415 ff ff     | .db  0xff,0xff,0x21,0x21,0x21,0x21,0xff,0xff
+    1417 21 21     |
+    1419 21 21     |
+    141b ff ff     |
+    141d ff ff     | .db  0xff,0xff,0x22,0x22,0x22,0x22,0xff,0xff
+    141f 22 22     |
+    1421 22 22     |
+    1423 ff ff     |
+    1425 ff ff     | .db  0xff,0xff,0x23,0x23,0x23,0x23,0xff,0xff
+    1427 23 23     |
+    1429 23 23     |
+    142b ff ff     |
+    142d ff ff     | .db  0xff,0xff,0x24,0x24,0x24,0x24,0xff,0xff
+    142f 24 24     |
+    1431 24 24     |
+    1433 ff ff     |
+    1435 ff ff     | .db  0xff,0xff,0x25,0x25,0x25,0x25,0xff,0xff
+    1437 25 25     |
+    1439 25 25     |
+    143b ff ff     |
+    143d ff ff     | .db  0xff,0xff,0x26,0x26,0x26,0x26,0xff,0xff
+    143f 26 26     |
+    1441 26 26     |
+    1443 ff ff     |
+    1445 ff ff     | .db  0xff,0xff,0x27,0x27,0x27,0x27,0xff,0xff
+    1447 27 27     |
+    1449 27 27     |
+    144b ff ff     |
+    144d ff ff     | .db  0xff,0xff,0x28,0x28,0x28,0x28,0xff,0xff
+    144f 28 28     |
+    1451 28 28     |
+    1453 ff ff     |
+    1455 ff ff     | .db  0xff,0xff,0x29,0x29,0x29,0x29,0xff,0xff
+    1457 29 29     |
+    1459 29 29     |
+    145b ff ff     |
+    145d ff ff     | .db  0xff,0xff,0x2a,0x2a,0x2a,0x2a,0xff,0xff
+    145f 2a 2a     |
+    1461 2a 2a     |
+    1463 ff ff     |
+    1465 ff ff     | .db  0xff,0xff,0x2b,0x2b,0x2b,0x2b,0xff,0xff
+    1467 2b 2b     |
+    1469 2b 2b     |
+    146b ff ff     |
+    146d ff ff     | .db  0xff,0xff,0x2c,0x2c,0x2c,0x2c,0xff,0xff
+    146f 2c 2c     |
+    1471 2c 2c     |
+    1473 ff ff     |
+    1475 ff ff     | .db  0xff,0xff,0x2d,0x2d,0x2d,0x2d,0xff,0xff
+    1477 2d 2d     |
+    1479 2d 2d     |
+    147b ff ff     |
+    147d ff ff     | .db  0xff,0xff,0x2e,0x2e,0x2e,0x2e,0xff,0xff
+    147f 2e 2e     |
+    1481 2e 2e     |
+    1483 ff ff     |
+    1485 ff ff     | .db  0xff,0xff,0x2f,0x2f,0x2f,0x2f,0xff,0xff
+    1487 2f 2f     |
+    1489 2f 2f     |
+    148b ff ff     |
+    148d ff ff     | .db  0xff,0xff,0x30,0x30,0x30,0x30,0xff,0xff
+    148f 30 30     |
+    1491 30 30     |
+    1493 ff ff     |
+    1495 ff ff     | .db  0xff,0xff,0x31,0x31,0x31,0x31,0xff,0xff
+    1497 31 31     |
+    1499 31 31     |
+    149b ff ff     |
+    149d ff ff     | .db  0xff,0xff,0x32,0x32,0x32,0x32,0xff,0xff
+    149f 32 32     |
+    14a1 32 32     |
+    14a3 ff ff     |
+    14a5 ff ff     | .db  0xff,0xff,0x33,0x33,0x33,0x33,0xff,0xff
+    14a7 33 33     |
+    14a9 33 33     |
+    14ab ff ff     |
+    14ad ff ff     | .db  0xff,0xff,0x34,0x34,0x34,0x34,0xff,0xff
+    14af 34 34     |
+    14b1 34 34     |
+    14b3 ff ff     |
+    14b5 ff ff     | .db  0xff,0xff,0x35,0x35,0x35,0x35,0xff,0xff
+    14b7 35 35     |
+    14b9 35 35     |
+    14bb ff ff     |
+    14bd ff ff     | .db  0xff,0xff,0x36,0x36,0x36,0x36,0xff,0xff
+    14bf 36 36     |
+    14c1 36 36     |
+    14c3 ff ff     |
+    14c5 ff ff     | .db  0xff,0xff,0x37,0x37,0x37,0x37,0xff,0xff
+    14c7 37 37     |
+    14c9 37 37     |
+    14cb ff ff     |
+    14cd ff ff     | .db  0xff,0xff,0x38,0x38,0x38,0x38,0xff,0xff
+    14cf 38 38     |
+    14d1 38 38     |
+    14d3 ff ff     |
+    14d5 ff ff     | .db  0xff,0xff,0x39,0x39,0x39,0x39,0xff,0xff
+    14d7 39 39     |
+    14d9 39 39     |
+    14db ff ff     |
+    14dd ff ff     | .db  0xff,0xff,0x3a,0x3a,0x3a,0x3a,0xff,0xff
+    14df 3a 3a     |
+    14e1 3a 3a     |
+    14e3 ff ff     |
+    14e5 ff ff     | .db  0xff,0xff,0x3b,0x3b,0x3b,0x3b,0xff,0xff
+    14e7 3b 3b     |
+    14e9 3b 3b     |
+    14eb ff ff     |
+    14ed ff ff     | .db  0xff,0xff,0x3c,0x3c,0x3c,0x3c,0xff,0xff
+    14ef 3c 3c     |
+    14f1 3c 3c     |
+    14f3 ff ff     |
+    14f5 ff ff     | .db  0xff,0xff,0x3d,0x3d,0x3d,0x3d,0xff,0xff
+    14f7 3d 3d     |
+    14f9 3d 3d     |
+    14fb ff ff     |
+    14fd ff ff     | .db  0xff,0xff,0x3e,0x3e,0x3e,0x3e,0xff,0xff
+    14ff 3e 3e     |
+    1501 3e 3e     |
+    1503 ff ff     |
+    1505 ff ff     | .db  0xff,0xff,0x3f,0x3f,0x3f,0x3f,0xff,0xff
+    1507 3f 3f     |
+    1509 3f 3f     |
+    150b ff ff     |
+    150d ff ff     | .db  0xff,0xff,0x40,0x40,0x40,0x40,0xff,0xff
+    150f 40 40     |
+    1511 40 40     |
+    1513 ff ff     |
+    1515 ff ff     | .db  0xff,0xff,0x41,0x41,0x41,0x41,0xff,0xff
+    1517 41 41     |
+    1519 41 41     |
+    151b ff ff     |
+    151d ff ff     | .db  0xff,0xff,0x42,0x42,0x42,0x42,0xff,0xff
+    151f 42 42     |
+    1521 42 42     |
+    1523 ff ff     |
+    1525 ff ff     | .db  0xff,0xff,0x43,0x43,0x43,0x43,0xff,0xff
+    1527 43 43     |
+    1529 43 43     |
+    152b ff ff     |
+    152d ff ff     | .db  0xff,0xff,0x44,0x44,0x44,0x44,0xff,0xff
+    152f 44 44     |
+    1531 44 44     |
+    1533 ff ff     |
+    1535 ff ff     | .db  0xff,0xff,0x45,0x45,0x45,0x45,0xff,0xff
+    1537 45 45     |
+    1539 45 45     |
+    153b ff ff     |
+    153d ff ff     | .db  0xff,0xff,0x46,0x46,0x46,0x46,0xff,0xff
+    153f 46 46     |
+    1541 46 46     |
+    1543 ff ff     |
+    1545 ff ff     | .db  0xff,0xff,0x47,0x47,0x47,0x47,0xff,0xff
+    1547 47 47     |
+    1549 47 47     |
+    154b ff ff     |
+    154d ff ff     | .db  0xff,0xff,0x48,0x48,0x48,0x48,0xff,0xff
+    154f 48 48     |
+    1551 48 48     |
+    1553 ff ff     |
+    1555 ff ff     | .db  0xff,0xff,0x49,0x49,0x49,0x49,0xff,0xff
+    1557 49 49     |
+    1559 49 49     |
+    155b ff ff     |
+    155d ff ff     | .db  0xff,0xff,0x4a,0x4a,0x4a,0x4a,0xff,0xff
+    155f 4a 4a     |
+    1561 4a 4a     |
+    1563 ff ff     |
+    1565 ff ff     | .db  0xff,0xff,0x4b,0x4b,0x4b,0x4b,0xff,0xff
+    1567 4b 4b     |
+    1569 4b 4b     |
+    156b ff ff     |
+    156d ff ff     | .db  0xff,0xff,0x4c,0x4c,0x4c,0x4c,0xff,0xff
+    156f 4c 4c     |
+    1571 4c 4c     |
+    1573 ff ff     |
+    1575 ff ff     | .db  0xff,0xff,0x4d,0x4d,0x4d,0x4d,0xff,0xff
+    1577 4d 4d     |
+    1579 4d 4d     |
+    157b ff ff     |
+    157d ff ff     | .db  0xff,0xff,0x4e,0x4e,0x4e,0x4e,0xff,0xff
+    157f 4e 4e     |
+    1581 4e 4e     |
+    1583 ff ff     |
+    1585 ff ff     | .db  0xff,0xff,0x4f,0x4f,0x4f,0x4f,0xff,0xff
+    1587 4f 4f     |
+    1589 4f 4f     |
+    158b ff ff     |
+    158d ff ff     | .db  0xff,0xff,0x50,0x50,0x50,0x50,0xff,0xff
+    158f 50 50     |
+    1591 50 50     |
+    1593 ff ff     |
+    1595 ff ff     | .db  0xff,0xff,0x51,0x51,0x51,0x51,0xff,0xff
+    1597 51 51     |
+    1599 51 51     |
+    159b ff ff     |
+    159d ff ff     | .db  0xff,0xff,0x52,0x52,0x52,0x52,0xff,0xff
+    159f 52 52     |
+    15a1 52 52     |
+    15a3 ff ff     |
+    15a5 ff ff     | .db  0xff,0xff,0x53,0x53,0x53,0x53,0xff,0xff
+    15a7 53 53     |
+    15a9 53 53     |
+    15ab ff ff     |
+    15ad ff ff     | .db  0xff,0xff,0x54,0x54,0x54,0x54,0xff,0xff
+    15af 54 54     |
+    15b1 54 54     |
+    15b3 ff ff     |
+    15b5 ff ff     | .db  0xff,0xff,0x55,0x55,0x55,0x55,0xff,0xff
+    15b7 55 55     |
+    15b9 55 55     |
+    15bb ff ff     |
+    15bd ff ff     | .db  0xff,0xff,0x56,0x56,0x56,0x56,0xff,0xff
+    15bf 56 56     |
+    15c1 56 56     |
+    15c3 ff ff     |
+    15c5 ff ff     | .db  0xff,0xff,0x57,0x57,0x57,0x57,0xff,0xff
+    15c7 57 57     |
+    15c9 57 57     |
+    15cb ff ff     |
+    15cd ff ff     | .db  0xff,0xff,0x58,0x58,0x58,0x58,0xff,0xff
+    15cf 58 58     |
+    15d1 58 58     |
+    15d3 ff ff     |
+    15d5 ff ff     | .db  0xff,0xff,0x59,0x59,0x59,0x59,0xff,0xff
+    15d7 59 59     |
+    15d9 59 59     |
+    15db ff ff     |
+    15dd ff ff     | .db  0xff,0xff,0x5a,0x5a,0x5a,0x5a,0xff,0xff
+    15df 5a 5a     |
+    15e1 5a 5a     |
+    15e3 ff ff     |
+    15e5 ff ff     | .db  0xff,0xff,0x5b,0x5b,0x5b,0x5b,0xff,0xff
+    15e7 5b 5b     |
+    15e9 5b 5b     |
+    15eb ff ff     |
+    15ed ff ff     | .db  0xff,0xff,0x5c,0x5c,0x5c,0x5c,0xff,0xff
+    15ef 5c 5c     |
+    15f1 5c 5c     |
+    15f3 ff ff     |
+    15f5 ff ff     | .db  0xff,0xff,0x5d,0x5d,0x5d,0x5d,0xff,0xff
+    15f7 5d 5d     |
+    15f9 5d 5d     |
+    15fb ff ff     |
+    15fd ff ff     | .db  0xff,0xff,0x5e,0x5e,0x5e,0x5e,0xff,0xff
+    15ff 5e 5e     |
+    1601 5e 5e     |
+    1603 ff ff     |
+    1605 ff ff     | .db  0xff,0xff,0x5f,0x5f,0x5f,0x5f,0xff,0xff
+    1607 5f 5f     |
+    1609 5f 5f     |
+    160b ff ff     |
 [Symbol List]
 0001  @BYTE
 0002  @WORD
 0004  @DWORD
-1401  pcgpage.test.src
+140d  pcgpage.test.src

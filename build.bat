@@ -1,5 +1,5 @@
 @echo off
-set VERSION=0.1.2
+set VERSION=0.2.0
 set ZIP=src\guest\buildtool\7za920\7za.exe
 set WORKDIR=jrasm-%VERSION%
 set ARCFILE=jrasm-%VERSION%.zip
