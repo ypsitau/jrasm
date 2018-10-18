@@ -1,5 +1,9 @@
 	.org	0x1000
 	
+	clra
+	staa	{0x00}		; disable click sound
+	jsr	0xec7f		; clear screen with attribute data in {0x0e}
+	
 	pcgpage.page1.store
 	
 	ldx	0xc100
@@ -27,7 +31,8 @@
 	ldx	0xc508
 	pcg.pattern1x24.putattr
 	
-	rts
+infinite:
+	bra infinite
 	
 	.pcgpage page1,user:0x40
 	

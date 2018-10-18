@@ -7,6 +7,10 @@ dirx:	.ds	@byte
 diry:	.ds	@byte
 	.end
 	
+	clra
+	staa	{0x00}		; disable click sound
+	jsr	0xec7f		; clear screen with attribute data in {0x0e}
+	
 	pcgpage.mainpage.store
 
 mainloop:
