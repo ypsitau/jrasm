@@ -6,7 +6,7 @@ import(wx.show)
 width = 32 * 8, height = 24 * 8
 img = image('cat.jpg')
 cutLevelLow = 0
-cutLevelHigh = 130
+cutLevelHigh = 90
 mapTbl1 = [consts(0, cutLevelLow), interval(0, 255, 256 - cutLevelLow - cutLevelHigh), consts(255, cutLevelHigh)]
 mapTbl2 = [consts(0, 52), consts(64, 51), consts(128, 51), consts(192, 51), consts(255, 51)]
 //mapTblNeg = range(255, 0)
