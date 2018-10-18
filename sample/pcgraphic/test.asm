@@ -3,6 +3,7 @@
 	pcgpage.page.store
 	ldx	0xc100
 	pcg.screen.put
+	ldx	0xc500
 	pcg.screen.putattr
 infinite:
 	bra	infinite
