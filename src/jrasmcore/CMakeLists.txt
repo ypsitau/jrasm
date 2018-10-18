@@ -15,6 +15,7 @@ add_library(jrasmcore STATIC
 	Operator.cpp
 	Parser.cpp
 	PCGChar.cpp
+	PCGColor.cpp
 	PCGData.cpp
 	PCGPage.cpp
 	PCGRange.cpp

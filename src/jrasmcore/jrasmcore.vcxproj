@@ -164,6 +164,7 @@
     <ClInclude Include="Operator.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PCGChar.h" />
+    <ClInclude Include="PCGColor.h" />
     <ClInclude Include="PCGData.h" />
     <ClInclude Include="PCGPage.h" />
     <ClInclude Include="PCGRange.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Operator.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PCGChar.cpp" />
+    <ClCompile Include="PCGColor.cpp" />
     <ClCompile Include="PCGData.cpp" />
     <ClCompile Include="PCGPage.cpp" />
     <ClCompile Include="PCGRange.cpp" />
