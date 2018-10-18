@@ -31,11 +31,10 @@ private:
 	inline ~PCGPage() {}
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline PCGType GetPCGType() const { return _pPCGRangeOwner->front()->GetPCGType(); }
 	inline bool IsEmpty() const { return _pcgCharOwner.empty(); }
 	inline const PCGRangeOwner &GetPCGRangeOwner() const { return *_pPCGRangeOwner; }
 	inline const PCGCharOwner &GetPCGCharOwner() const { return _pcgCharOwner; }
-	bool GenerateCharCode(int *pCharCode);
+	bool GenerateCharCode(int *pCharCode, PCGType *pPCGType);
 	PCGChar *CreatePCGChar(const Binary &buff, int);
 	Expr *ComposeExpr() const;
 };

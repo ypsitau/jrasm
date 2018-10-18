@@ -6,12 +6,13 @@
 //-----------------------------------------------------------------------------
 // PCGPage
 //-----------------------------------------------------------------------------
-bool PCGPage::GenerateCharCode(int *pCharCode)
+bool PCGPage::GenerateCharCode(int *pCharCode, PCGType *pPCGType)
 {
 	for ( ; _iPCGRangeCur < _pPCGRangeOwner->size(); _iPCGRangeCur++) {
 		PCGRange *pPCGRange = (*_pPCGRangeOwner)[_iPCGRangeCur];
 		if (pPCGRange->GetCharCodeCur() < pPCGRange->GetCharCodeEnd()) {
 			*pCharCode = pPCGRange->GetCharCodeCur();
+			*pPCGType = pPCGRange->GetPCGType();
 			pPCGRange->ForwardCharCodeCur();
 			return true;
 		}
@@ -25,8 +26,9 @@ PCGChar *PCGPage::CreatePCGChar(const Binary &buff, int)
 	const PCGChar *pPCGCharFound = _pcgCharOwner.FindSamePattern(buff);
 	if (pPCGCharFound != nullptr) return pPCGCharFound->Reference();
 	int charCode;
-	if (!GenerateCharCode(&charCode)) return nullptr;
-	AutoPtr<PCGChar> pPCGChar(new PCGChar(GetPCGType(), charCode, buff));
+	PCGType pcgType;
+	if (!GenerateCharCode(&charCode, &pcgType)) return nullptr;
+	AutoPtr<PCGChar> pPCGChar(new PCGChar(pcgType, charCode, buff));
 	_pcgCharOwner.push_back(pPCGChar->Reference());
 	return pPCGChar.release();
 }
@@ -43,7 +45,7 @@ Expr *PCGPage::ComposeExpr() const
 	asmCode += buff;
 	for (auto pPCGRange : GetPCGRangeOwner()) {
 		int charCodeStart = pPCGRange->GetCharCodeStart();
-		int charCodeCur = pPCGRange->GetCharCodeEnd();
+		int charCodeCur = pPCGRange->GetCharCodeCur();
 		if (pPCGRange->GetPCGType() == PCGTYPE_CRAM) {
 			dstAddrStart = 0xd000 + charCodeStart * 8;
 			dstAddrEnd = 0xd000 + charCodeCur * 8;
