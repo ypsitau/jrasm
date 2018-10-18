@@ -155,14 +155,6 @@ dstp_end:
         bra     loop_nextentry
 entries:
 )**";
-#if 0
-        .dw     0xc000,0xc010
-        .dw     0xc030,0xc040
-        .dw     0xc080,0xc0c0
-        .dw     0x0000
-done:   .end
-)**";
-#endif
 
 const char *PCGPage::_asmCodeTmpl1 = R"**(pcgpage.%s.src:
 pcgpage.%s.store:
