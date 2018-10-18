@@ -38,7 +38,7 @@ wxEND_EVENT_TABLE()
 PanelMain::Page::Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 	wxPanel(pParent, wxID_ANY), _pPCGPageInfo(pPCGPageInfo)
 {
-	const PCGInfo *pPCGInfoSelected = *_pPCGPageInfo->GetPCGInfoOwner().FindSelected();
+	const PCGDataInfo *pPCGDataInfoSelected = *_pPCGPageInfo->GetPCGDataInfoOwner().FindSelected();
 	do {
 		wxSashLayoutWindow *pSash = new wxSashLayoutWindow(
 			this, ID_SASH_Vert, wxDefaultPosition, wxDefaultSize,
@@ -77,7 +77,7 @@ PanelMain::Page::Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 			pVBox->Add(pHBox, wxSizerFlags(1).Expand());
 			_pMainWindow = pPanel;
 			do {
-				PCGEditor *pCtrl = new PCGEditor(pPanel, pPCGInfoSelected->Reference());
+				PCGEditor *pCtrl = new PCGEditor(pPanel, pPCGDataInfoSelected->Reference());
 				pHBox->Add(pCtrl, wxSizerFlags(1).Expand());
 				_pPCGEditor = pCtrl;
 				_pPCGEditor->AddListener(this);
@@ -129,9 +129,9 @@ PanelMain::Page::Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 #endif
 		} while (0);
 	} while (0);
-	_pSlider_DotSize->SetValue(pPCGInfoSelected->GetDotSizeEditor());
-	_pSpin_Width->SetValue(pPCGInfoSelected->GetDotNumX() / 8);
-	_pSpin_Height->SetValue(pPCGInfoSelected->GetDotNumY() / 8);
+	_pSlider_DotSize->SetValue(pPCGDataInfoSelected->GetDotSizeEditor());
+	_pSpin_Width->SetValue(pPCGDataInfoSelected->GetDotNumX() / 8);
+	_pSpin_Height->SetValue(pPCGDataInfoSelected->GetDotNumY() / 8);
 }
 
 //-----------------------------------------------------------------------------
@@ -167,24 +167,24 @@ void PanelMain::Page::OnSlider_DotSize(wxScrollEvent &event)
 
 void PanelMain::Page::OnButton_NewPCG(wxCommandEvent &event)
 {
-	_pPCGPageInfo->NewPCGInfo(true);
+	_pPCGPageInfo->NewPCGDataInfo(true);
 	_pPCGBrowser->Refresh();
 }
 
 void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 {
-	AutoPtr<PCGInfo> pPCGInfoSelected((*_pPCGPageInfo->GetPCGInfoOwner().FindSelected())->Reference());
-	pPCGInfoSelected->ChangeDotNum(_pSpin_Width->GetValue() * 8, _pSpin_Height->GetValue() * 8);
+	AutoPtr<PCGDataInfo> pPCGDataInfoSelected((*_pPCGPageInfo->GetPCGDataInfoOwner().FindSelected())->Reference());
+	pPCGDataInfoSelected->ChangeDotNum(_pSpin_Width->GetValue() * 8, _pSpin_Height->GetValue() * 8);
 	_pPCGEditor->PrepareMatrix(true);
 	_pPCGBrowser->Refresh();
 }
 
-void PanelMain::Page::NotifyPCGSelected(const PCGInfo *pPCGInfo)
+void PanelMain::Page::NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo)
 {
-	_pPCGEditor->SetPCGInfo(pPCGInfo->Reference());
-	_pSlider_DotSize->SetValue(pPCGInfo->GetDotSizeEditor());
-	_pSpin_Width->SetValue(pPCGInfo->GetDotNumX() / 8);
-	_pSpin_Height->SetValue(pPCGInfo->GetDotNumY() / 8);
+	_pPCGEditor->SetPCGDataInfo(pPCGDataInfo->Reference());
+	_pSlider_DotSize->SetValue(pPCGDataInfo->GetDotSizeEditor());
+	_pSpin_Width->SetValue(pPCGDataInfo->GetDotNumX() / 8);
+	_pSpin_Height->SetValue(pPCGDataInfo->GetDotNumY() / 8);
 }
 
 void PanelMain::Page::NotifyPCGModified()

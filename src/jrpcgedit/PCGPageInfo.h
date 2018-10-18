@@ -4,7 +4,7 @@
 #ifndef __JRPCGEDIT_PCGPAGEINFO_H__
 #define __JRPCGEDIT_PCGPAGEINFO_H__
 
-#include "PCGInfo.h"
+#include "PCGDataInfo.h"
 
 //-----------------------------------------------------------------------------
 // PCGPageInfo
@@ -15,7 +15,7 @@ private:
 	String _symbol;
 	bool _upperCaseFlag;
 	std::unique_ptr<PCGRangeOwner> _pPCGRangeOwner;
-	PCGInfoOwner _pcgInfoOwner;
+	PCGDataInfoOwner _pcgInfoOwner;
 public:
 	DeclareReferenceAccessor(PCGPageInfo);
 public:
@@ -27,11 +27,11 @@ public:
 	inline PCGType GetPCGType() const { return _pPCGRangeOwner->front()->GetPCGType(); }
 	inline const char *GetPCGTypeName() const { return (GetPCGType() == PCGTYPE_CRAM)? "CRAM" : "USER"; }
 	inline int GetCharCodeStart() const { return _pPCGRangeOwner->front()->GetCharCodeStart(); }
-	inline PCGInfoOwner &GetPCGInfoOwner() { return _pcgInfoOwner; }
-	inline const PCGInfoOwner &GetPCGInfoOwner() const { return _pcgInfoOwner; }
-	inline bool IsEmptyPCGInfo() const { return _pcgInfoOwner.empty(); }
-	inline void NewPCGInfo(bool selectedFlag) { _pcgInfoOwner.NewPCGInfo(selectedFlag); }
-	void AddPCGInfo(PCGInfo *pPCGInfo);
+	inline PCGDataInfoOwner &GetPCGDataInfoOwner() { return _pcgInfoOwner; }
+	inline const PCGDataInfoOwner &GetPCGDataInfoOwner() const { return _pcgInfoOwner; }
+	inline bool IsEmptyPCGDataInfo() const { return _pcgInfoOwner.empty(); }
+	inline void NewPCGDataInfo(bool selectedFlag) { _pcgInfoOwner.NewPCGDataInfo(selectedFlag); }
+	void AddPCGDataInfo(PCGDataInfo *pPCGDataInfo);
 	bool WriteFile(FILE *fp);
 	static PCGPageInfo *CreateFromExpr(Context &context, const Expr *pExpr);
 };

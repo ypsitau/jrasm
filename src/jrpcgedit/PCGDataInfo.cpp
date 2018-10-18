@@ -1,26 +1,26 @@
 //=============================================================================
-// PCGInfo.cpp
+// PCGDataInfo.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// PCGInfo
+// PCGDataInfo
 //-----------------------------------------------------------------------------
-PCGInfo::PCGInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag) :
+PCGDataInfo::PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag) :
 	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY),
 	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(pPattern)
 {
 }
 
-PCGInfo::PCGInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag) :
+PCGDataInfo::PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag) :
 	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY),
 	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(new Pattern(dotNumX, dotNumY))
 {
 }
 
-void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
+void PCGDataInfo::ChangeDotNum(int dotNumX, int dotNumY)
 {
 	if (_pPatternOrg.IsNull() || dotNumX < _pPatternOrg->GetDotNumX() || dotNumY < _pPatternOrg->GetDotNumY()) {
 		_pPatternOrg.reset(_pPattern.release());
@@ -32,7 +32,7 @@ void PCGInfo::ChangeDotNum(int dotNumX, int dotNumY)
 	_pBitmapForBrowser.reset(nullptr);
 }
 
-wxBitmap &PCGInfo::MakeBitmapForBrowser(int dotSizeBrowser)
+wxBitmap &PCGDataInfo::MakeBitmapForBrowser(int dotSizeBrowser)
 {
 	if (_pBitmapForBrowser.get() == nullptr || _dotSizeBrowser != dotSizeBrowser) {
 		_dotSizeBrowser = dotSizeBrowser;
@@ -59,7 +59,7 @@ wxBitmap &PCGInfo::MakeBitmapForBrowser(int dotSizeBrowser)
 	return *_pBitmapForBrowser;
 }
 
-bool PCGInfo::WriteFile(FILE *fp)
+bool PCGDataInfo::WriteFile(FILE *fp)
 {
 	const char *strPCG = ".pcg";
 	const char *strDB = ".db";
@@ -84,15 +84,15 @@ bool PCGInfo::WriteFile(FILE *fp)
 }
 
 //-----------------------------------------------------------------------------
-// PCGInfo::Pattern
+// PCGDataInfo::Pattern
 //-----------------------------------------------------------------------------
-PCGInfo::Pattern::Pattern(int dotNumX, int dotNumY) :
+PCGDataInfo::Pattern::Pattern(int dotNumX, int dotNumY) :
 	_cntRef(1), _dotNumX(dotNumX), _dotNumY(dotNumY), _dotTbl(new bool [dotNumX * dotNumY])
 {
 	Clear();
 }
 
-PCGInfo::Pattern *PCGInfo::Pattern::CreateFromBuff(int wdChar, int htChar, Binary &buff)
+PCGDataInfo::Pattern *PCGDataInfo::Pattern::CreateFromBuff(int wdChar, int htChar, Binary &buff)
 {
 	AutoPtr<Pattern> pPattern(new Pattern(wdChar * 8, htChar * 8));
 	bool *dotTbl = pPattern->GetDotTbl();
@@ -104,7 +104,7 @@ PCGInfo::Pattern *PCGInfo::Pattern::CreateFromBuff(int wdChar, int htChar, Binar
 	return pPattern.release();
 }
 
-void PCGInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPatternSrc)
+void PCGDataInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPatternSrc)
 {
 	int dotPosSrcX = 0, dotPosSrcY = 0;
 	for (int dotOffY = 0;
@@ -120,82 +120,82 @@ void PCGInfo::Pattern::Paste(int dotPosDstX, int dotPosDstY, const Pattern *pPat
 }
 
 //-----------------------------------------------------------------------------
-// PCGInfoList
+// PCGDataInfoList
 //-----------------------------------------------------------------------------
-PCGInfoList::iterator PCGInfoList::FindSelected()
+PCGDataInfoList::iterator PCGDataInfoList::FindSelected()
 {
-	for (iterator ppPCGInfo = begin(); ppPCGInfo != end(); ppPCGInfo++) {
-		if ((*ppPCGInfo)->GetSelectedFlag()) return ppPCGInfo;
+	for (iterator ppPCGDataInfo = begin(); ppPCGDataInfo != end(); ppPCGDataInfo++) {
+		if ((*ppPCGDataInfo)->GetSelectedFlag()) return ppPCGDataInfo;
 	}
 	return begin();
 }
 
-PCGInfoList::const_iterator PCGInfoList::FindSelected() const
+PCGDataInfoList::const_iterator PCGDataInfoList::FindSelected() const
 {
-	for (const_iterator ppPCGInfo = begin(); ppPCGInfo != end(); ppPCGInfo++) {
-		if ((*ppPCGInfo)->GetSelectedFlag()) return ppPCGInfo;
+	for (const_iterator ppPCGDataInfo = begin(); ppPCGDataInfo != end(); ppPCGDataInfo++) {
+		if ((*ppPCGDataInfo)->GetSelectedFlag()) return ppPCGDataInfo;
 	}
 	return begin();
 }
 
-bool PCGInfoList::MoveSelectionUp()
+bool PCGDataInfoList::MoveSelectionUp()
 {
-	iterator ppPCGInfo = FindSelected();
-	if (ppPCGInfo == begin()) return false;
-	ppPCGInfo = insert(ppPCGInfo - 1, *ppPCGInfo);
-	erase(ppPCGInfo + 2);
+	iterator ppPCGDataInfo = FindSelected();
+	if (ppPCGDataInfo == begin()) return false;
+	ppPCGDataInfo = insert(ppPCGDataInfo - 1, *ppPCGDataInfo);
+	erase(ppPCGDataInfo + 2);
 	return true;
 }
 
-bool PCGInfoList::MoveSelectionDown()
+bool PCGDataInfoList::MoveSelectionDown()
 {
-	iterator ppPCGInfo = FindSelected();
-	if (ppPCGInfo + 1 == end()) return false;
-	PCGInfo *pPCGInfo = *ppPCGInfo;
-	ppPCGInfo = erase(ppPCGInfo);
-	insert(ppPCGInfo + 1, pPCGInfo);
+	iterator ppPCGDataInfo = FindSelected();
+	if (ppPCGDataInfo + 1 == end()) return false;
+	PCGDataInfo *pPCGDataInfo = *ppPCGDataInfo;
+	ppPCGDataInfo = erase(ppPCGDataInfo);
+	insert(ppPCGDataInfo + 1, pPCGDataInfo);
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// PCGInfoOwner
+// PCGDataInfoOwner
 //-----------------------------------------------------------------------------
-PCGInfoOwner::~PCGInfoOwner()
+PCGDataInfoOwner::~PCGDataInfoOwner()
 {
 	Clear();
 }
 
-void PCGInfoOwner::Clear()
+void PCGDataInfoOwner::Clear()
 {
-	for (auto pPCGInfo : *this) {
-		PCGInfo::Delete(pPCGInfo);
+	for (auto pPCGDataInfo : *this) {
+		PCGDataInfo::Delete(pPCGDataInfo);
 	}
 	clear();
 }
 
-bool PCGInfoOwner::DeleteSelection()
+bool PCGDataInfoOwner::DeleteSelection()
 {
 	if (size() <= 1) return false;
-	iterator ppPCGInfo = FindSelected();
-	PCGInfo::Delete(*ppPCGInfo);
-	ppPCGInfo = erase(ppPCGInfo);
-	if (ppPCGInfo == end()) {
+	iterator ppPCGDataInfo = FindSelected();
+	PCGDataInfo::Delete(*ppPCGDataInfo);
+	ppPCGDataInfo = erase(ppPCGDataInfo);
+	if (ppPCGDataInfo == end()) {
 		back()->SetSelectedFlag(true);
 	} else {
-		(*ppPCGInfo)->SetSelectedFlag(true);
+		(*ppPCGDataInfo)->SetSelectedFlag(true);
 	}
 	return true;
 }
 
-void PCGInfoOwner::NewPCGInfo(bool selectedFlag)
+void PCGDataInfoOwner::NewPCGDataInfo(bool selectedFlag)
 {
 	bool upperCaseFlag = true;
 	char symbol[256];
 	::sprintf_s(symbol, "pcg%d", static_cast<int>(size()) + 1);
 	if (selectedFlag) {
-		for (auto pPCGInfo : *this) pPCGInfo->SetSelectedFlag(false);
+		for (auto pPCGDataInfo : *this) pPCGDataInfo->SetSelectedFlag(false);
 	}
-	AutoPtr<PCGInfo> pPCGInfo(new PCGInfo(symbol, 16, 16, 1, 32, upperCaseFlag));
-	pPCGInfo->SetSelectedFlag(selectedFlag);
-	push_back(pPCGInfo.release());
+	AutoPtr<PCGDataInfo> pPCGDataInfo(new PCGDataInfo(symbol, 16, 16, 1, 32, upperCaseFlag));
+	pPCGDataInfo->SetSelectedFlag(selectedFlag);
+	push_back(pPCGDataInfo.release());
 }

@@ -61,11 +61,11 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 	dc.Clear();
 	int y = 0;
 	_rcLabel = _rcBtnUp = _rcBtnDown = _rcBtnDelete = wxRect();
-	const PCGInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGInfoOwner();
-	for (PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
-		 ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
-		PCGInfo *pPCGInfo = *ppPCGInfo;
-		wxBitmap &bmp = pPCGInfo->MakeBitmapForBrowser(_dotSize);
+	const PCGDataInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGDataInfoOwner();
+	for (PCGDataInfoOwner::const_iterator ppPCGDataInfo = pcgInfoOwner.begin();
+		 ppPCGDataInfo != pcgInfoOwner.end(); ppPCGDataInfo++) {
+		PCGDataInfo *pPCGDataInfo = *ppPCGDataInfo;
+		wxBitmap &bmp = pPCGDataInfo->MakeBitmapForBrowser(_dotSize);
 		int xBmp = rcClient.GetRight() - (bmp.GetWidth() + _mgnRight);
 		int yBmp = y + _mgnTop;
 		int htBmp = bmp.GetHeight();
@@ -74,10 +74,10 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 			htBmp = _htBmpMin;
 		}
 		int htItem = _mgnTop + htBmp + _mgnBottom;
-		pPCGInfo->SetRectItem(0, y, rcClient.GetWidth(), htItem);
-		wxString strLabel(pPCGInfo->GetSymbol());
+		pPCGDataInfo->SetRectItem(0, y, rcClient.GetWidth(), htItem);
+		wxString strLabel(pPCGDataInfo->GetSymbol());
 		wxSize sizeLabel = dc.GetTextExtent(strLabel);
-		if (pPCGInfo->GetSelectedFlag()) {
+		if (pPCGDataInfo->GetSelectedFlag()) {
 			dc.SetBrush(_brushSelected);
 			dc.SetPen(*wxTRANSPARENT_PEN);
 			dc.DrawRectangle(0, y, rcClient.GetWidth(), htItem);
@@ -88,13 +88,13 @@ void PCGBrowser::OnPaint(wxPaintEvent &event)
 						_bmpBtnDelete.GetWidth(), _bmpBtnDelete.GetHeight());
 					dc.DrawBitmap(_bmpBtnDelete, _rcBtnDelete.GetTopLeft());
 				}
-				if (!pcgInfoOwner.IsFirst(ppPCGInfo)) {
+				if (!pcgInfoOwner.IsFirst(ppPCGDataInfo)) {
 					_rcBtnUp = wxRect(
 						2, y + 2,
 						_bmpBtnUp.GetWidth(), _bmpBtnDown.GetHeight());
 					dc.DrawBitmap(_bmpBtnUp, _rcBtnUp.GetTopLeft());
 				}
-				if (!pcgInfoOwner.IsLast(ppPCGInfo)) {
+				if (!pcgInfoOwner.IsLast(ppPCGDataInfo)) {
 					_rcBtnDown = wxRect(
 						2, y + htItem - 2 - _bmpBtnDown.GetHeight(),
 						_bmpBtnUp.GetWidth(), _bmpBtnDown.GetHeight());
@@ -144,23 +144,23 @@ void PCGBrowser::OnMotion(wxMouseEvent &event)
 void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 {
 	const wxPoint &pt = event.GetPosition();
-	PCGInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGInfoOwner();
-	PCGInfo *pPCGInfoSelected = nullptr;
-	for (auto pPCGInfo : pcgInfoOwner) {
-		if (pPCGInfo->GetRectItem().Contains(pt)) {
-			pPCGInfoSelected = pPCGInfo;
+	PCGDataInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGDataInfoOwner();
+	PCGDataInfo *pPCGDataInfoSelected = nullptr;
+	for (auto pPCGDataInfo : pcgInfoOwner) {
+		if (pPCGDataInfo->GetRectItem().Contains(pt)) {
+			pPCGDataInfoSelected = pPCGDataInfo;
 			break;
 		}
 	}
 	bool refreshFlag = false;
-	PCGInfo *pPCGInfoToNotify = nullptr;
-	if (pPCGInfoSelected != nullptr) {
-		for (auto pPCGInfo : pcgInfoOwner) {
-			pPCGInfo->SetSelectedFlag(false);
+	PCGDataInfo *pPCGDataInfoToNotify = nullptr;
+	if (pPCGDataInfoSelected != nullptr) {
+		for (auto pPCGDataInfo : pcgInfoOwner) {
+			pPCGDataInfo->SetSelectedFlag(false);
 		}
-		pPCGInfoSelected->SetSelectedFlag(true);
+		pPCGDataInfoSelected->SetSelectedFlag(true);
 		refreshFlag = true;
-		pPCGInfoToNotify = pPCGInfoSelected;
+		pPCGDataInfoToNotify = pPCGDataInfoSelected;
 	}
 	if (_rcBtnUp.Contains(pt)) {
 		refreshFlag = pcgInfoOwner.MoveSelectionUp();
@@ -168,10 +168,10 @@ void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 		refreshFlag = pcgInfoOwner.MoveSelectionDown();
 	} else if (_rcBtnDelete.Contains(pt)) {
 		refreshFlag = pcgInfoOwner.DeleteSelection();
-		pPCGInfoToNotify = *pcgInfoOwner.FindSelected();
+		pPCGDataInfoToNotify = *pcgInfoOwner.FindSelected();
 	}
 	if (refreshFlag) Refresh();
-	if (pPCGInfoToNotify != nullptr) _listenerList.NotifyPCGSelected(pPCGInfoToNotify);
+	if (pPCGDataInfoToNotify != nullptr) _listenerList.NotifyPCGSelected(pPCGDataInfoToNotify);
 }
 
 void PCGBrowser::OnLeftUp(wxMouseEvent &event)
@@ -197,38 +197,38 @@ void PCGBrowser::OnLeaveWindow(wxMouseEvent &event)
 void PCGBrowser::OnKeyDown(wxKeyEvent &event)
 {
 	int keyCode = event.GetKeyCode();
-	const PCGInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGInfoOwner();
-	PCGInfoOwner::const_iterator ppPCGInfo = pcgInfoOwner.begin();
-	for ( ; ppPCGInfo != pcgInfoOwner.end(); ppPCGInfo++) {
-		PCGInfo *pPCGInfo = *ppPCGInfo;
-		if (pPCGInfo->GetSelectedFlag()) break;
+	const PCGDataInfoOwner &pcgInfoOwner = _pPCGPageInfo->GetPCGDataInfoOwner();
+	PCGDataInfoOwner::const_iterator ppPCGDataInfo = pcgInfoOwner.begin();
+	for ( ; ppPCGDataInfo != pcgInfoOwner.end(); ppPCGDataInfo++) {
+		PCGDataInfo *pPCGDataInfo = *ppPCGDataInfo;
+		if (pPCGDataInfo->GetSelectedFlag()) break;
 	}
-	PCGInfo *pPCGInfoTo = nullptr;
+	PCGDataInfo *pPCGDataInfoTo = nullptr;
 	if (pcgInfoOwner.empty()) {
 		// nothing to do
 	} else if (keyCode == WXK_UP) {
-		if (ppPCGInfo == pcgInfoOwner.begin()) {
+		if (ppPCGDataInfo == pcgInfoOwner.begin()) {
 			// nothing to do
-		} else if (ppPCGInfo == pcgInfoOwner.end()) {
-			pPCGInfoTo = pcgInfoOwner.back();
+		} else if (ppPCGDataInfo == pcgInfoOwner.end()) {
+			pPCGDataInfoTo = pcgInfoOwner.back();
 		} else {
-			(*ppPCGInfo)->SetSelectedFlag(false);
-			pPCGInfoTo = *(ppPCGInfo - 1);
+			(*ppPCGDataInfo)->SetSelectedFlag(false);
+			pPCGDataInfoTo = *(ppPCGDataInfo - 1);
 		}
 	} else if (keyCode == WXK_DOWN) {
-		if (ppPCGInfo == pcgInfoOwner.end()) {
-			pPCGInfoTo = pcgInfoOwner.front();
-		} else if (ppPCGInfo + 1 == pcgInfoOwner.end()) {
+		if (ppPCGDataInfo == pcgInfoOwner.end()) {
+			pPCGDataInfoTo = pcgInfoOwner.front();
+		} else if (ppPCGDataInfo + 1 == pcgInfoOwner.end()) {
 			// nothing to do
 		} else {
-			(*ppPCGInfo)->SetSelectedFlag(false);
-			pPCGInfoTo = *(ppPCGInfo + 1);
+			(*ppPCGDataInfo)->SetSelectedFlag(false);
+			pPCGDataInfoTo = *(ppPCGDataInfo + 1);
 		}
 	}
-	if (pPCGInfoTo != nullptr) {
-		pPCGInfoTo->SetSelectedFlag(true);
+	if (pPCGDataInfoTo != nullptr) {
+		pPCGDataInfoTo->SetSelectedFlag(true);
 		Refresh();
-		_listenerList.NotifyPCGSelected(pPCGInfoTo);
+		_listenerList.NotifyPCGSelected(pPCGDataInfoTo);
 	}
 	
 }
@@ -240,7 +240,7 @@ void PCGBrowser::OnKeyUp(wxKeyEvent &event)
 //-----------------------------------------------------------------------------
 // PCGBrowser::ListenerList
 //-----------------------------------------------------------------------------
-void PCGBrowser::ListenerList::NotifyPCGSelected(const PCGInfo *pPCGInfo)
+void PCGBrowser::ListenerList::NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo)
 {
-	for (auto pListener : *this) pListener->NotifyPCGSelected(pPCGInfo);
+	for (auto pListener : *this) pListener->NotifyPCGSelected(pPCGDataInfo);
 }

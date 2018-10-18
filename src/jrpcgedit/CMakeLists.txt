@@ -5,8 +5,8 @@ add_executable(jrpcgedit
 	FrameMain.cpp
 	PanelMain.cpp
 	PCGBrowser.cpp
+	PCGDataInfo.cpp
 	PCGEditor.cpp
-	PCGInfo.cpp
 	PCGPageInfo.cpp
 )
 

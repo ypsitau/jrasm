@@ -13,11 +13,11 @@ class PCGBrowser : public wxPanel {
 public:
 	class Listener {
 	public:
-		virtual void NotifyPCGSelected(const PCGInfo *pPCGInfo) = 0;
+		virtual void NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo) = 0;
 	};
 	class ListenerList : public std::vector<Listener *> {
 	public:
-		void NotifyPCGSelected(const PCGInfo *pPCGInfo);
+		void NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo);
 	};
 private:
 	AutoPtr<PCGPageInfo> _pPCGPageInfo;

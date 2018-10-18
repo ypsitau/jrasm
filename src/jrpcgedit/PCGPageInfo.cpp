@@ -11,9 +11,9 @@ PCGPageInfo::PCGPageInfo(const String &symbol, PCGRangeOwner *pPCGRangeOwner, bo
 {
 }
 
-void PCGPageInfo::AddPCGInfo(PCGInfo *pPCGInfo)
+void PCGPageInfo::AddPCGDataInfo(PCGDataInfo *pPCGDataInfo)
 {
-	_pcgInfoOwner.push_back(pPCGInfo);
+	_pcgInfoOwner.push_back(pPCGDataInfo);
 }
 
 bool PCGPageInfo::WriteFile(FILE *fp)
@@ -25,9 +25,9 @@ bool PCGPageInfo::WriteFile(FILE *fp)
 		strEND = ".END\n";
 	}
 	::fprintf(fp, "\t%s\t%s,%s,0x%02x\n", strPCGPAGE, GetSymbol(), GetPCGTypeName(), GetCharCodeStart());
-	for (auto pPCGInfo : GetPCGInfoOwner()) {
+	for (auto pPCGDataInfo : GetPCGDataInfoOwner()) {
 		::fprintf(fp, "\n");
-		if (!pPCGInfo->WriteFile(fp)) return false;
+		if (!pPCGDataInfo->WriteFile(fp)) return false;
 	}
 	::fprintf(fp, "\n");
 	::fprintf(fp, "\t%s\n", strEND);
@@ -50,14 +50,14 @@ PCGPageInfo *PCGPageInfo::CreateFromExpr(Context &context, const Expr *pExpr)
 		Binary buff;
 		if (!Directive_PCG::ExtractParams(context, pExprChild, &symbol,
 										  &wdChar, &htChar, &stepX, &stepY, buff)) return nullptr;
-		AutoPtr<PCGInfo> pPCGInfo(
-			new PCGInfo(symbol, PCGInfo::Pattern::CreateFromBuff(
+		AutoPtr<PCGDataInfo> pPCGDataInfo(
+			new PCGDataInfo(symbol, PCGDataInfo::Pattern::CreateFromBuff(
 							wdChar, htChar, buff), stepX, stepY, upperCaseFlag));
-		pPCGInfo->SetSelectedFlag(firstFlag);
+		pPCGDataInfo->SetSelectedFlag(firstFlag);
 		firstFlag = false;
-		pPCGPageInfo->AddPCGInfo(pPCGInfo.release());
+		pPCGPageInfo->AddPCGDataInfo(pPCGDataInfo.release());
 	}
-	if (pPCGPageInfo->IsEmptyPCGInfo()) pPCGPageInfo->NewPCGInfo(true);
+	if (pPCGPageInfo->IsEmptyPCGDataInfo()) pPCGPageInfo->NewPCGDataInfo(true);
 	return pPCGPageInfo.release();
 }
 
@@ -89,6 +89,6 @@ void PCGPageInfoOwner::NewPCGPageInfo()
 	std::unique_ptr<PCGRangeOwner> pPCGRangeOwner(new PCGRangeOwner());
 	pPCGRangeOwner->push_back(new PCGRange(PCGTYPE_User, 0x20, 0x60));
 	AutoPtr<PCGPageInfo> pPCGPageInfo(new PCGPageInfo(symbol, pPCGRangeOwner.release(), upperCaseFlag));
-	pPCGPageInfo->NewPCGInfo(true);
+	pPCGPageInfo->NewPCGDataInfo(true);
 	push_back(pPCGPageInfo.release());
 }

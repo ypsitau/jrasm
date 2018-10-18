@@ -161,8 +161,8 @@
     <ClInclude Include="FrameMain.h" />
     <ClInclude Include="PanelMain.h" />
     <ClInclude Include="PCGBrowser.h" />
+    <ClInclude Include="PCGDataInfo.h" />
     <ClInclude Include="PCGEditor.h" />
-    <ClInclude Include="PCGInfo.h" />
     <ClInclude Include="PCGPageInfo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,8 +172,8 @@
     <ClCompile Include="FrameMain.cpp" />
     <ClCompile Include="PanelMain.cpp" />
     <ClCompile Include="PCGBrowser.cpp" />
+    <ClCompile Include="PCGDataInfo.cpp" />
     <ClCompile Include="PCGEditor.cpp" />
-    <ClCompile Include="PCGInfo.cpp" />
     <ClCompile Include="PCGPageInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

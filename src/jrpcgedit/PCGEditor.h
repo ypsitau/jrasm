@@ -4,7 +4,7 @@
 #ifndef __JRPCGEDIT_PCGEDITOR_H__
 #define __JRPCGEDIT_PCGEDITOR_H__
 
-#include "PCGInfo.h"
+#include "PCGDataInfo.h"
 
 //-----------------------------------------------------------------------------
 // PCGEditor
@@ -21,7 +21,7 @@ public:
 	};
 private:
 	wxRect _rcMatrix;
-	AutoPtr<PCGInfo> _pPCGInfo;
+	AutoPtr<PCGDataInfo> _pPCGDataInfo;
 	std::unique_ptr<wxBitmap> _pBmpMatrix;
 	wxPen _penBorder;
 	wxPen _penGrid;
@@ -35,13 +35,13 @@ private:
 	static int _mgnTop;
 	static int _mgnBottom;
 public:
-	PCGEditor(wxWindow *pParent, PCGInfo *pPCGInfo);
+	PCGEditor(wxWindow *pParent, PCGDataInfo *pPCGDataInfo);
 	inline void AddListener(Listener *pListener) { _listenerList.push_back(pListener); }
 	inline int DotPosXToMatrixCoord(int dotPosX) const { return _mgnLeft + dotPosX * GetDotSize(); }
 	inline int DotPosYToMatrixCoord(int dotPosY) const { return _mgnTop + dotPosY * GetDotSize(); }
-	inline int GetDotSize() const { return _pPCGInfo->GetDotSizeEditor(); }
+	inline int GetDotSize() const { return _pPCGDataInfo->GetDotSizeEditor(); }
 	void SetDotSize(int dotSize);
-	void SetPCGInfo(PCGInfo *pPCGInfo);
+	void SetPCGDataInfo(PCGDataInfo *pPCGDataInfo);
 	void PrepareMatrix(bool refreshFlag);
 	void UpdateMatrix(bool refreshFlag);
 	void PutDot(int dotPosX, int dotPosY, bool flag);

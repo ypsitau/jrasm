@@ -16,8 +16,8 @@
 #include "FrameMain.h"
 #include "PanelMain.h"
 #include "PCGBrowser.h"
+#include "PCGDataInfo.h"
 #include "PCGEditor.h"
-#include "PCGInfo.h"
 #include "PCGPageInfo.h"
 
 #endif

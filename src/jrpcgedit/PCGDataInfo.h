@@ -1,13 +1,13 @@
 //=============================================================================
-// PCGInfo.h
+// PCGDataInfo.h
 //=============================================================================
-#ifndef __JRPCGEDIT_PCGINFO_H__
-#define __JRPCGEDIT_PCGINFO_H__
+#ifndef __JRPCGEDIT_PCGDATAINFO_H__
+#define __JRPCGEDIT_PCGDATAINFO_H__
 
 //-----------------------------------------------------------------------------
-// PCGInfo
+// PCGDataInfo
 //-----------------------------------------------------------------------------
-class PCGInfo {
+class PCGDataInfo {
 public:
 	class Pattern {
 	private:
@@ -54,12 +54,12 @@ private:
 	AutoPtr<Pattern> _pPatternOrg;
 	std::unique_ptr<wxBitmap> _pBitmapForBrowser;
 public:
-	DeclareReferenceAccessor(PCGInfo);
+	DeclareReferenceAccessor(PCGDataInfo);
 public:
-	PCGInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag);
-	PCGInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag);
+	PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag);
+	PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag);
 protected:
-	inline ~PCGInfo() {};
+	inline ~PCGDataInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
 	inline int GetStepX() const { return _stepX; }
@@ -96,31 +96,31 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// PCGInfoList
+// PCGDataInfoList
 //-----------------------------------------------------------------------------
-class PCGInfoList : public std::vector<PCGInfo *> {
+class PCGDataInfoList : public std::vector<PCGDataInfo *> {
 public:
 	iterator FindSelected();
 	const_iterator FindSelected() const;
-	inline bool IsFirst(const_iterator ppPCGInfo) const {
-		return ppPCGInfo == begin();
+	inline bool IsFirst(const_iterator ppPCGDataInfo) const {
+		return ppPCGDataInfo == begin();
 	}
-	inline bool IsLast(const_iterator ppPCGInfo) const {
-		return ppPCGInfo != end() && ppPCGInfo + 1 == end();
+	inline bool IsLast(const_iterator ppPCGDataInfo) const {
+		return ppPCGDataInfo != end() && ppPCGDataInfo + 1 == end();
 	}
 	bool MoveSelectionUp();
 	bool MoveSelectionDown();
 };
 
 //-----------------------------------------------------------------------------
-// PCGInfoOwner
+// PCGDataInfoOwner
 //-----------------------------------------------------------------------------
-class PCGInfoOwner : public PCGInfoList {
+class PCGDataInfoOwner : public PCGDataInfoList {
 public:
-	~PCGInfoOwner();
+	~PCGDataInfoOwner();
 	void Clear();
 	bool DeleteSelection();
-	void NewPCGInfo(bool selectedFlag);
+	void NewPCGDataInfo(bool selectedFlag);
 };
 
 #endif

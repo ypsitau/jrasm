@@ -41,7 +41,7 @@ public:
 		void OnSpin_WidthHeight(wxSpinEvent &event);
 	public:
 		// virtual function of PCGBrowser::Listener
-		virtual void NotifyPCGSelected(const PCGInfo *pPCGInfo);
+		virtual void NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo);
 		// virtual function of PCGEditor::Listener
 		virtual void NotifyPCGModified();
 	};
