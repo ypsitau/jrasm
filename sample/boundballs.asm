@@ -1,4 +1,4 @@
-	.org	0x2000
+	.org	0x1000
 
 ball:	.struct
 posx:	.ds	@byte
@@ -14,7 +14,7 @@ mainloop:
 	.scope
 	ldx	balls
 loop:
-	.scope	x
+	.save	x
 	xy2codeaddr [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.erase
 	code2attraddr
@@ -28,7 +28,7 @@ loop:
 	.scope
 	ldx	balls
 loop:
-	.scope	x
+	.save	x
 	movebound [x+ball.posx], [x+ball.dirx], 0, 30
 	movebound [x+ball.posy], [x+ball.diry], 0, 22
 	.end
@@ -40,7 +40,7 @@ loop:
 	.scope
 	ldx	balls
 loop:
-	.scope	x
+	.save	x
 	xy2codeaddr [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.put
 	code2attraddr
@@ -72,7 +72,7 @@ balls:
 	.db	27, 19, 1, -1
 ballsEnd:
 
-	.pcgpage mainpage,user,32
+	.pcgpage mainpage,cram:32
 
 	.pcg	chkcircle2x2,2,2
 	.db	b".....######....."
