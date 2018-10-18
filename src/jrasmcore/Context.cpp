@@ -90,6 +90,7 @@ void Context::PrintSymbolList(FILE *fp, bool upperCaseFlag)
 
 bool Context::PrintMemoryUsage(FILE *fp, bool upperCaseFlag)
 {
+#if 0
 	const char *formatRoot	= "%04x-%04x   %5dbytes\n";
 	const char *formatChild	= " %04x-%04x  %5dbytes\n";
 	if (upperCaseFlag) {
@@ -109,6 +110,7 @@ bool Context::PrintMemoryUsage(FILE *fp, bool upperCaseFlag)
 					  pRegionIngredient->GetBytes());
 		}
 	}
+#endif
 	return true;
 }
 

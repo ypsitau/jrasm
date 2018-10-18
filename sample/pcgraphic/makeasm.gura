@@ -63,9 +63,11 @@ R'''
 	pcgpage.page.store
 	ldx	0xc100
 	pcg.screen.put
-	rts
+	pcg.screen.putattr
+infinite:
+	bra	infinite
 	
-	.pcgpage page,cram,1
+	.pcgpage page,cram:1,user:32
 	.pcg	screen,32,24
 	${format('0x%02x', bytes).fold(16):*join(',').each {|line|}}
 	.db	${line}
