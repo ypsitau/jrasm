@@ -167,6 +167,42 @@ String PCGData::ComposeAsm(bool putZeroFlag) const
 		}
 		asmCode += "        .END\n";
 	} while (0);
+	do { // create macro: PCG.symbol.PUTATTRFG
+		::sprintf_s(str, "PCG.%s.PUTATTRFG%s:\n", GetSymbol(), suffix);
+		asmCode += str;
+		::sprintf_s(str, "        .MACRO fg=7,offset=0\n");
+		asmCode += str;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
+		for (auto pPCGChar : _pcgCharOwner) {
+			int offsetBase = iCol * _stepX + iRow * _stepY;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			if (!pPCGChar->IsZero() || putZeroFlag) {
+				::sprintf_s(str, "        LDAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
+				asmCode += str;
+				::sprintf_s(str, "        ANDA    0x38\n");
+				asmCode += str;
+				if (pPCGChar->GetPCGType() == PCGTYPE_CRAM) {
+					::sprintf_s(str, "        ORAA    fg\n");
+				} else { // _pcgType == PCGTYPE_User
+					::sprintf_s(str, "        ORAA    (1<<6)+fg\n");
+				}
+				asmCode += str;
+				::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
+				asmCode += str;
+			}
+			iCol++;
+			if (iCol == _wdChar) {
+				iCol = 0;
+				iRow++;
+			}
+		}
+		asmCode += "        .END\n";
+	} while (0);
 	do { // create macro: PCG.symbol.ERASEATTR
 		::sprintf_s(str, "PCG.%s.ERASEATTR%s:\n", GetSymbol(), suffix);
 		asmCode += str;
