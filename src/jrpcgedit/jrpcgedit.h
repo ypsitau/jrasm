@@ -10,7 +10,7 @@
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include <wx/tglbtn.h>
-#include "lib/jrasmcore.h"
+#include "jrasmcore/jrasmcore.h"
 #include "Document.h"
 #include "ErrorDialog.h"
 #include "FrameMain.h"

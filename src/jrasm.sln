@@ -8,7 +8,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasm", "jrasm\jrasm.vcxpro
 		{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF} = {EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasmcore", "lib\jrasmcore.vcxproj", "{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrasmcore", "jrasmcore\jrasmcore.vcxproj", "{EA800591-045F-4B00-ABF0-C4A9BCEBC2EF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrpcgedit", "jrpcgedit\jrpcgedit.vcxproj", "{5C8D8559-0283-43CF-905D-7CD34E98B5BA}"
 	ProjectSection(ProjectDependencies) = postProject
