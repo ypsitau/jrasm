@@ -37,6 +37,8 @@ public:
 	inline size_t GetStepY() const { return _stepY; }
 	inline void AddPCGChar(PCGChar *pPCGChar) { _pcgCharOwner.push_back(pPCGChar); }
 	Expr *ComposeExpr() const;
+private:
+	String ComposeAsm(bool putZeroFlag) const;
 };
 
 #endif

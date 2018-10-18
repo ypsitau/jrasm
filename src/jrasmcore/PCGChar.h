@@ -36,6 +36,8 @@ public:
 	inline int GetCharCode() const { return _charCode; }
 	inline bool HasSamePattern(const Binary &buff) { return _buff == buff; }
 	inline const Binary &GetBuffer() const { return _buff; }
+	inline bool IsZero() const { return _charCode == 0; }
+	int GetCharCodeToPut() const;
 };
 
 //-----------------------------------------------------------------------------
