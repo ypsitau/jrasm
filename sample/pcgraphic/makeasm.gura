@@ -1,12 +1,26 @@
 #!/usr/bin/env gura
+import(argopt)
 import(jpeg)
 import(png)
 import(wx.show)
 
+argopt.Parser {|p|
+	p.addParam('cutlow', 'l', defValue => '0')
+	p.addParam('cuthigh', 'h', defValue => '0')
+	p.addFlag('show', 's')
+	[cfg, argv] = p.parse(sys.argv)
+}
+if (argv.isempty()) {
+	sys.stderr.println('usage: makeasm.gura imgfile')
+	sys.exit(1)
+}
+fileNameSrc = argv[0]
+fileNameDst = path.basename(fileNameSrc) + '.asm'
 width = 32 * 8, height = 24 * 8
-img = image('cat.jpg')
-cutLevelLow = 0
-cutLevelHigh = 90
+img = image(fileNameSrc)
+cutLevelLow = int(cfg['cutlow'])
+cutLevelHigh = int(cfg['cuthigh'])
+sys.stderr.printf('filtered level: %d - %d\n', cutLevelLow, 255 - cutLevelHigh)
 mapTbl1 = [consts(0, cutLevelLow), interval(0, 255, 256 - cutLevelLow - cutLevelHigh), consts(255, cutLevelHigh)]
 mapTbl2 = [consts(0, 52), consts(64, 51), consts(128, 51), consts(192, 51), consts(255, 51)]
 //mapTblNeg = range(255, 0)
@@ -43,8 +57,10 @@ img.scan {|c, i|
 		imgDst.putpixel(xDst + 1, yDst + 1, color.white)
 	}
 }
-//imgDst.show()
-//sys.exit()
+if (cfg['show']) {
+	imgDst.show()
+	sys.exit()
+}
 nBits = 0
 accum = 0
 bytes = imgDst.scan():xiter {|c|
@@ -58,6 +74,7 @@ bytes = imgDst.scan():xiter {|c|
 	}
 }
 R'''
+	; makeasm.gura -l ${cutLevelLow} -h ${cutLevelHigh} ${path.filename(fileNameSrc)}
 	.org	0x1000
 
 	pcgpage.page.store
@@ -75,5 +92,6 @@ infinite:
 	${end}
 	.end
 	.end
-'''.template().render(sys.stdout)
+'''.template().render(fileNameDst)
 //println('\t.db ', format('0x%02x', bytes).fold(16):*join(','))
+sys.stderr.println(fileNameDst, ' was created')
