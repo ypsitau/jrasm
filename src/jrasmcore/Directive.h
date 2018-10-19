@@ -73,6 +73,7 @@ public:
 	static const DirectiveFactory *ORG;
 	static const DirectiveFactory *PCG;
 	static const DirectiveFactory *PCGPAGE;
+	static const DirectiveFactory *RESTORE;
 	static const DirectiveFactory *SAVE;
 	static const DirectiveFactory *SCOPE;
 	static const DirectiveFactory *STRUCT;
@@ -391,6 +392,26 @@ public:
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
+	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
+	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_RESTORE
+//-----------------------------------------------------------------------------
+class Directive_RESTORE : public Directive {
+public:
+	class Factory : public DirectiveFactory {
+	public:
+		inline Factory() : DirectiveFactory(".RESTORE", false, true) {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_RESTORE() : Directive(RESTORE) {}
+	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,

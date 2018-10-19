@@ -40,6 +40,7 @@ const DirectiveFactory *Directive::MML			= nullptr;
 const DirectiveFactory *Directive::ORG			= nullptr;
 const DirectiveFactory *Directive::PCG			= nullptr;
 const DirectiveFactory *Directive::PCGPAGE		= nullptr;
+const DirectiveFactory *Directive::RESTORE		= nullptr;
 const DirectiveFactory *Directive::SAVE			= nullptr;
 const DirectiveFactory *Directive::SCOPE		= nullptr;
 const DirectiveFactory *Directive::STRUCT		= nullptr;
@@ -64,6 +65,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(ORG			= new Directive_ORG::Factory());
 	_directiveFactoryDict.Assign(PCG			= new Directive_PCG::Factory());
 	_directiveFactoryDict.Assign(PCGPAGE		= new Directive_PCGPAGE::Factory());
+	_directiveFactoryDict.Assign(RESTORE		= new Directive_RESTORE::Factory());
 	_directiveFactoryDict.Assign(SAVE			= new Directive_SAVE::Factory());
 	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
 	_directiveFactoryDict.Assign(STRUCT			= new Directive_STRUCT::Factory());
@@ -1050,6 +1052,61 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	}
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_RESTORE
+//-----------------------------------------------------------------------------
+Directive *Directive_RESTORE::Factory::Create() const
+{
+	return new Directive_RESTORE();
+}
+
+bool Directive_RESTORE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
+{
+	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
+	pParser->SetExprSourceInfo(pExpr.get(), pToken);
+	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
+	exprStack.push_back(pExpr->Reference());		// for children
+	exprStack.push_back(pExpr.release());			// for operands
+	return true;
+}
+
+bool Directive_RESTORE::OnPhasePreprocess(Context &context, Expr *pExpr)
+{
+	bool rtn = true;
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	StringList regNames;
+	for (auto pExprOperand : exprOperands) {
+		if (!pExprOperand->IsTypeSymbol()) {
+			ErrorLog::AddError("only symbols are acceptable");
+			return false;
+		}
+		const char *regName = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
+		if (std::find(regNames.begin(), regNames.end(), regName) != regNames.end()) {
+			ErrorLog::AddError("duplicated register name");
+			return false;
+		}
+		regNames.push_back(regName);
+	}
+	return rtn;
+}
+
+bool Directive_RESTORE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
+}
+
+bool Directive_RESTORE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
+}
+
+bool Directive_RESTORE::OnPhaseDisasm(Context &context, const Expr *pExpr,
+									DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
 //-----------------------------------------------------------------------------
