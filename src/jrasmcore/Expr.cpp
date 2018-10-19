@@ -114,6 +114,11 @@ bool Expr::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int inden
 		GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode);
 }
 
+void Expr::GetFields(ExprList &exprFields) const
+{
+	exprFields.push_back(const_cast<Expr *>(this));
+}
+
 //-----------------------------------------------------------------------------
 // ExprList
 //-----------------------------------------------------------------------------
@@ -506,6 +511,16 @@ Expr *Expr_Assign::Substitute(const ExprDict &exprDict) const
 // Expr_BinOp
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
+
+void Expr_BinOp::GetFields(ExprList &exprFields) const
+{
+	if (_pOperator->IsIdentical(Operator::FieldSep)) {
+		GetLeft()->GetFields(exprFields);
+		GetRight()->GetFields(exprFields);
+	} else {
+		exprFields.push_back(const_cast<Expr_BinOp *>(this));
+	}
+}
 
 String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
 {

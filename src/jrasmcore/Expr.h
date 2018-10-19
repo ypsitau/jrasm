@@ -157,6 +157,7 @@ public:
 	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
+	virtual void GetFields(ExprList &exprFields) const;
 	virtual Expr *Resolve(Context &context) const = 0;
 	virtual Expr *Clone() const = 0;
 	virtual Expr *Substitute(const ExprDict &exprDict) const = 0;
@@ -333,6 +334,7 @@ public:
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
 	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
 	inline const Operator *GetOperator() const { return _pOperator; }
+	virtual void GetFields(ExprList &exprFields) const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
