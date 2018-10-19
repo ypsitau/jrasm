@@ -749,15 +749,16 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	pPCGColorOwner.reset(new PCGColorOwner());
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	const char *errMsg = "directive syntax: .PCG symbol,width,height,[[stepx,[stepy]],color,...]";
-	if (exprOperands.size() < 3 || exprOperands.size() > 6) {
+	if (exprOperands.size() < 3) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
 	String symbol;
 	int wdChar = 0, htChar = 0;
 	int stepX = 1, stepY = 32;
+	ExprOwner::const_iterator ppExprOperand = exprOperands.begin();
 	do {
-		Expr *pExprOperand = exprOperands[0];
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeSymbol()) {
 			ErrorLog::AddError(pExpr, "parameter symbol expects a symbol value");
 			return false;
@@ -765,7 +766,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
 	do {
-		Expr *pExprOperand = exprOperands[1];
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
 			return false;
@@ -773,29 +774,65 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	do {
-		Expr *pExprOperand = exprOperands[2];
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter height expects an integer value");
 			return false;
 		}
 		htChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
-	if (exprOperands.size() >= 4) {
-		Expr *pExprOperand = exprOperands[3];
+	if (ppExprOperand != exprOperands.end()) {
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter stepx expects an integer value");
 			return false;
 		}
 		stepX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
-	if (exprOperands.size() >= 5) {
-		Expr *pExprOperand = exprOperands[4];
+	if (ppExprOperand != exprOperands.end()) {
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter stepy expects an integer value");
 			return false;
 		}
 		stepY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
+	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {
+		Expr *pExprOperand = *ppExprOperand;
+		ExprList exprFields;
+		pExprOperand->GetFields(exprFields);
+		ExprList::iterator ppExprField = exprFields.begin();
+		int colorFg = 7, colorBg = 0, charCount = -1;
+		if (exprFields.size() > 3) {
+			ErrorLog::AddError(pExpr, "invalid format for color");
+			return false;
+		}
+		if (ppExprField != exprFields.end()) {
+			Expr *pExprField = *ppExprField++;
+			if (!pExprField->IsTypeInteger()) {
+				ErrorLog::AddError(pExpr, "color code must be an integer");
+				return false;
+			}
+			colorFg = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
+		}
+		if (ppExprField != exprFields.end()) {
+			Expr *pExprField = *ppExprField++;
+			if (!pExprField->IsTypeInteger()) {
+				ErrorLog::AddError(pExpr, "color code must be an integer");
+				return false;
+			}
+			colorBg = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
+		}
+		if (ppExprField != exprFields.end()) {
+			Expr *pExprField = *ppExprField++;
+			if (!pExprField->IsTypeInteger()) {
+				ErrorLog::AddError(pExpr, "character count must be an integer");
+				return false;
+			}
+			charCount = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
+		}
+		pPCGColorOwner->push_back(new PCGColor(colorFg, colorBg, charCount));
+	}
 	for (auto pExprChild : pExpr->GetExprChildren()) {
 		if (!pExprChild->IsTypeDirective(Directive::DB) && !pExprChild->IsTypeDirective(Directive::END)) {
 			ErrorLog::AddError(pExprChild, "only .DB directive can be stored in .PCG");
@@ -903,12 +940,12 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 		}
 	}
 	const char *errMsg = "directive syntax: .PCGPAGE symbol,range,...";
-	const ExprList &exprOperands = pExpr->GetExprOperands();
+	const ExprOwner &exprOperands = pExpr->GetExprOperands();
 	if (exprOperands.size() < 2) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
-	ExprList::const_iterator ppExprOperand = exprOperands.begin();
+	ExprOwner::const_iterator ppExprOperand = exprOperands.begin();
 	do {
 		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -919,12 +956,12 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 	} while (0);
 	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {
 		Expr *pExprOperand = *ppExprOperand;
-		if (!pExprOperand->IsTypeBinOp(Operator::FieldSep)) {
+		ExprList exprFields;
+		pExprOperand->GetFields(exprFields);
+		if (exprFields.size() < 2) {
 			ErrorLog::AddError(pExpr, errMsg);
 			return false;
 		}
-		ExprList exprFields;
-		pExprOperand->GetFields(exprFields);
 		PCGType pcgType = PCGTYPE_None;
 		do {
 			Expr *pExprField = exprFields[0];
