@@ -924,16 +924,7 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 			return false;
 		}
 		ExprList exprFields;
-		Expr_BinOp *pExprOperandEx = dynamic_cast<Expr_BinOp *>(pExprOperand);
-		if (pExprOperandEx->GetLeft()->IsTypeBinOp(Operator::FieldSep)) {
-			Expr_BinOp *pExprLeftEx = dynamic_cast<Expr_BinOp *>(pExprOperandEx->GetLeft());
-			exprFields.push_back(pExprLeftEx->GetLeft());
-			exprFields.push_back(pExprLeftEx->GetRight());
-			exprFields.push_back(pExprOperandEx->GetRight());
-		} else {
-			exprFields.push_back(pExprOperandEx->GetLeft());
-			exprFields.push_back(pExprOperandEx->GetRight());
-		}
+		pExprOperand->GetFields(exprFields);
 		PCGType pcgType = PCGTYPE_None;
 		do {
 			Expr *pExprField = exprFields[0];
