@@ -359,7 +359,8 @@ private:
 public:
 	inline Directive_PCG() : Directive(PCG) {}
 	static bool ExtractParams(Context &context, const Expr *pExpr, String *pSymbol,
-							  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY, Binary &buff);
+							  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY,
+							  std::unique_ptr<PCGColorOwner> *ppPCGColorOwner, Binary &buff);
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignMacro(Context &context, Expr *pExpr);

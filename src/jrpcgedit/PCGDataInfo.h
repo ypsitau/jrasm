@@ -43,6 +43,7 @@ private:
 	String _symbol;
 	int _stepX;
 	int _stepY;
+	std::unique_ptr<PCGColorOwner> _pPCGColorOwner;
 	bool _upperCaseFlag;
 	int _dotSizeBrowser;
 	int _dotSizeEditor;
@@ -56,8 +57,10 @@ private:
 public:
 	DeclareReferenceAccessor(PCGDataInfo);
 public:
-	PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag);
-	PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag);
+	PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY,
+				PCGColorOwner *pPCGColorOwner, bool upperCaseFlag);
+	PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY,
+				PCGColorOwner *pPCGColorOwner, bool upperCaseFlag);
 protected:
 	inline ~PCGDataInfo() {};
 public:

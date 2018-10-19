@@ -742,10 +742,13 @@ Directive *Directive_PCG::Factory::Create() const
 }
 
 bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *pSymbol,
-								  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY, Binary &buff)
+								  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY,
+								  std::unique_ptr<PCGColorOwner> *ppPCGColorOwner, Binary &buff)
 {
+	std::unique_ptr<PCGColorOwner> &pPCGColorOwner = *ppPCGColorOwner;
+	pPCGColorOwner.reset(new PCGColorOwner());
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
-	const char *errMsg = "directive syntax: .PCG symbol,width,height,[stepx,[stepy]]";
+	const char *errMsg = "directive syntax: .PCG symbol,width,height,[[stepx,[stepy]],color,...]";
 	if (exprOperands.size() < 3 || exprOperands.size() > 6) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
@@ -831,9 +834,11 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 	String symbol;
 	int wdChar, htChar;
 	int stepX, stepY;
+	std::unique_ptr<PCGColorOwner> pPCGColorOwner;
 	Binary buffOrg;
-	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar, &stepX, &stepY, buffOrg)) return false;
-	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY));
+	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar,
+					   &stepX, &stepY, &pPCGColorOwner, buffOrg)) return false;
+	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY, pPCGColorOwner.release()));
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;

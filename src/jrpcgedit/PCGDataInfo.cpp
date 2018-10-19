@@ -6,15 +6,17 @@
 //-----------------------------------------------------------------------------
 // PCGDataInfo
 //-----------------------------------------------------------------------------
-PCGDataInfo::PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY, bool upperCaseFlag) :
-	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY),
+PCGDataInfo::PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY,
+						 PCGColorOwner *pPCGColorOwner, bool upperCaseFlag) :
+	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY), _pPCGColorOwner(pPCGColorOwner),
 	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(pPattern)
 {
 }
 
-PCGDataInfo::PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY, bool upperCaseFlag) :
-	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY),
+PCGDataInfo::PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY,
+						 PCGColorOwner *pPCGColorOwner, bool upperCaseFlag) :
+	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY), _pPCGColorOwner(pPCGColorOwner),
 	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(new Pattern(dotNumX, dotNumY))
 {
@@ -195,7 +197,8 @@ void PCGDataInfoOwner::NewPCGDataInfo(bool selectedFlag)
 	if (selectedFlag) {
 		for (auto pPCGDataInfo : *this) pPCGDataInfo->SetSelectedFlag(false);
 	}
-	AutoPtr<PCGDataInfo> pPCGDataInfo(new PCGDataInfo(symbol, 16, 16, 1, 32, upperCaseFlag));
+	AutoPtr<PCGDataInfo> pPCGDataInfo(new PCGDataInfo(symbol, 16, 16, 1, 32,
+													  new PCGColorOwner(), upperCaseFlag));
 	pPCGDataInfo->SetSelectedFlag(selectedFlag);
 	push_back(pPCGDataInfo.release());
 }

@@ -5,6 +5,7 @@
 #define __JRASMCORE_PCGDATA_H__
 
 #include "PCGChar.h"
+#include "PCGColor.h"
 
 class Expr;
 
@@ -19,14 +20,15 @@ private:
 	size_t _htChar;
 	size_t _stepX;
 	size_t _stepY;
+	std::unique_ptr<PCGColorOwner> _pPCGColorOwner;
 	PCGCharOwner _pcgCharOwner;
 public:
 	DeclareReferenceAccessor(PCGData);
 public:
-	inline PCGData(const String &symbol,
-				   size_t wdChar, size_t htChar, size_t stepX, size_t stepY) :
+	inline PCGData(const String &symbol, size_t wdChar, size_t htChar,
+				   size_t stepX, size_t stepY, PCGColorOwner *pPCGColorOwner) :
 		_cntRef(1), _symbol(symbol), _wdChar(wdChar), _htChar(htChar),
-		_stepX(stepX), _stepY(stepY) {}
+			_stepX(stepX), _stepY(stepY), _pPCGColorOwner(pPCGColorOwner) {}
 private:
 	inline ~PCGData() {}
 public:

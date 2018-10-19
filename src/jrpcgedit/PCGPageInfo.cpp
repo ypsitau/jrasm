@@ -47,12 +47,15 @@ PCGPageInfo *PCGPageInfo::CreateFromExpr(Context &context, const Expr *pExpr)
 		String symbol;
 		int wdChar, htChar;
 		int stepX, stepY;
+		std::unique_ptr<PCGColorOwner> pPCGColorOwner;
 		Binary buff;
 		if (!Directive_PCG::ExtractParams(context, pExprChild, &symbol,
-										  &wdChar, &htChar, &stepX, &stepY, buff)) return nullptr;
+										  &wdChar, &htChar, &stepX, &stepY,
+										  &pPCGColorOwner, buff)) return nullptr;
 		AutoPtr<PCGDataInfo> pPCGDataInfo(
 			new PCGDataInfo(symbol, PCGDataInfo::Pattern::CreateFromBuff(
-							wdChar, htChar, buff), stepX, stepY, upperCaseFlag));
+							wdChar, htChar, buff), stepX, stepY,
+							pPCGColorOwner.release(), upperCaseFlag));
 		pPCGDataInfo->SetSelectedFlag(firstFlag);
 		firstFlag = false;
 		pPCGPageInfo->AddPCGDataInfo(pPCGDataInfo.release());

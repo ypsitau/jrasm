@@ -9,11 +9,14 @@
 //-----------------------------------------------------------------------------
 class PCGColor {
 private:
-	int _colorCode;
+	int _colorFg;
+	int _colorBg;
 	int _charCount;
 public:
-	inline PCGColor(int colorCode, int charCount) : _colorCode(colorCode), _charCount(charCount) {}
-	inline int GetColorCode() const { return _colorCode; }
+	inline PCGColor(int colorFg, int colorBg, int charCount) :
+		_colorFg(colorFg), _colorBg(colorBg), _charCount(charCount) {}
+	inline int GetColorFg() const { return _colorFg; }
+	inline int GetColorBg() const { return _colorBg; }
 	inline int GetCharCount() const { return _charCount; }
 };
 
