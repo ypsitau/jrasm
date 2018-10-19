@@ -802,11 +802,11 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 		ExprList exprFields;
 		pExprOperand->GetFields(exprFields);
 		ExprList::iterator ppExprField = exprFields.begin();
-		int colorFg = 7, colorBg = 0, charCount = -1;
 		if (exprFields.size() > 3) {
 			ErrorLog::AddError(pExpr, "invalid format for color");
 			return false;
 		}
+		int colorFg = 7;
 		if (ppExprField != exprFields.end()) {
 			Expr *pExprField = *ppExprField++;
 			if (!pExprField->IsTypeInteger()) {
@@ -815,6 +815,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 			}
 			colorFg = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
 		}
+		int colorBg = 0;
 		if (ppExprField != exprFields.end()) {
 			Expr *pExprField = *ppExprField++;
 			if (!pExprField->IsTypeInteger()) {
@@ -823,6 +824,7 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 			}
 			colorBg = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
 		}
+		int charCount = 1;
 		if (ppExprField != exprFields.end()) {
 			Expr *pExprField = *ppExprField++;
 			if (!pExprField->IsTypeInteger()) {

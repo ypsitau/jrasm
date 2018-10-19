@@ -134,10 +134,14 @@ String PCGData::ComposeAsm(bool putZeroFlag) const
 	do { // create macro: PCG.symbol.PUTATTR
 		::sprintf_s(str, "PCG.%s.PUTATTR%s:\n", GetSymbol(), suffix);
 		asmCode += str;
-		::sprintf_s(str, "        .MACRO fg=7,bg=0,offset=0\n");
+		::sprintf_s(str, "        .MACRO offset=0\n");
 		asmCode += str;
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
+		int colorFg = 7, colorBg = 0;
+		int colorFgPrev = -1, colorBgPrev = -1;
+		int charCount = 0;
+		PCGColorOwner::iterator ppPCGColor = _pPCGColorOwner->begin();
 		PCGType pcgTypePrev = PCGTYPE_None;
 		for (auto pPCGChar : _pcgCharOwner) {
 			int offsetBase = iCol * _stepX + iRow * _stepY;
@@ -146,15 +150,27 @@ String PCGData::ComposeAsm(bool putZeroFlag) const
 				asmCode += str;
 				iBoundary++;
 			}
+			if (charCount == 0) {
+				if (ppPCGColor != _pPCGColorOwner->end()) {
+					PCGColor *pPCGColor = *ppPCGColor;
+					colorFg = pPCGColor->GetColorFg();
+					colorBg = pPCGColor->GetColorBg();
+					charCount = pPCGColor->GetCharCount();
+					ppPCGColor++;
+				}
+			}
+			if (charCount > 0) charCount--;
 			if (!pPCGChar->IsZero() || putZeroFlag) {
-				if (pcgTypePrev != pPCGChar->GetPCGType()) {
+				if (pcgTypePrev != pPCGChar->GetPCGType() ||
+					colorFgPrev != colorFg || colorBgPrev != colorBg) {
 					if (pPCGChar->GetPCGType() == PCGTYPE_CRAM) {
-						::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
+						::sprintf_s(str, "        LDAA    %d+(%d<<3)\n", colorFg, colorBg);
 					} else { // _pcgType == PCGTYPE_User
-						::sprintf_s(str, "        LDAA    (1<<6)+fg+(bg<<3)\n");
+						::sprintf_s(str, "        LDAA    (1<<6)+%d+(%d<<3)\n", colorFg, colorBg);
 					}
 					asmCode += str;
 					pcgTypePrev = pPCGChar->GetPCGType();
+					colorFgPrev = colorFg, colorBgPrev = colorBg;
 				}
 				::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 				asmCode += str;
@@ -170,10 +186,13 @@ String PCGData::ComposeAsm(bool putZeroFlag) const
 	do { // create macro: PCG.symbol.PUTATTRFG
 		::sprintf_s(str, "PCG.%s.PUTATTRFG%s:\n", GetSymbol(), suffix);
 		asmCode += str;
-		::sprintf_s(str, "        .MACRO fg=7,offset=0\n");
+		::sprintf_s(str, "        .MACRO offset=0\n");
 		asmCode += str;
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
+		int colorFg = 7, colorBg = 0;
+		int charCount = 0;
+		PCGColorOwner::iterator ppPCGColor = _pPCGColorOwner->begin();
 		for (auto pPCGChar : _pcgCharOwner) {
 			int offsetBase = iCol * _stepX + iRow * _stepY;
 			if (offsetBase >= iBoundary * 0x100) {
@@ -181,15 +200,25 @@ String PCGData::ComposeAsm(bool putZeroFlag) const
 				asmCode += str;
 				iBoundary++;
 			}
+			if (charCount == 0) {
+				if (ppPCGColor != _pPCGColorOwner->end()) {
+					PCGColor *pPCGColor = *ppPCGColor;
+					colorFg = pPCGColor->GetColorFg();
+					colorBg = pPCGColor->GetColorBg();
+					charCount = pPCGColor->GetCharCount();
+					ppPCGColor++;
+				}
+			}
+			if (charCount > 0) charCount--;
 			if (!pPCGChar->IsZero() || putZeroFlag) {
 				::sprintf_s(str, "        LDAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 				asmCode += str;
 				::sprintf_s(str, "        ANDA    0x38\n");
 				asmCode += str;
 				if (pPCGChar->GetPCGType() == PCGTYPE_CRAM) {
-					::sprintf_s(str, "        ORAA    fg\n");
+					::sprintf_s(str, "        ORAA    %d\n", colorFg);
 				} else { // _pcgType == PCGTYPE_User
-					::sprintf_s(str, "        ORAA    (1<<6)+fg\n");
+					::sprintf_s(str, "        ORAA    (1<<6)+%d\n", colorFg);
 				}
 				asmCode += str;
 				::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
