@@ -32,7 +32,7 @@ public:
 //-----------------------------------------------------------------------------
 class PCGRangeList : public std::vector<PCGRange *> {
 public:
-	String ComposeSource(bool upperCaseFlag) const;
+	String ComposeSource(bool upperCaseFlag, const char *sepStr = ",") const;
 };
 
 //-----------------------------------------------------------------------------
