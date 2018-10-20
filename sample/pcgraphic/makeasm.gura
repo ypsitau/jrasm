@@ -17,17 +17,17 @@ if (argv.isempty()) {
 fileNameSrc = argv[0]
 fileNameDst = path.basename(fileNameSrc) + '.asm'
 width = 32 * 8, height = 24 * 8
-img = image(fileNameSrc)
 cutLevelLow = int(cfg['cutlow'])
 cutLevelHigh = int(cfg['cuthigh'])
 sys.stderr.printf('filtered level: %d - %d\n', cutLevelLow, 255 - cutLevelHigh)
-mapTbl1 = [consts(0, cutLevelLow), interval(0, 255, 256 - cutLevelLow - cutLevelHigh), consts(255, cutLevelHigh)]
-mapTbl2 = [consts(0, 52), consts(64, 51), consts(128, 51), consts(192, 51), consts(255, 51)]
-//mapTblNeg = range(255, 0)
-mapTblNeg = range(0, 255)
-img = img.resize(width / 2, height / 2).grayscale().mapcolorlevel(mapTblNeg).mapcolorlevel(mapTbl1).mapcolorlevel(mapTbl2)
+mapTblCut = [consts(0, cutLevelLow), interval(0, 255, 256 - cutLevelLow - cutLevelHigh), consts(255, cutLevelHigh)]
+mapTblToFiveLevels = [consts(0, 52), consts(64, 51), consts(128, 51), consts(192, 51), consts(255, 51)]
+imgSrc = image(fileNameSrc).thumbnail(width / 2, height / 2)
+imgWk = image(`rgb, width / 2, height / 2, `black)
+imgWk.paste((imgWk.width - imgSrc.width) / 2, (imgWk.height - imgSrc.height) / 2, imgSrc)
+imgWk = imgWk.grayscale().mapcolorlevel(mapTblCut).mapcolorlevel(mapTblToFiveLevels)
 imgDst = image(`rgb, width, height)
-img.scan {|c, i|
+imgWk.scan {|c, i|
 	[xSrc, ySrc] = [i % (width / 2), int(i / (width / 2))]
 	[xDst, yDst] = [xSrc * 2, ySrc * 2]
 	if (c.r < 64) {
