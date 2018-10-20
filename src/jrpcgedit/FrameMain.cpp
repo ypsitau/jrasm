@@ -30,6 +30,43 @@ FrameMain::FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &po
 	_pPanelMain = new PanelMain(this, _pDocument->Reference());
 }
 
+void FrameMain::OpenFile()
+{
+	wxFileDialog dlg(this, _("Open JR-200 Assembler Source"), "", "",
+					 "ASM files (*.asm)|*.asm", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (dlg.ShowModal() == wxID_CANCEL) return;
+	wxString pathName = dlg.GetPath();
+	if (!_pDocument->ReadFile(pathName)) {
+		ErrorDialog dlg(this);
+		dlg.ShowModal();
+		return;
+	}
+	_pPanelMain->UpdateDocument();
+}
+
+void FrameMain::SaveFile()
+{
+	if (_pDocument->IsNoName()) {
+		SaveFileAs();
+	} else if (!_pDocument->WriteFile(_pDocument->GetPathName())) {
+		ErrorDialog dlg(this);
+		dlg.ShowModal();
+		return;
+	}
+}
+
+void FrameMain::SaveFileAs()
+{
+	wxFileDialog dlg(this, _("Save JR-200 Assembler Source"), "", "",
+					 "ASM files (*.asm)|*.asm", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (dlg.ShowModal() == wxID_CANCEL) return;
+	wxString pathName = dlg.GetPath();
+	if (!_pDocument->WriteFile("test.asm")) {
+		ErrorDialog dlg(this);
+		dlg.ShowModal();
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Event Handler
 //-----------------------------------------------------------------------------
@@ -53,32 +90,15 @@ void FrameMain::OnAbout(wxCommandEvent &event)
 
 void FrameMain::OnOpen(wxCommandEvent &event)
 {
-#if 0
-	wxFileDialog dlg(this, _("Open JR-200 Assembler Source"), "", "",
-					 "ASM files (*.asm)|*.asm", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (dlg.ShowModal() == wxID_CANCEL) return;
-#endif
-	const char *pathName = "test.asm";
-	if (!_pDocument->ReadFile(pathName)) {
-		ErrorDialog dlg(this);
-		dlg.ShowModal();
-		return;
-	}
-	_pPanelMain->UpdateDocument();
+	OpenFile();
 }
 
 void FrameMain::OnSave(wxCommandEvent &event)
 {
-	if (!_pDocument->WriteFile("test.asm")) {
-		ErrorDialog dlg(this);
-		dlg.ShowModal();
-		return;
-	}
+	SaveFile();
 }
 
 void FrameMain::OnSaveAs(wxCommandEvent &event)
 {
-	//wxFileDialog dlg(this, _("Open JR-200 Assembler Source"), "", "",
-	//				 "ASM files (*.asm)|*.asm", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	//if (dlg.ShowModal() == wxID_CANCEL) return;
+	SaveFileAs();
 }

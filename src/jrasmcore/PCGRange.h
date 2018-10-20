@@ -24,12 +24,15 @@ public:
 	inline int GetCharCodeCur() const { return _charCodeCur; }
 	inline void ForwardCharCodeCur() { _charCodeCur++; }
 	const char *GetPCGTypeName(bool upperCaseFlag) const;
+	String ComposeSource(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------
 // PCGRangeList
 //-----------------------------------------------------------------------------
 class PCGRangeList : public std::vector<PCGRange *> {
+public:
+	String ComposeSource(bool upperCaseFlag) const;
 };
 
 //-----------------------------------------------------------------------------

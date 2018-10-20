@@ -10,13 +10,13 @@ Expr *PCGData::ComposeExpr() const
 {
 	Parser parser("***PCGData.cpp***");
 	String asmCode;
-	asmCode += ComposeAsm(false);
-	asmCode += ComposeAsm(true);
+	asmCode += ComposeSource(false);
+	asmCode += ComposeSource(true);
 	if (!parser.ParseString(asmCode.c_str())) return nullptr;
 	return parser.GetExprRoot()->Reference();
 }
 
-String PCGData::ComposeAsm(bool putZeroFlag) const
+String PCGData::ComposeSource(bool putZeroFlag) const
 {
 	String asmCode;
 	char str[4096];

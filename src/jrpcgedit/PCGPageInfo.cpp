@@ -24,7 +24,7 @@ bool PCGPageInfo::WriteFile(FILE *fp)
 		strPCGPAGE = ".PCGPAGE";
 		strEND = ".END\n";
 	}
-	::fprintf(fp, "\t%s\t%s,%s,0x%02x\n", strPCGPAGE, GetSymbol(), GetPCGTypeName(), GetCharCodeStart());
+	::fprintf(fp, "\t%s\t%s,%s\n", strPCGPAGE, GetSymbol(), _pPCGRangeOwner->ComposeSource(_upperCaseFlag).c_str());
 	for (auto pPCGDataInfo : GetPCGDataInfoOwner()) {
 		::fprintf(fp, "\n");
 		if (!pPCGDataInfo->WriteFile(fp)) return false;

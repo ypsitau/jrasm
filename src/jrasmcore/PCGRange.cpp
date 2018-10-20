@@ -15,9 +15,18 @@ const char *PCGRange::GetPCGTypeName(bool upperCaseFlag) const
 	}
 }
 
+String PCGRange::ComposeSource(bool upperCaseFlag) const
+{
+	return "";
+}
+
 //-----------------------------------------------------------------------------
 // PCGRangeList
 //-----------------------------------------------------------------------------
+String PCGRangeList::ComposeSource(bool upperCaseFlag) const
+{
+	return "";
+}
 
 //-----------------------------------------------------------------------------
 // PCGRangeOwner

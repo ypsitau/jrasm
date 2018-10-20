@@ -15,6 +15,9 @@ private:
 	AutoPtr<Document> _pDocument;
 public:
 	FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &pos, const wxSize &size);
+	void OpenFile();
+	void SaveFile();
+	void SaveFileAs();
 private:
     wxDECLARE_EVENT_TABLE();
 	void OnOpen(wxCommandEvent &event);

@@ -89,6 +89,7 @@ bool Document::WriteFile(const char *pathName)
 		::fprintf(fp, "%s", pStrSrcSegs->c_str());
 	}
 	::fclose(fp);
+	_pathName = pathName;
 	return rtn;
 }
 

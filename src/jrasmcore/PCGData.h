@@ -40,7 +40,7 @@ public:
 	inline void AddPCGChar(PCGChar *pPCGChar) { _pcgCharOwner.push_back(pPCGChar); }
 	Expr *ComposeExpr() const;
 private:
-	String ComposeAsm(bool putZeroFlag) const;
+	String ComposeSource(bool putZeroFlag) const;
 };
 
 #endif

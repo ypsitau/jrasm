@@ -22,6 +22,7 @@ public:
 protected:
 	inline ~Document() {};
 public:
+	inline bool IsNoName() const { return _pathName.empty(); }
 	inline const char *GetPathName() const { return _pathName.c_str(); }
 	inline PCGPageInfoOwner &GetPCGPageInfoOwner() { return *_pPCGPageInfoOwner; }
 	inline const PCGPageInfoOwner &GetPCGPageInfoOwner() const { return *_pPCGPageInfoOwner; }

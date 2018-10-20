@@ -24,9 +24,9 @@ protected:
 	inline ~PCGPageInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline PCGType GetPCGType() const { return _pPCGRangeOwner->front()->GetPCGType(); }
-	inline const char *GetPCGTypeName() const { return (GetPCGType() == PCGTYPE_CRAM)? "CRAM" : "USER"; }
-	inline int GetCharCodeStart() const { return _pPCGRangeOwner->front()->GetCharCodeStart(); }
+	//inline PCGType GetPCGType() const { return _pPCGRangeOwner->front()->GetPCGType(); }
+	//inline const char *GetPCGTypeName() const { return (GetPCGType() == PCGTYPE_CRAM)? "CRAM" : "USER"; }
+	//inline int GetCharCodeStart() const { return _pPCGRangeOwner->front()->GetCharCodeStart(); }
 	inline PCGDataInfoOwner &GetPCGDataInfoOwner() { return _pcgInfoOwner; }
 	inline const PCGDataInfoOwner &GetPCGDataInfoOwner() const { return _pcgInfoOwner; }
 	inline bool IsEmptyPCGDataInfo() const { return _pcgInfoOwner.empty(); }
