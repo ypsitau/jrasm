@@ -814,6 +814,10 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 				return false;
 			}
 			colorFg = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
+			if (colorFg < 0 || colorFg > 7) {
+				ErrorLog::AddError(pExpr, "color code must between 0 and 7");
+				return false;
+			}
 		}
 		int colorBg = 0;
 		if (ppExprField != exprFields.end()) {
@@ -823,6 +827,10 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 				return false;
 			}
 			colorBg = dynamic_cast<const Expr_Integer *>(pExprField)->GetInteger();
+			if (colorBg < 0 || colorBg > 7) {
+				ErrorLog::AddError(pExpr, "color code must between 0 and 7");
+				return false;
+			}
 		}
 		int charCount = 1;
 		if (ppExprField != exprFields.end()) {
