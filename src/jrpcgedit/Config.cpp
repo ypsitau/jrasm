@@ -6,6 +6,8 @@
 //-----------------------------------------------------------------------------
 // Config
 //-----------------------------------------------------------------------------
+Config Config::_cfg;
+
 bool Config::Save()
 {
 	return true;
@@ -13,5 +15,9 @@ bool Config::Save()
 
 bool Config::Restore()
 {
+	FrameMain.x = -1;
+	FrameMain.y = -1;
+	FrameMain.width = 800;
+	FrameMain.height = 600;
 	return true;
 }

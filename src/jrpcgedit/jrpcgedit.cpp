@@ -19,7 +19,10 @@ wxIMPLEMENT_APP(AppMain);
 bool AppMain::OnInit()
 {
 	Context::Initialize(new Generator_M6800());
-	FrameMain *pFrame = new FrameMain(nullptr, wxPoint(50, 50), wxSize(800, 600));
+	Config &cfg = Config::GetInst();
+	cfg.Restore();
+	FrameMain *pFrame = new FrameMain(nullptr, wxPoint(cfg.FrameMain.x, cfg.FrameMain.y),
+									  wxSize(cfg.FrameMain.width, cfg.FrameMain.height));
 	pFrame->Show(true);
 	return true;
 }
