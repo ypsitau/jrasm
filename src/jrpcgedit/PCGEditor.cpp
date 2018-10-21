@@ -155,8 +155,8 @@ void PCGEditor::OnSize(wxSizeEvent &event)
 
 void PCGEditor::OnPaint(wxPaintEvent &event)
 {
+	wxBufferedPaintDC dc(this);
 	wxSize sizeClient = GetClientSize();
-	wxPaintDC dc(this);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
 	wxSize sizeBmp = _pBmpMatrix->GetSize();

@@ -55,8 +55,8 @@ void PCGBrowser::OnSize(wxSizeEvent &event)
 
 void PCGBrowser::OnPaint(wxPaintEvent &event)
 {
+	wxBufferedPaintDC dc(this);
 	wxRect rcClient = GetClientRect();
-	wxPaintDC dc(this);
 	dc.SetBackground(_brushBg);
 	dc.Clear();
 	int y = 0;

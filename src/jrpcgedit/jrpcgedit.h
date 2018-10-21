@@ -6,6 +6,7 @@
 
 #include <wx/wx.h>
 #include <wx/bookctrl.h>
+#include <wx/dcbuffer.h>
 #include <wx/laywin.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
