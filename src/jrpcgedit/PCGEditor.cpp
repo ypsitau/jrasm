@@ -201,6 +201,7 @@ void PCGEditor::OnLeftDown(wxMouseEvent &event)
 		_pPCGDataInfo->SetDotPos(dotPosX, dotPosY);
 		PutDot(dotPosX, dotPosY, true);
 	}
+	SetFocus();
 }
 
 void PCGEditor::OnLeftUp(wxMouseEvent &event)
@@ -220,6 +221,7 @@ void PCGEditor::OnRightDown(wxMouseEvent &event)
 		_pPCGDataInfo->SetDotPos(dotPosX, dotPosY);
 		PutDot(dotPosX, dotPosY, false);
 	}
+	SetFocus();
 }
 
 void PCGEditor::OnRightUp(wxMouseEvent &event)
