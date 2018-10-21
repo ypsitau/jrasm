@@ -42,12 +42,13 @@ wxBitmap &PCGDataInfo::MakeBitmapForBrowser(int dotSizeBrowser)
 			new wxBitmap(
 				_dotSizeBrowser * _pPattern->GetDotNumX(), _dotSizeBrowser * _pPattern->GetDotNumY()));
 	}
-	wxBrush brushBg(wxColour("black"), wxBRUSHSTYLE_SOLID);
+	wxPen penFg(wxColour("white"), 1, wxPENSTYLE_SOLID);
 	wxBrush brushFg(wxColour("white"), wxBRUSHSTYLE_SOLID);
+	wxBrush brushBg(wxColour("black"), wxBRUSHSTYLE_SOLID);
 	wxMemoryDC dc(*_pBitmapForBrowser);
 	dc.SetBackground(brushBg);
 	dc.Clear();
-	dc.SetPen(wxNullPen);
+	dc.SetPen(penFg);
 	dc.SetBrush(brushFg);
 	for (int dotPosY = 0; dotPosY < _pPattern->GetDotNumY(); dotPosY++) {
 		int y = dotPosY * _dotSizeBrowser;
