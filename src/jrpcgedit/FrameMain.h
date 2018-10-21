@@ -15,6 +15,8 @@ private:
 	AutoPtr<Document> _pDocument;
 public:
 	FrameMain(wxWindow *pParent, const wxPoint &pos, const wxSize &size);
+	virtual bool Destroy();
+	void SavePositionAndSize();
 	void UpdateTitle();
 	void OpenFile();
 	void SaveFile();
@@ -26,6 +28,7 @@ private:
 	void OnSaveAs(wxCommandEvent &event);
 	void OnExit(wxCommandEvent &event);
 	void OnAbout(wxCommandEvent &event);
+	void OnSize(wxSizeEvent &event);
 };
 
 #endif

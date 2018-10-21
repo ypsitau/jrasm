@@ -213,6 +213,13 @@ void PCGEditor::OnLeftDClick(wxMouseEvent &event)
 
 void PCGEditor::OnRightDown(wxMouseEvent &event)
 {
+	wxPoint pt = event.GetPosition();
+	if (_rcMatrix.Contains(event.GetPosition())) {
+		int dotPosX, dotPosY;
+		PointToDotPos(pt, &dotPosX, &dotPosY);
+		_pPCGDataInfo->SetDotPos(dotPosX, dotPosY);
+		PutDot(dotPosX, dotPosY, false);
+	}
 }
 
 void PCGEditor::OnRightUp(wxMouseEvent &event)

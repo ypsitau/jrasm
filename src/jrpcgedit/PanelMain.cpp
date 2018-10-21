@@ -83,8 +83,35 @@ PanelMain::Page::Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 				_pPCGEditor->AddListener(this);
 			} while (0);
 			do {
-				wxBoxSizer *pVBox = new wxBoxSizer(wxVERTICAL);
-				pHBox->Add(pVBox, wxSizerFlags().Expand());
+				const char *colorTbl[] = {
+					"#000000",
+					"#0000ff",
+					"#ff0000",
+					"#ff00ff",
+					"#00ff00",
+					"#00ffff",
+					"#ffff00",
+					"#ffffff",
+				};
+				wxToolBar *pCtrl = new wxToolBar(pPanel, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL);
+				pHBox->Add(pCtrl, wxSizerFlags().Expand());
+				wxBitmap bmp(16, 16);
+				pCtrl->AddTool(1, _T("test"), bmp, wxEmptyString, wxITEM_RADIO);
+				pCtrl->AddTool(2, _T("test"), bmp, wxEmptyString, wxITEM_RADIO);
+				pCtrl->AddSeparator();
+				pCtrl->AddTool(3, _T("test"), bmp, wxEmptyString, wxITEM_RADIO);
+				pCtrl->AddTool(4, _T("test"), bmp, wxEmptyString, wxITEM_RADIO);
+				pCtrl->AddSeparator();
+				for (int i = 0; i < 8; i++) {
+					wxBitmap bmp(16, 16);
+					do {
+						wxMemoryDC dc(bmp);
+						dc.SetBackground(wxBrush(wxColour(colorTbl[i]), wxBRUSHSTYLE_SOLID));
+						dc.Clear();
+					} while (0);
+					pCtrl->AddTool(5 + i, _T("color"), bmp);
+				}
+				pCtrl->Realize();
 			} while (0);
 		} while (0);
 		do {
@@ -118,15 +145,6 @@ PanelMain::Page::Page(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 				pHBox->Add(pCtrl, wxSizerFlags().Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, 4));
 				_pSpin_Height = pCtrl;
 			} while (0);
-#if 0
-			pHBox->AddSpacer(4);
-			for (int i = 0; i < 8; i++) {
-				wxBitmap bmp(16, 16);
-				wxButton *pCtrl = new wxButton(pPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(32, 32));
-				pCtrl->SetBitmap(bmp);
-				pHBox->Add(pCtrl, wxSizerFlags().Expand());
-			}
-#endif
 		} while (0);
 	} while (0);
 	_pSlider_DotSize->SetValue(pPCGDataInfoSelected->GetDotSizeEditor());
@@ -144,6 +162,7 @@ wxBEGIN_EVENT_TABLE(PanelMain::Page, wxPanel)
 	EVT_BUTTON(ID_BTN_NewPCG, PanelMain::Page::OnButton_NewPCG)
 	EVT_SPINCTRL(ID_SPIN_Width, PanelMain::Page::OnSpin_WidthHeight)
 	EVT_SPINCTRL(ID_SPIN_Height, PanelMain::Page::OnSpin_WidthHeight)
+	EVT_TOOL(ID_TOOLBAR, PanelMain::Page::OnToolBar)
 wxEND_EVENT_TABLE()
 
 void PanelMain::Page::OnSize(wxSizeEvent &event)
@@ -177,6 +196,11 @@ void PanelMain::Page::OnSpin_WidthHeight(wxSpinEvent &event)
 	pPCGDataInfoSelected->ChangeDotNum(_pSpin_Width->GetValue() * 8, _pSpin_Height->GetValue() * 8);
 	_pPCGEditor->PrepareMatrix(true);
 	_pPCGBrowser->Refresh();
+}
+
+void PanelMain::Page::OnToolBar(wxCommandEvent &event)
+{
+
 }
 
 void PanelMain::Page::NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo)

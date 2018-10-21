@@ -20,6 +20,7 @@ public:
 			ID_BTN_NewPCG,
 			ID_SPIN_Width,
 			ID_SPIN_Height,
+			ID_TOOLBAR,
 		};
 	private:
 		wxSashLayoutWindow *_pSashVert;
@@ -39,6 +40,7 @@ public:
 		void OnSlider_DotSize(wxScrollEvent &event);
 		void OnButton_NewPCG(wxCommandEvent &event);
 		void OnSpin_WidthHeight(wxSpinEvent &event);
+		void OnToolBar(wxCommandEvent &event);
 	public:
 		// virtual function of PCGBrowser::Listener
 		virtual void NotifyPCGSelected(const PCGDataInfo *pPCGDataInfo);

@@ -9,6 +9,7 @@
 class AppMain: public wxApp {
 public:
 	virtual bool OnInit();
+	virtual int OnExit();
 };
 
 //-----------------------------------------------------------------------------
@@ -26,3 +27,11 @@ bool AppMain::OnInit()
 	pFrame->Show(true);
 	return true;
 }
+
+int AppMain::OnExit()
+{
+	Config &cfg = Config::GetInst();
+	cfg.Save();
+	return 0;
+}
+

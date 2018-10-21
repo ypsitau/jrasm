@@ -31,6 +31,24 @@ FrameMain::FrameMain(wxWindow *pParent, const wxPoint &pos, const wxSize &size) 
 	UpdateTitle();
 }
 
+bool FrameMain::Destroy()
+{
+	if (!IsMaximized()) {
+		SavePositionAndSize();
+	}
+	return wxFrame::Destroy();
+}
+
+void FrameMain::SavePositionAndSize()
+{
+	Config &cfg = Config::GetInst();
+	wxRect rc = GetScreenRect();
+	cfg.FrameMain.x = rc.x;
+	cfg.FrameMain.y = rc.y;
+	cfg.FrameMain.width = rc.width;
+	cfg.FrameMain.height = rc.height;
+}
+
 void FrameMain::UpdateTitle()
 {
 	wxString title;
@@ -97,6 +115,7 @@ wxBEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(wxID_SAVEAS,	FrameMain::OnSaveAs)
 	EVT_MENU(wxID_EXIT,		FrameMain::OnExit)
 	EVT_MENU(wxID_ABOUT,	FrameMain::OnAbout)
+	EVT_SIZE(FrameMain::OnSize)
 wxEND_EVENT_TABLE()
 
 void FrameMain::OnExit(wxCommandEvent &event)
@@ -123,4 +142,9 @@ void FrameMain::OnSave(wxCommandEvent &event)
 void FrameMain::OnSaveAs(wxCommandEvent &event)
 {
 	SaveFileAs();
+}
+
+void FrameMain::OnSize(wxSizeEvent &event)
+{
+	event.Skip();
 }
