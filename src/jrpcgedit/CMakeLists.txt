@@ -1,5 +1,6 @@
 add_executable(jrpcgedit
 	jrpcgedit.cpp
+	Config.cpp
 	Document.cpp
 	ErrorDialog.cpp
 	FrameMain.cpp

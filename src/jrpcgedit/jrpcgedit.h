@@ -12,6 +12,7 @@
 #include <wx/spinctrl.h>
 #include <wx/tglbtn.h>
 #include "jrasmcore/jrasmcore.h"
+#include "Config.h"
 #include "Document.h"
 #include "ErrorDialog.h"
 #include "FrameMain.h"
