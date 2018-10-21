@@ -14,7 +14,8 @@ private:
 	PanelMain *_pPanelMain;
 	AutoPtr<Document> _pDocument;
 public:
-	FrameMain(wxWindow *pParent, const wxString &title, const wxPoint &pos, const wxSize &size);
+	FrameMain(wxWindow *pParent, const wxPoint &pos, const wxSize &size);
+	void UpdateTitle();
 	void OpenFile();
 	void SaveFile();
 	void SaveFileAs();
