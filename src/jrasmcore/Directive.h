@@ -60,6 +60,7 @@ public:
 	private:
 		int _cntRef;
 		int _iSavePoint;
+		StringList _regNamesToSave;
 		StringISet _regNamesToRestore;
 	public:
 		DeclareReferenceAccessor(SaveInfo);
@@ -70,14 +71,21 @@ public:
 	public:
 		inline void SetSavePoint(int iSavePoint) { _iSavePoint = iSavePoint; }
 		inline int GetSavePoint() const { return _iSavePoint; }
+		inline const StringList &GetRegNamesToSave() const { return _regNamesToSave; }
+		inline bool IsFirstRegNameToSave(const char *regName) const {
+			return std::find(_regNamesToSave.begin(), _regNamesToSave.end(), regName) == _regNamesToSave.end();
+		}
 		inline bool IsFirstRegNameToRestore(const char *regName) const {
 			return _regNamesToRestore.find(regName) == _regNamesToRestore.end();
+		}
+		inline void AddRegNameToSave(const char *regName) {
+			_regNamesToSave.push_back(ToLower(regName));
 		}
 		inline void AddRegNameToRestore(const char *regName) {
 			_regNamesToRestore.insert(ToLower(regName));
 		}
 		String MakeLabel(const char *regName) const;
-		bool CheckValidation(const Expr *pExpr, const StringList &regNamesToSave) const;
+		bool CheckValidation(const Expr *pExpr) const;
 	};
 private:
 	int _cntRef;

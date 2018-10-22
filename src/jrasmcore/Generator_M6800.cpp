@@ -162,10 +162,10 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 }
 
 Expr *Generator_M6800::DoComposeExpr_Save(
-	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
+	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo) const
 {
 	String asmCode;
-	for (auto regName : regNames) {
+	for (auto regName : saveInfo.GetRegNamesToSave()) {
 		const char *instStore = "";
 		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instStore = "STAA";
@@ -187,10 +187,10 @@ Expr *Generator_M6800::DoComposeExpr_Save(
 }
 
 Expr *Generator_M6800::DoComposeExpr_Restore(
-	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
+	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNamesToRestore) const
 {
 	String asmCode;
-	for (auto regName : regNames) {
+	for (auto regName : regNamesToRestore) {
 		const char *instLoad = "";
 		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instLoad = "LDAA";

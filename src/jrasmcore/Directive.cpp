@@ -132,15 +132,15 @@ String Directive::SaveInfo::MakeLabel(const char *regName) const
 	return str;
 }
 
-bool Directive::SaveInfo::CheckValidation(const Expr *pExpr, const StringList &regNamesToSave) const
+bool Directive::SaveInfo::CheckValidation(const Expr *pExpr) const
 {
 	for (auto regName : _regNamesToRestore) {
-		if (std::find(regNamesToSave.begin(), regNamesToSave.end(), regName) == regNamesToSave.end()) {
+		if (std::find(_regNamesToSave.begin(), _regNamesToSave.end(), regName) == _regNamesToSave.end()) {
 			ErrorLog::AddError(pExpr, "missing %s in .SAVE directive", regName.c_str());
 			return false;
 		}
 	}
-	for (auto regName : regNamesToSave) {
+	for (auto regName : _regNamesToSave) {
 		if (_regNamesToRestore.find(regName) == _regNamesToRestore.end()) {
 			ErrorLog::AddError(pExpr, "missing .RESTORE directive for %s", regName.c_str());
 			return false;
@@ -1217,28 +1217,27 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	bool rtn = true;
 	const ExprList &exprOperands = pExpr->GetExprOperands();
-	_regNamesToSave.clear();
 	for (auto pExprOperand : exprOperands) {
 		if (!pExprOperand->IsTypeSymbol()) {
 			ErrorLog::AddError("only symbols are acceptable");
 			return false;
 		}
 		const char *regName = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
-		if (std::find(_regNamesToSave.begin(), _regNamesToSave.end(), regName) != _regNamesToSave.end()) {
+		if (!GetSaveInfo().IsFirstRegNameToSave(regName)) {
 			ErrorLog::AddError("duplicated register name");
 			return false;
 		}
-		_regNamesToSave.push_back(ToLower(regName));
+		GetSaveInfo().AddRegNameToSave(regName);
 	}
 	GetSaveInfo().SetSavePoint(context.NextSavePoint());
-	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo(), _regNamesToSave));
+	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo()));
 	if (_pExprGenerated.IsNull()) return false;
 	return rtn;
 }
 
 bool Directive_SAVE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	if (!GetSaveInfo().CheckValidation(pExpr, _regNamesToSave)) return false;
+	if (!GetSaveInfo().CheckValidation(pExpr)) return false;
 	if (!_pExprGenerated->OnPhaseAssignSymbol(context)) return false;
 	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 }
