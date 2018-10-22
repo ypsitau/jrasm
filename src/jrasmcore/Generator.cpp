@@ -40,11 +40,6 @@ Expr *Generator::ComposeExpr_Restore(
 	return DoComposeExpr_Restore(context, pExpr, saveInfo, regNames);
 }
 
-bool Generator::GenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const
-{
-	return DoGenCodeSaveOld(context, pExpr, regNames);
-}
-
 void Generator::DumpDisasmHelper(
 	Integer addr, const Binary &buff, const char *strCode,
 	FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax)

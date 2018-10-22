@@ -138,7 +138,6 @@ public:
 		Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo) const;
 	virtual Expr *DoComposeExpr_Restore(
 		Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNamesToRestore) const;
-	virtual bool DoGenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const;
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);
 	static Entry *Entry_REL(const String &symbol, UInt8 codeREL);

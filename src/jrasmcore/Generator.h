@@ -32,7 +32,6 @@ public:
 		Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo) const;
 	Expr *ComposeExpr_Restore(
 		Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNamesToRestore) const;
-	bool GenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const;
 	static void DumpDisasmHelper(
 		Integer addr, const Binary &buff, const char *strCode,
 		FILE *fp, bool upperCaseFlag, size_t nColsPerLine, size_t nColsPerLineMax);
@@ -43,7 +42,6 @@ public:
 		Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo) const = 0;
 	virtual Expr *DoComposeExpr_Restore(
 		Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNamesToRestore) const = 0;
-	virtual bool DoGenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const = 0;
 };
 
 #endif

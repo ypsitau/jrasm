@@ -222,61 +222,6 @@ Expr *Generator_M6800::DoComposeExpr_Restore(
 	return parser.ParseString(asmCode.c_str())? parser.GetExprRoot()->Reference() : nullptr;
 }
 
-bool Generator_M6800::DoGenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const
-{
-	ExprOwner &exprChildren = pExpr->GetExprChildren();
-	size_t i = 0;
-	int iSavePoint = context.NextSavePoint();
-	for (auto regName : regNames) {
-		const char *instStore = nullptr;
-		const char *instLoad = nullptr;
-		char labelName[128];
-		if (::strcasecmp(regName.c_str(), "a") == 0) {
-			instStore = "staa";
-			instLoad = "ldaa";
-			::sprintf_s(labelName, "__save%d_a", iSavePoint);
-		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
-			instStore = "stab";
-			instLoad = "ldab";
-			::sprintf_s(labelName, "__save%d_b", iSavePoint);
-		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
-			instStore = "stx";
-			instLoad = "ldx";
-			::sprintf_s(labelName, "__save%d_x", iSavePoint);
-		} else {
-			ErrorLog::AddError("acceptable register names are: a, b, x");
-			break;
-		}
-		do {
-			AutoPtr<Expr> pExprInst(new Expr_Instruction(instStore));
-			pExprInst->DeriveSourceInfo(pExpr);
-			do { // [__saveN_R+1]
-				AutoPtr<Expr> pExprOperand(new Expr_Bracket());
-				pExprOperand->GetExprOperands().push_back(
-					new Expr_BinOp(
-						Operator::Add,
-						new Expr_Symbol(labelName),
-						new Expr_Integer("1", 1)));
-				pExprInst->GetExprOperands().push_back(pExprOperand.release());
-			} while (0);
-			exprChildren.insert(exprChildren.begin() + i, pExprInst.release());
-		} while (0);
-		do {
-			AutoPtr<Expr> pExprLabel(new Expr_Label(labelName, false));
-			pExprLabel->DeriveSourceInfo(pExpr);
-			exprChildren.push_back(pExprLabel.release());
-		} while (0);
-		do {
-			AutoPtr<Expr> pExprInst(new Expr_Instruction(instLoad));
-			pExprInst->DeriveSourceInfo(pExpr);
-			pExprInst->GetExprOperands().push_back(new Expr_Integer(0));
-			exprChildren.push_back(pExprInst.release());
-		} while (0);
-		i++;
-	}
-	return true;
-}
-
 Generator_M6800::Entry *Generator_M6800::Entry_ACC(const String &symbol, UInt8 codeACC)
 {
 	Entry *pEntry = new Entry(symbol, "ACC");
