@@ -20,8 +20,6 @@ private:
 	std::unique_ptr<PCGRangeOwner> _pPCGRangeOwner;
 	PCGCharOwner _pcgCharOwner;
 	static const char *_asmCodeTmpl;
-	static const char *_asmCodeTmpl1;
-	static const char *_asmCodeTmpl2;
 public:
 	DeclareReferenceAccessor(PCGPage);
 public:

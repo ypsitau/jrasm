@@ -1233,13 +1233,6 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	GetSaveInfo().SetSavePoint(context.NextSavePoint());
 	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo(), _regNamesToSave));
 	if (_pExprGenerated.IsNull()) return false;
-#if 0
-	ExprOwner &exprChildren = pExpr->GetExprChildren();
-	AutoPtr<Expr> pExpr_end(exprChildren.back());
-	exprChildren.pop_back();						// remove .end directive
-	rtn = Generator::GetInstance().GenCodeSaveOld(context, pExpr, regNamesToSave);
-	exprChildren.push_back(pExpr_end.release());	// restore .end directive
-#endif
 	return rtn;
 }
 
