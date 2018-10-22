@@ -1118,8 +1118,20 @@ Directive *Directive_RESTORE::Factory::Create() const
 bool Directive_RESTORE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
-	for (ExprStack::reverse_iterator ppExpr = exprStack.rbegin(); ppExpr != exprStack.rend(); ppExpr++) {
+	Directive_SAVE *pDirectiveSAVE = nullptr;
+	for (ExprStack::reverse_iterator ppExprParent = exprStack.rbegin();
+		 ppExprParent != exprStack.rend(); ppExprParent++) {
+		Expr *pExprParent = *ppExprParent;
+		if (pExprParent->IsTypeDirective(Directive::SAVE)) {
+			pDirectiveSAVE = dynamic_cast<Directive_SAVE *>(
+				dynamic_cast<Expr_Directive *>(pExprParent)->GetDirective());
+		}
 	}
+	if (pDirectiveSAVE == nullptr) {
+		ErrorLog::AddError("directive .RESTORE must be a child of directive.SAVE");
+		return false;
+	}
+	SetSaveInfo(pDirectiveSAVE->GetSaveInfo().Reference());
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr->Reference());		// for children

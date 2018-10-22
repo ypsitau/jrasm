@@ -164,26 +164,21 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 Expr *Generator_M6800::DoComposeExpr_Save(
 	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
 {
-	int iSavePoint = saveInfo.GetSavePoint();
 	String asmCode;
 	for (auto regName : regNames) {
 		const char *instStore = "";
-		char label[64];
 		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instStore = "STAA";
-			::sprintf_s(label, "__save%d_a", iSavePoint);
 		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
 			instStore = "STAB";
-			::sprintf_s(label, "__save%d_b", iSavePoint);
 		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
 			instStore = "STX";
-			::sprintf_s(label, "__save%d_x", iSavePoint);
 		} else {
 			ErrorLog::AddError("acceptable register names are: a, b, x");
 			return nullptr;
 		}
 		char str[128];
-		::sprintf(str, "        %-8s[%s]\n", instStore, label);
+		::sprintf(str, "        %-8s[%s]\n", instStore, saveInfo.MakeLabel(regName.c_str()).c_str());
 		asmCode += str;
 	}
 	Parser parser("***Generator_M6800.cpp***");
@@ -193,35 +188,31 @@ Expr *Generator_M6800::DoComposeExpr_Save(
 Expr *Generator_M6800::DoComposeExpr_Restore(
 	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
 {
-	int iSavePoint = saveInfo.GetSavePoint();
 	String asmCode;
 	for (auto regName : regNames) {
 		const char *instLoad = "";
-		char label[64];
 		if (::strcasecmp(regName.c_str(), "a") == 0) {
 			instLoad = "LDAA";
-			::sprintf_s(label, "__save%d_a", iSavePoint);
 		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
 			instLoad = "LDAB";
-			::sprintf_s(label, "__save%d_b", iSavePoint);
 		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
 			instLoad = "LDX";
-			::sprintf_s(label, "__save%d_x", iSavePoint);
 		} else {
 			ErrorLog::AddError("acceptable register names are: a, b, x");
 			return nullptr;
 		}
+		String label = saveInfo.MakeLabel(regName.c_str());
 		char str[128];
 		if (saveInfo.IsFirstRegNameToRestore(regName.c_str())) {
 			saveInfo.AddRegNameToRestore(regName.c_str());
-			::sprintf(str, "%s:\n", label);
+			::sprintf(str, "%s:\n", label.c_str());
 			asmCode += str;
 			::sprintf(str, "        .EQU    $+1\n");
 			asmCode += str;
 			::sprintf(str, "        %-8s0\n", instLoad);
 			asmCode += str;
 		} else {
-			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
+			::sprintf(str, "        %-8s[%s]\n", instLoad, label.c_str());
 			asmCode += str;
 		}
 	}
