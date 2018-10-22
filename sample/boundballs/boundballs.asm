@@ -23,6 +23,7 @@ loop:
 	pcg.chkcircle2x2.erase
 	code2attraddr
 	pcg.chkcircle2x2.eraseattr 7, 0
+	.restore x
 	.end
 	addx	4
 	cpx	ballsEnd
@@ -35,6 +36,7 @@ loop:
 	.save	x
 	movebound [x+ball.posx], [x+ball.dirx], 0, 30
 	movebound [x+ball.posy], [x+ball.diry], 0, 22
+	.restore x
 	.end
 	addx	4
 	cpx	ballsEnd
@@ -49,6 +51,7 @@ loop:
 	pcg.chkcircle2x2.put
 	code2attraddr
 	pcg.chkcircle2x2.putattr
+	.restore x
 	.end
 	
 	addx	4
@@ -78,7 +81,7 @@ ballsEnd:
 
 	.pcgpage mainpage,cram:32
 
-	.pcg	chkcircle2x2,2,2,1,32,2:0
+	.pcg	chkcircle2x2,2,2,,,2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."
