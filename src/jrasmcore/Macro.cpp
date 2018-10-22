@@ -24,7 +24,7 @@ ExprOwner *Macro::Expand(Context &context, const Expr_Instruction *pExpr) const
 	for ( ; ppParam != paramOwner.end() && ppExpr != exprOperands.end(); ppParam++, ppExpr++) {
 		const Macro::Param *pParam = *ppParam;
 		const Expr *pExpr = *ppExpr;
-		if (pExpr->IsType(Expr::TYPE_Null)) {
+		if (pExpr->IsTypeNull()) {
 			const Expr *pExprDefault = pParam->GetExprDefault();
 			if (pExprDefault == nullptr) {
 				ErrorLog::AddError(pExpr, "no default value for parameter %s", pParam->GetSymbol());

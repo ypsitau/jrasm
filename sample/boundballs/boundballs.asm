@@ -48,7 +48,7 @@ loop:
 	xy2codeaddr [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.put
 	code2attraddr
-	pcg.chkcircle2x2.putattr 2, 0
+	pcg.chkcircle2x2.putattr
 	.end
 	
 	addx	4
@@ -78,7 +78,7 @@ ballsEnd:
 
 	.pcgpage mainpage,cram:32
 
-	.pcg	chkcircle2x2,2,2
+	.pcg	chkcircle2x2,2,2,1,32,2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."

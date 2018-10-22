@@ -810,19 +810,25 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	} while (0);
 	if (ppExprOperand != exprOperands.end()) {
 		Expr *pExprOperand = *ppExprOperand++;
-		if (!pExprOperand->IsTypeInteger()) {
+		if (pExprOperand->IsTypeNull()) {
+			// nothing to do
+		} else if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter stepx expects an integer value");
 			return false;
+		} else {
+			stepX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 		}
-		stepX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	if (ppExprOperand != exprOperands.end()) {
 		Expr *pExprOperand = *ppExprOperand++;
-		if (!pExprOperand->IsTypeInteger()) {
+		if (pExprOperand->IsTypeNull()) {
+			// nothing to do
+		} else if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter stepy expects an integer value");
 			return false;
+		} else {
+			stepY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 		}
-		stepY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {
 		Expr *pExprOperand = *ppExprOperand;

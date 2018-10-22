@@ -113,6 +113,7 @@ protected:
 	virtual ~Expr();
 public:
 	inline bool IsType(Type type) const { return _type == type; }
+	inline bool IsTypeNull() const { return IsType(TYPE_Null); }
 	inline bool IsTypeRoot() const { return IsType(TYPE_Root); }
 	inline bool IsTypeInteger() const { return IsType(TYPE_Integer); }
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
