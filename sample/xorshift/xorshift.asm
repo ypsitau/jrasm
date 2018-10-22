@@ -1,4 +1,8 @@
 	.org	0x1000
+	jsr	xrnd
+	
+	
+
 xrnd:
 	.scope
 	ror	[high]
