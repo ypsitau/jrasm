@@ -128,7 +128,7 @@ Expr *Directive::Resolve(Context &context, const Expr *pExpr) const
 String Directive::SaveInfo::MakeLabel(const char *regName) const
 {
 	char str[64];
-	::sprintf_s(str, "__SAVE%d_%s", _iSavePoint, ToUpper(regName).c_str());
+	::sprintf_s(str, "__save%d_%s", _iSavePoint, ToLower(regName).c_str());
 	return str;
 }
 
@@ -1146,7 +1146,7 @@ bool Directive_RESTORE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 		}
 	}
 	if (pDirectiveSAVE == nullptr) {
-		ErrorLog::AddError("directive .RESTORE must be a child of directive.SAVE");
+		ErrorLog::AddError("directive .RESTORE must be a child of directive .SAVE");
 		return false;
 	}
 	SetSaveInfo(pDirectiveSAVE->GetSaveInfo().Reference());
@@ -1228,7 +1228,7 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 			ErrorLog::AddError("duplicated register name");
 			return false;
 		}
-		_regNamesToSave.push_back(ToUpper(regName));
+		_regNamesToSave.push_back(ToLower(regName));
 	}
 	GetSaveInfo().SetSavePoint(context.NextSavePoint());
 	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo(), _regNamesToSave));

@@ -74,7 +74,7 @@ public:
 			return _regNamesToRestore.find(regName) == _regNamesToRestore.end();
 		}
 		inline void AddRegNameToRestore(const char *regName) {
-			_regNamesToRestore.insert(ToUpper(regName));
+			_regNamesToRestore.insert(ToLower(regName));
 		}
 		String MakeLabel(const char *regName) const;
 		bool CheckValidation(const Expr *pExpr, const StringList &regNamesToSave) const;
