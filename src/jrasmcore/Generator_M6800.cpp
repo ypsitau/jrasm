@@ -164,13 +164,36 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 Expr *Generator_M6800::DoComposeExpr_Save(
 	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
 {
-	return nullptr;
+	int iSavePoint = pDirectiveSAVE->GetSavePoint();
+	String asmCode;
+	for (auto regName : regNames) {
+		const char *instStore = "";
+		char label[64];
+		if (::strcasecmp(regName.c_str(), "a") == 0) {
+			instStore = "STAA";
+			::sprintf_s(label, "__save%d_a", iSavePoint);
+		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
+			instStore = "STAB";
+			::sprintf_s(label, "__save%d_b", iSavePoint);
+		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
+			instStore = "STX";
+			::sprintf_s(label, "__save%d_x", iSavePoint);
+		} else {
+			ErrorLog::AddError("acceptable register names are: a, b, x");
+			return nullptr;
+		}
+		char str[128];
+		::sprintf(str, "        %-8s[%s]\n", instStore, label);
+		asmCode += str; 
+	}
+	Parser parser("***Generator_M6800.cpp***");
+	return parser.ParseString(asmCode.c_str())? parser.GetExprRoot()->Reference() : nullptr;
 }
 
 Expr *Generator_M6800::DoComposeExpr_Restore(
 	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
 {
-	int iSavePoint = 1;
+	int iSavePoint = pDirectiveSAVE->GetSavePoint();
 	String asmCode;
 	for (auto regName : regNames) {
 		const char *instLoad = "";
@@ -189,14 +212,16 @@ Expr *Generator_M6800::DoComposeExpr_Restore(
 			return nullptr;
 		}
 		char str[128];
-		bool firstFlag = true;
-		if (firstFlag) {
-			::sprintf(str, "%s:\n", label);
-			asmCode += str;
-			::sprintf(str, "        %-8s0\n", instLoad);
+		if (pDirectiveSAVE->DoesExistRegName(regName.c_str())) {
+			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
 			asmCode += str; 
 		} else {
-			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
+			pDirectiveSAVE->AddRegName(regName.c_str());
+			::sprintf(str, "%s:\n", label);
+			asmCode += str;
+			::sprintf(str, "        .EQU    $+1\n");
+			asmCode += str;
+			::sprintf(str, "        %-8s0\n", instLoad);
 			asmCode += str; 
 		}
 	}

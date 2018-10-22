@@ -432,9 +432,16 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
+	int _iSavePoint;
 	AutoPtr<Expr> _pExprGenerated;
+	StringISet _regNameSet;
 public:
-	inline Directive_SAVE() : Directive(SAVE) {}
+	inline Directive_SAVE() : Directive(SAVE), _iSavePoint(0) {}
+	inline int GetSavePoint() const { return _iSavePoint; }
+	inline bool DoesExistRegName(const char *regName) const {
+		return _regNameSet.find(regName) != _regNameSet.end();
+	}
+	inline void AddRegName(const char *regName) { _regNameSet.insert(regName); }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);

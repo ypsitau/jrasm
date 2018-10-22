@@ -1132,7 +1132,10 @@ bool Directive_RESTORE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		regNames.push_back(regName);
 	}
-	//_pExprGenerated.reset();
+	
+	Directive_SAVE *pDirectiveSAVE = nullptr;
+
+	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Restore(context, pExpr, pDirectiveSAVE, regNames));
 	if (_pExprGenerated.IsNull()) return false;
 	return rtn;
 }

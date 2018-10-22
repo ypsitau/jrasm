@@ -13,6 +13,7 @@
 #include <vector>
 #include <deque>
 #include <map>
+#include <set>
 
 //-----------------------------------------------------------------------------
 // Macros
@@ -78,9 +79,18 @@ typedef Int32		Integer;
 typedef std::string String;
 typedef String Binary;
 
+struct LessThan_StringICase {
+	inline bool operator()(const String &str1, const String &str2) const {
+		return ::strcasecmp(str1.c_str(), str2.c_str()) < 0;
+	}
+};
+
 class StringList : public std::vector<String> {
 public:
 	static const StringList Empty;
+};
+
+class StringISet : public std::set<String, LessThan_StringICase> {
 };
 
 //-----------------------------------------------------------------------------
@@ -126,15 +136,6 @@ private:
 public:
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
-};
-
-//-----------------------------------------------------------------------------
-// LessThan/GreaterThan
-//-----------------------------------------------------------------------------
-struct LessThan_StringICase {
-	inline bool operator()(const String &str1, const String &str2) const {
-		return ::strcasecmp(str1.c_str(), str2.c_str()) < 0;
-	}
 };
 
 //-----------------------------------------------------------------------------
