@@ -1192,7 +1192,7 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	}
 	AutoPtr<Expr> pExpr_end(exprChildren.back());
 	exprChildren.pop_back();						// remove .end directive
-	rtn = Generator::GetInstance().GenCodeSave(context, pExpr, regNames);
+	rtn = Generator::GetInstance().GenCodeSaveOld(context, pExpr, regNames);
 	exprChildren.push_back(pExpr_end.release());	// restore .end directive
 	return rtn;
 }

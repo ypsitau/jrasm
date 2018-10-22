@@ -28,9 +28,19 @@ bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary
 	return DoGenerate(context, pExpr, *pBuffDst);
 }
 
-bool Generator::GenCodeSave(Context &context, Expr *pExpr, const StringList &regNames) const
+Expr *Generator::ComposeExpr_Save(Context &context, Expr *pExpr, const StringList &regNames) const
 {
-	return DoGenCodeSave(context, pExpr, regNames);
+	return DoComposeExpr_Save(context, pExpr, regNames);
+}
+
+Expr *Generator::ComposeExpr_Restore(Context &context, Expr *pExpr, const StringList &regNames) const
+{
+	return DoComposeExpr_Restore(context, pExpr, regNames);
+}
+
+bool Generator::GenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const
+{
+	return DoGenCodeSaveOld(context, pExpr, regNames);
 }
 
 void Generator::DumpDisasmHelper(

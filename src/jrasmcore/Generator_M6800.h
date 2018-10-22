@@ -134,7 +134,9 @@ public:
 	virtual bool IsRegisterSymbol(const char *symbol) const;
 	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const;
 	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const;
-	virtual bool DoGenCodeSave(Context &context, Expr *pExpr, const StringList &regNames) const;
+	virtual Expr *DoComposeExpr_Save(Context &context, Expr *pExpr, const StringList &regNames) const;
+	virtual Expr *DoComposeExpr_Restore(Context &context, Expr *pExpr, const StringList &regNames) const;
+	virtual bool DoGenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const;
 private:
 	static Entry *Entry_ACC(const String &symbol, UInt8 codeACC);
 	static Entry *Entry_REL(const String &symbol, UInt8 codeREL);
