@@ -29,15 +29,15 @@ bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary
 }
 
 Expr *Generator::ComposeExpr_Save(
-	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
+	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
 {
-	return DoComposeExpr_Save(context, pExpr, pDirectiveSAVE, regNames);
+	return DoComposeExpr_Save(context, pExpr, saveInfo, regNames);
 }
 
 Expr *Generator::ComposeExpr_Restore(
-	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
+	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
 {
-	return DoComposeExpr_Restore(context, pExpr, pDirectiveSAVE, regNames);
+	return DoComposeExpr_Restore(context, pExpr, saveInfo, regNames);
 }
 
 bool Generator::GenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const

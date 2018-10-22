@@ -123,6 +123,16 @@ Expr *Directive::Resolve(Context &context, const Expr *pExpr) const
 }
 
 //-----------------------------------------------------------------------------
+// Directive::SaveInfo
+//-----------------------------------------------------------------------------
+String Directive::SaveInfo::MakeLabel(const char *regName) const
+{
+	char str[64];
+	::sprintf_s(str, "__SAVE%d_%s", _iSavePoint, ToUpper(regName).c_str());
+	return str;
+}
+
+//-----------------------------------------------------------------------------
 // Directive_CSEG
 //-----------------------------------------------------------------------------
 Directive *Directive_CSEG::Factory::Create() const
@@ -1108,6 +1118,8 @@ Directive *Directive_RESTORE::Factory::Create() const
 bool Directive_RESTORE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
 {
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
+	for (ExprStack::reverse_iterator ppExpr = exprStack.rbegin(); ppExpr != exprStack.rend(); ppExpr++) {
+	}
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
 	exprStack.push_back(pExpr->Reference());		// for children
@@ -1132,10 +1144,7 @@ bool Directive_RESTORE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		regNames.push_back(regName);
 	}
-	
-	Directive_SAVE *pDirectiveSAVE = nullptr;
-
-	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Restore(context, pExpr, pDirectiveSAVE, regNames));
+	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Restore(context, pExpr, GetSaveInfo(), regNames));
 	if (_pExprGenerated.IsNull()) return false;
 	return rtn;
 }

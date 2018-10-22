@@ -55,6 +55,29 @@ public:
 // Directive
 //-----------------------------------------------------------------------------
 class Directive {
+public:
+	class SaveInfo {
+	private:
+		int _cntRef;
+		int _iSavePoint;
+		StringISet _regNamesToRestore;
+	public:
+		DeclareReferenceAccessor(SaveInfo);
+	public:
+		SaveInfo() : _cntRef(1) {}
+	private:
+		inline ~SaveInfo() {}
+	public:
+		inline void SetSavePoint(int iSavePoint) { _iSavePoint = iSavePoint; }
+		inline int GetSavePoint() const { return _iSavePoint; }
+		inline bool IsFirstRegNameToRestore(const char *regName) const {
+			return _regNamesToRestore.find(regName) == _regNamesToRestore.end();
+		}
+		inline void AddRegNameToRestore(const char *regName) {
+			_regNamesToRestore.insert(ToUpper(regName));
+		}
+		String MakeLabel(const char *regName) const;
+	};
 private:
 	int _cntRef;
 	const DirectiveFactory *_pDirectiveFactory;
@@ -410,9 +433,12 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
+	AutoPtr<SaveInfo> _pSaveInfo;
 	AutoPtr<Expr> _pExprGenerated;
 public:
 	inline Directive_RESTORE() : Directive(RESTORE) {}
+	inline void SetSaveInfo(SaveInfo *pSaveInfo) { _pSaveInfo.reset(pSaveInfo); }
+	inline SaveInfo &GetSaveInfo() { return *_pSaveInfo; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
@@ -432,16 +458,11 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
-	int _iSavePoint;
 	AutoPtr<Expr> _pExprGenerated;
-	StringISet _regNameSet;
+	AutoPtr<SaveInfo> _pSaveInfo;
 public:
-	inline Directive_SAVE() : Directive(SAVE), _iSavePoint(0) {}
-	inline int GetSavePoint() const { return _iSavePoint; }
-	inline bool DoesExistRegName(const char *regName) const {
-		return _regNameSet.find(regName) != _regNameSet.end();
-	}
-	inline void AddRegName(const char *regName) { _regNameSet.insert(regName); }
+	inline Directive_SAVE() : Directive(SAVE), _pSaveInfo(new SaveInfo()) {}
+	inline SaveInfo &GetSaveInfo() { return *_pSaveInfo; }
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);

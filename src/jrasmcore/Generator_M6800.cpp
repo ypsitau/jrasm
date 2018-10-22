@@ -162,9 +162,9 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 }
 
 Expr *Generator_M6800::DoComposeExpr_Save(
-	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
+	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
 {
-	int iSavePoint = pDirectiveSAVE->GetSavePoint();
+	int iSavePoint = saveInfo.GetSavePoint();
 	String asmCode;
 	for (auto regName : regNames) {
 		const char *instStore = "";
@@ -191,9 +191,9 @@ Expr *Generator_M6800::DoComposeExpr_Save(
 }
 
 Expr *Generator_M6800::DoComposeExpr_Restore(
-	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
+	Context &context, Expr *pExpr, Directive::SaveInfo &saveInfo, const StringList &regNames) const
 {
-	int iSavePoint = pDirectiveSAVE->GetSavePoint();
+	int iSavePoint = saveInfo.GetSavePoint();
 	String asmCode;
 	for (auto regName : regNames) {
 		const char *instLoad = "";
@@ -212,16 +212,16 @@ Expr *Generator_M6800::DoComposeExpr_Restore(
 			return nullptr;
 		}
 		char str[128];
-		if (pDirectiveSAVE->DoesExistRegName(regName.c_str())) {
-			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
-			asmCode += str;
-		} else {
-			pDirectiveSAVE->AddRegName(regName.c_str());
+		if (saveInfo.IsFirstRegNameToRestore(regName.c_str())) {
+			saveInfo.AddRegNameToRestore(regName.c_str());
 			::sprintf(str, "%s:\n", label);
 			asmCode += str;
 			::sprintf(str, "        .EQU    $+1\n");
 			asmCode += str;
 			::sprintf(str, "        %-8s0\n", instLoad);
+			asmCode += str;
+		} else {
+			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
 			asmCode += str;
 		}
 	}
