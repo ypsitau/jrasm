@@ -8,12 +8,13 @@
 //-----------------------------------------------------------------------------
 Expr *PCGData::ComposeExpr() const
 {
-	Parser parser("***PCGData.cpp***");
 	String asmCode;
 	asmCode += ComposeSource(false);
 	asmCode += ComposeSource(true);
-	if (!parser.ParseString(asmCode.c_str())) return nullptr;
-	return parser.GetExprRoot()->Reference();
+	Parser parser("***PCGData.cpp***");
+	return parser.ParseString(asmCode.c_str())? parser.GetExprRoot()->Reference() : nullptr;
+	//if (!parser.ParseString(asmCode.c_str())) return nullptr;
+	//return parser.GetExprRoot()->Reference();
 }
 
 String PCGData::ComposeSource(bool putZeroFlag) const

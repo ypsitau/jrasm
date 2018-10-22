@@ -166,9 +166,41 @@ Expr *Generator_M6800::DoComposeExpr_Save(Context &context, Expr *pExpr, const S
 	return nullptr;
 }
 
-Expr *Generator_M6800::DoComposeExpr_Restore(Context &context, Expr *pExpr, const StringList &regNames) const
+Expr *Generator_M6800::DoComposeExpr_Restore(
+	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
 {
-	return nullptr;
+	int iSavePoint = 1;
+	String asmCode;
+	for (auto regName : regNames) {
+		const char *instLoad = "";
+		char label[64];
+		if (::strcasecmp(regName.c_str(), "a") == 0) {
+			instLoad = "LDAA";
+			::sprintf_s(label, "__save%d_a", iSavePoint);
+		} else if (::strcasecmp(regName.c_str(), "b") == 0) {
+			instLoad = "LDAB";
+			::sprintf_s(label, "__save%d_b", iSavePoint);
+		} else if (::strcasecmp(regName.c_str(), "x") == 0) {
+			instLoad = "LDX";
+			::sprintf_s(label, "__save%d_x", iSavePoint);
+		} else {
+			ErrorLog::AddError("acceptable register names are: a, b, x");
+			return nullptr;
+		}
+		char str[128];
+		bool firstFlag = true;
+		if (firstFlag) {
+			::sprintf(str, "%s:\n", label);
+			asmCode += str;
+			::sprintf(str, "        %-8s0\n", instLoad);
+			asmCode += str; 
+		} else {
+			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
+			asmCode += str; 
+		}
+	}
+	Parser parser("***Generator_M6800.cpp***");
+	return parser.ParseString(asmCode.c_str())? parser.GetExprRoot()->Reference() : nullptr;
 }
 
 bool Generator_M6800::DoGenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const
