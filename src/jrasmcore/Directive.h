@@ -409,6 +409,8 @@ public:
 		inline Factory() : DirectiveFactory(".RESTORE", false, true) {}
 		virtual Directive *Create() const;
 	};
+private:
+	AutoPtr<Expr> _pExprGenerated;
 public:
 	inline Directive_RESTORE() : Directive(RESTORE) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
@@ -429,6 +431,8 @@ public:
 		inline Factory() : DirectiveFactory(".SAVE", false, true) {}
 		virtual Directive *Create() const;
 	};
+private:
+	AutoPtr<Expr> _pExprGenerated;
 public:
 	inline Directive_SAVE() : Directive(SAVE) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);

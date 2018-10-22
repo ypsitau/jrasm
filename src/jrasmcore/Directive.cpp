@@ -1132,24 +1132,26 @@ bool Directive_RESTORE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		regNames.push_back(regName);
 	}
+	//_pExprGenerated.reset();
+	if (_pExprGenerated.IsNull()) return false;
 	return rtn;
 }
 
 bool Directive_RESTORE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
+	return _pExprGenerated->OnPhaseAssignSymbol(context);
 }
 
 bool Directive_RESTORE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
+	return _pExprGenerated->OnPhaseGenerate(context, pBuffDst);
 }
 
 bool Directive_RESTORE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+	return _pExprGenerated->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
 //-----------------------------------------------------------------------------
