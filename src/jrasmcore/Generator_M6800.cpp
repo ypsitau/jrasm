@@ -184,7 +184,7 @@ Expr *Generator_M6800::DoComposeExpr_Save(
 		}
 		char str[128];
 		::sprintf(str, "        %-8s[%s]\n", instStore, label);
-		asmCode += str; 
+		asmCode += str;
 	}
 	Parser parser("***Generator_M6800.cpp***");
 	return parser.ParseString(asmCode.c_str())? parser.GetExprRoot()->Reference() : nullptr;
@@ -214,7 +214,7 @@ Expr *Generator_M6800::DoComposeExpr_Restore(
 		char str[128];
 		if (pDirectiveSAVE->DoesExistRegName(regName.c_str())) {
 			::sprintf(str, "        %-8s[%s]\n", instLoad, label);
-			asmCode += str; 
+			asmCode += str;
 		} else {
 			pDirectiveSAVE->AddRegName(regName.c_str());
 			::sprintf(str, "%s:\n", label);
@@ -222,7 +222,7 @@ Expr *Generator_M6800::DoComposeExpr_Restore(
 			::sprintf(str, "        .EQU    $+1\n");
 			asmCode += str;
 			::sprintf(str, "        %-8s0\n", instLoad);
-			asmCode += str; 
+			asmCode += str;
 		}
 	}
 	Parser parser("***Generator_M6800.cpp***");
