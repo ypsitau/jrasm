@@ -64,7 +64,7 @@ public:
 	public:
 		DeclareReferenceAccessor(SaveInfo);
 	public:
-		SaveInfo() : _cntRef(1) {}
+		SaveInfo() : _cntRef(1), _iSavePoint(0) {}
 	private:
 		inline ~SaveInfo() {}
 	public:

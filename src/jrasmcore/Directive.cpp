@@ -1200,7 +1200,6 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	bool rtn = true;
 	const ExprList &exprOperands = pExpr->GetExprOperands();
-	ExprOwner &exprChildren = pExpr->GetExprChildren();
 	StringList regNames;
 	for (auto pExprOperand : exprOperands) {
 		if (!pExprOperand->IsTypeSymbol()) {
@@ -1214,20 +1213,28 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		regNames.push_back(regName);
 	}
+	GetSaveInfo().SetSavePoint(context.NextSavePoint());
+	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo(), regNames));
+	if (_pExprGenerated.IsNull()) return false;
+#if 0
+	ExprOwner &exprChildren = pExpr->GetExprChildren();
 	AutoPtr<Expr> pExpr_end(exprChildren.back());
 	exprChildren.pop_back();						// remove .end directive
 	rtn = Generator::GetInstance().GenCodeSaveOld(context, pExpr, regNames);
 	exprChildren.push_back(pExpr_end.release());	// restore .end directive
+#endif
 	return rtn;
 }
 
 bool Directive_SAVE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!_pExprGenerated->OnPhaseAssignSymbol(context)) return false;
 	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 }
 
 bool Directive_SAVE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
+	if (!_pExprGenerated->OnPhaseGenerate(context, pBuffDst)) return false;
 	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
 }
 
@@ -1235,6 +1242,7 @@ bool Directive_SAVE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	if (!_pExprGenerated->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1)) return false;
 	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
