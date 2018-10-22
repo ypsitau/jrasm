@@ -77,6 +77,7 @@ public:
 			_regNamesToRestore.insert(ToUpper(regName));
 		}
 		String MakeLabel(const char *regName) const;
+		bool CheckValidation(const Expr *pExpr, const StringList &regNamesToSave) const;
 	};
 private:
 	int _cntRef;
@@ -458,6 +459,7 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
+	StringList _regNamesToSave;
 	AutoPtr<Expr> _pExprGenerated;
 	AutoPtr<SaveInfo> _pSaveInfo;
 public:

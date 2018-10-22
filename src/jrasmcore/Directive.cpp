@@ -76,7 +76,7 @@ bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const 
 	AutoPtr<Expr_Directive> pExpr(new Expr_Directive(Reference()));
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	exprStack.push_back(pExpr.release());
+	exprStack.push_back(pExpr.release());			// for operands
 	return true;
 }
 
@@ -130,6 +130,23 @@ String Directive::SaveInfo::MakeLabel(const char *regName) const
 	char str[64];
 	::sprintf_s(str, "__SAVE%d_%s", _iSavePoint, ToUpper(regName).c_str());
 	return str;
+}
+
+bool Directive::SaveInfo::CheckValidation(const Expr *pExpr, const StringList &regNamesToSave) const
+{
+	for (auto regName : _regNamesToRestore) {
+		if (std::find(regNamesToSave.begin(), regNamesToSave.end(), regName) == regNamesToSave.end()) {
+			ErrorLog::AddError(pExpr, "missing %s in .SAVE directive", regName.c_str());
+			return false;
+		}
+	}
+	for (auto regName : regNamesToSave) {
+		if (_regNamesToRestore.find(regName) == _regNamesToRestore.end()) {
+			ErrorLog::AddError(pExpr, "missing .RESTORE directive for %s", regName.c_str());
+			return false;
+		}
+	}
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1125,6 +1142,7 @@ bool Directive_RESTORE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 		if (pExprParent->IsTypeDirective(Directive::SAVE)) {
 			pDirectiveSAVE = dynamic_cast<Directive_SAVE *>(
 				dynamic_cast<Expr_Directive *>(pExprParent)->GetDirective());
+			break;
 		}
 	}
 	if (pDirectiveSAVE == nullptr) {
@@ -1134,7 +1152,6 @@ bool Directive_RESTORE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack
 	SetSaveInfo(pDirectiveSAVE->GetSaveInfo().Reference());
 	pParser->SetExprSourceInfo(pExpr.get(), pToken);
 	exprStack.back()->GetExprChildren().push_back(pExpr->Reference());
-	exprStack.push_back(pExpr->Reference());		// for children
 	exprStack.push_back(pExpr.release());			// for operands
 	return true;
 }
@@ -1200,27 +1217,27 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	bool rtn = true;
 	const ExprList &exprOperands = pExpr->GetExprOperands();
-	StringList regNames;
+	_regNamesToSave.clear();
 	for (auto pExprOperand : exprOperands) {
 		if (!pExprOperand->IsTypeSymbol()) {
 			ErrorLog::AddError("only symbols are acceptable");
 			return false;
 		}
 		const char *regName = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
-		if (std::find(regNames.begin(), regNames.end(), regName) != regNames.end()) {
+		if (std::find(_regNamesToSave.begin(), _regNamesToSave.end(), regName) != _regNamesToSave.end()) {
 			ErrorLog::AddError("duplicated register name");
 			return false;
 		}
-		regNames.push_back(regName);
+		_regNamesToSave.push_back(ToUpper(regName));
 	}
 	GetSaveInfo().SetSavePoint(context.NextSavePoint());
-	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo(), regNames));
+	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo(), _regNamesToSave));
 	if (_pExprGenerated.IsNull()) return false;
 #if 0
 	ExprOwner &exprChildren = pExpr->GetExprChildren();
 	AutoPtr<Expr> pExpr_end(exprChildren.back());
 	exprChildren.pop_back();						// remove .end directive
-	rtn = Generator::GetInstance().GenCodeSaveOld(context, pExpr, regNames);
+	rtn = Generator::GetInstance().GenCodeSaveOld(context, pExpr, regNamesToSave);
 	exprChildren.push_back(pExpr_end.release());	// restore .end directive
 #endif
 	return rtn;
@@ -1228,6 +1245,7 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 
 bool Directive_SAVE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!GetSaveInfo().CheckValidation(pExpr, _regNamesToSave)) return false;
 	if (!_pExprGenerated->OnPhaseAssignSymbol(context)) return false;
 	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 }
