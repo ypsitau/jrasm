@@ -28,7 +28,8 @@ public:
 	static void Initialize(Generator *pGenerator);
 	bool ForwardAddress(Context &context, const Expr_Instruction *pExpr) const;
 	bool Generate(Context &context, const Expr_Instruction *pExpr, Binary *pBuffDst) const;
-	Expr *ComposeExpr_Save(Context &context, Expr *pExpr, const StringList &regNames) const;
+	Expr *ComposeExpr_Save(
+		Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const;
 	Expr *ComposeExpr_Restore(
 		Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const;
 	bool GenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const;
@@ -38,9 +39,10 @@ public:
 	virtual bool IsRegisterSymbol(const char *symbol) const = 0;
 	virtual bool DoForwardAddress(Context &context, const Expr_Instruction *pExpr) const = 0;
 	virtual bool DoGenerate(Context &context, const Expr_Instruction *pExpr, Binary &buffDst) const = 0;
-	virtual Expr *DoComposeExpr_Save(Context &context, Expr *pExpr, const StringList &regNames) const = 0;
-	virtual Expr *DoComposeExpr_Restore(Context &context, Expr *pExpr,
-										Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const = 0;
+	virtual Expr *DoComposeExpr_Save(
+		Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const = 0;
+	virtual Expr *DoComposeExpr_Restore(
+		Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const = 0;
 	virtual bool DoGenCodeSaveOld(Context &context, Expr *pExpr, const StringList &regNames) const = 0;
 };
 

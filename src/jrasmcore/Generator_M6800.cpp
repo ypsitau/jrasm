@@ -161,7 +161,8 @@ bool Generator_M6800::DoGenerate(Context &context, const Expr_Instruction *pExpr
 	return pEntry->ApplyRule(context, pExpr, &buffDst);
 }
 
-Expr *Generator_M6800::DoComposeExpr_Save(Context &context, Expr *pExpr, const StringList &regNames) const
+Expr *Generator_M6800::DoComposeExpr_Save(
+	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
 {
 	return nullptr;
 }

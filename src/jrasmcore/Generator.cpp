@@ -28,9 +28,10 @@ bool Generator::Generate(Context &context, const Expr_Instruction *pExpr, Binary
 	return DoGenerate(context, pExpr, *pBuffDst);
 }
 
-Expr *Generator::ComposeExpr_Save(Context &context, Expr *pExpr, const StringList &regNames) const
+Expr *Generator::ComposeExpr_Save(
+	Context &context, Expr *pExpr, Directive_SAVE *pDirectiveSAVE, const StringList &regNames) const
 {
-	return DoComposeExpr_Save(context, pExpr, regNames);
+	return DoComposeExpr_Save(context, pExpr, pDirectiveSAVE, regNames);
 }
 
 Expr *Generator::ComposeExpr_Restore(
