@@ -4,12 +4,12 @@
         LDX     0xc100+16+10*32
         PCG.circle2x2.PUT
         LDX     0xc500+16+10*32
-        PCG.circle2x2.PUTATTR 5,0
+        PCG.circle2x2.PUTATTR
         RTS
 
         .PCGPAGE page1,CRAM:0x80
 
-        .PCG    circle2x2,2,2
+        .PCG    circle2x2,2,2,,,5:0,4:0,3:0,2:0
         .DB     b".....######....."
         .DB     b"...##......##..."
         .DB     b"..#..........#.."
