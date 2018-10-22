@@ -60,6 +60,28 @@
 	macro1
 	macro2
 	macro2
+	
+	.save	x,a,b
+	.save	x,a,b
+	ldx	0
+	.restore x
+	ldaa	0
+	ldab	0
+	ldx	0
+	.restore a,b,x
+	ldaa	0
+	ldab	0
+	ldx	0
+	.restore a,b,x
+	ldaa	0
+	ldab	0
+	ldx	0
+	.restore a,b,x
+	.end
+	ldx	0
+	.restore a,b,x
+	.end
+	
 macro1:
 	.macro
 	.save	a
@@ -76,3 +98,4 @@ macro2:
 	.end
 	.end
 
+	

@@ -88,48 +88,93 @@ __save5_x:         | | .equ $+1
                    | .end
                    macro1
                    | .save a
-    1082 b7 10 96  | | staa [__save8_a]
+    1082 b7 10 96  | | staa [__save10_a]
     1085 86 aa     | | ldaa 0xaa
                    | | .restore a
-__save8_a:         | | | .equ $+1
+__save10_a:        | | | .equ $+1
     1087 86 00     | | | ldaa 0
                    | | .end
                    | .end
                    macro1
                    | .save a
-    1089 b7 10 96  | | staa [__save8_a]
+    1089 b7 10 96  | | staa [__save10_a]
     108c 86 aa     | | ldaa 0xaa
                    | | .restore a
-__save8_a:         | | | .equ $+1
+__save10_a:        | | | .equ $+1
     108e 86 00     | | | ldaa 0
                    | | .end
                    | .end
                    macro1
                    | .save a
-    1090 b7 10 96  | | staa [__save8_a]
+    1090 b7 10 96  | | staa [__save10_a]
     1093 86 aa     | | ldaa 0xaa
                    | | .restore a
-__save8_a:         | | | .equ $+1
+__save10_a:        | | | .equ $+1
     1095 86 00     | | | ldaa 0
                    | | .end
                    | .end
                    macro2
                    | .save a
-    1097 b7 10 a4  | | staa [__save9_a]
+    1097 b7 10 a4  | | staa [__save11_a]
     109a 86 aa     | | ldaa 0xaa
                    | | .restore a
-__save9_a:         | | | .equ $+1
+__save11_a:        | | | .equ $+1
     109c 86 00     | | | ldaa 0
                    | | .end
                    | .end
                    macro2
                    | .save a
-    109e b7 10 a4  | | staa [__save9_a]
+    109e b7 10 a4  | | staa [__save11_a]
     10a1 86 aa     | | ldaa 0xaa
                    | | .restore a
-__save9_a:         | | | .equ $+1
+__save11_a:        | | | .equ $+1
     10a3 86 00     | | | ldaa 0
                    | | .end
+                   | .end
+                   .save x,a,b
+    10a5 ff 10 f3  | stx  [__save8_x]
+    10a8 b7 10 ef  | staa [__save8_a]
+    10ab f7 10 f1  | stab [__save8_b]
+                   | .save x,a,b
+    10ae ff 10 bb  | | stx  [__save9_x]
+    10b1 b7 10 c5  | | staa [__save9_a]
+    10b4 f7 10 c7  | | stab [__save9_b]
+    10b7 ce 00 00  | | ldx  0
+                   | | .restore x
+__save9_x:         | | | .equ $+1
+    10ba ce 00 00  | | | ldx  0
+    10bd 86 00     | | ldaa 0
+    10bf c6 00     | | ldab 0
+    10c1 ce 00 00  | | ldx  0
+                   | | .restore a,b,x
+__save9_a:         | | | .equ $+1
+    10c4 86 00     | | | ldaa 0
+__save9_b:         | | | .equ $+1
+    10c6 c6 00     | | | ldab 0
+    10c8 fe 10 bb  | | | ldx  [__save9_x]
+    10cb 86 00     | | ldaa 0
+    10cd c6 00     | | ldab 0
+    10cf ce 00 00  | | ldx  0
+                   | | .restore a,b,x
+    10d2 b6 10 c5  | | | ldaa [__save9_a]
+    10d5 f6 10 c7  | | | ldab [__save9_b]
+    10d8 fe 10 bb  | | | ldx  [__save9_x]
+    10db 86 00     | | ldaa 0
+    10dd c6 00     | | ldab 0
+    10df ce 00 00  | | ldx  0
+                   | | .restore a,b,x
+    10e2 b6 10 c5  | | | ldaa [__save9_a]
+    10e5 f6 10 c7  | | | ldab [__save9_b]
+    10e8 fe 10 bb  | | | ldx  [__save9_x]
+                   | | .end
+    10eb ce 00 00  | ldx  0
+                   | .restore a,b,x
+__save8_a:         | | .equ $+1
+    10ee 86 00     | | ldaa 0
+__save8_b:         | | .equ $+1
+    10f0 c6 00     | | ldab 0
+__save8_x:         | | .equ $+1
+    10f2 ce 00 00  | | ldx  0
                    | .end
 [Symbol List]
 0001  @BYTE
@@ -149,3 +194,9 @@ __save9_a:         | | | .equ $+1
 107c  __save5_a
 107e  __save5_b
 1080  __save5_x
+10bb  __save9_x
+10c5  __save9_a
+10c7  __save9_b
+10ef  __save8_a
+10f1  __save8_b
+10f3  __save8_x
