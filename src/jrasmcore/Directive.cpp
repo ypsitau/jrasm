@@ -1092,7 +1092,12 @@ bool Directive_PCGPAGE::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 
 bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	return _pExprGenerated->OnPhaseAssignSymbol(context);
+	if (!_pExprGenerated->OnPhaseAssignSymbol(context)) return false;
+	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
+		const Binary &buff = pPCGChar->GetBuffer();
+		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
+	}
+	return true;
 }
 
 bool Directive_PCGPAGE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const

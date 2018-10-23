@@ -52,7 +52,7 @@ UInt16 xrnd2()
 	static UInt16 hl = 1;
 	UInt8 h = static_cast<UInt8>(hl >> 8);
 	UInt8 l = static_cast<UInt8>(hl);
-	UInt8 a, carry, carryNext;
+	UInt8 a = 0, carry = 0, carryNext = 0;
 	a = h;
 	carryNext = a & 1; a = (a >> 1) | (carry? 0x80 : 0); carry = carryNext;
 	a = l;
