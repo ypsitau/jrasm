@@ -4,13 +4,13 @@
 // http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 //==================================================================================
 	.org	0x1000
-	ldx	0x2000
+	ldx	0x1080
 loop:
 	jsr	xrnd
 	ldaa	[xrnd.high]
 	staa	[x]
 	inx
-	ldaa	[xrnd.high]
+	ldaa	[xrnd.low]
 	staa	[x]
 	inx
 	cpx	0x2000+128*2
@@ -18,12 +18,15 @@ loop:
 	rts
 	
 xrnd:
-	ror	[xrnd.high]
+	clc
+	ldaa	[xrnd.high]
+	rora
 	ldaa	[xrnd.low]
 	rora
 	eora	[xrnd.high]
 	staa	[xrnd.high]
-	ror	[xrnd.low]
+	ldaa	[xrnd.low]
+	rora
 	ldaa	[xrnd.high]
 	rora
 	eora	[xrnd.low]
@@ -38,6 +41,7 @@ xrnd.high:
 xrnd.low:
 	.equ	$+1
 	.dw	0x0001
+
 /*
 xrnd:
   ld hl,1       ; seed must not be 0
@@ -46,6 +50,7 @@ xrnd:
   rra
   ld a,l
   rra
+  
   xor h
   ld h,a
   ld a,l
