@@ -3,20 +3,38 @@
 // This code has been ported from a Z80 program released in the site:
 // http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 //==================================================================================
-	.org	0x1000
-	ldx	0x1080
-loop:
+xrndn:
+	.scope
+	clrb
+	stab	[work]
+	staa	[work+1]
+	stab	[result]
+	stab	[result+1]
 	jsr	xrnd
-	ldaa	[xrnd.high]
-	staa	[x]
-	inx
-	ldaa	[xrnd.low]
-	staa	[x]
-	inx
-	cpx	0x2000+128*2
-	bne	loop
+	ldab	[xrnd.high]
+loop:
+	clc
+	rorb
+	beq	done
+	bcc	no_addition
+	ldaa	[work+1]
+	adda	[result+1]
+	staa	[result+1]
+	ldaa	[work]
+	adca	[result]
+	staa	[result]
+	clc
+no_addition:
+	rol	[work+1]
+	rol	[work]
+	bra	loop
+done:
+	ldaa	[result]
 	rts
-	
+work:	.dw	0x0000
+result:	.dw	0x0000
+	.end
+
 xrnd:
 	clc
 	ldaa	[xrnd.high]
@@ -41,29 +59,3 @@ xrnd.high:
 xrnd.low:
 	.equ	$+1
 	.dw	0x0001
-
-/*
-xrnd:
-  ld hl,1       ; seed must not be 0
-
-  ld a,h
-  rra
-  ld a,l
-  rra
-  
-  xor h
-  ld h,a
-  ld a,l
-  rra
-  ld a,h
-  rra
-  xor l
-  ld l,a
-	
-  xor h
-  ld h,a
-
-  ld (xrnd+1),hl
-
-  ret
-*/
