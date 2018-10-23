@@ -15,7 +15,6 @@ xrndn:
 loop:
 	clc
 	rorb
-	beq	done
 	bcc	no_addition
 	ldaa	[work+1]
 	adda	[result+1]
@@ -27,7 +26,8 @@ loop:
 no_addition:
 	rol	[work+1]
 	rol	[work]
-	bra	loop
+	tstb
+	bne	loop
 done:
 	ldaa	[result]
 	rts
