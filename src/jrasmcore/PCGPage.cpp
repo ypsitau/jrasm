@@ -131,6 +131,13 @@ entries:
 //-----------------------------------------------------------------------------
 // PCGPageList
 //-----------------------------------------------------------------------------
+PCGPage *PCGPageList::FindBySymbol(const char *symbol) const
+{
+	for (auto pPCGPage : *this) {
+		if (::strcasecmp(pPCGPage->GetSymbol(), symbol) == 0) return pPCGPage;
+	}
+	return nullptr;
+}
 
 //-----------------------------------------------------------------------------
 // PCGPageOwner

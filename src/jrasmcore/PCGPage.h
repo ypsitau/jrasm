@@ -41,6 +41,8 @@ public:
 // PCGPageList
 //-----------------------------------------------------------------------------
 class PCGPageList : public std::vector<PCGPage *> {
+public:
+	PCGPage *FindBySymbol(const char *symbol) const;
 };
 
 //-----------------------------------------------------------------------------

@@ -923,6 +923,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
+	
 	for (int yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (int xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
@@ -1073,6 +1074,10 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	String symbol;
 	std::unique_ptr<PCGRangeOwner> pPCGRangeOwner;
 	if (!ExtractParams(pExpr, &symbol, &pPCGRangeOwner)) return false;
+	if (context.GetPCGPageOwner().FindBySymbol(symbol.c_str()) != nullptr) {
+		ErrorLog::AddError(pExpr, "duplicated .PCGPAGE symbol '%s'", symbol.c_str());
+		return false;
+	}
 	_pPCGPage.reset(new PCGPage(symbol, pPCGRangeOwner.release()));
 	context.AddPCGPage(_pPCGPage->Reference());
 	return true;

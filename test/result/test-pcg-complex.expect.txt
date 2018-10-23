@@ -45,7 +45,7 @@ entries:           |
 done:              | 
                    | .end
                    pcgpage.page2.store
-    104a ce 12 19  | ldx  pcgpage.page2.src
+    104a ce 12 61  | ldx  pcgpage.page2.src
     104d ff 10 69  | stx  [srcp]
     1050 ce 10 8e  | ldx  entries
 loop_nextentry:    | 
@@ -395,4 +395,4 @@ done:              |
 0002  @WORD
 0004  @DWORD
 1219  pcgpage.page1.src
-1219  pcgpage.page2.src
+1261  pcgpage.page2.src

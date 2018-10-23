@@ -267,3 +267,30 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 	} while (0);
 	return asmCode;
 }
+
+//-----------------------------------------------------------------------------
+// PCGDataList
+//-----------------------------------------------------------------------------
+PCGData *PCGDataList::FindBySymbol(const char *symbol) const
+{
+	for (auto pPCGData : *this) {
+		if (::strcasecmp(pPCGData->GetSymbol(), symbol) == 0) return pPCGData;
+	}
+	return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// PCGDataOwner
+//-----------------------------------------------------------------------------
+PCGDataOwner::~PCGDataOwner()
+{
+	Clear();
+}
+
+void PCGDataOwner::Clear()
+{
+	for (auto pPCGData : *this) {
+		PCGData::Delete(pPCGData);
+	}
+	clear();
+}

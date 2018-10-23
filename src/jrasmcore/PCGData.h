@@ -43,4 +43,21 @@ private:
 	String ComposeSource(bool putZeroFlag) const;
 };
 
+//-----------------------------------------------------------------------------
+// PCGDataList
+//-----------------------------------------------------------------------------
+class PCGDataList : public std::vector<PCGData *> {
+public:
+	PCGData *FindBySymbol(const char *symbol) const;
+};
+
+//-----------------------------------------------------------------------------
+// PCGDataOwner
+//-----------------------------------------------------------------------------
+class PCGDataOwner : public PCGDataList {
+public:
+	~PCGDataOwner();
+	void Clear();
+};
+
 #endif
