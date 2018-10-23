@@ -1,27 +1,43 @@
+//==================================================================================
+// 16bit Xorshift
+// This code has been ported from a Z80 program released in the site:
+// http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
+//==================================================================================
 	.org	0x1000
+	ldx	0x2000
+loop:
 	jsr	xrnd
-	
-	
-
-xrnd:
-	.scope
-	ror	[high]
-	ldaa	[low]
-	rora
-	eora	[high]
-	staa	[high]
-	ror	[low]
-	ldaa	[high]
-	rora
-	eora	[low]
-	staa	[low]
-	eora	[high]
-	staa	[high]
-high:	.equ	$+1
-low:	.equ	$+2
-	ldx	0x0001
+	ldaa	[xrnd.high]
+	staa	[x]
+	inx
+	ldaa	[xrnd.high]
+	staa	[x]
+	inx
+	cpx	0x2000+128*2
+	bne	loop
 	rts
-	.end
+	
+xrnd:
+	ror	[xrnd.high]
+	ldaa	[xrnd.low]
+	rora
+	eora	[xrnd.high]
+	staa	[xrnd.high]
+	ror	[xrnd.low]
+	ldaa	[xrnd.high]
+	rora
+	eora	[xrnd.low]
+	staa	[xrnd.low]
+	eora	[xrnd.high]
+	staa	[xrnd.high]
+	rts
+xrnd.word:
+	.equ	$
+xrnd.high:
+	.equ	$
+xrnd.low:
+	.equ	$+1
+	.dw	0x0001
 /*
 xrnd:
   ld hl,1       ; seed must not be 0
