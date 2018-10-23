@@ -13,6 +13,32 @@ diry:	.ds	@byte
 	
 	pcgpage.mainpage.store
 
+	.scope
+	ldx	balls
+loop:
+	; ball.posx = randn(30) + 1
+	randn	30
+	inca
+	staa	[x+ball.posx]
+	; ball.posy = randn(22) + 1
+	randn	22
+	inca
+	staa	[x+ball.posy]
+	; ball.dirx = randn(2) * 2 - 1
+	randn	2
+	asla
+	deca
+	staa	[x+ball.dirx]
+	; ball.diry = randn(2) * 2 - 1
+	randn	2
+	asla
+	deca
+	staa	[x+ball.diry]
+	addx	@ball
+	cpx	ballsEnd
+	bne	loop
+	.end
+	
 mainloop:
 
 	.scope
@@ -23,61 +49,40 @@ loop:
 	pcg.chkcircle2x2.erase
 	code2attraddr
 	pcg.chkcircle2x2.eraseattr 7, 0
-	.restore x
-	.end
-	addx	4
-	cpx	ballsEnd
-	bne	loop
-	.end
 
-	.scope
-	ldx	balls
-loop:
-	.save	x
+	.restore x
 	movebound [x+ball.posx], [x+ball.dirx], 0, 30
 	movebound [x+ball.posy], [x+ball.diry], 0, 22
-	.restore x
-	.end
-	addx	4
-	cpx	ballsEnd
-	bne	loop
-	.end
 
-	.scope
-	ldx	balls
-loop:
-	.save	x
+	.restore x
 	xy2codeaddr [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.put
 	code2attraddr
 	pcg.chkcircle2x2.putattr
+
 	.restore x
 	.end
-	
 	addx	4
 	cpx	ballsEnd
-	bne	loop
+	beq	skip
+	jmp	loop
+skip:
 	.end
 
-	ldx	0x1000
+/*
+	ldx	0x10
 delay:
 	dex
 	bne	delay
+*/
 
 	jmp	mainloop
 
 balls:
-	.db	20, 10, 1, 1
-	.db	23, 13, 1, 1
-	.db	20, 4, -1, -1
-	.db	28, 12, 1, 1
-	.db	10, 11, -1, 1
-	.db	9, 17, 1, -1
-	.db	18, 12, 1, 1
-	.db	0, 15, 1, 1
-	.db	21, 12, -1, 1
-	.db	27, 19, 1, -1
+	.ds	@ball * 100
 ballsEnd:
+
+	.include "xorshift.inc"
 
 	.pcgpage mainpage,cram:32
 
@@ -189,3 +194,4 @@ code2attraddr:
 result:	.equ $+1
 	ldx	0x0000
 	.end
+

@@ -32,7 +32,7 @@ bool Config::Save()
 bool Config::Restore()
 {
 	std::unique_ptr<wxConfig> pCfg(new wxConfig(_appName, _vendorName));
-	::printf("%s\n", (const char *)wxFileConfig::GetLocalFile(wxT("jrpcgedit")).GetFullName());
+	//::printf("%s\n", (const char *)wxFileConfig::GetLocalFile(wxT("jrpcgedit")).GetFullName());
 	//::printf("Config::Restore()\n");
 	pCfg->Read(wxT("/FrameMain/x"), &FrameMain.x);
 	pCfg->Read(wxT("/FrameMain/y"), &FrameMain.y);

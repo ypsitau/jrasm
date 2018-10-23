@@ -178,7 +178,7 @@ Expr *Generator_M6800::DoComposeExpr_Save(
 			return nullptr;
 		}
 		char str[128];
-		::sprintf(str, "        %-8s[%s]\n", instStore, saveInfo.MakeLabel(regName.c_str()).c_str());
+		::sprintf_s(str, "        %-8s[%s]\n", instStore, saveInfo.MakeLabel(regName.c_str()).c_str());
 		asmCode += str;
 	}
 	//::printf("%s", asmCode.c_str());
@@ -206,14 +206,14 @@ Expr *Generator_M6800::DoComposeExpr_Restore(
 		char str[128];
 		if (saveInfo.IsFirstRegNameToRestore(regName.c_str())) {
 			saveInfo.AddRegNameToRestore(regName.c_str());
-			::sprintf(str, "%s:\n", label.c_str());
+			::sprintf_s(str, "%s:\n", label.c_str());
 			asmCode += str;
-			::sprintf(str, "        .EQU    $+1\n");
+			::sprintf_s(str, "        .EQU    $+1\n");
 			asmCode += str;
-			::sprintf(str, "        %-8s0\n", instLoad);
+			::sprintf_s(str, "        %-8s0\n", instLoad);
 			asmCode += str;
 		} else {
-			::sprintf(str, "        %-8s[%s]\n", instLoad, label.c_str());
+			::sprintf_s(str, "        %-8s[%s]\n", instLoad, label.c_str());
 			asmCode += str;
 		}
 	}

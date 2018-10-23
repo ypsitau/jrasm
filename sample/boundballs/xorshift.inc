@@ -3,27 +3,56 @@
 // This code has been ported from a Z80 program released in the site:
 // http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 //==================================================================================
-	.org	0x1000
-	ldx	0x2000
-loop:
+randn:
+	.macro	n
+	ldaa	n
+	jsr	xrndn
+	ldaa	[xrndn.result]
+	.end
+
+xrndn:
+	.scope
+	clrb
+	stab	[work]
+	staa	[work+1]
+	stab	[result]
+	stab	[result+1]
 	jsr	xrnd
-	ldaa	[xrnd.high]
-	staa	[x]
-	inx
-	ldaa	[xrnd.high]
-	staa	[x]
-	inx
-	cpx	0x2000+128*2
+	ldab	[xrnd.high]
+loop:
+	clc
+	rorb
+	bcc	no_addition
+	ldaa	[work+1]
+	adda	[result+1]
+	staa	[result+1]
+	ldaa	[work]
+	adca	[result]
+	staa	[result]
+	clc
+no_addition:
+	rol	[work+1]
+	rol	[work]
+	tstb
 	bne	loop
+done:
 	rts
-	
+work:	.dw	0x0000
+result:
+	.end
+xrndn.result:
+	.dw	0x0000
+
 xrnd:
-	ror	[xrnd.high]
+	clc
+	ldaa	[xrnd.high]
+	rora
 	ldaa	[xrnd.low]
 	rora
 	eora	[xrnd.high]
 	staa	[xrnd.high]
-	ror	[xrnd.low]
+	ldaa	[xrnd.low]
+	rora
 	ldaa	[xrnd.high]
 	rora
 	eora	[xrnd.low]
@@ -38,27 +67,3 @@ xrnd.high:
 xrnd.low:
 	.equ	$+1
 	.dw	0x0001
-/*
-xrnd:
-  ld hl,1       ; seed must not be 0
-
-  ld a,h
-  rra
-  ld a,l
-  rra
-  xor h
-  ld h,a
-  ld a,l
-  rra
-  ld a,h
-  rra
-  xor l
-  ld l,a
-	
-  xor h
-  ld h,a
-
-  ld (xrnd+1),hl
-
-  ret
-*/
