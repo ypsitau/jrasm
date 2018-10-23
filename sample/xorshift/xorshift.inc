@@ -3,6 +3,13 @@
 // This code has been ported from a Z80 program released in the site:
 // http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 //==================================================================================
+randn:
+	.macro	n
+	ldaa	n
+	jsr	xrndn
+	ldaa	[xrndn.result]
+	.end
+
 xrndn:
 	.scope
 	clrb
@@ -29,11 +36,12 @@ no_addition:
 	tstb
 	bne	loop
 done:
-	ldaa	[result]
 	rts
 work:	.dw	0x0000
-result:	.dw	0x0000
+result:
 	.end
+xrndn.result:
+	.dw	0x0000
 
 xrnd:
 	clc
