@@ -19,6 +19,7 @@ private:
 	size_t _iPCGRangeCur;
 	std::unique_ptr<PCGRangeOwner> _pPCGRangeOwner;
 	PCGCharOwner _pcgCharOwner;
+	PCGDataOwner _pcgDataOwner;
 	static const char *_asmCodeTmpl;
 public:
 	DeclareReferenceAccessor(PCGPage);
@@ -32,6 +33,8 @@ public:
 	inline bool IsEmpty() const { return _pcgCharOwner.empty(); }
 	inline const PCGRangeOwner &GetPCGRangeOwner() const { return *_pPCGRangeOwner; }
 	inline const PCGCharOwner &GetPCGCharOwner() const { return _pcgCharOwner; }
+	inline const PCGDataOwner &GetPCGDataOwner() const { return _pcgDataOwner; }
+	inline void AddPCGData(PCGData *pPCGData) { _pcgDataOwner.push_back(pPCGData); }
 	bool GenerateCharCode(int *pCharCode, PCGType *pPCGType);
 	PCGChar *CreatePCGChar(const Binary &buff, int);
 	Expr *ComposeExpr() const;

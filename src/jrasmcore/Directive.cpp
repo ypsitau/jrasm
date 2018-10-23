@@ -918,12 +918,16 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 	Binary buffOrg;
 	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar,
 					   &stepX, &stepY, &pPCGColorOwner, buffOrg)) return false;
-	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY, pPCGColorOwner.release()));
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
 	}
-	
+	if (context.GetPCGPageCur()->GetPCGDataOwner().FindBySymbol(symbol.c_str()) != nullptr) {
+		ErrorLog::AddError(pExpr, "duplicated .PCG symbol '%s'", symbol.c_str());
+		return false;
+	}
+	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY, pPCGColorOwner.release()));
+	context.GetPCGPageCur()->AddPCGData(_pPCGData->Reference());
 	for (int yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
 		for (int xChar = 0; xChar < wdChar; xChar++, pDataColOrg++) {
