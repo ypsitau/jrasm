@@ -3,22 +3,31 @@
 // This code has been ported from a Z80 program released in the site:
 // http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 //==================================================================================
-randn:
+;;;------------------------------------------------------------------------------
+;;; Format: xrnd n
+;;; Param: n [IMM, DIR, IDX, EXT] .. Range of random number
+;;; Return: a
+;;; Broken: b
+;;;------------------------------------------------------------------------------
+xrndn:
 	.macro	n
 	ldaa	n
-	jsr	xrndn
-	ldaa	[xrndn.result]
+	jsr	_xrndn
+	ldaa	[_xrndn.result]
 	.end
-
-xrndn:
+	
+;;;------------------------------------------------------------------------------
+;;; _xrndn
+;;;------------------------------------------------------------------------------
+_xrndn:
 	.scope
 	clrb
 	stab	[work]
 	staa	[work+1]
 	stab	[result]
 	stab	[result+1]
-	jsr	xrnd
-	ldab	[xrnd.high]
+	jsr	_xrnd
+	ldab	[_xrnd.high]
 loop:
 	clc
 	rorb
@@ -40,30 +49,33 @@ done:
 work:	.dw	0x0000
 result:
 	.end
-xrndn.result:
+_xrndn.result:
 	.dw	0x0000
 
-xrnd:
+;;;------------------------------------------------------------------------------
+;;; _xrnd
+;;;------------------------------------------------------------------------------
+_xrnd:
 	clc
-	ldaa	[xrnd.high]
+	ldaa	[_xrnd.high]
 	rora
-	ldaa	[xrnd.low]
+	ldaa	[_xrnd.low]
 	rora
-	eora	[xrnd.high]
-	staa	[xrnd.high]
-	ldaa	[xrnd.low]
+	eora	[_xrnd.high]
+	staa	[_xrnd.high]
+	ldaa	[_xrnd.low]
 	rora
-	ldaa	[xrnd.high]
+	ldaa	[_xrnd.high]
 	rora
-	eora	[xrnd.low]
-	staa	[xrnd.low]
-	eora	[xrnd.high]
-	staa	[xrnd.high]
+	eora	[_xrnd.low]
+	staa	[_xrnd.low]
+	eora	[_xrnd.high]
+	staa	[_xrnd.high]
 	rts
-xrnd.word:
+_xrnd.word:
 	.equ	$
-xrnd.high:
+_xrnd.high:
 	.equ	$
-xrnd.low:
+_xrnd.low:
 	.equ	$+1
 	.dw	0x0001
