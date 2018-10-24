@@ -84,3 +84,42 @@ bios.putc:
 	.macro
 	jsr	0xebe7
 	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.pick
+;;; Returns a key code that is being pressed as well as a status of joysticks.
+;;;  Format: bios.pick
+;;;  Returns: A: keyboard, {0x02}: joystick-1, {0c03}: joystick-2
+;;;  Broken: (unknown)
+;;;------------------------------------------------------------------------------
+bios.pick:
+	.macro
+	jsr	0xe8cb
+	ldaa	{0x01}
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.scrollup
+;;; Scrolls the screen up.
+;;;  Format: bios.scrollup addr
+;;; ***** not tested yet *****
+;;;------------------------------------------------------------------------------
+bios.scrollup:
+	.macro	addr=0xc400
+	ldx	addr
+	stx	{0x22}
+	jsr	0xed0d
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.scrolldown
+;;; Scrolls the screen down.
+;;;  Format: bios.scrollup addr
+;;; ***** not tested yet *****
+;;;------------------------------------------------------------------------------
+bios.scrolldown:
+	.macro	addr=0xc100
+	ldx	addr
+	stx	{0x22}
+	jsr	0xed76
+	.end
