@@ -6,11 +6,11 @@
 
 ;;;------------------------------------------------------------------------------
 ;;; xrnd
-;;; 
-;;; Format: xrnd n
-;;; Param: n [IMM, DIR, IDX, EXT] .. Range of random number
-;;; Return: a
-;;; Broken: b
+;;; Generates an 8bit random number within a range from 0 to n-1.
+;;;  Format: xrnd n
+;;;  Param: n [IMM, DIR, IDX, EXT] .. Range of random number
+;;;  Return: a
+;;;  Broken: b
 ;;;------------------------------------------------------------------------------
 xrndn:
 	.macro	n
@@ -25,32 +25,39 @@ xrndn:
 _xrndn:
 	.scope
 	clrb
-	stab	[work]
-	staa	[work+1]
-	stab	[result]
-	stab	[result+1]
+	stab	[work.h]
+	staa	[work.l]
+	stab	[result.h]
+	stab	[result.l]
 	jsr	_xrnd
-	ldab	[_xrnd.high]
+	ldab	[_xrnd.h]
 loop:
 	clc
 	rorb
 	bcc	no_addition
-	ldaa	[work+1]
-	adda	[result+1]
-	staa	[result+1]
-	ldaa	[work]
-	adca	[result]
-	staa	[result]
+	ldaa	[work.l]
+	adda	[result.l]
+	staa	[result.l]
+	ldaa	[work.h]
+	adca	[result.h]
+	staa	[result.h]
 	clc
 no_addition:
-	rol	[work+1]
-	rol	[work]
+	rol	[work.l]
+	rol	[work.h]
 	tstb
 	bne	loop
 done:
 	rts
-work:	.dw	0x0000
-result:
+work.h:
+	.equ	$
+work.l:
+	.equ	$+1
+	.dw	0x0000
+result.h:
+	.equ	$
+result.l:
+	.equ	$+1
 	.end
 _xrndn.result:
 	.dw	0x0000
@@ -60,25 +67,25 @@ _xrndn.result:
 ;;;------------------------------------------------------------------------------
 _xrnd:
 	clc
-	ldaa	[_xrnd.high]
+	ldaa	[_xrnd.h]
 	rora
-	ldaa	[_xrnd.low]
+	ldaa	[_xrnd.l]
 	rora
-	eora	[_xrnd.high]
-	staa	[_xrnd.high]
-	ldaa	[_xrnd.low]
+	eora	[_xrnd.h]
+	staa	[_xrnd.h]
+	ldaa	[_xrnd.l]
 	rora
-	ldaa	[_xrnd.high]
+	ldaa	[_xrnd.h]
 	rora
-	eora	[_xrnd.low]
-	staa	[_xrnd.low]
-	eora	[_xrnd.high]
-	staa	[_xrnd.high]
+	eora	[_xrnd.l]
+	staa	[_xrnd.l]
+	eora	[_xrnd.h]
+	staa	[_xrnd.h]
 	rts
 _xrnd.word:
 	.equ	$
-_xrnd.high:
+_xrnd.h:
 	.equ	$
-_xrnd.low:
+_xrnd.l:
 	.equ	$+1
 	.dw	0x0001
