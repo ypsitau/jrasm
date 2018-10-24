@@ -3,11 +3,12 @@
 // This code has been ported from a Z80 program released in the site:
 // http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 //==================================================================================
+	
 ;;;------------------------------------------------------------------------------
 ;;; Format: xrnd n
 ;;; Param: n [IMM, DIR, IDX, EXT] .. Range of random number
-;;; Return: a
-;;; Broken: b
+;;; Return: A
+;;; Broken: B
 ;;;------------------------------------------------------------------------------
 xrndn:
 	.macro	n
@@ -15,7 +16,7 @@ xrndn:
 	jsr	_xrndn
 	ldaa	[_xrndn.result]
 	.end
-	
+
 ;;;------------------------------------------------------------------------------
 ;;; _xrndn
 ;;;------------------------------------------------------------------------------
