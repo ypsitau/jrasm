@@ -18,7 +18,7 @@ bios.keyclick:
 	rora
 	staa	{0x00}
 	.end
-	
+
 ;;;------------------------------------------------------------------------------
 ;;; bios.color
 ;;; Specifies color attribute.
@@ -76,7 +76,7 @@ bios.cls:
 
 ;;;------------------------------------------------------------------------------
 ;;; bios.putc
-;;; Prints ASCII character specified by accumulator A.
+;;; Prints a character of ASCII code specified by accumulator A
 ;;;  Format: bios.putc
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
@@ -102,10 +102,9 @@ bios.pick:
 ;;; bios.scrollup
 ;;; Scrolls the screen up.
 ;;;  Format: bios.scrollup addr
-;;; ***** not tested yet *****
 ;;;------------------------------------------------------------------------------
 bios.scrollup:
-	.macro	addr=0xc400
+	.macro	addr=0xc3e0
 	ldx	addr
 	stx	{0x22}
 	jsr	0xed0d
@@ -115,7 +114,6 @@ bios.scrollup:
 ;;; bios.scrolldown
 ;;; Scrolls the screen down.
 ;;;  Format: bios.scrollup addr
-;;; ***** not tested yet *****
 ;;;------------------------------------------------------------------------------
 bios.scrolldown:
 	.macro	addr=0xc100
