@@ -1,29 +1,5 @@
 #include <stdio.h>
 
-/*
-xrnd:
-  ld hl,1       ; seed must not be 0
-
-  ld a,h
-  rra
-  ld a,l
-  rra
-  xor h
-  ld h,a
-  ld a,l
-  rra
-  ld a,h
-  rra
-  xor l
-  ld l,a
-  xor h
-  ld h,a
-
-  ld (xrnd+1),hl
-
-  ret
-*/
-
 typedef unsigned char UInt8;
 typedef unsigned short UInt16;
 
@@ -32,8 +8,17 @@ UInt16 xrnd2();
 
 int main()
 {
-	for (int i = 0; i < 1000; i++) {
-		::printf("%04x %04x\n", xrnd1(), xrnd2());
+	bool firstFlag = true;
+	UInt16 numFirst = 0;
+	for (int i = 0; ; i++) {
+		UInt16 num = xrnd1();
+		::printf("#%-5d %04x %04x\n", i, num, xrnd2());
+		if (firstFlag) {
+			firstFlag = false;
+			numFirst = num;
+		} else if (num == numFirst) {
+			break;
+		}
 	}
 	return 0;
 }
@@ -70,3 +55,27 @@ UInt16 xrnd2()
 	hl = (static_cast<UInt16>(h) << 8) | l;
 	return hl;
 }
+
+/*
+xrnd:
+  ld hl,1       ; seed must not be 0
+
+  ld a,h
+  rra
+  ld a,l
+  rra
+  xor h
+  ld h,a
+  ld a,l
+  rra
+  ld a,h
+  rra
+  xor l
+  ld l,a
+  xor h
+  ld h,a
+
+  ld (xrnd+1),hl
+
+  ret
+*/
