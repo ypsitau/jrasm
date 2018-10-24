@@ -86,10 +86,37 @@ bios.putc:
 	.end
 
 ;;;------------------------------------------------------------------------------
+;;; bios.print
+;;; Prints a string of ASCII characters that is terminated with zero on the screen.
+;;;  Format: bios.print addr
+;;;  Broken: A, B, X
+;;;------------------------------------------------------------------------------
+bios.print:
+	.macro addr
+	ldx	addr
+	jsr	bios._print
+	.end
+
+bios._print:
+	.scope
+loop:	
+	ldaa	[x]
+	beq	done
+	.save	x
+	bios.putc
+	.restore x
+	.end
+	inx
+	bra	loop
+done:	
+	rts
+	.end
+
+;;;------------------------------------------------------------------------------
 ;;; bios.pick
 ;;; Returns a key code that is being pressed as well as a status of joysticks.
 ;;;  Format: bios.pick
-;;;  Returns: A: keyboard, {0x02}: joystick-1, {0c03}: joystick-2
+;;;  Returns: A: keyboard, {0x02}: joystick#1, {0x03}: joystick#2
 ;;;  Broken: (unknown)
 ;;;------------------------------------------------------------------------------
 bios.pick:
