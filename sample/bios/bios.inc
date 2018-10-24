@@ -3,19 +3,17 @@
 ;;;==============================================================================
 
 ;;;------------------------------------------------------------------------------
-;;; bios.keyclick
-;;; Specifies the position of cursor.
-;;;  Format: bios.keyclick flag
-;;;  Param: flag [IMM, DIR, IDX, EXT] .. Click sound is enabled (1) or disabled (0)
+;;; bios.keystat
+;;; Sets the key status.
+;;;  Format: bios.keystat click, mode=0
+;;;  Param: click [IMM] .. Click sound is disabled (0) or enabled (1)
+;;;         mode [IMM] .. Sets key-in mode to BASIC (0) or neutral (1).
+;;;                       Default is 0.
 ;;;  Broken: A
 ;;;------------------------------------------------------------------------------
 bios.keyclick:
-	.macro	flag
-	ldaa	flag
-	clc
-	rora
-	rora
-	rora
+	.macro	click, mode=0
+	ldaa	(click << 6) | (mode << 7)
 	staa	{0x00}
 	.end
 
