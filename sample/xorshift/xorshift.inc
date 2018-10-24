@@ -1,9 +1,12 @@
-//==================================================================================
-// 16bit Xorshift
-// This code has been ported from a Z80 program released in the site:
-// http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
-//==================================================================================
+;;;==================================================================================
+;;; 16bit Xorshift
+;;; This code has been ported from a Z80 program released in the site:
+;;; http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
+;;;==================================================================================
+
 ;;;------------------------------------------------------------------------------
+;;; xrnd
+;;; 
 ;;; Format: xrnd n
 ;;; Param: n [IMM, DIR, IDX, EXT] .. Range of random number
 ;;; Return: a
