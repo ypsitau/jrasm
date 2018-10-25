@@ -328,30 +328,30 @@ Expr *Expr_Null::Substitute(const ExprDict &exprDict) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_Root
+// Expr_Group
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_Root::TYPE = Expr::TYPE_Root;
+const Expr::Type Expr_Group::TYPE = Expr::TYPE_Group;
 
-Expr *Expr_Root::Resolve(Context &context) const
+Expr *Expr_Group::Resolve(Context &context) const
 {
 	return Reference();
 }
 
-Expr *Expr_Root::Clone() const
+Expr *Expr_Group::Clone() const
 {
-	return new Expr_Root(*this);
+	return new Expr_Group(*this);
 }
 
-Expr *Expr_Root::Substitute(const ExprDict &exprDict) const
+Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Root(
+	AutoPtr<Expr> pExprRtn(new Expr_Group(
 							   GetExprOperands().Substitute(exprDict),
 							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
 
-String Expr_Root::ComposeSource(bool upperCaseFlag) const
+String Expr_Group::ComposeSource(bool upperCaseFlag) const
 {
 	return "";
 }

@@ -80,7 +80,7 @@ class Expr {
 public:
 	enum Type {
 		TYPE_Null,
-		TYPE_Root,
+		TYPE_Group,
 		TYPE_Integer,
 		TYPE_String,
 		TYPE_BitPattern,
@@ -114,7 +114,7 @@ protected:
 public:
 	inline bool IsType(Type type) const { return _type == type; }
 	inline bool IsTypeNull() const { return IsType(TYPE_Null); }
-	inline bool IsTypeRoot() const { return IsType(TYPE_Root); }
+	inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeInteger() const { return IsType(TYPE_Integer); }
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
@@ -207,17 +207,17 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_Root
+// Expr_Group
 //-----------------------------------------------------------------------------
-class Expr_Root : public Expr {
+class Expr_Group : public Expr {
 public:
 	static const Type TYPE;
 public:
-	inline Expr_Root() : Expr(TYPE) {}
-	inline Expr_Root(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
-	inline Expr_Root(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+	inline Expr_Group() : Expr(TYPE) {}
+	inline Expr_Group(ExprOwner *pExprOperands) : Expr(TYPE, pExprOperands) {}
+	inline Expr_Group(ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren) {}
-	inline Expr_Root(const Expr_Root &expr) : Expr(expr) {}
+	inline Expr_Group(const Expr_Group &expr) : Expr(expr) {}
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

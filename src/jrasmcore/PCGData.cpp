@@ -132,6 +132,83 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		}
 		asmCode += "        .END\n";
 	} while (0);
+#if 0
+	do { // create macro: PCG.symbol.SAVE
+		::sprintf_s(str, "PCG.%s.SAVE%s:\n", GetSymbol(), suffix);
+		asmCode += str;
+		asmCode += "        .MACRO dst,offset=0\n";
+		asmCode += "        LDX     dst\n";
+		asmCode += "        LDX     [x]\n";
+		asmCode += str;
+		int iCol = 0, iRow = 0, iChar = 0;
+		int iBoundary = 1;
+		for (auto pPCGChar : _pcgCharOwner) {
+			int offsetBase = iCol * _stepX + iRow * _stepY;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			if (!pPCGChar->IsZero() || putZeroFlag) {
+				::sprintf_s(str, "        LDAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
+				asmCode += str;
+				::sprintf_s(str, "        .SAVE   X\n");
+				asmCode += str;
+				::sprintf_s(str, "        LDX     dst\n");
+				asmCode += str;
+				::sprintf_s(str, "        LDX     [X]\n");
+				asmCode += str;
+				::sprintf_s(str, "        STAA    [x+0x%02x]\n", static_cast<UInt8>(iChar));
+				asmCode += str;
+				::sprintf_s(str, "        .END\n");
+				asmCode += str;
+				iChar++;
+			}
+			iCol++;
+			if (iCol == _wdChar) {
+				iCol = 0;
+				iRow++;
+			}
+		}
+		asmCode += "        .END\n";
+	} while (0);
+	do { // create macro: PCG.symbol.RESTORE
+		::sprintf_s(str, "PCG.%s.RESTORE%s:\n", GetSymbol(), suffix);
+		asmCode += str;
+		asmCode += "        .MACRO src,offset=0\n";
+		int iCol = 0, iRow = 0, iChar = 0;
+		int iBoundary = 1;
+		for (auto pPCGChar : _pcgCharOwner) {
+			int offsetBase = iCol * _stepX + iRow * _stepY;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			if (!pPCGChar->IsZero() || putZeroFlag) {
+				::sprintf_s(str, "        .SAVE   X\n");
+				asmCode += str;
+				::sprintf_s(str, "        LDX     src\n");
+				asmCode += str;
+				::sprintf_s(str, "        LDX     [X]\n");
+				asmCode += str;
+				::sprintf_s(str, "        LDAA    [x+0x%02x]\n", static_cast<UInt8>(iChar));
+				asmCode += str;
+				::sprintf_s(str, "        .END\n");
+				asmCode += str;
+				::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
+				asmCode += str;
+				iChar++;
+			}
+			iCol++;
+			if (iCol == _wdChar) {
+				iCol = 0;
+				iRow++;
+			}
+		}
+		asmCode += "        .END\n";
+	} while (0);
+#endif
 	do { // create macro: PCG.symbol.PUTATTR
 		::sprintf_s(str, "PCG.%s.PUTATTR%s:\n", GetSymbol(), suffix);
 		asmCode += str;
@@ -222,6 +299,42 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 					::sprintf_s(str, "        ORAA    (1<<6)+%d\n", colorFg);
 				}
 				asmCode += str;
+				::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
+				asmCode += str;
+			}
+			iCol++;
+			if (iCol == _wdChar) {
+				iCol = 0;
+				iRow++;
+			}
+		}
+		asmCode += "        .END\n";
+	} while (0);
+	do { // create macro: PCG.symbol.SETATTR
+		::sprintf_s(str, "PCG.%s.SETATTR%s:\n", GetSymbol(), suffix);
+		asmCode += str;
+		::sprintf_s(str, "        .MACRO fg=7,bg=0,offset=0\n");
+		asmCode += str;
+		int iCol = 0, iRow = 0;
+		int iBoundary = 1;
+		PCGType pcgTypePrev = PCGTYPE_None;
+		for (auto pPCGChar : _pcgCharOwner) {
+			int offsetBase = iCol * _stepX + iRow * _stepY;
+			if (offsetBase >= iBoundary * 0x100) {
+				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
+				asmCode += str;
+				iBoundary++;
+			}
+			if (!pPCGChar->IsZero() || putZeroFlag) {
+				if (pcgTypePrev != pPCGChar->GetPCGType()) {
+					if (pPCGChar->GetPCGType() == PCGTYPE_CRAM) {
+						::sprintf_s(str, "        LDAA    fg+(bg<<3)\n");
+					} else { // _pcgType == PCGTYPE_User
+						::sprintf_s(str, "        LDAA    (1<<6)+fg+(bg<<3)\n");
+					}
+					asmCode += str;
+					pcgTypePrev = pPCGChar->GetPCGType();
+				}
 				::sprintf_s(str, "        STAA    [x+0x%02x+offset]\n", static_cast<UInt8>(offsetBase));
 				asmCode += str;
 			}
