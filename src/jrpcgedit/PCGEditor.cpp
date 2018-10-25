@@ -15,9 +15,15 @@ PCGEditor::PCGEditor(wxWindow *pParent, PCGDataInfo *pPCGDataInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 			wxTAB_TRAVERSAL | wxBORDER_SUNKEN | wxWANTS_CHARS | wxVSCROLL | wxHSCROLL),
 	_pPCGDataInfo(pPCGDataInfo),
+#if defined(_MSC_VER)
 	_penBorder(wxColour("light grey"), 0, wxPENSTYLE_SOLID),
 	_penGrid(wxColour("dark grey"), 0, wxPENSTYLE_SOLID),
-	_penGridHL(wxColour("grey"), 0, wxPENSTYLE_SOLID),
+	_penGridHL(wxColour("dark grey"), 0, wxPENSTYLE_SOLID),
+#else
+	_penBorder(wxColour("light grey"), 1, wxPENSTYLE_SOLID),
+	_penGrid(wxColour("dark grey"), 1, wxPENSTYLE_SOLID),
+	_penGridHL(wxColour("dark grey"), 1, wxPENSTYLE_SOLID),
+#endif
 	_brushBg(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
 	_brushMatrix(wxColour("black"), wxBRUSHSTYLE_SOLID)
 {
