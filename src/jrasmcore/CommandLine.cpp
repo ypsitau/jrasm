@@ -32,7 +32,8 @@ bool CommandLine::Parse(int &argc, const char *argv[], String &strErr)
 		arg = argv[iArg];
 		if (stat == STAT_Key) {
 			if (arg[0] != '-') {
-				break;
+				iArg++;
+				continue;
 			} else if (arg[1] == '-') {
 				const char *keyLong = &arg[2];
 				InfoMapByKeyLong::iterator iter = _infoMapByKeyLong.find(keyLong);

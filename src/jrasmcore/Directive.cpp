@@ -1250,30 +1250,39 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		GetSaveInfo().AddRegNameToSave(regName);
 	}
 	GetSaveInfo().SetSavePoint(context.NextSavePoint());
-	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo()));
-	if (_pExprGenerated.IsNull()) return false;
+	_pExprGenerated_Save.reset(Generator::GetInstance().ComposeExpr_Save(context, pExpr, GetSaveInfo()));
+	if (_pExprGenerated_Save.IsNull()) return false;
+	_pExprGenerated_Restore.reset(Generator::GetInstance().ComposeExpr_Restore(
+									  context, pExpr, GetSaveInfo(), GetSaveInfo().GetRegNamesToSave()));
+	if (_pExprGenerated_Restore.IsNull()) return false;
 	return rtn;
 }
 
 bool Directive_SAVE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
 	if (!GetSaveInfo().CheckValidation(pExpr)) return false;
-	if (!_pExprGenerated->OnPhaseAssignSymbol(context)) return false;
-	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
+	if (!_pExprGenerated_Save->OnPhaseAssignSymbol(context)) return false;
+	if (!pExpr->GetExprChildren().OnPhaseAssignSymbol(context)) return false;
+	if (!_pExprGenerated_Restore->OnPhaseAssignSymbol(context)) return false;
+	return true;
 }
 
 bool Directive_SAVE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	if (!_pExprGenerated->OnPhaseGenerate(context, pBuffDst)) return false;
-	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
+	if (!_pExprGenerated_Save->OnPhaseGenerate(context, pBuffDst)) return false;
+	if (!pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst)) return false;
+	if (!_pExprGenerated_Restore->OnPhaseGenerate(context, pBuffDst)) return false;
+	return true;
 }
 
 bool Directive_SAVE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	if (!_pExprGenerated->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1)) return false;
-	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+	if (!_pExprGenerated_Save->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1)) return false;
+	if (!pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 2)) return false;
+	if (!_pExprGenerated_Restore->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1)) return false;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
