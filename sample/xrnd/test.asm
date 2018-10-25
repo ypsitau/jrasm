@@ -1,7 +1,7 @@
 	.org	0x1000
 	ldx	0x1080
 
-	xrndseed 1
+	xrndseed {0x04}	// use the 0.1sec timer as random seed
 loop:
 	xrndn8	0x10
 	staa	[x]
@@ -10,4 +10,4 @@ loop:
 	bne	loop
 	rts
 
-	.include "xorshift.inc"
+	.include "xrnd.inc"

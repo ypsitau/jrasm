@@ -26,21 +26,21 @@ diry:	.ds	@byte
 	.scope
 	ldx	balls
 each_ball:
-	; ball.posx = xrndn(30) + 1
-	xrndn	30
+	; ball.posx = xrndn8(30) + 1
+	xrndn8	30
 	inca
 	staa	[x+ball.posx]
-	; ball.posy = xrndn(22) + 1
-	xrndn	22
+	; ball.posy = xrndn8(22) + 1
+	xrndn8	22
 	inca
 	staa	[x+ball.posy]
-	; ball.dirx = xrndn(2) * 2 - 1
-	xrndn	2
+	; ball.dirx = xrndn8(2) * 2 - 1
+	xrndn8	2
 	asla
 	deca
 	staa	[x+ball.dirx]
-	; ball.diry = xrndn(2) * 2 - 1
-	xrndn	2
+	; ball.diry = xrndn8(2) * 2 - 1
+	xrndn8	2
 	asla
 	deca
 	staa	[x+ball.diry]
@@ -147,5 +147,5 @@ loop:
 	bne	loop
 	.end
 
-	.include "xorshift.inc"
+	.include "xrnd.inc"
 	.include "utils.inc"

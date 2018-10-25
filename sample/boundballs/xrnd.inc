@@ -7,39 +7,49 @@
 ;;;------------------------------------------------------------------------------
 ;;; xrndn8
 ;;; Generates an 8bit random number within a range from 0 to n-1.
-;;;  Format: xrndn8 n
-;;;  Param: n [IMM, DIR, IDX, EXT] .. Range of random number
-;;;  Return: A
+;;;  Format: xrndn8 n=0
+;;;  Param:  n [IMM, DIR, IDX, EXT] .. Range of random number
+;;;  Return: A .. Random number
 ;;;  Broken: B
 ;;;------------------------------------------------------------------------------
 xrndn8:
-	.macro	n
+	.macro	n=0
 	ldaa	n
 	jsr	_xrndn8
-	ldaa	[_xrndn8.result.h]
 	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; xrndseed
 ;;; Sets a random seed number.
 ;;;  Format: xrndseed n
-;;;  Param: n [IMM, DIR, IDX, EXT] .. 16bit number for random seed
+;;;  Param:  n [IMM, DIR, IDX, EXT] .. 16bit number for random seed
 ;;;  Broken: X
 ;;;------------------------------------------------------------------------------
 xrndseed:
 	.macro	n
+	;; xorshift algorithm doesn't work when seed is zero.
 	ldx	n
 	cpx	0
-	bne	skip
+	bne	notzero
 	inx
-skip:	stx	[_xrnd.result]
+notzero:
+	stx	[_xrnd.result]
 	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; _xrndn8
+;;;  Input:  A .. Range of random number
+;;;  Return: A .. Random number
+;;;  Broken: B
 ;;;------------------------------------------------------------------------------
 _xrndn8:
 	.scope
+	tsta
+	bne	notzero
+	jsr	_xrnd
+	ldaa	[_xrnd.result.h]
+	rts
+notzero:
 	clrb
 	stab	[shifter.h]
 	staa	[shifter.l]
@@ -64,6 +74,7 @@ no_addition:
 	tstb
 	bne	loop
 done:
+	ldaa	[result.h]
 	rts
 shifter.h:
 	.equ	$
@@ -74,17 +85,13 @@ result.h:
 	.equ	$
 result.l:
 	.equ	$+1
-	.end
-_xrndn8.result:
-	.equ	$
-_xrndn8.result.h:
-	.equ	$
-_xrndn8.result.l:
-	.equ	$+1
 	.dw	0x0000
+	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; _xrnd
+;;;  Return: [_xrnd.result]
+;;;  Broken: A
 ;;;------------------------------------------------------------------------------
 _xrnd:
 	.scope
