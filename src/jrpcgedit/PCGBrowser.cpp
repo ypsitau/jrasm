@@ -15,12 +15,12 @@ int PCGBrowser::_mgnRight = 8;
 
 PCGBrowser::PCGBrowser(wxWindow *pParent, PCGPageInfo *pPCGPageInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-			wxTAB_TRAVERSAL | wxBORDER_SUNKEN), _pPCGPageInfo(pPCGPageInfo),
+			wxTAB_TRAVERSAL | wxBORDER_SUNKEN | wxWANTS_CHARS | wxVSCROLL),
+	_pPCGPageInfo(pPCGPageInfo),
 	_brushBg(wxColour("grey"), wxBRUSHSTYLE_SOLID),
 	_brushSelected(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
 	_bmpBtnUp(64, 12), _bmpBtnDown(64, 12), _bmpBtnDelete(16, 16)
 {
-	
 }
 
 //-----------------------------------------------------------------------------
@@ -172,6 +172,7 @@ void PCGBrowser::OnLeftDown(wxMouseEvent &event)
 	}
 	if (refreshFlag) Refresh();
 	if (pPCGDataInfoToNotify != nullptr) _listenerList.NotifyPCGSelected(pPCGDataInfoToNotify);
+	SetFocus();
 }
 
 void PCGBrowser::OnLeftUp(wxMouseEvent &event)

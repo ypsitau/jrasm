@@ -13,11 +13,11 @@ int PCGEditor::_mgnBottom = 8;
 
 PCGEditor::PCGEditor(wxWindow *pParent, PCGDataInfo *pPCGDataInfo) :
 	wxPanel(pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-			wxTAB_TRAVERSAL | wxBORDER_SUNKEN),
+			wxTAB_TRAVERSAL | wxBORDER_SUNKEN | wxWANTS_CHARS | wxVSCROLL | wxHSCROLL),
 	_pPCGDataInfo(pPCGDataInfo),
-	_penBorder(wxColour("light grey"), 1, wxPENSTYLE_SOLID),
-	_penGrid(wxColour("light grey"), 1, wxPENSTYLE_DOT),
-	_penGridHL(wxColour("grey"), 1, wxPENSTYLE_SOLID),
+	_penBorder(wxColour("light grey"), 0, wxPENSTYLE_SOLID),
+	_penGrid(wxColour("dark grey"), 0, wxPENSTYLE_SOLID),
+	_penGridHL(wxColour("grey"), 0, wxPENSTYLE_SOLID),
 	_brushBg(wxColour("light blue"), wxBRUSHSTYLE_SOLID),
 	_brushMatrix(wxColour("black"), wxBRUSHSTYLE_SOLID)
 {
