@@ -1193,26 +1193,27 @@ bool Directive_RESTORE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		}
 		regNames.push_back(regName);
 	}
-	_pExprGenerated.reset(Generator::GetInstance().ComposeExpr_Restore(context, pExpr, GetSaveInfo(), regNames));
-	if (_pExprGenerated.IsNull()) return false;
+	AutoPtr<Expr> pExpr_Restore(Generator::GetInstance().ComposeExpr_Restore(context, pExpr, GetSaveInfo(), regNames));
+	if (pExpr_Restore.IsNull()) return false;
+	pExpr->GetExprChildren().push_back(pExpr_Restore.release());
 	return rtn;
 }
 
 bool Directive_RESTORE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	return _pExprGenerated->OnPhaseAssignSymbol(context);
+	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 }
 
 bool Directive_RESTORE::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
-	return _pExprGenerated->OnPhaseGenerate(context, pBuffDst);
+	return pExpr->GetExprChildren().OnPhaseGenerate(context, pBuffDst);
 }
 
 bool Directive_RESTORE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	return _pExprGenerated->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 
 //-----------------------------------------------------------------------------

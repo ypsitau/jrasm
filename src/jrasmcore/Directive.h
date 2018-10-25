@@ -443,7 +443,6 @@ public:
 	};
 private:
 	AutoPtr<SaveInfo> _pSaveInfo;
-	AutoPtr<Expr> _pExprGenerated;
 public:
 	inline Directive_RESTORE() : Directive(RESTORE) {}
 	inline void SetSaveInfo(SaveInfo *pSaveInfo) { _pSaveInfo.reset(pSaveInfo); }

@@ -75,15 +75,23 @@
 	
 macro1:
 	.macro
+	.save	a,b
 	.save	a
 	ldaa	0xaa
+	.restore a
+	ldaa	0xbb
+	.end
 	.end
 	.end
 
 macro2:
 	.macro
+	.save	a,b,x
 	.save	a
 	ldaa	0xaa
+	.restore a
+	ldaa	0xbb
+	.end
 	.end
 	.end
 
