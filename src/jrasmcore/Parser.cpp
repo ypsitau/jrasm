@@ -9,7 +9,7 @@
 Parser::Parser(const String &pathNameSrc) :
 	_tokenizer(this, pathNameSrc), _stat(STAT_LineTop), _pExprStack(new ExprStack())
 {
-	_pExprStack->push_back(new Expr_Root());
+	_pExprStack->push_back(new Expr_Group());
 }
 
 bool Parser::ParseFile()
