@@ -4,28 +4,24 @@
 	ldaa	0x11
 	ldab	0x22
 	ldx	0x3333
-	.restore a
 	.end
 	
 	.save	b
 	ldaa	0x11
 	ldab	0x22
 	ldx	0x3333
-	.restore b
 	.end
 	
 	.save	x
 	ldaa	0x11
 	ldab	0x22
 	ldx	0x3333
-	.restore x
 	.end
 	
 	.save	a,b
 	ldaa	0x11
 	ldab	0x22
 	ldx	0x3333
-	.restore a,b
 	.end
 	
 	ldaa	0x11
@@ -46,13 +42,10 @@
 	ldaa	0xaa
 	ldab	0xbb
 	ldx	0xcccc
-	.restore a,b,x
 	.end
 
-	.restore a,b,x
 	.end
 
-	.restore a,b,x
 	.end
 
 	macro1
@@ -76,17 +69,14 @@
 	ldaa	0
 	ldab	0
 	ldx	0
-	.restore a,b,x
 	.end
 	ldx	0
-	.restore a,b,x
 	.end
 	
 macro1:
 	.macro
 	.save	a
 	ldaa	0xaa
-	.restore a
 	.end
 	.end
 
@@ -94,7 +84,6 @@ macro2:
 	.macro
 	.save	a
 	ldaa	0xaa
-	.restore a
 	.end
 	.end
 

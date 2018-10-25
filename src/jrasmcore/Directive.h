@@ -467,9 +467,6 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
-	StringList _regNamesToSave;
-	AutoPtr<Expr> _pExprGenerated_Save;
-	AutoPtr<Expr> _pExprGenerated_Restore;
 	AutoPtr<SaveInfo> _pSaveInfo;
 public:
 	inline Directive_SAVE() : Directive(SAVE), _pSaveInfo(new SaveInfo()) {}
