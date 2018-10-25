@@ -18,9 +18,6 @@ ExprOwner *Macro::Expand(Context &context, const Expr_Instruction *pExpr) const
 	const Macro::ParamOwner &paramOwner = GetParamOwner();
 	Macro::ParamOwner::const_iterator ppParam = paramOwner.begin();
 	ExprList::const_iterator ppExpr = exprOperands.begin();
-
-	//::printf("%zu %zu\n", paramOwner.size(), exprOperands.size());
-
 	for ( ; ppParam != paramOwner.end() && ppExpr != exprOperands.end(); ppParam++, ppExpr++) {
 		const Macro::Param *pParam = *ppParam;
 		const Expr *pExpr = *ppExpr;

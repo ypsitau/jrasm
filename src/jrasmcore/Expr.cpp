@@ -96,7 +96,6 @@ bool Expr::OnPhaseExpandMacro(Context &context)
 
 bool Expr::OnPhaseAssignSymbol(Context &context)
 {
-	//_pExprDict.reset(context.GetExprDictCurrent().Reference());
 	AssignExprDict(context, false);
 	return GetExprOperands().OnPhaseAssignSymbol(context) &&
 		GetExprChildren().OnPhaseAssignSymbol(context);
