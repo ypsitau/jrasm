@@ -25,7 +25,6 @@ private:
 		STAT_TempoPre, STAT_Tempo, STAT_TempoFix,
 	};
 private:
-	Handler &_handler;
 	Stat _stat;
 	int _octave;
 	int _lengthDefault;
@@ -38,10 +37,11 @@ private:
 	int _cntDot;
 	char _strErr[128];
 public:
-	MMLParser(Handler &handler);
+	MMLParser();
 	void Reset();
-	bool Parse(const char *str);
-	bool FeedChar(int ch);
+	bool Parse(Handler &handler, const char *str);
+	bool FeedChar(Handler &handler, int ch);
+	void SetError(const char *format, ...);
 	inline const char *GetError() const { return _strErr; }
 	inline int GetOctave() const { return _octave; }
 	inline int GetVolume() const { return _volume; }

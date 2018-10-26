@@ -7,7 +7,7 @@
 // MMLParser
 // see http://ja.wikipedia.org/wiki/Music_Macro_Language for MML syntax
 //-----------------------------------------------------------------------------
-MMLParser::MMLParser(Handler &handler) : _handler(handler)
+MMLParser::MMLParser()
 {
 	Reset();
 }
@@ -15,7 +15,7 @@ MMLParser::MMLParser(Handler &handler) : _handler(handler)
 void MMLParser::Reset()
 {
 	_stat			= STAT_Begin;
-	_octave			= 4;				// 1-9
+	_octave			= 3;				// 1-9
 	_lengthDefault	= LENGTH_MAX / 4;	// 1-LENGTH_MAX
 	_volume			= 3;				// 0-16
 	_tone			= 1;				// 
@@ -25,16 +25,16 @@ void MMLParser::Reset()
 	_numAccum		= 0;
 }
 
-bool MMLParser::Parse(const char *str)
+bool MMLParser::Parse(Handler &handler, const char *str)
 {
 	for (const char *p = str; ; p++) {
-		if (!FeedChar(*p)) return false;
+		if (!FeedChar(handler, *p)) return false;
 		if (*p == '\0') break;
 	}
 	return true;
 }
 
-bool MMLParser::FeedChar(int ch)
+bool MMLParser::FeedChar(Handler &handler, int ch)
 {
 	bool continueFlag;
 	if ('a' <= ch && ch <= 'z') ch = ch - 'a' + 'A';
@@ -42,6 +42,8 @@ bool MMLParser::FeedChar(int ch)
 		continueFlag = false;
 		if (_stat == STAT_Begin) {
 			if (IsEOD(ch)) {
+				// nothing to do
+			} else if (IsWhite(ch)) {
 				// nothing to do
 			} else if ('A' <= ch && ch <= 'G') {
 				_operator = ch;
@@ -138,7 +140,7 @@ bool MMLParser::FeedChar(int ch)
 				// nothing to do
 			}
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			if (!_handler.OnMMLNote(*this, note, length)) return false;
+			if (!handler.OnMMLNote(*this, note, length)) return false;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
@@ -162,7 +164,7 @@ bool MMLParser::FeedChar(int ch)
 			}
 		} else if (_stat == STAT_RestFix) {
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			if (!_handler.OnMMLRest(*this, length)) return false;
+			if (!handler.OnMMLRest(*this, length)) return false;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_OctavePre) {	// -------- Octave --------
@@ -285,4 +287,11 @@ int MMLParser::CalcLength(int numDisp, int cntDot, int lengthDefault)
 		length += lengthDiv;
 	}
 	return length;
+}
+
+void MMLParser::SetError(const char *format, ...)
+{
+	va_list ap;
+	va_start(ap, format);
+	::vsprintf_s(_strErr, format, ap);
 }
