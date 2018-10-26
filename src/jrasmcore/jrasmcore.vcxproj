@@ -160,7 +160,7 @@
     <ClInclude Include="Generator_M6800.h" />
     <ClInclude Include="jrasmcore.h" />
     <ClInclude Include="Macro.h" />
-    <ClInclude Include="MmlParser.h" />
+    <ClInclude Include="MMLParser.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PCGChar.h" />
@@ -188,7 +188,7 @@
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Generator_M6800.cpp" />
     <ClCompile Include="Macro.cpp" />
-    <ClCompile Include="MmlParser.cpp" />
+    <ClCompile Include="MMLParser.cpp" />
     <ClCompile Include="Operator.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PCGChar.cpp" />

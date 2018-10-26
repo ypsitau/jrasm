@@ -5,19 +5,18 @@
 #define __JRASMCORE_DIRECTIVE_H__
 
 #include "Common.h"
-#include "MmlParser.h"
+#include "MMLParser.h"
 #include "PCGData.h"
 #include "PCGPage.h"
 
-class DisasmDumper;
-class Expr;
-class ExprStack;
-class Token;
-class Parser;
 class Context;
 class Directive;
 class DirectiveFactory;
-class Directive_PCGPAGE;
+class DisasmDumper;
+class Expr;
+class ExprStack;
+class Parser;
+class Token;
 
 //-----------------------------------------------------------------------------
 // DirectiveFactoryDict
@@ -343,8 +342,8 @@ public:
 		Binary &_buff;
 	public:
 		Handler(Binary &buff) : _buff(buff) {}
-		virtual void OnMMLNote(MMLParser &parser, unsigned char note, int length);
-		virtual void OnMMLRest(MMLParser &parser, int length);
+		virtual bool OnMMLNote(MMLParser &parser, unsigned char note, int length);
+		virtual bool OnMMLRest(MMLParser &parser, int length);
 	};
 private:
 	Binary _buff;

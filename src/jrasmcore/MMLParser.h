@@ -10,8 +10,8 @@ public:
 public:
 	class Handler {
 	public:
-		virtual void OnMMLNote(MMLParser &parser, unsigned char note, int length) = 0;
-		virtual void OnMMLRest(MMLParser &parser, int length) = 0;
+		virtual bool OnMMLNote(MMLParser &parser, unsigned char note, int length) = 0;
+		virtual bool OnMMLRest(MMLParser &parser, int length) = 0;
 	};
 private:
 	enum Stat {
@@ -40,6 +40,7 @@ private:
 public:
 	MMLParser(Handler &handler);
 	void Reset();
+	bool Parse(const char *str);
 	bool FeedChar(int ch);
 	inline const char *GetError() const { return _strErr; }
 	inline int GetOctave() const { return _octave; }

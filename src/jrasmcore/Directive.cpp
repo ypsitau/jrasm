@@ -655,17 +655,19 @@ bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
-		if (!pExprResolved->IsTypeString()) {
-			ErrorLog::AddError(pExpr, "elements of directive .MML must be string value");
-			return false;
-		}
-		const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
-		for (const char *p = str; ; p++) {
-			if (!parser.FeedChar(*p)) {
-				ErrorLog::AddError(pExpr, "%s", parser.GetError());
+		if (pExprResolved->IsTypeString()) {
+			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
+			if (!parser.Parse(str)) return false;
+		} else if (pExprResolved->IsTypeInteger()) {
+			Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
+			if (num < -0x80 || num > 0xff) {
+				ErrorLog::AddError(pExpr, "an element value of directive .MML exceeds 8bit range");
 				return false;
 			}
-			if (*p == '\0') break;
+			_buff += static_cast<UInt8>(num);
+		} else {
+			ErrorLog::AddError(pExpr, "elements of directive .MML must be string value");
+			return false;
 		}
 	}
 	return true;
@@ -673,6 +675,7 @@ bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 
 bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
 	return true;
 }
 
@@ -687,26 +690,28 @@ bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	Integer addr = context.GetAddress();
-	disasmDumper.DumpDataAndCode(
-		addr, _buff, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	disasmDumper.DumpDataAndCode(context.GetAddress(), _buff,
+								 pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
 	return true;
 }
 
-void Directive_MML::Handler::OnMMLNote(MMLParser &parser, unsigned char note, int length)
+bool Directive_MML::Handler::OnMMLNote(MMLParser &parser, unsigned char note, int length)
 {
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
 	UInt8 noteDev = note + 0x0d - 0x30;
 	_buff += lengthDev;
 	_buff += noteDev;
+	return true;
 }
 
-void Directive_MML::Handler::OnMMLRest(MMLParser &parser, int length)
+bool Directive_MML::Handler::OnMMLRest(MMLParser &parser, int length)
 {
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
 	UInt8 noteDev = 0x00;
 	_buff += lengthDev;
 	_buff += noteDev;
+	return true;
 }
 
 //-----------------------------------------------------------------------------

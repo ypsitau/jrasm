@@ -11,7 +11,7 @@ add_library(jrasmcore STATIC
 	Generator.cpp
 	Generator_M6800.cpp
 	Macro.cpp
-	MmlParser.cpp
+	MMLParser.cpp
 	Operator.cpp
 	Parser.cpp
 	PCGChar.cpp

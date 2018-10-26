@@ -16,7 +16,7 @@
 #include "Generator.h"
 #include "Generator_M6800.h"
 #include "Macro.h"
-#include "MmlParser.h"
+#include "MMLParser.h"
 #include "Parser.h"
 #include "PCGChar.h"
 #include "PCGColor.h"

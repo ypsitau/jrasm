@@ -25,6 +25,15 @@ void MMLParser::Reset()
 	_numAccum		= 0;
 }
 
+bool MMLParser::Parse(const char *str)
+{
+	for (const char *p = str; ; p++) {
+		if (!FeedChar(*p)) return false;
+		if (*p == '\0') break;
+	}
+	return true;
+}
+
 bool MMLParser::FeedChar(int ch)
 {
 	bool continueFlag;
@@ -77,7 +86,11 @@ bool MMLParser::FeedChar(int ch)
 				_stat = STAT_TempoPre;
 			*/
 			} else {
-				::sprintf_s(_strErr, "invalid character '%c'", ch);
+				if (::isprint(ch)) {
+					::sprintf_s(_strErr, "invalid character: %c", ch);
+				} else {
+					::sprintf_s(_strErr, "invalid character: 0x%02x", ch);
+				}
 				return false;
 			}
 		} else if (_stat == STAT_Note) {		// -------- Note --------
@@ -122,11 +135,10 @@ bool MMLParser::FeedChar(int ch)
 			} else if (_operatorSub == '-') {
 				if (note > 0) note--;
 			} else {
-				::sprintf_s(_strErr, "invalid character '%c'", _operatorSub);
-				return false;
+				// nothing to do
 			}
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			_handler.OnMMLNote(*this, note, length);
+			if (!_handler.OnMMLNote(*this, note, length)) return false;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
@@ -150,7 +162,7 @@ bool MMLParser::FeedChar(int ch)
 			}
 		} else if (_stat == STAT_RestFix) {
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			_handler.OnMMLRest(*this, length);
+			if (!_handler.OnMMLRest(*this, length)) return false;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_OctavePre) {	// -------- Octave --------
