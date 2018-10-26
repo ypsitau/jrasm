@@ -61,12 +61,15 @@ RegionOwner *RegionList::Join(size_t bytesGapToJoin, UInt8 dataFiller) const
 	std::unique_ptr<RegionOwner> pRegionOwner(new RegionOwner());
 	const_iterator ppRegion = begin();
 	if (ppRegion == end()) return pRegionOwner.release();
-	pRegionOwner->push_back((*ppRegion)->Clone());
+	const Region *pRegion = *ppRegion;
+	//::printf("%04x-%04x\n", pRegion->GetAddrTop(), pRegion->GetAddrBtm());
+	pRegionOwner->push_back(pRegion->Clone());
 	Region *pRegionPrev = pRegionOwner->back();
-	pRegionPrev->AddRegionIngredient((*ppRegion)->Reference());
+	pRegionPrev->AddRegionIngredient(pRegion->Reference());
 	ppRegion++;
 	for ( ; ppRegion != end(); ppRegion++) {
 		const Region *pRegion = *ppRegion;
+		//::printf("%04x-%04x\n", pRegion->GetAddrTop(), pRegion->GetAddrBtm());
 		if (pRegion->GetAddrTop() < pRegionPrev->GetAddrBtm()) {
 			ErrorLog::AddError("memory regions are overwrapped at 0x%04x", pRegion->GetAddrTop());
 			return nullptr;

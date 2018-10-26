@@ -140,8 +140,9 @@ bool Context::AddRegion(Integer addrTop)
 		return false;
 	} else {
 		_pSegmentCur->SetRegionCur(pRegion);
+		pRegion->ResetAddrOffset();
 	}
-	_pSegmentCur->ResetAddrOffset();
+	//_pSegmentCur->ResetAddrOffset();
 	return true;
 }
 
