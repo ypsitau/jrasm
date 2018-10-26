@@ -1,17 +1,17 @@
 //=============================================================================
-// MmlParser.h
+// MMLParser.h
 //=============================================================================
 #ifndef __JRASMCORE_MMLPARSER_H__
 #define __JRASMCORE_MMLPARSER_H__
 
-class MmlParser {
+class MMLParser {
 public:
 	enum { LENGTH_MAX = 256 };
 public:
 	class Handler {
 	public:
-		virtual void MmlNote(MmlParser &parser, unsigned char note, int length) = 0;
-		virtual void MmlRest(MmlParser &parser, int length) = 0;
+		virtual void OnMMLNote(MMLParser &parser, unsigned char note, int length) = 0;
+		virtual void OnMMLRest(MMLParser &parser, int length) = 0;
 	};
 private:
 	enum Stat {
@@ -36,10 +36,12 @@ private:
 	int _operatorSub;
 	int _numAccum;
 	int _cntDot;
+	char _strErr[128];
 public:
-	MmlParser(Handler &handler);
+	MMLParser(Handler &handler);
 	void Reset();
 	bool FeedChar(int ch);
+	inline const char *GetError() const { return _strErr; }
 	inline int GetOctave() const { return _octave; }
 	inline int GetVolume() const { return _volume; }
 	inline int GetTone() const { return _tone; }

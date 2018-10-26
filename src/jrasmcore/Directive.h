@@ -338,18 +338,19 @@ public:
 		virtual Directive *Create() const;
 	};
 public:
-	class Handler : public MmlParser::Handler {
+	class Handler : public MMLParser::Handler {
 	private:
-		Binary *_pBuffDst;
-		Integer _bytesSum;
+		Binary &_buff;
 	public:
-		Handler(Binary *pBuffDst) : _pBuffDst(pBuffDst), _bytesSum(0) {}
-		virtual void MmlNote(MmlParser &parser, unsigned char note, int length);
-		virtual void MmlRest(MmlParser &parser, int length);
-		inline Integer GetBytesSum() const { return _bytesSum; }
+		Handler(Binary &buff) : _buff(buff) {}
+		virtual void OnMMLNote(MMLParser &parser, unsigned char note, int length);
+		virtual void OnMMLRest(MMLParser &parser, int length);
 	};
+private:
+	Binary _buff;
 public:
 	inline Directive_MML() : Directive(MML) {}
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,

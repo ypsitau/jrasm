@@ -1,18 +1,18 @@
 //=============================================================================
-// MmlParser.cpp
+// MMLParser.cpp
 //=============================================================================
 #include "stdafx.h"
 
 //-----------------------------------------------------------------------------
-// MmlParser
+// MMLParser
 // see http://ja.wikipedia.org/wiki/Music_Macro_Language for MML syntax
 //-----------------------------------------------------------------------------
-MmlParser::MmlParser(Handler &handler) : _handler(handler)
+MMLParser::MMLParser(Handler &handler) : _handler(handler)
 {
 	Reset();
 }
 
-void MmlParser::Reset()
+void MMLParser::Reset()
 {
 	_stat			= STAT_Begin;
 	_octave			= 4;				// 1-9
@@ -25,7 +25,7 @@ void MmlParser::Reset()
 	_numAccum		= 0;
 }
 
-bool MmlParser::FeedChar(int ch)
+bool MMLParser::FeedChar(int ch)
 {
 	bool continueFlag;
 	if ('a' <= ch && ch <= 'z') ch = ch - 'a' + 'A';
@@ -62,6 +62,7 @@ bool MmlParser::FeedChar(int ch)
 				_numAccum = 0;
 				_cntDot = 0;
 				_stat = STAT_LengthPre;
+			/*
 			} else if (ch == 'V') {
 				_operator = ch;
 				_numAccum = 0;
@@ -74,8 +75,10 @@ bool MmlParser::FeedChar(int ch)
 				_operator = ch;
 				_numAccum = 0;
 				_stat = STAT_TempoPre;
+			*/
 			} else {
-				// nothing to do
+				::sprintf_s(_strErr, "invalid character '%c'", ch);
+				return false;
 			}
 		} else if (_stat == STAT_Note) {		// -------- Note --------
 			if (ch == '#' || ch == '+' || ch == '-') {
@@ -119,10 +122,11 @@ bool MmlParser::FeedChar(int ch)
 			} else if (_operatorSub == '-') {
 				if (note > 0) note--;
 			} else {
-				// nothing to do
+				::sprintf_s(_strErr, "invalid character '%c'", _operatorSub);
+				return false;
 			}
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			_handler.MmlNote(*this, note, length);
+			_handler.OnMMLNote(*this, note, length);
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
@@ -146,7 +150,7 @@ bool MmlParser::FeedChar(int ch)
 			}
 		} else if (_stat == STAT_RestFix) {
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			_handler.MmlRest(*this, length);
+			_handler.OnMMLRest(*this, length);
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_OctavePre) {	// -------- Octave --------
@@ -261,7 +265,7 @@ bool MmlParser::FeedChar(int ch)
 	return true;
 }
 
-int MmlParser::CalcLength(int numDisp, int cntDot, int lengthDefault)
+int MMLParser::CalcLength(int numDisp, int cntDot, int lengthDefault)
 {
 	if (numDisp <= 0) return lengthDefault;
 	int length = LENGTH_MAX / numDisp;

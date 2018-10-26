@@ -646,17 +646,10 @@ Directive *Directive_MML::Factory::Create() const
 	return new Directive_MML();
 }
 
-bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
-	//Handler handler(nullptr);
-	return true;
-}
-
-bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
-{
-	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
-	Handler handler(pBuffDst);
-	MmlParser parser(handler);
+	Handler handler(_buff);
+	MMLParser parser(handler);
 	parser.Reset();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
@@ -669,48 +662,51 @@ bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 		const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
 		for (const char *p = str; ; p++) {
 			if (!parser.FeedChar(*p)) {
-				ErrorLog::AddError(pExpr, "invalid MML format");
+				ErrorLog::AddError(pExpr, "%s", parser.GetError());
 				return false;
 			}
 			if (*p == '\0') break;
 		}
 	}
-	context.ForwardAddrOffset(handler.GetBytesSum());
+	return true;
+}
+
+bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	return true;
+}
+
+bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
+	*pBuffDst += _buff;
+	context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
 	return true;
 }
 
 bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	Binary buffDst;
 	Integer addr = context.GetAddress();
-	if (!OnPhaseGenerate(context, pExpr, &buffDst)) return false;
 	disasmDumper.DumpDataAndCode(
-		addr, buffDst,
-		pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+		addr, _buff, pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return true;
 }
 
-void Directive_MML::Handler::MmlNote(MmlParser &parser, unsigned char note, int length)
+void Directive_MML::Handler::OnMMLNote(MMLParser &parser, unsigned char note, int length)
 {
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
 	UInt8 noteDev = note + 0x0d - 0x30;
-	if (_pBuffDst != nullptr) {
-		*_pBuffDst += lengthDev;
-		*_pBuffDst += noteDev;
-	}
-	_bytesSum += 2;
+	_buff += lengthDev;
+	_buff += noteDev;
 }
 
-void Directive_MML::Handler::MmlRest(MmlParser &parser, int length)
+void Directive_MML::Handler::OnMMLRest(MMLParser &parser, int length)
 {
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
 	UInt8 noteDev = 0x00;
-	if (_pBuffDst != nullptr) {
-		*_pBuffDst += lengthDev;
-		*_pBuffDst += noteDev;
-	}
-	_bytesSum += 2;
+	_buff += lengthDev;
+	_buff += noteDev;
 }
 
 //-----------------------------------------------------------------------------
