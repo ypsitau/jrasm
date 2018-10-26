@@ -12,6 +12,7 @@ public:
 	public:
 		virtual bool OnMMLNote(MMLParser &mmlParser, int note, int length) = 0;
 		virtual bool OnMMLRest(MMLParser &mmlParser, int length) = 0;
+		virtual bool OnMMLEnd(MMLParser &mmlParser) = 0;
 	};
 private:
 	enum Stat {

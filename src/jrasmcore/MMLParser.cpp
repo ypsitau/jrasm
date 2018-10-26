@@ -68,6 +68,8 @@ bool MMLParser::FeedChar(Handler &handler, int ch)
 			} else if (ch == '<') {
 				_operator = ch;
 				if (_octave > 0) _octave--;
+			} else if (ch == ';') {
+				if (!handler.OnMMLEnd(*this)) return false;
 			} else if (ch == 'L') {
 				_operator = ch;
 				_numAccum = 0;

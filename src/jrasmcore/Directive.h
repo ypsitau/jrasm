@@ -339,11 +339,13 @@ public:
 public:
 	class Handler : public MMLParser::Handler {
 	private:
+		Context &_context;
 		Binary &_buff;
 	public:
-		Handler(Binary &buff) : _buff(buff) {}
+		Handler(Context &context, Binary &buff) : _context(context), _buff(buff) {}
 		virtual bool OnMMLNote(MMLParser &parser, int note, int length);
 		virtual bool OnMMLRest(MMLParser &parser, int length);
+		virtual bool OnMMLEnd(MMLParser &parser);
 	};
 private:
 	Binary _buff;

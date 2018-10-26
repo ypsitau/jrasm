@@ -648,7 +648,7 @@ Directive *Directive_MML::Factory::Create() const
 
 bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
-	Handler handler(_buff);
+	Handler handler(context, _buff);
 	MMLParser &mmlParser = context.GetMMLParser();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
@@ -668,7 +668,7 @@ bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 			}
 			_buff += static_cast<UInt8>(num);
 		} else {
-			ErrorLog::AddError(pExpr, "elements of directive .MML must be string value");
+			ErrorLog::AddError(pExpr, "elements of directive .MML must be string or number value");
 			return false;
 		}
 	}
@@ -692,9 +692,14 @@ bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary 
 bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	disasmDumper.DumpDataAndCode(context.GetAddress(), _buff,
-								 pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	if (_buff.empty()) {
+		disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	} else {
+		disasmDumper.DumpDataAndCode(context.GetAddress(), _buff,
+									 pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+
+		context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	}
 	return true;
 }
 
@@ -721,6 +726,13 @@ bool Directive_MML::Handler::OnMMLRest(MMLParser &mmlParser, int length)
 	UInt8 noteDev = 0x00;
 	_buff += lengthDev;
 	_buff += noteDev;
+	return true;
+}
+
+bool Directive_MML::Handler::OnMMLEnd(MMLParser &mmlParser)
+{
+	_buff += '\0';
+	_context.GetMMLParser().Reset();
 	return true;
 }
 
