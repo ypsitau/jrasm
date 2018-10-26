@@ -64,7 +64,7 @@ int main(int argc, const char *argv[])
 		if (!context.DumpDisasm(stdout, upperCaseFlag,
 							   Generator::GetInstance().GetBytesInstMax())) goto errorDone;
 	} else {
-		size_t bytesGapToJoin = 128;
+		size_t bytesGapToJoin = 32768; // always join the regions
 		UInt8 dataFiller = 0x00;
 		std::unique_ptr<RegionOwner> pRegionOwner(context.Generate(bytesGapToJoin, dataFiller));
 		if (pRegionOwner.get() == nullptr) goto errorDone;
