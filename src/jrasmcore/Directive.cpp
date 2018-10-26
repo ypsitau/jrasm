@@ -709,11 +709,7 @@ bool Directive_MML::Handler::OnMMLNote(MMLParser &mmlParser, int note, int lengt
 		mmlParser.SetError("MML note is out of range");
 		return false;
 	}
-	if (length < 16 || length > 256) {
-		mmlParser.SetError("MML length is out of range");
-		return false;
-	}
-	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
+	UInt8 lengthDev = static_cast<UInt8>(length);
 	UInt8 noteDev = static_cast<UInt8>(note + 1 - 12);
 	_buff += lengthDev;
 	_buff += noteDev;
@@ -722,7 +718,7 @@ bool Directive_MML::Handler::OnMMLNote(MMLParser &mmlParser, int note, int lengt
 
 bool Directive_MML::Handler::OnMMLRest(MMLParser &mmlParser, int length)
 {
-	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
+	UInt8 lengthDev = static_cast<UInt8>(length);
 	UInt8 noteDev = 0x00;
 	_buff += lengthDev;
 	_buff += noteDev;

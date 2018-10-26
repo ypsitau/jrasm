@@ -6,7 +6,7 @@
 
 class MMLParser {
 public:
-	enum { LENGTH_MAX = 256 };
+	enum { LENGTH_MAX = 0x60 };
 public:
 	class Handler {
 	public:
