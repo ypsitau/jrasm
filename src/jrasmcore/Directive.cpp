@@ -696,10 +696,13 @@ bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 	return true;
 }
 
-bool Directive_MML::Handler::OnMMLNote(MMLParser &parser, unsigned char note, int length)
+bool Directive_MML::Handler::OnMMLNote(MMLParser &parser, int note, int length)
 {
+	if (note < 12 || note > 71) {
+		
+	}
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
-	UInt8 noteDev = note + 0x0d - 0x30;
+	UInt8 noteDev = static_cast<UInt8>(note + 1 - 12);
 	_buff += lengthDev;
 	_buff += noteDev;
 	return true;

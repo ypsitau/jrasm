@@ -342,7 +342,7 @@ public:
 		Binary &_buff;
 	public:
 		Handler(Binary &buff) : _buff(buff) {}
-		virtual bool OnMMLNote(MMLParser &parser, unsigned char note, int length);
+		virtual bool OnMMLNote(MMLParser &parser, int note, int length);
 		virtual bool OnMMLRest(MMLParser &parser, int length);
 	};
 private:

@@ -129,7 +129,7 @@ bool MMLParser::FeedChar(int ch)
 			static const unsigned char noteTbl[] = {
 				9, 11, 0, 2, 4, 5, 7,
 			};
-			unsigned char note = noteTbl[_operator - 'A'] + _octave * 12;
+			int note = noteTbl[_operator - 'A'] + _octave * 12;
 			if (_operatorSub == '#' || _operatorSub == '+') {
 				if (note < 127) note++;
 			} else if (_operatorSub == '-') {

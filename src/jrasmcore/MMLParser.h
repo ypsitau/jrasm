@@ -10,7 +10,7 @@ public:
 public:
 	class Handler {
 	public:
-		virtual bool OnMMLNote(MMLParser &parser, unsigned char note, int length) = 0;
+		virtual bool OnMMLNote(MMLParser &parser, int note, int length) = 0;
 		virtual bool OnMMLRest(MMLParser &parser, int length) = 0;
 	};
 private:
