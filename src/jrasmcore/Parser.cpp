@@ -187,6 +187,9 @@ bool Parser::ReduceOne(bool lastFlag)
 	} else if (pToken->IsType(TOKEN_BitPattern)) {
 		// [Exp] -> [BPt]
 		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
+	} else if (pToken->IsType(TOKEN_MML)) {
+		// [Exp] -> [MML]
+		//pExpr.reset(new Expr_MML(pToken->GetStringSTL()));
 	} else if (pToken->IsType(TOKEN_Comma)) {
 		// (null) -> ,
 		_pExprStack->back()->GetExprOperands().push_back(new Expr_Null());

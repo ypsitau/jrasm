@@ -39,6 +39,7 @@ public:
 		STAT_HexInteger,
 		STAT_Symbol,
 		STAT_BitPatternPre,
+		STAT_MMLPre,
 		STAT_Quoted,
 		STAT_QuotedEsc,
 	};
@@ -47,6 +48,7 @@ public:
 		QUOTEDTYPE_String,
 		QUOTEDTYPE_Character,
 		QUOTEDTYPE_BitPattern,
+		QUOTEDTYPE_MML,
 	};
 private:
 	Stat _stat;

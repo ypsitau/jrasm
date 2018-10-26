@@ -45,6 +45,8 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_Quoted;
 		} else if (ch == 'b') {
 			_stat = STAT_BitPatternPre;
+		} else if (ch == 'm') {
+			_stat = STAT_MMLPre;
 		} else if (IsSymbolFirst(ch)) {
 			_str.clear();
 			_str += ch;
@@ -305,11 +307,25 @@ bool Tokenizer::FeedChar(char ch)
 		}
 		break;
 	}
+	case STAT_MMLPre: {
+		if (ch == '"') {
+			_quotedType = QUOTEDTYPE_MML;
+			_str.clear();
+			_stat = STAT_Quoted;
+		} else {
+			_str.clear();
+			_str += 'm';
+			_stat = STAT_Symbol;
+			Pushback();
+		}
+		break;
+	}
 	case STAT_Quoted: {
 		const char *literalName =
 			(_quotedType == QUOTEDTYPE_String)? "string" :
 			(_quotedType == QUOTEDTYPE_Character)? "character" :
-			(_quotedType == QUOTEDTYPE_BitPattern)? "bit-pattern" : "none";
+			(_quotedType == QUOTEDTYPE_BitPattern)? "bit-pattern" :
+			(_quotedType == QUOTEDTYPE_MML)? "mml" : "none";
 		char chBorder = _quotedType == (QUOTEDTYPE_Character)? '\'' : '"';
 		if (IsEOF(ch) || IsEOL(ch)) {
 			AddError("unclosed %s literal", literalName);
@@ -327,6 +343,8 @@ bool Tokenizer::FeedChar(char ch)
 				}
 			} else if (_quotedType == QUOTEDTYPE_BitPattern) {
 				rtn = FeedToken(TOKEN_BitPattern, _str);
+			} else if (_quotedType == QUOTEDTYPE_MML) {
+				rtn = FeedToken(TOKEN_MML, _str);
 			}
 			_stat = STAT_Neutral;
 		} else if (ch == '\\') {

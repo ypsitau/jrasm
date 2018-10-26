@@ -38,6 +38,7 @@ const TokenInfo TOKEN_Integer =			{ 15, "Integer",		"[Int]"	};
 const TokenInfo TOKEN_Symbol =			{ 15, "Symbol",			"[Sym]"	};
 const TokenInfo TOKEN_String =			{ 15, "String",			"[Str]"	};
 const TokenInfo TOKEN_BitPattern =		{ 15, "BitPattern",		"[BPt]"	};
+const TokenInfo TOKEN_MML =				{ 15, "MML",			"[MML]"	};
 const TokenInfo TOKEN_Colon =			{ 16, "Colon",			":"		};
 const TokenInfo TOKEN_Comma =			{ 17, "Comma",			","		};
 const TokenInfo TOKEN_Bang =			{  0, "Bang",			"!"		};
