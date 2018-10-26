@@ -24,3 +24,8 @@
 	.mml	"CDEFGAB"
 	.mml	"O1 CDEFGAB;"
 	.mml	"CDEFGAB"
+	.mml	"L1 CDE R FG"
+	.mml	"L2. CDE R FG", "L2 CDE R FG"
+	.mml	"L4. CDE R FG", "L4 CDE R FG"
+	.mml	"L8. CDE R FG", "L8 CDE R FG"
+	.mml	"L16. CDE R FG", "L16 CDE R FG"
