@@ -73,6 +73,7 @@ private:
 	PCGPageOwner _pcgPageOwner;
 	PCGCharOwner _pcgCharsBuiltIn;
 	std::unique_ptr<ExprList> _pExprListResolved;
+	MMLParser _mmlParser;
 public:
 	Context(const String &pathNameSrc);
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
@@ -105,6 +106,7 @@ public:
 	inline void AddPCGPage(PCGPage *pPCGPage) { _pcgPageOwner.push_back(pPCGPage); }
 	inline PCGPage *GetPCGPageCur() { return _pcgPageOwner.back(); }
 	inline const PCGCharOwner &GetPCGCharsBuiltIn() const { return _pcgCharsBuiltIn; }
+	inline MMLParser &GetMMLParser() { return _mmlParser; }
 	static void Initialize(Generator *pGenerator);
 	bool ParseFile();
 	bool Prepare();

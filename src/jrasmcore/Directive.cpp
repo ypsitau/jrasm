@@ -649,16 +649,15 @@ Directive *Directive_MML::Factory::Create() const
 bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	Handler handler(_buff);
-	MMLParser parser;
-	parser.Reset();
+	MMLParser &mmlParser = context.GetMMLParser();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
 		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
 		if (pExprResolved.IsNull()) return false;
 		if (pExprResolved->IsTypeString()) {
 			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
-			if (!parser.Parse(handler, str)) {
-				ErrorLog::AddError(pExpr, "%s", parser.GetError());
+			if (!mmlParser.Parse(handler, str)) {
+				ErrorLog::AddError(pExpr, "%s", mmlParser.GetError());
 				return false;
 			}
 		} else if (pExprResolved->IsTypeInteger()) {
@@ -699,14 +698,14 @@ bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 	return true;
 }
 
-bool Directive_MML::Handler::OnMMLNote(MMLParser &parser, int note, int length)
+bool Directive_MML::Handler::OnMMLNote(MMLParser &mmlParser, int note, int length)
 {
 	if (note < 12 || note > 71) {
-		parser.SetError("MML note is out of range");
+		mmlParser.SetError("MML note is out of range");
 		return false;
 	}
 	if (length < 16 || length > 256) {
-		parser.SetError("MML length is out of range");
+		mmlParser.SetError("MML length is out of range");
 		return false;
 	}
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
@@ -716,7 +715,7 @@ bool Directive_MML::Handler::OnMMLNote(MMLParser &parser, int note, int length)
 	return true;
 }
 
-bool Directive_MML::Handler::OnMMLRest(MMLParser &parser, int length)
+bool Directive_MML::Handler::OnMMLRest(MMLParser &mmlParser, int length)
 {
 	UInt8 lengthDev = static_cast<UInt8>(0x60 * length / 256);
 	UInt8 noteDev = 0x00;
