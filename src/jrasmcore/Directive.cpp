@@ -648,7 +648,6 @@ Directive *Directive_MML::Factory::Create() const
 
 bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
-	//Handler handler(context, _buff);
 	MMLParser &mmlParser = context.GetMMLParser();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
@@ -700,35 +699,6 @@ bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 
 		context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
 	}
-	return true;
-}
-
-bool Directive_MML::Handler::OnMMLNote(MMLParser &mmlParser, int note, int length)
-{
-	if (note < 12 || note > 71) {
-		mmlParser.SetError("MML note is out of range");
-		return false;
-	}
-	UInt8 lengthDev = static_cast<UInt8>(length);
-	UInt8 noteDev = static_cast<UInt8>(note + 1 - 12);
-	_buff += lengthDev;
-	_buff += noteDev;
-	return true;
-}
-
-bool Directive_MML::Handler::OnMMLRest(MMLParser &mmlParser, int length)
-{
-	UInt8 lengthDev = static_cast<UInt8>(length);
-	UInt8 noteDev = 0x00;
-	_buff += lengthDev;
-	_buff += noteDev;
-	return true;
-}
-
-bool Directive_MML::Handler::OnMMLEnd(MMLParser &mmlParser)
-{
-	_buff += '\0';
-	_context.GetMMLParser().Reset();
 	return true;
 }
 
