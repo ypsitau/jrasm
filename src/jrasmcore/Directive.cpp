@@ -648,7 +648,7 @@ Directive *Directive_MML::Factory::Create() const
 
 bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
-	Handler handler(context, _buff);
+	//Handler handler(context, _buff);
 	MMLParser &mmlParser = context.GetMMLParser();
 	for (auto pExprOperand : pExpr->GetExprOperands()) {
 		context.StartToResolve();
@@ -656,7 +656,7 @@ bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 		if (pExprResolved.IsNull()) return false;
 		if (pExprResolved->IsTypeString()) {
 			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
-			if (!mmlParser.Parse(handler, str)) {
+			if (!mmlParser.Parse(str, _buff)) {
 				ErrorLog::AddError(pExpr, "%s", mmlParser.GetError());
 				return false;
 			}

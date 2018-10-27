@@ -25,16 +25,16 @@ void MMLParser::Reset()
 	_numAccum		= 0;
 }
 
-bool MMLParser::Parse(Handler &handler, const char *str)
+bool MMLParser::Parse(const char *str, Binary &buff)
 {
 	for (const char *p = str; ; p++) {
-		if (!FeedChar(handler, *p)) return false;
+		if (!FeedChar(*p, buff)) return false;
 		if (*p == '\0') break;
 	}
 	return true;
 }
 
-bool MMLParser::FeedChar(Handler &handler, int ch)
+bool MMLParser::FeedChar(int ch, Binary &buff)
 {
 	bool continueFlag;
 	if ('a' <= ch && ch <= 'z') ch = ch - 'a' + 'A';
@@ -69,7 +69,8 @@ bool MMLParser::FeedChar(Handler &handler, int ch)
 				_operator = ch;
 				if (_octave > 0) _octave--;
 			} else if (ch == ';') {
-				if (!handler.OnMMLEnd(*this)) return false;
+				buff += '\0';
+				Reset();
 			} else if (ch == 'L') {
 				_operator = ch;
 				_numAccum = 0;
@@ -142,7 +143,12 @@ bool MMLParser::FeedChar(Handler &handler, int ch)
 				// nothing to do
 			}
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			if (!handler.OnMMLNote(*this, note, length)) return false;
+			if (note < 12 || note > 71) {
+				SetError("MML note is out of range");
+				return false;
+			}
+			buff += static_cast<UInt8>(length);
+			buff += static_cast<UInt8>(note + 1 - 12);
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
@@ -166,7 +172,8 @@ bool MMLParser::FeedChar(Handler &handler, int ch)
 			}
 		} else if (_stat == STAT_RestFix) {
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
-			if (!handler.OnMMLRest(*this, length)) return false;
+			buff += static_cast<UInt8>(length);
+			buff += '\0';
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_OctavePre) {	// -------- Octave --------

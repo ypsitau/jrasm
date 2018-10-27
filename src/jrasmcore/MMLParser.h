@@ -40,8 +40,8 @@ private:
 public:
 	MMLParser();
 	void Reset();
-	bool Parse(Handler &handler, const char *str);
-	bool FeedChar(Handler &handler, int ch);
+	bool Parse(const char *str, Binary &buff);
+	bool FeedChar(int ch, Binary &buff);
 	void SetError(const char *format, ...);
 	inline const char *GetError() const { return _strErr; }
 	inline int GetOctave() const { return _octave; }
