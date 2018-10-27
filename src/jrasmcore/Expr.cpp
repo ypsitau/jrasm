@@ -454,6 +454,35 @@ Expr *Expr_BitPattern::Substitute(const ExprDict &exprDict) const
 }
 
 //-----------------------------------------------------------------------------
+// Expr_MML
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_MML::TYPE = Expr::TYPE_MML;
+
+String Expr_MML::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "m\"";
+	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
+	str += "\"";
+	return str;
+}
+
+Expr *Expr_MML::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_MML::Clone() const
+{
+	return new Expr_MML(*this);
+}
+
+Expr *Expr_MML::Substitute(const ExprDict &exprDict) const
+{
+	return Clone();
+}
+
+//-----------------------------------------------------------------------------
 // Expr_Assign
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Assign::TYPE = Expr::TYPE_Assign;

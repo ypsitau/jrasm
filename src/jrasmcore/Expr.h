@@ -84,6 +84,7 @@ public:
 		TYPE_Integer,
 		TYPE_String,
 		TYPE_BitPattern,
+		TYPE_MML,
 		TYPE_BinOp,
 		TYPE_Assign,
 		TYPE_Bracket,
@@ -118,6 +119,7 @@ public:
 	inline bool IsTypeInteger() const { return IsType(TYPE_Integer); }
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
+	inline bool IsTypeMML() const { return IsType(TYPE_MML); }
 	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
 	inline bool IsTypeAssign() const { return IsType(TYPE_Assign); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
@@ -280,6 +282,28 @@ public:
 	inline Expr_BitPattern(const Expr_BitPattern &expr) : Expr(expr), _str(expr._str), _buff(expr._buff) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const Binary &GetBinary() const { return _buff; }
+	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
+	virtual Expr *Substitute(const ExprDict &exprDict) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_MML
+//-----------------------------------------------------------------------------
+class Expr_MML : public Expr {
+private:
+	String _str;
+	AutoPtr<BinaryShared> _pBuffShared;
+public:
+	static const Type TYPE;
+public:
+	inline Expr_MML(const String &str, BinaryShared *pBuffShared) :
+		Expr(TYPE), _str(str), _pBuffShared(pBuffShared) {}
+	inline Expr_MML(const Expr_MML &expr) :
+		Expr(expr), _str(expr._str), _pBuffShared(expr._pBuffShared->Reference()) {}
+	inline const char *GetString() const { return _str.c_str(); }
+	inline const Binary &GetBinary() const { return _pBuffShared->GetBinary(); }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

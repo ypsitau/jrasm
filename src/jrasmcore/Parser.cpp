@@ -194,7 +194,12 @@ bool Parser::ReduceOne(bool lastFlag)
 		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL(), BitPatternToBinary(pToken->GetString())));
 	} else if (pToken->IsType(TOKEN_MML)) {
 		// [Exp] -> [MML]
-		//pExpr.reset(new Expr_MML(pToken->GetStringSTL()));
+		AutoPtr<BinaryShared> pBuffShared(new BinaryShared());
+		if (!_mmlParser.Parse(pToken->GetString(), pBuffShared->Reference())) {
+			ErrorLog::AddError(pExpr.get(), "%s", _mmlParser.GetError());
+			return false;
+		}
+		pExpr.reset(new Expr_MML(pToken->GetStringSTL(), pBuffShared.release()));
 	} else if (pToken->IsType(TOKEN_Comma)) {
 		// (null) -> ,
 		_pExprStack->back()->GetExprOperands().push_back(new Expr_Null());

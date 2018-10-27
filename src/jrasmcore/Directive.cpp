@@ -245,6 +245,11 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			const Binary &buff = pExprEx->GetBinary();
 			if (pBuffDst != nullptr) *pBuffDst += buff;
 			bytes += static_cast<Integer>(buff.size());
+		} else if (pExprResolved->IsTypeMML()) {
+			Expr_MML *pExprEx = dynamic_cast<Expr_MML *>(pExprResolved.get());
+			const Binary &buff = pExprEx->GetBinary();
+			if (pBuffDst != nullptr) *pBuffDst += buff;
+			bytes += static_cast<Integer>(buff.size());
 		} else {
 			ErrorLog::AddError(pExpr, "elements of directive .DB must be integer or string value");
 			return false;

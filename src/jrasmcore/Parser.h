@@ -5,6 +5,7 @@
 #define __JRASMCORE_PARSER_H__
 
 #include "Tokenizer.h"
+#include "MMLParser.h"
 
 //-----------------------------------------------------------------------------
 // Parser
@@ -23,6 +24,7 @@ private:
 	AutoPtr<ExprStack> _pExprStack;
 	TokenStack _tokenStack;
 	AutoPtr<Token> _pTokenPrev;
+	MMLParser _mmlParser;
 public:
 	Parser(const String &pathNameSrc);
 	inline const char *GetPathNameSrc() const { return _tokenizer.GetPathNameSrc(); }
