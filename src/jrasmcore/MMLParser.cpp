@@ -41,7 +41,8 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 {
 	if ('a' <= ch && ch <= 'z') ch = ch - 'a' + 'A';
 	BeginPushbackRegion();
-	if (_stat == STAT_Begin) {
+	switch (_stat) {
+	case STAT_Begin: {
 		if (IsEOD(ch)) {
 			// nothing to do
 		} else if (IsWhite(ch)) {
@@ -99,7 +100,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			}
 			return false;
 		}
-	} else if (_stat == STAT_Note) {		// -------- Note --------
+		break;
+	}
+	case STAT_Note: {		// -------- Note --------
 		if (ch == '#' || ch == '+' || ch == '-') {
 			_operatorSub = ch;
 			_stat = STAT_NoteLengthPre;
@@ -112,7 +115,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_NoteFix;
 		}
-	} else if (_stat == STAT_NoteLengthPre) {
+		break;
+	}
+	case STAT_NoteLengthPre: {
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_NoteLength;
@@ -122,7 +127,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_NoteFix;
 		}
-	} else if (_stat == STAT_NoteLength) {
+		break;
+	}
+	case STAT_NoteLength: {
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else if (ch == '.') {
@@ -131,7 +138,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_NoteFix;
 		}
-	} else if (_stat == STAT_NoteFix) {
+		break;
+	}
+	case STAT_NoteFix: {
 		static const unsigned char noteTbl[] = {
 			9, 11, 0, 2, 4, 5, 7,
 		};
@@ -163,7 +172,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 		*ppBuffPrev = &buff;
 		Pushback();
 		_stat = STAT_Begin;
-	} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
+		break;
+	}
+	case STAT_RestLengthPre: {// -------- Rest --------
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_RestLength;
@@ -173,7 +184,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_RestFix;
 		}
-	} else if (_stat == STAT_RestLength) {
+		break;
+	}
+	case STAT_RestLength: {
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else if (ch == '.') {
@@ -182,14 +195,18 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_RestFix;
 		}
-	} else if (_stat == STAT_RestFix) {
+		break;
+	}
+	case STAT_RestFix: {
 		int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
 		buff += static_cast<UInt8>(length);
 		buff += '\0';
 		*ppBuffPrev = &buff;
 		Pushback();
 		_stat = STAT_Begin;
-	} else if (_stat == STAT_OctavePre) {	// -------- Octave --------
+		break;
+	}
+	case STAT_OctavePre: {	// -------- Octave --------
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_Octave;
@@ -199,18 +216,24 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_OctaveFix;
 		}
-	} else if (_stat == STAT_Octave) {
+		break;
+	}
+	case STAT_Octave: {
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else {
 			Pushback();
 			_stat = STAT_OctaveFix;
 		}
-	} else if (_stat == STAT_OctaveFix) {
+		break;
+	}
+	case STAT_OctaveFix: {
 		_octave = _numAccum;
 		Pushback();
 		_stat = STAT_Begin;
-	} else if (_stat == STAT_LengthPre) {	// -------- Length --------
+		break;
+	}
+	case STAT_LengthPre: {	// -------- Length --------
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_Length;
@@ -220,7 +243,9 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_LengthFix;
 		}
-	} else if (_stat == STAT_Length) {
+		break;
+	}
+	case STAT_Length: {
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else if (ch == '.') {
@@ -229,11 +254,15 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_LengthFix;
 		}
-	} else if (_stat == STAT_LengthFix) {
+		break;
+	}
+	case STAT_LengthFix: {
 		_lengthDefault = CalcLength(_numAccum, _cntDot, _lengthDefault);
 		Pushback();
 		_stat = STAT_Begin;
-	} else if (_stat == STAT_VolumePre) {	// -------- Volume --------
+		break;
+	}
+	case STAT_VolumePre: {	// -------- Volume --------
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_Volume;
@@ -243,18 +272,24 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_VolumeFix;
 		}
-	} else if (_stat == STAT_Volume) {
+		break;
+	}
+	case STAT_Volume: {
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else {
 			Pushback();
 			_stat = STAT_VolumeFix;
 		}
-	} else if (_stat == STAT_VolumeFix) {
+		break;
+	}
+	case STAT_VolumeFix: {
 		_volume = _numAccum;
 		Pushback();
 		_stat = STAT_Begin;
-	} else if (_stat == STAT_TonePre) {		// ------- Tone --------
+		break;
+	}
+	case STAT_TonePre: {		// ------- Tone --------
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_Tone;
@@ -264,18 +299,24 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_ToneFix;
 		}
-	} else if (_stat == STAT_Tone) {
+		break;
+	}
+	case STAT_Tone:{
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else {
 			Pushback();
 			_stat = STAT_ToneFix;
 		}
-	} else if (_stat == STAT_ToneFix) {
+		break;
+	}
+	case STAT_ToneFix: {
 		_tone = _numAccum;
 		Pushback();
 		_stat = STAT_Begin;
-	} else if (_stat == STAT_TempoPre) {	// -------- Tempo --------
+		break;
+	}
+	case STAT_TempoPre: {	// -------- Tempo --------
 		if (IsDigit(ch)) {
 			Pushback();
 			_stat = STAT_Tempo;
@@ -285,17 +326,23 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			Pushback();
 			_stat = STAT_TempoFix;
 		}
-	} else if (_stat == STAT_Tempo) {
+		break;
+	}
+	case STAT_Tempo: {
 		if (IsDigit(ch)) {
 			_numAccum = _numAccum * 10 + (ch - '0');
 		} else {
 			Pushback();
 			_stat = STAT_TempoFix;
 		}
-	} else if (_stat == STAT_TempoFix) {
+		break;
+	}
+	case STAT_TempoFix: {
 		_tempo = _numAccum;
 		Pushback();
 		_stat = STAT_Begin;
+		break;
+	}
 	}
 	EndPushbackRegion();
 	return true;
