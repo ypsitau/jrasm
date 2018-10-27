@@ -27,15 +27,17 @@ void MMLParser::Reset()
 
 bool MMLParser::Parse(const char *str, BinaryShared *pBuffShared)
 {
+	Binary *pBuffPrev = _pBuffSharedPrev.IsNull()?
+		&pBuffShared->GetBinary() : &_pBuffSharedPrev->GetBinary();
 	for (const char *p = str; ; p++) {
-		if (!FeedChar(*p, pBuffShared->GetBinary())) return false;
+		if (!FeedChar(*p, pBuffShared->GetBinary(), &pBuffPrev)) return false;
 		if (*p == '\0') break;
 	}
 	_pBuffSharedPrev.reset(pBuffShared);
 	return true;
 }
 
-bool MMLParser::FeedChar(int ch, Binary &buff)
+bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 {
 	bool continueFlag;
 	if ('a' <= ch && ch <= 'z') ch = ch - 'a' + 'A';
@@ -149,18 +151,18 @@ bool MMLParser::FeedChar(int ch, Binary &buff)
 				return false;
 			}
 			UInt8 noteDev = static_cast<UInt8>(note + 1 - 12);
-#if 0
-			size_t sizeBuff = buff.size();
-			if (sizeBuff >= 2 && buff.back() == noteDev) {
+			Binary &buffPrev = **ppBuffPrev;
+			size_t sizeBuffPrev = buffPrev.size();
+			if (sizeBuffPrev >= 2 && buffPrev.back() == noteDev) {
 				// A short rest is inserted between two same notes succeeding.
-				UInt8 lengthDev = buff[sizeBuff - 2];
-				if (lengthDev > 1) buff[sizeBuff - 2] = lengthDev - 1;
-				buff += '\x01';
-				buff += '\0';
+				UInt8 lengthDev = buffPrev[sizeBuffPrev - 2];
+				if (lengthDev > 1) buffPrev[sizeBuffPrev - 2] = lengthDev - 1;
+				buffPrev += '\x01';
+				buffPrev += '\0';
 			}
-#endif
 			buff += static_cast<UInt8>(length);
 			buff += noteDev;
+			*ppBuffPrev = &buff;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
@@ -186,6 +188,7 @@ bool MMLParser::FeedChar(int ch, Binary &buff)
 			int length = CalcLength(_numAccum, _cntDot, _lengthDefault);
 			buff += static_cast<UInt8>(length);
 			buff += '\0';
+			*ppBuffPrev = &buff;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_OctavePre) {	// -------- Octave --------
