@@ -14,7 +14,7 @@ MMLParser::MMLParser()
 
 void MMLParser::Reset()
 {
-	_stat			= STAT_Begin;
+	_stat			= STAT_Reset;
 	_octave			= 3;				// 1-9
 	_lengthDefault	= LENGTH_MAX / 4;	// 1-LENGTH_MAX
 	_volume			= 3;				// 0-16
@@ -23,6 +23,7 @@ void MMLParser::Reset()
 	_operator		= '\0';
 	_operatorSub	= '\0';
 	_numAccum		= 0;
+	_pBuffSharedPrev.reset(nullptr);
 }
 
 bool MMLParser::Parse(const char *str, BinaryShared *pBuffShared)
@@ -33,7 +34,7 @@ bool MMLParser::Parse(const char *str, BinaryShared *pBuffShared)
 		if (!FeedChar(*p, pBuffShared->GetBinary(), &pBuffPrev)) return false;
 		if (*p == '\0') break;
 	}
-	_pBuffSharedPrev.reset(pBuffShared);
+	if (_stat != STAT_Reset) _pBuffSharedPrev.reset(pBuffShared);
 	return true;
 }
 
@@ -42,6 +43,17 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 	if ('a' <= ch && ch <= 'z') ch = ch - 'a' + 'A';
 	BeginPushbackRegion();
 	switch (_stat) {
+	case STAT_Reset: {
+		if (IsEOD(ch)) {
+			// nothing to do
+		} else if (IsWhite(ch)) {
+			// nothing to do
+		} else {
+			Pushback();
+			_stat = STAT_Begin;
+		}
+		break;
+	}
 	case STAT_Begin: {
 		if (IsEOD(ch)) {
 			// nothing to do
@@ -158,15 +170,17 @@ bool MMLParser::FeedChar(int ch, Binary &buff, Binary **ppBuffPrev)
 			return false;
 		}
 		UInt8 noteDev = static_cast<UInt8>(note + 1 - 12);
-		Binary &buffPrev = **ppBuffPrev;
-		size_t sizeBuffPrev = buffPrev.size();
-		if (sizeBuffPrev >= 2 && buffPrev.back() == noteDev) {
-			// A short rest is inserted between two same notes succeeding.
-			UInt8 lengthDev = buffPrev[sizeBuffPrev - 2];
-			if (lengthDev > 1) buffPrev[sizeBuffPrev - 2] = lengthDev - 1;
-			buffPrev += '\x01';
-			buffPrev += '\0';
-		}
+		do {
+			Binary &buffPrev = **ppBuffPrev;
+			size_t sizeBuffPrev = buffPrev.size();
+			if (sizeBuffPrev % 2 == 0 && sizeBuffPrev >= 2 && buffPrev.back() == noteDev) {
+				// A short rest is inserted between two same notes succeeding.
+				UInt8 lengthDev = buffPrev[sizeBuffPrev - 2];
+				if (lengthDev > 1) buffPrev[sizeBuffPrev - 2] = lengthDev - 1;
+				buffPrev += '\x01';
+				buffPrev += '\0';
+			}
+		} while (0);
 		buff += static_cast<UInt8>(length);
 		buff += noteDev;
 		*ppBuffPrev = &buff;

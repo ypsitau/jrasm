@@ -11,7 +11,7 @@ public:
 	enum { LENGTH_MAX = 0x60 };
 private:
 	enum Stat {
-		STAT_Begin,
+		STAT_Reset, STAT_Begin,
 		STAT_Note, STAT_NoteLengthPre, STAT_NoteLength, STAT_NoteFix,
 		STAT_RestLengthPre, STAT_RestLength, STAT_RestFix,
 		STAT_OctavePre, STAT_Octave, STAT_OctaveFix,
