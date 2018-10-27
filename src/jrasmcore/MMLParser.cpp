@@ -23,6 +23,7 @@ void MMLParser::Reset()
 	_operator		= '\0';
 	_operatorSub	= '\0';
 	_numAccum		= 0;
+	_pBuffPrev		= nullptr;
 }
 
 bool MMLParser::Parse(const char *str, Binary &buff)
@@ -147,8 +148,19 @@ bool MMLParser::FeedChar(int ch, Binary &buff)
 				SetError("MML note is out of range");
 				return false;
 			}
+			UInt8 noteDev = static_cast<UInt8>(note + 1 - 12);
+#if 0
+			size_t sizeBuff = buff.size();
+			if (sizeBuff >= 2 && buff.back() == noteDev) {
+				// A short rest is inserted between two same notes succeeding.
+				UInt8 lengthDev = buff[sizeBuff - 2];
+				if (lengthDev > 1) buff[sizeBuff - 2] = lengthDev - 1;
+				buff += '\x01';
+				buff += '\0';
+			}
+#endif
 			buff += static_cast<UInt8>(length);
-			buff += static_cast<UInt8>(note + 1 - 12);
+			buff += noteDev;
 			continueFlag = true;
 			_stat = STAT_Begin;
 		} else if (_stat == STAT_RestLengthPre) {// -------- Rest --------
@@ -285,6 +297,7 @@ bool MMLParser::FeedChar(int ch, Binary &buff)
 			_stat = STAT_Begin;
 		}
 	} while (continueFlag);
+	_pBuffPrev = &buff;
 	return true;
 }
 

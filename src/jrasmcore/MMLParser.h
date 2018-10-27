@@ -30,6 +30,7 @@ private:
 	int _numAccum;
 	int _cntDot;
 	char _strErr[128];
+	Binary *_pBuffPrev;
 public:
 	MMLParser();
 	void Reset();
