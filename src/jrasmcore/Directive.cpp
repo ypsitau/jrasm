@@ -36,7 +36,6 @@ const DirectiveFactory *Directive::EQU			= nullptr;
 const DirectiveFactory *Directive::FILENAME_JR	= nullptr;
 const DirectiveFactory *Directive::INCLUDE		= nullptr;
 const DirectiveFactory *Directive::MACRO		= nullptr;
-const DirectiveFactory *Directive::MML			= nullptr;
 const DirectiveFactory *Directive::ORG			= nullptr;
 const DirectiveFactory *Directive::PCG			= nullptr;
 const DirectiveFactory *Directive::PCGPAGE		= nullptr;
@@ -61,7 +60,6 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(FILENAME_JR	= new Directive_FILENAME_JR::Factory());
 	_directiveFactoryDict.Assign(INCLUDE		= new Directive_INCLUDE::Factory());
 	_directiveFactoryDict.Assign(MACRO			= new Directive_MACRO::Factory());
-	_directiveFactoryDict.Assign(MML			= new Directive_MML::Factory());
 	_directiveFactoryDict.Assign(ORG			= new Directive_ORG::Factory());
 	_directiveFactoryDict.Assign(PCG			= new Directive_PCG::Factory());
 	_directiveFactoryDict.Assign(PCGPAGE		= new Directive_PCGPAGE::Factory());
@@ -635,66 +633,6 @@ bool Directive_MACRO::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	// nothing to do
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Directive_MML
-//-----------------------------------------------------------------------------
-Directive *Directive_MML::Factory::Create() const
-{
-	return new Directive_MML();
-}
-
-bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
-{
-	MMLParser &mmlParser = context.GetMMLParser();
-	for (auto pExprOperand : pExpr->GetExprOperands()) {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprResolved(pExprOperand->Resolve(context));
-		if (pExprResolved.IsNull()) return false;
-		if (pExprResolved->IsTypeString()) {
-			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
-			if (!mmlParser.Parse(str, _pBuffShared->Reference())) {
-				ErrorLog::AddError(pExpr, "%s", mmlParser.GetError());
-				return false;
-			}
-		} else {
-			ErrorLog::AddError(pExpr, "elements of directive .MML must be string or number value");
-			return false;
-		}
-	}
-	return true;
-}
-
-bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
-{
-	const Binary &buff = _pBuffShared->GetBinary();
-	context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
-	return true;
-}
-
-bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
-{
-	const Binary &buff = _pBuffShared->GetBinary();
-	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
-	*pBuffDst += buff;
-	context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
-	return true;
-}
-
-bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
-								  DisasmDumper &disasmDumper, int indentLevelCode) const
-{
-	const Binary &buff = _pBuffShared->GetBinary();
-	if (buff.empty()) {
-		disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-	} else {
-		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,
-									 pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
-
-		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
-	}
 	return true;
 }
 

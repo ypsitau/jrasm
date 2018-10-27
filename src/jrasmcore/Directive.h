@@ -327,27 +327,6 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Directive_MML
-//-----------------------------------------------------------------------------
-class Directive_MML : public Directive {
-public:
-	class Factory : public DirectiveFactory {
-	public:
-		inline Factory() : DirectiveFactory(".MML", true, false) {}
-		virtual Directive *Create() const;
-	};
-private:
-	AutoPtr<BinaryShared> _pBuffShared;
-public:
-	inline Directive_MML() : Directive(MML), _pBuffShared(new BinaryShared()) {}
-	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
-	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
-	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
-	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
-							   DisasmDumper &disasmDumper, int indentLevelCode) const;
-};
-
-//-----------------------------------------------------------------------------
 // Directive_ORG
 //-----------------------------------------------------------------------------
 class Directive_ORG : public Directive {
