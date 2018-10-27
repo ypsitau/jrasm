@@ -242,12 +242,7 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			}
 		} else if (pExprResolved->IsTypeBitPattern()) {
 			Expr_BitPattern *pExprEx = dynamic_cast<Expr_BitPattern *>(pExprResolved.get());
-			size_t len = pExprEx->GetBitPatternLen();
-			if (len % 8 != 0) {
-				ErrorLog::AddError(pExpr, "the bit pattern length is %zu, not a multiple of eight", len);
-				return false;
-			}
-			Binary buff = pExprEx->GetBinary();
+			const Binary &buff = pExprEx->GetBinary();
 			if (pBuffDst != nullptr) *pBuffDst += buff;
 			bytes += static_cast<Integer>(buff.size());
 		} else {

@@ -272,14 +272,14 @@ public:
 class Expr_BitPattern : public Expr {
 private:
 	String _str;
+	Binary _buff;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_BitPattern(const String &str) : Expr(TYPE), _str(str) {}
-	inline Expr_BitPattern(const Expr_BitPattern &expr) : Expr(expr), _str(expr._str) {}
-	inline const char *GetBitPattern() const { return _str.c_str(); }
-	inline size_t GetBitPatternLen() const { return _str.size(); }
-	Binary GetBinary() const;
+	inline Expr_BitPattern(const String &str, const Binary &buff) : Expr(TYPE), _str(str), _buff(buff) {}
+	inline Expr_BitPattern(const Expr_BitPattern &expr) : Expr(expr), _str(expr._str), _buff(expr._buff) {}
+	inline const char *GetString() const { return _str.c_str(); }
+	inline const Binary &GetBinary() const { return _buff; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

@@ -186,7 +186,12 @@ bool Parser::ReduceOne(bool lastFlag)
 		pExpr.reset(new Expr_String(pToken->GetStringSTL()));
 	} else if (pToken->IsType(TOKEN_BitPattern)) {
 		// [Exp] -> [BPt]
-		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL()));
+		size_t len = pToken->GetStringSTL().size();
+		if (len % 8 != 0) {
+			ErrorLog::AddError(pExpr.get(), "the bit pattern length is %zu, not a multiple of eight", len);
+			return false;
+		}
+		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL(), BitPatternToBinary(pToken->GetString())));
 	} else if (pToken->IsType(TOKEN_MML)) {
 		// [Exp] -> [MML]
 		//pExpr.reset(new Expr_MML(pToken->GetStringSTL()));

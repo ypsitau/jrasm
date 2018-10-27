@@ -17,6 +17,24 @@ const StringList StringList::Empty;
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
+Binary BitPatternToBinary(const char *str)
+{
+	Binary buff;
+	UInt8 data = 0x00;
+	size_t nCols = 0;
+	for (const char *p = str; *p != '\0'; p++) {
+		char ch = *p;
+		data <<= 1;
+		if (!(ch == ' ' || ch == '.' || ch == ',' || ch == '_' || ch == '-')) data |= 1;
+		nCols++;
+		if (nCols == 8) {
+			buff += data;
+			nCols = 0;
+		}
+	}
+	return buff;
+}
+
 String MakePadding(size_t width, const char *padding)
 {
 	String rtn;

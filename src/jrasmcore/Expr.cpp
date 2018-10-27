@@ -453,23 +453,6 @@ Expr *Expr_BitPattern::Substitute(const ExprDict &exprDict) const
 	return Clone();
 }
 
-Binary Expr_BitPattern::GetBinary() const
-{
-	Binary buff;
-	UInt8 data = 0x00;
-	size_t nCols = 0;
-	for (auto ch : _str) {
-		data <<= 1;
-		if (!(ch == ' ' || ch == '.' || ch == ',' || ch == '_' || ch == '-')) data |= 1;
-		nCols++;
-		if (nCols == 8) {
-			buff += data;
-			nCols = 0;
-		}
-	}
-	return buff;
-}
-
 //-----------------------------------------------------------------------------
 // Expr_Assign
 //-----------------------------------------------------------------------------
