@@ -23,15 +23,15 @@ void MMLParser::Reset()
 	_operator		= '\0';
 	_operatorSub	= '\0';
 	_numAccum		= 0;
-	_pBuffPrev		= nullptr;
 }
 
-bool MMLParser::Parse(const char *str, Binary &buff)
+bool MMLParser::Parse(const char *str, BinaryShared *pBuffShared)
 {
 	for (const char *p = str; ; p++) {
-		if (!FeedChar(*p, buff)) return false;
+		if (!FeedChar(*p, pBuffShared->GetBinary())) return false;
 		if (*p == '\0') break;
 	}
+	_pBuffSharedPrev.reset(pBuffShared);
 	return true;
 }
 
@@ -297,7 +297,6 @@ bool MMLParser::FeedChar(int ch, Binary &buff)
 			_stat = STAT_Begin;
 		}
 	} while (continueFlag);
-	_pBuffPrev = &buff;
 	return true;
 }
 

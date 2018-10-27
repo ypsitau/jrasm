@@ -337,9 +337,9 @@ public:
 		virtual Directive *Create() const;
 	};
 private:
-	Binary _buff;
+	AutoPtr<BinaryShared> _pBuffShared;
 public:
-	inline Directive_MML() : Directive(MML) {}
+	inline Directive_MML() : Directive(MML), _pBuffShared(new BinaryShared()) {}
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;

@@ -655,17 +655,10 @@ bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 		if (pExprResolved.IsNull()) return false;
 		if (pExprResolved->IsTypeString()) {
 			const char *str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetString();
-			if (!mmlParser.Parse(str, _buff)) {
+			if (!mmlParser.Parse(str, _pBuffShared->Reference())) {
 				ErrorLog::AddError(pExpr, "%s", mmlParser.GetError());
 				return false;
 			}
-		} else if (pExprResolved->IsTypeInteger()) {
-			Integer num = dynamic_cast<Expr_Integer *>(pExprResolved.get())->GetInteger();
-			if (num < -0x80 || num > 0xff) {
-				ErrorLog::AddError(pExpr, "an element value of directive .MML exceeds 8bit range");
-				return false;
-			}
-			_buff += static_cast<UInt8>(num);
 		} else {
 			ErrorLog::AddError(pExpr, "elements of directive .MML must be string or number value");
 			return false;
@@ -676,28 +669,31 @@ bool Directive_MML::OnPhasePreprocess(Context &context, Expr *pExpr)
 
 bool Directive_MML::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
-	context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	const Binary &buff = _pBuffShared->GetBinary();
+	context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	return true;
 }
 
 bool Directive_MML::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
 {
+	const Binary &buff = _pBuffShared->GetBinary();
 	if (pBuffDst == nullptr) pBuffDst = &context.GetSegmentBuffer();
-	*pBuffDst += _buff;
-	context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	*pBuffDst += buff;
+	context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	return true;
 }
 
 bool Directive_MML::OnPhaseDisasm(Context &context, const Expr *pExpr,
 								  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
-	if (_buff.empty()) {
+	const Binary &buff = _pBuffShared->GetBinary();
+	if (buff.empty()) {
 		disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	} else {
-		disasmDumper.DumpDataAndCode(context.GetAddress(), _buff,
+		disasmDumper.DumpDataAndCode(context.GetAddress(), buff,
 									 pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 
-		context.ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	}
 	return true;
 }

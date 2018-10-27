@@ -120,7 +120,7 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// StringRef
+// StringShared
 //-----------------------------------------------------------------------------
 class StringShared {
 private:
@@ -136,6 +136,25 @@ private:
 public:
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
+};
+
+//-----------------------------------------------------------------------------
+// BinaryShared
+//-----------------------------------------------------------------------------
+class BinaryShared {
+private:
+	int _cntRef;
+	Binary _binary;
+public:
+	DeclareReferenceAccessor(BinaryShared)
+public:
+	inline BinaryShared() : _cntRef(1) {}
+	inline BinaryShared(const Binary &binary) : _cntRef(1), _binary(binary) {}
+private:
+	inline ~BinaryShared() {}
+public:
+	inline Binary &GetBinary() { return _binary; }
+	inline const Binary &GetBinary() const { return _binary; }
 };
 
 //-----------------------------------------------------------------------------

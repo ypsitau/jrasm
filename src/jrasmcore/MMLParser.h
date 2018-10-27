@@ -4,6 +4,8 @@
 #ifndef __JRASMCORE_MMLPARSER_H__
 #define __JRASMCORE_MMLPARSER_H__
 
+#include "Common.h"
+
 class MMLParser {
 public:
 	enum { LENGTH_MAX = 0x60 };
@@ -30,22 +32,22 @@ private:
 	int _numAccum;
 	int _cntDot;
 	char _strErr[128];
-	Binary *_pBuffPrev;
+	AutoPtr<BinaryShared> _pBuffSharedPrev;
 public:
 	MMLParser();
-	void Reset();
-	bool Parse(const char *str, Binary &buff);
-	bool FeedChar(int ch, Binary &buff);
-	void SetError(const char *format, ...);
 	inline const char *GetError() const { return _strErr; }
 	inline int GetOctave() const { return _octave; }
 	inline int GetVolume() const { return _volume; }
 	inline int GetTone() const { return _tone; }
 	inline int GetTempo() const { return _tempo; }
+	void Reset();
+	bool Parse(const char *str, BinaryShared *pBuffShared);
+	void SetError(const char *format, ...);
 private:
 	inline static bool IsEOD(int ch) { return ch == '\0' || ch < 0; }
 	inline static bool IsWhite(int ch) { return ch == ' ' || ch == '\t'; }
 	inline static bool IsDigit(int ch) { return '0' <= ch && ch <= '9'; }
+	bool FeedChar(int ch, Binary &buff);
 	static int CalcLength(int numDisp, int cntDot, int lengthDefault);
 };
 
