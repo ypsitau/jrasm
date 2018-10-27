@@ -188,7 +188,7 @@ bool Parser::ReduceOne(bool lastFlag)
 		// [Exp] -> [BPt]
 		size_t len = pToken->GetStringSTL().size();
 		if (len % 8 != 0) {
-			ErrorLog::AddError(pExpr.get(), "the bit pattern length is %zu, not a multiple of eight", len);
+			AddError("the bit pattern length is %zu, not a multiple of eight", len);
 			return false;
 		}
 		pExpr.reset(new Expr_BitPattern(pToken->GetStringSTL(), BitPatternToBinary(pToken->GetString())));
@@ -196,7 +196,7 @@ bool Parser::ReduceOne(bool lastFlag)
 		// [Exp] -> [MML]
 		AutoPtr<BinaryShared> pBuffShared(new BinaryShared());
 		if (!_mmlParser.Parse(pToken->GetString(), pBuffShared->Reference())) {
-			ErrorLog::AddError(pExpr.get(), "%s", _mmlParser.GetError());
+			AddError("%s", _mmlParser.GetError());
 			return false;
 		}
 		pExpr.reset(new Expr_MML(pToken->GetStringSTL(), pBuffShared.release()));

@@ -43,9 +43,13 @@ bool Tokenizer::FeedChar(char ch)
 			_str.clear();
 			_str += ch;
 			_stat = STAT_Quoted;
-		} else if (ch == 'b') {
+		} else if (ch == 'b' || ch == 'B') {
+			_str.clear();
+			_str += ch;
 			_stat = STAT_BitPatternPre;
-		} else if (ch == 'm') {
+		} else if (ch == 'm' || ch == 'M') {
+			_str.clear();
+			_str += ch;
 			_stat = STAT_MMLPre;
 		} else if (IsSymbolFirst(ch)) {
 			_str.clear();
@@ -300,8 +304,6 @@ bool Tokenizer::FeedChar(char ch)
 			_str.clear();
 			_stat = STAT_Quoted;
 		} else {
-			_str.clear();
-			_str += 'b';
 			_stat = STAT_Symbol;
 			Pushback();
 		}
@@ -313,8 +315,6 @@ bool Tokenizer::FeedChar(char ch)
 			_str.clear();
 			_stat = STAT_Quoted;
 		} else {
-			_str.clear();
-			_str += 'm';
 			_stat = STAT_Symbol;
 			Pushback();
 		}
