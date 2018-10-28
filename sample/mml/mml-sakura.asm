@@ -9,8 +9,10 @@
 	ldaa	1
 	staa	{0x2d}
 	staa	{0x2e}
+	ldaa	{0x2c}
+	staa	[0xc811]  ; MN1271 TBWSR .. Time Counter B Write Status Register
 	ldaa	(1 << 6) | (0 << 5) | (3 << 3) | (1 << 0)
-	staa	[0xc810]
+	staa	[0xc810]  ; MN1271 TBCSR .. Time Counter B Control Status Register
 	rts
 
 mml1:
