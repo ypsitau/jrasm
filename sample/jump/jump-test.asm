@@ -20,6 +20,14 @@
 	test.cmp jmi,"jmi\0"
 	test.cmp bpl,"bpl\0"
 	test.cmp jpl,"jpl\0"
+	test.cmp bcc,"bcc\0"
+	test.cmp jcc,"jcc\0"
+	test.cmp bcs,"bcs\0"
+	test.cmp jcs,"jcs\0"
+	test.cmp bvc,"bvc\0"
+	test.cmp jvc,"jvc\0"
+	test.cmp bvs,"bvs\0"
+	test.cmp jvs,"jvs\0"
 	rts
 
 test.cmp:
