@@ -73,14 +73,26 @@ bios.cls:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.putc
+;;; bios.putchar
 ;;; Prints a character of ASCII code specified by accumulator A
-;;;  Format: bios.putc
+;;;  Format: bios.putchar
+;;;  Broken: A, B, X
+;;;------------------------------------------------------------------------------
+bios.putchar:
+	.macro
+	jsr	0xebe7
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.putc
+;;; Prints a character of ASCII code
+;;;  Format: bios.putc ch
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
 bios.putc:
-	.macro
-	jsr	0xebe7
+	.macro ch
+	ldaa	ch
+	bios.putchar
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -101,7 +113,7 @@ loop:
 	ldaa	[x]
 	beq	done
 	.save	x
-	bios.putc
+	bios.putchar
 	.restore x
 	.end
 	inx

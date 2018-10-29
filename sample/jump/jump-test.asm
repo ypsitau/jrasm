@@ -38,37 +38,30 @@ test.cmp:
 	ldaa	4
 	cmpa	3
 	inst	rel1
-	ldaa	' '
-	bios.putc
+	bios.putc ' '
 	bra	rel2
 rel1:
-	ldaa	'X'
-	bios.putc
+	bios.putc 'X'
 rel2:	
 	bios.puts " 4-4:\0"
 	ldaa	4
 	cmpa	4
 	inst	rel3
-	ldaa	' '
-	bios.putc
+	bios.putc ' '
 	bra	rel4
 rel3:	
-	ldaa	'X'
-	bios.putc
+	bios.putc 'X'
 rel4:	
 	bios.puts " 4-5:\0"
 	ldaa	4
 	cmpa	5
 	inst	rel5
-	ldaa	' '
-	bios.putc
+	bios.putc ' '
 	bra	rel6
 rel5:	
-	ldaa	'X'
-	bios.putc
+	bios.putc 'X'
 rel6:	
-	ldaa	'\r'
-	bios.putc
+	bios.putc '\r'
 	.end
 
 	.include "jump.inc"
