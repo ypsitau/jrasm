@@ -246,7 +246,8 @@ ExprOwner *ExprOwner::Substitute(const ExprDict &exprDict) const
 	AutoPtr<ExprOwner> pExprOwner(new ExprOwner());
 	pExprOwner->reserve(size());
 	for (auto pExpr : *this) {
-		pExprOwner->push_back(pExpr->Substitute(exprDict));
+		AutoPtr<Expr> pExprSubst(pExpr->Substitute(exprDict));
+		pExprOwner->push_back(pExprSubst.release());
 	}
 	return pExprOwner.release();
 }
@@ -344,9 +345,9 @@ Expr *Expr_Group::Clone() const
 
 Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Group(
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	AutoPtr<Expr> pExprRtn(new Expr_Group(pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -511,9 +512,9 @@ Expr *Expr_Assign::Clone() const
 
 Expr *Expr_Assign::Substitute(const ExprDict &exprDict) const
 {
-	AutoPtr<Expr> pExprRtn(new Expr_Assign(
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	AutoPtr<Expr> pExprRtn(new Expr_Assign(pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -576,10 +577,11 @@ Expr *Expr_BinOp::Clone() const
 
 Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 {
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
 	AutoPtr<Expr> pExprRtn(new Expr_BinOp(
 							   GetOperator(),
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -617,9 +619,10 @@ Expr *Expr_Bracket::Clone() const
 
 Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 {
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
 	AutoPtr<Expr> pExprRtn(new Expr_Bracket(
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -657,9 +660,10 @@ Expr *Expr_Brace::Clone() const
 
 Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 {
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
 	AutoPtr<Expr> pExprRtn(new Expr_Brace(
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -866,10 +870,11 @@ Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
 	const Expr *pExpr = exprDict.Lookup(GetSymbol());
 	const char *symbol = (pExpr == nullptr || !pExpr->IsTypeSymbol())?
 		GetSymbol() : dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol();
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
 	AutoPtr<Expr> pExprRtn(new Expr_Instruction(
 							   symbol,
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
@@ -941,10 +946,11 @@ Expr *Expr_Directive::Clone() const
 
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 {
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
 	AutoPtr<Expr> pExprRtn(new Expr_Directive(
 							   GetDirective()->Reference(),
-							   GetExprOperands().Substitute(exprDict),
-							   GetExprChildren().Substitute(exprDict)));
+							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
