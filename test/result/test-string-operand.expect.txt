@@ -1,0 +1,34 @@
+                   .org 0x1000
+                   .dseg
+dseg_top:
+    1018 10 18     .dw  dseg_top
+                   .cseg
+    1000 ce 10 1a  ldx  "ABCDEFG\0"
+    1003 ce 10 22  ldx  "HIJKLMN\0"
+    1006 ce 10 2a  ldx  "OPQRSTU\0"
+                   macro1 "VWXYZ@@\0"
+    1009 ce 10 32  | ldx  "VWXYZ@@\0"
+                   | .end
+                   macro1 "VWXYZ@@\0"
+    100c ce 10 3a  | ldx  "VWXYZ@@\0"
+                   | .end
+                   macro2
+    100f ce 10 42  | ldx  "abcdefg\0"
+                   | .end
+                   macro2
+    1012 ce 10 4a  | ldx  "abcdefg\0"
+                   | .end
+                   .dseg
+work1:
+    1052 00 01     .db  0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07
+    1054 02 03   
+    1056 04 05   
+    1058 06 07   
+                   .cseg
+    1015 ce 10 5a  ldx  "ABCDEFG\0"
+[Symbol List]
+0001  @BYTE
+0002  @WORD
+0004  @DWORD
+1018  dseg_top
+1052  work1

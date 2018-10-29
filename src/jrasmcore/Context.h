@@ -58,6 +58,12 @@ public:
 		~SymbolInfoOwner();
 		void Clear();
 	};
+	class StringToExprAssocMap : public std::map<String, Expr_Integer *> {
+	public:
+		~StringToExprAssocMap();
+		void Assign(const String &str, Expr_Integer *pExpr);
+		const Expr_Integer *Lookup(const char *str) const;
+	};
 private:
 	String _pathNameSrc;
 	String _dirNameSrc;
@@ -74,6 +80,7 @@ private:
 	PCGCharOwner _pcgCharsBuiltIn;
 	std::unique_ptr<ExprList> _pExprListResolved;
 	MMLParser _mmlParser;
+	StringToExprAssocMap _stringToExprAssocMap;
 public:
 	Context(const String &pathNameSrc);
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }

@@ -28,6 +28,7 @@ caseNames="$caseNames rel"
 caseNames="$caseNames save"
 caseNames="$caseNames scope"
 caseNames="$caseNames segment"
+caseNames="$caseNames string-operand"
 caseNames="$caseNames struct"
 
 #if [ $# = 1 ] ; then

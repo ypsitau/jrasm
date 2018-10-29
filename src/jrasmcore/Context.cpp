@@ -201,6 +201,7 @@ bool Context::HandleStringInOperand(Expr_String *pExpr, Integer *pNum)
 {
 	const String &str = pExpr->GetStringSTL();
 	Segment *pSegment = GetDataSegment();
+	//const Expr_Integer *pExprFound = _stringToExprAssocMap.Lookup(str.c_str());
 	if (pExpr->GetExprAssoc() == nullptr) {
 		pExpr->SetExprAssoc(
 			new Expr_Integer(pSegment->GetAddrOffset(), pSegment->GetRegionCur()->Reference()));
@@ -240,4 +241,25 @@ void Context::SymbolInfoOwner::Clear()
 		delete pSymbolInfo;
 	}
 	clear();
+}
+
+//-----------------------------------------------------------------------------
+// Context::StringToExprAssocMap
+//-----------------------------------------------------------------------------
+Context::StringToExprAssocMap::~StringToExprAssocMap()
+{
+	for (auto iter : *this) {
+		Expr::Delete(iter.second);
+	}
+}
+
+void Context::StringToExprAssocMap::Assign(const String &str, Expr_Integer *pExpr)
+{
+	insert(std::make_pair(str, pExpr));
+}
+
+const Expr_Integer *Context::StringToExprAssocMap::Lookup(const char *str) const
+{
+	const_iterator iter = find(str);
+	return (iter == end())? nullptr : iter->second;
 }
