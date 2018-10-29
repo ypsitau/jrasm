@@ -80,6 +80,8 @@ public:
 	inline const char *GetDirNameSrc() const { return _dirNameSrc.c_str(); }
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
 	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
+	inline Segment *GetCodeSegment() { return _segmentOwner[0]; }
+	inline Segment *GetDataSegment() { return _segmentOwner[1]; }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
 	inline Segment *GetSegmentCur() { return _pSegmentCur; }
@@ -122,6 +124,7 @@ public:
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
+	bool HandleStringInOperand(Expr_String *pExpr, Integer *pNum);
 };
 
 #endif

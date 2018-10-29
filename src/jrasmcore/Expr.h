@@ -255,6 +255,7 @@ public:
 class Expr_String : public Expr {
 private:
 	String _str;
+	AutoPtr<Expr_Integer> _pExprAssoc;	// valid when the string appears as an operand
 public:
 	static const Type TYPE;
 public:
@@ -262,6 +263,8 @@ public:
 	inline Expr_String(const Expr_String &expr) : Expr(expr), _str(expr._str) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const String &GetStringSTL() const { return _str; }
+	inline Expr_Integer *GetExprAssoc() { return _pExprAssoc.get(); }
+	inline void SetExprAssoc(Expr_Integer *pExprAssoc) { _pExprAssoc.reset(pExprAssoc); }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

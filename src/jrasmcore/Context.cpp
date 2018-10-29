@@ -197,6 +197,21 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	return false;
 }
 
+bool Context::HandleStringInOperand(Expr_String *pExpr, Integer *pNum)
+{
+	const String &str = pExpr->GetStringSTL();
+	Segment *pSegment = GetDataSegment();
+	if (pExpr->GetExprAssoc() == nullptr) {
+		pExpr->SetExprAssoc(
+			new Expr_Integer(pSegment->GetAddrOffset(), pSegment->GetRegionCur()->Reference()));
+	} else {
+		*pNum = pExpr->GetExprAssoc()->GetInteger();
+	}
+	if (IsPhase(Context::PHASE_Generate)) pSegment->GetBuffer() += str;
+	pSegment->ForwardAddrOffset(static_cast<Integer>(str.size()));
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Context::SymbolInfoList
 //-----------------------------------------------------------------------------

@@ -462,12 +462,18 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 	context.StartToResolve();
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
-	if (!pExprLast->IsTypeInteger()) return RESULT_Rejected;
-	// This rule was determined to be applied.
-	Integer num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();
-	if (num < -0x8000 || num > 0xffff) {
-		ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
-		return RESULT_Error;
+	Integer num = 0;
+	if (pExprLast->IsTypeInteger()) {
+		num = dynamic_cast<const Expr_Integer *>(pExprLast.get())->GetInteger();
+		if (num < -0x8000 || num > 0xffff) {
+			ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
+			return RESULT_Error;
+		}
+	} else if (pExprLast->IsTypeString()) {
+		if (!context.HandleStringInOperand(
+				dynamic_cast<Expr_String *>(pExprLast.get()), &num)) return RESULT_Error;
+	} else {
+		return RESULT_Rejected;
 	}
 	if (pBuffDst != nullptr) {
 		*pBuffDst += _code;
