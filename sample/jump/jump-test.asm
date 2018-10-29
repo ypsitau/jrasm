@@ -26,6 +26,9 @@ rel4:
 rel5:	
 	bios.puts "true "
 rel6:	
+	ldaa	'\r'
+	bios.putc
+	
 	rts
 	
 	.include "jump.inc"
