@@ -1,30 +1,36 @@
 	.org	0x1000
 
-	bios.puts "bgt: "
+	bios.puts "bgt:\0"
 	ldaa	4
-	bios.puts "(4,3) .. "
+	bios.puts "(4,3)\0"
 	cmpa	3
 	bgt	rel1
-	bios.puts "false"
+	ldaa	'f'
+	bios.putc
 	bra	rel2
 rel1:
-	bios.puts "true "
+	ldaa	't'
+	bios.putc
 rel2:	
-	bios.puts "; (4,4) .. "
+	bios.puts ";(4,4)\0"
 	cmpa	4
 	bgt	rel3
-	bios.puts "false"
+	ldaa	'f'
+	bios.putc
 	bra	rel4
 rel3:	
-	bios.puts "true "
+	ldaa	't'
+	bios.putc
 rel4:	
-	bios.puts "; (4,5) .. "
+	bios.puts ";(4,5)\0"
 	cmpa	5
 	bgt	rel5
-	bios.puts "false"
+	ldaa	'f'
+	bios.putc
 	bra	rel6
 rel5:	
-	bios.puts "true "
+	ldaa	't'
+	bios.putc
 rel6:	
 	ldaa	'\r'
 	bios.putc
