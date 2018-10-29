@@ -247,6 +247,7 @@ ExprOwner *ExprOwner::Substitute(const ExprDict &exprDict) const
 	pExprOwner->reserve(size());
 	for (auto pExpr : *this) {
 		AutoPtr<Expr> pExprSubst(pExpr->Substitute(exprDict));
+		if (pExprSubst.IsNull()) return nullptr;
 		pExprOwner->push_back(pExprSubst.release());
 	}
 	return pExprOwner.release();
@@ -346,7 +347,9 @@ Expr *Expr_Group::Clone() const
 Expr *Expr_Group::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_Group(pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
@@ -513,7 +516,9 @@ Expr *Expr_Assign::Clone() const
 Expr *Expr_Assign::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_Assign(pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
@@ -578,7 +583,9 @@ Expr *Expr_BinOp::Clone() const
 Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_BinOp(
 							   GetOperator(),
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
@@ -620,7 +627,9 @@ Expr *Expr_Bracket::Clone() const
 Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_Bracket(
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
@@ -661,7 +670,9 @@ Expr *Expr_Brace::Clone() const
 Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_Brace(
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
@@ -867,11 +878,19 @@ Expr *Expr_Instruction::Clone() const
 
 Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
 {
-	const Expr *pExpr = exprDict.Lookup(GetSymbol());
-	const char *symbol = (pExpr == nullptr || !pExpr->IsTypeSymbol())?
-		GetSymbol() : dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol();
+	const char *symbol = GetSymbol();
+	const Expr *pExpr = exprDict.Lookup(symbol);
+	if (pExpr != nullptr) {
+		if (!pExpr->IsTypeSymbol()) {
+			ErrorLog::AddError(this, "failed to replace symbol '%s'", symbol);
+			return nullptr;
+		}
+		symbol = dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol();
+	}
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_Instruction(
 							   symbol,
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
@@ -947,7 +966,9 @@ Expr *Expr_Directive::Clone() const
 Expr *Expr_Directive::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
 	AutoPtr<Expr> pExprRtn(new Expr_Directive(
 							   GetDirective()->Reference(),
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));

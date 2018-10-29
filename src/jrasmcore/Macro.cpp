@@ -47,7 +47,9 @@ ExprOwner *Macro::Expand(Context &context, const Expr_Instruction *pExpr) const
 		ErrorLog::AddError(pExpr, "too many parameters for %s", GetSymbol());
 		return nullptr;
 	}
-	return GetExprOwner().Substitute(*pExprDict);
+	AutoPtr<ExprOwner> pExprOwner(GetExprOwner().Substitute(*pExprDict));
+	if (pExprOwner.IsNull()) return nullptr;
+	return pExprOwner.release();
 }
 
 //-----------------------------------------------------------------------------
