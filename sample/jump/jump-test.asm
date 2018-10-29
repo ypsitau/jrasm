@@ -1,8 +1,8 @@
 	.org	0x1000
 
 	bios.puts "bgt:\0"
-	ldaa	4
 	bios.puts "(4,3)\0"
+	ldaa	4
 	cmpa	3
 	bgt	rel1
 	ldaa	'f'
@@ -13,6 +13,7 @@ rel1:
 	bios.putc
 rel2:	
 	bios.puts ";(4,4)\0"
+	ldaa	4
 	cmpa	4
 	bgt	rel3
 	ldaa	'f'
@@ -23,6 +24,7 @@ rel3:
 	bios.putc
 rel4:	
 	bios.puts ";(4,5)\0"
+	ldaa	4
 	cmpa	5
 	bgt	rel5
 	ldaa	'f'
