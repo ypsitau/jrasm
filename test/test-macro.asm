@@ -183,3 +183,12 @@ addmw_mw:
 	addmw_mw {0x12},[0x5678],b
 	addmw_mw [x+0x12],[0x5678],b
 	addmw_mw [0x1234],[0x5678],b
+
+macro12:
+	.macro inst
+	inst	0x30
+	.end
+
+	macro12	ldaa
+	macro12	ldab
+	macro12	ldx

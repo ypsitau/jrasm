@@ -863,8 +863,11 @@ Expr *Expr_Instruction::Clone() const
 
 Expr *Expr_Instruction::Substitute(const ExprDict &exprDict) const
 {
+	const Expr *pExpr = exprDict.Lookup(GetSymbol());
+	const char *symbol = (pExpr == nullptr || !pExpr->IsTypeSymbol())?
+		GetSymbol() : dynamic_cast<const Expr_Symbol *>(pExpr)->GetSymbol();
 	AutoPtr<Expr> pExprRtn(new Expr_Instruction(
-							   GetSymbol(),
+							   symbol,
 							   GetExprOperands().Substitute(exprDict),
 							   GetExprChildren().Substitute(exprDict)));
 	pExprRtn->DeriveSourceInfo(this);

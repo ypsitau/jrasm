@@ -394,6 +394,15 @@ addr2:             |
     11fb f9 56 78  | adc  b,[0x5678]
     11fe f7 12 34  | sta  b,[0x1234]
                    | .end
+                   macro12 ldaa
+    1201 86 30     | ldaa 0x30
+                   | .end
+                   macro12 ldab
+    1203 c6 30     | ldab 0x30
+                   | .end
+                   macro12 ldx
+    1205 ce 00 30  | ldx  0x30
+                   | .end
 [Symbol List]
 0001  @BYTE
 0002  @WORD
