@@ -84,18 +84,18 @@ bios.putc:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.print
-;;; Prints a string of ASCII characters that is terminated with zero on the screen.
-;;;  Format: bios.print addr
+;;; bios.puts
+;;; Putss a string of ASCII characters that is terminated with zero on the screen.
+;;;  Format: bios.puts addr
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
-bios.print:
+bios.puts:
 	.macro addr
 	ldx	addr
-	jsr	bios._print
+	jsr	bios._puts
 	.end
 
-bios._print:
+bios._puts:
 	.scope
 loop:	
 	ldaa	[x]

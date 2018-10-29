@@ -59,13 +59,11 @@
 	
 	bios.color 0,7
 	bios.locate 10,10
-	bios.print hello_world
+	bios.puts "Hello, World!\0"
 
 	bios.locate 0,3
 	bios.color 7,0
 loop:
 	bra	loop
-hello_world:
-	.db	"Hello, World!\0"
 	
 	.include "bios.inc"
