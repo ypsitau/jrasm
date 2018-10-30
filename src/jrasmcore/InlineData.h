@@ -26,6 +26,9 @@ public:
 	inline Integer GetInteger() const {
 		return _pRegion.IsNull()? _addrOffset : _addrOffset + _pRegion->GetAddrTop();
 	}
+	bool OnPhaseAssignSymbol(Context &context);
+	bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
+	bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -34,6 +37,9 @@ public:
 class InlineDataList : public std::vector<InlineData *> {
 public:
 	InlineData *Lookup(const Binary &buff);
+	bool OnPhaseAssignSymbol(Context &context);
+	bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
+	bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
 
 //-----------------------------------------------------------------------------

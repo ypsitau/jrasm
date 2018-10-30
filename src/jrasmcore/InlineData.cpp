@@ -6,6 +6,35 @@
 //-----------------------------------------------------------------------------
 // InlineData
 //-----------------------------------------------------------------------------
+bool InlineData::OnPhaseAssignSymbol(Context &context)
+{
+	Region *pRegion = context.GetInlineDataSegment()->GetRegionCur();
+	_addrOffset = pRegion->GetAddrOffset();
+	_pRegion.reset(pRegion->Reference());
+	pRegion->ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	return true;
+}
+
+bool InlineData::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
+{
+	Region *pRegion = context.GetInlineDataSegment()->GetRegionCur();
+	if (pBuffDst == nullptr) pBuffDst = &pRegion->GetBuffer();
+	*pBuffDst += _buff;
+	pRegion->ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	return true;
+}
+
+bool InlineData::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	Region *pRegion = context.GetInlineDataSegment()->GetRegionCur();
+	String str;
+	str = "\"";
+	str += MakeQuotedString(_buff, '"');
+	str += "\"";
+	disasmDumper.DumpDataAndCode(pRegion->GetAddress(), _buff, str.c_str(), indentLevelCode);
+	pRegion->ForwardAddrOffset(static_cast<Integer>(_buff.size()));
+	return true;
+}
 
 //-----------------------------------------------------------------------------
 // InlineDataList
@@ -16,6 +45,32 @@ InlineData *InlineDataList::Lookup(const Binary &buff)
 		if (pInlineData->GetBinary() == buff) return pInlineData;
 	}
 	return nullptr;
+}
+
+bool InlineDataList::OnPhaseAssignSymbol(Context &context)
+{
+	for (auto pInlineData : *this) {
+		if (!pInlineData->OnPhaseAssignSymbol(context)) return false;
+	}
+	return true;
+}
+
+bool InlineDataList::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
+{
+	for (auto pInlineData : *this) {
+		if (!pInlineData->OnPhaseGenerate(context, pBuffDst)) return false;
+	}
+	return true;
+}
+
+bool InlineDataList::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	if (empty()) return true;
+	disasmDumper.DumpCode(";; Inline Data", indentLevelCode);
+	for (auto pInlineData : *this) {
+		if (!pInlineData->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
+	}
+	return true;
 }
 
 //-----------------------------------------------------------------------------
