@@ -24,7 +24,7 @@ rel3:
 	bne	rel4
 	ldaa	0x87
 rel4:
-	bios.putc
+	bios.putc.acca
 	bra	loop
 
 	.include "bios.inc"

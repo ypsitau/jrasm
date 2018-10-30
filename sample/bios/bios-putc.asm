@@ -6,56 +6,40 @@
 	bios.cls
 	
 	bios.color 0,7
-	ldaa	'A'
-	bios.putc
+	bios.putc 'A'
 	bios.color 1,0
-	ldaa	'B'
-	bios.putc
+	bios.putc 'B'
 	bios.color 2,0
-	ldaa	'C'
-	bios.putc
+	bios.putc 'C'
 	bios.color 3,0
-	ldaa	'D'
-	bios.putc
+	bios.putc 'D'
 	bios.color 4,0
-	ldaa	'E'
-	bios.putc
+	bios.putc 'E'
 	bios.color 5,0
-	ldaa	'F'
-	bios.putc
+	bios.putc 'F'
 	bios.color 6,0
-	ldaa	'G'
-	bios.putc
+	bios.putc 'G'
 	bios.color 7,0
-	ldaa	'H'
-	bios.putc
+	bios.putc 'H'
 
 	bios.locate 10,2
 
 	bios.color 0,7
-	ldaa	'A'
-	bios.putc
+	bios.putc 'A'
 	bios.color 1,7
-	ldaa	'B'
-	bios.putc
+	bios.putc 'B'
 	bios.color 2,7
-	ldaa	'C'
-	bios.putc
+	bios.putc 'C'
 	bios.color 3,7
-	ldaa	'D'
-	bios.putc
+	bios.putc 'D'
 	bios.color 4,7
-	ldaa	'E'
-	bios.putc
+	bios.putc 'E'
 	bios.color 5,7
-	ldaa	'F'
-	bios.putc
+	bios.putc 'F'
 	bios.color 6,7
-	ldaa	'G'
-	bios.putc
+	bios.putc 'G'
 	bios.color 7,1
-	ldaa	'H'
-	bios.putc
+	bios.putc 'H'
 	
 	bios.color 0,7
 	bios.locate 10,10

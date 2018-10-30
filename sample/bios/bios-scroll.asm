@@ -5,21 +5,18 @@ loop:
 	cmpa	0x1c
 	bne	rel1
 	bios.locate [posx],0
-	clra
-	bios.putc
+	bios.putc '\0'
 	inc	[posx]
 	bra	rel2
 rel1:
 	cmpa	0x1d
 	bne	rel2
 	bios.locate [posx],0
-	clra
-	bios.putc
+	bios.putc '\0'
 	dec	[posx]
 rel2:
 	bios.locate [posx],0
-	ldaa	'X'
-	bios.putc
+	bios.putc 'X'
 	bios.scrolldown 0xc100
 	bra	loop
 

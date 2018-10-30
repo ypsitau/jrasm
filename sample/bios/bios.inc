@@ -104,6 +104,7 @@ bios.puthex16:
 ;;; bios._puthex.acca
 ;;;------------------------------------------------------------------------------
 bios._puthex.acca:
+	.scope
 	.save	a
 	rora
 	rora
@@ -123,6 +124,7 @@ rel1:	adda	'0'
 rel2:	adda	'0'
 	bios.putc.acca
 	rts
+	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; bios.putc.acca
@@ -166,10 +168,34 @@ loop:
 	beq	done
 	.save	x
 	bios.putc.acca
-	.restore x
 	.end
 	inx
 	bra	loop
+done:	
+	rts
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.putn
+;;;------------------------------------------------------------------------------
+bios.putn:
+	.macro	addr,len
+	ldx	addr
+	ldab	len
+	jsr	bios._putn
+	.end
+
+bios._putn:
+	.scope
+loop:	
+	ldaa	[x]
+	beq	done
+	.save	x,b
+	bios.putc.acca
+	.end
+	inx
+	decb
+	bne	loop
 done:	
 	rts
 	.end
