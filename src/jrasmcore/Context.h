@@ -130,7 +130,7 @@ public:
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
-	InlineData *CreateInlineData(const Binary &buff);
+	InlineData *CreateInlineData(InlineData::Type type, const Binary &buff, const String &strSrc);
 };
 
 #endif

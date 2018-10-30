@@ -156,6 +156,8 @@ public:
 	bool IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const;
 	bool IsGroupingDirective() const;
 	void Print() const;
+	static InlineData::Type GetInlineDataType(Type type);
+	inline InlineData::Type GetInlineDataType() const { return GetInlineDataType(_type); }
 	virtual bool OnPhasePreprocess(Context &context);
 	virtual bool OnPhaseAssignMacro(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);

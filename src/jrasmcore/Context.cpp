@@ -205,11 +205,11 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	return false;
 }
 
-InlineData *Context::CreateInlineData(const Binary &buff)
+InlineData *Context::CreateInlineData(InlineData::Type type, const Binary &buff, const String &strSrc)
 {
-	InlineData *pInlineData = _inlineDataOwner.Lookup(buff);
+	InlineData *pInlineData = _inlineDataOwner.Lookup(type, buff);
 	if (pInlineData == nullptr) {
-		pInlineData = new InlineData(buff);
+		pInlineData = new InlineData(type, buff, strSrc);
 		_inlineDataOwner.push_back(pInlineData);
 	}
 	return pInlineData;

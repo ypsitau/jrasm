@@ -76,6 +76,14 @@ void Expr::Print() const
 	::printf("%s\n", ComposeSource(false).c_str());
 }
 
+InlineData::Type Expr::GetInlineDataType(Type type)
+{
+	return
+		(type == TYPE_String)? InlineData::TYPE_String :
+		(type == TYPE_BitPattern)? InlineData::TYPE_BitPattern :
+		(type == TYPE_MML)? InlineData::TYPE_MML : InlineData::TYPE_String;
+}
+
 bool Expr::OnPhasePreprocess(Context &context)
 {
 	return GetExprOperands().OnPhasePreprocess(context) &&
@@ -831,9 +839,11 @@ const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 bool Expr_Instruction::OnPhasePreprocess(Context &context)
 {
 	for (auto pExpr : GetExprOperands()) {
-		if (pExpr->IsTypeString()) {
-			Expr_String *pExprEx = dynamic_cast<Expr_String *>(pExpr);
-			pExprEx->SetInlineData(context.CreateInlineData(pExprEx->GetBinary()));
+		if (pExpr->IsTypeBuffer()) {
+			Expr_Buffer *pExprEx = dynamic_cast<Expr_Buffer *>(pExpr);
+			pExprEx->SetInlineData(context.CreateInlineData(
+									   pExprEx->GetInlineDataType(), pExprEx->GetBinary(),
+									   pExprEx->ComposeSource(false)));
 		}
 	}
 	return true;

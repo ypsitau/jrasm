@@ -27,11 +27,7 @@ bool InlineData::OnPhaseGenerate(Context &context, Binary *pBuffDst) const
 bool InlineData::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	Region *pRegion = context.GetInlineDataSegment()->GetRegionCur();
-	String str;
-	str = "\"";
-	str += MakeQuotedString(_buff, '"');
-	str += "\"";
-	disasmDumper.DumpDataAndCode(pRegion->GetAddress(), _buff, str.c_str(), indentLevelCode);
+	disasmDumper.DumpDataAndCode(pRegion->GetAddress(), _buff, _strSrc.c_str(), indentLevelCode);
 	pRegion->ForwardAddrOffset(static_cast<Integer>(_buff.size()));
 	return true;
 }
@@ -39,10 +35,10 @@ bool InlineData::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int
 //-----------------------------------------------------------------------------
 // InlineDataList
 //-----------------------------------------------------------------------------
-InlineData *InlineDataList::Lookup(const Binary &buff)
+InlineData *InlineDataList::Lookup(InlineData::Type type, const Binary &buff)
 {
 	for (auto pInlineData : *this) {
-		if (pInlineData->GetBinary() == buff) return pInlineData;
+		if (pInlineData->GetType() == type && pInlineData->GetBinary() == buff) return pInlineData;
 	}
 	return nullptr;
 }
