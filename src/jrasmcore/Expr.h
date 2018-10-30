@@ -118,6 +118,7 @@ public:
 	inline bool IsTypeNull() const { return IsType(TYPE_Null); }
 	inline bool IsTypeGroup() const { return IsType(TYPE_Group); }
 	inline bool IsTypeInteger() const { return IsType(TYPE_Integer); }
+	inline bool IsTypeBuffer() const { return IsType(TYPE_String) || IsType(TYPE_BitPattern) || IsType(TYPE_MML); }
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
 	inline bool IsTypeMML() const { return IsType(TYPE_MML); }
@@ -254,8 +255,8 @@ public:
 // Expr_Buffer
 //-----------------------------------------------------------------------------
 class Expr_Buffer : public Expr {
-private:
-	AutoPtr<InlineData> _pInlineData;	// valid when the string appears as an operand
+protected:
+	AutoPtr<InlineData> _pInlineData;	// valid when the buffer appears as an operand
 public:
 	inline Expr_Buffer(Type type) : Expr(type) {}
 	inline Expr_Buffer(const Expr_Buffer &expr) :
@@ -268,19 +269,15 @@ public:
 //-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
-class Expr_String : public Expr {
+class Expr_String : public Expr_Buffer {
 private:
 	String _str;
-	AutoPtr<InlineData> _pInlineData;	// valid when the string appears as an operand
 public:
 	static const Type TYPE;
 public:
-	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
-	inline Expr_String(const Expr_String &expr) :
-		Expr(expr), _str(expr._str), _pInlineData(InlineData::Reference(expr._pInlineData.get())) {}
+	inline Expr_String(const String &str) : Expr_Buffer(TYPE), _str(str) {}
+	inline Expr_String(const Expr_String &expr) : Expr_Buffer(expr), _str(expr._str) {}
 	inline const char *GetString() const { return _str.c_str(); }
-	inline void SetInlineData(InlineData *pInlineData) { _pInlineData.reset(pInlineData); }
-	inline InlineData *GetInlineData() { return _pInlineData.get(); }
 	virtual const Binary &GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
@@ -291,15 +288,17 @@ public:
 //-----------------------------------------------------------------------------
 // Expr_BitPattern
 //-----------------------------------------------------------------------------
-class Expr_BitPattern : public Expr {
+class Expr_BitPattern : public Expr_Buffer {
 private:
 	String _str;
 	Binary _buff;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_BitPattern(const String &str, const Binary &buff) : Expr(TYPE), _str(str), _buff(buff) {}
-	inline Expr_BitPattern(const Expr_BitPattern &expr) : Expr(expr), _str(expr._str), _buff(expr._buff) {}
+	inline Expr_BitPattern(const String &str, const Binary &buff) :
+		Expr_Buffer(TYPE), _str(str), _buff(buff) {}
+	inline Expr_BitPattern(const Expr_BitPattern &expr) :
+		Expr_Buffer(expr), _str(expr._str), _buff(expr._buff) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	virtual const Binary &GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
@@ -311,7 +310,7 @@ public:
 //-----------------------------------------------------------------------------
 // Expr_MML
 //-----------------------------------------------------------------------------
-class Expr_MML : public Expr {
+class Expr_MML : public Expr_Buffer {
 private:
 	String _str;
 	AutoPtr<BinaryShared> _pBuffShared;
@@ -319,9 +318,9 @@ public:
 	static const Type TYPE;
 public:
 	inline Expr_MML(const String &str, BinaryShared *pBuffShared) :
-		Expr(TYPE), _str(str), _pBuffShared(pBuffShared) {}
+		Expr_Buffer(TYPE), _str(str), _pBuffShared(pBuffShared) {}
 	inline Expr_MML(const Expr_MML &expr) :
-		Expr(expr), _str(expr._str), _pBuffShared(expr._pBuffShared->Reference()) {}
+		Expr_Buffer(expr), _str(expr._str), _pBuffShared(expr._pBuffShared->Reference()) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	virtual const Binary &GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
