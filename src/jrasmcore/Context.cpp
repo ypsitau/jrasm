@@ -199,7 +199,7 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 
 bool Context::HandleStringInOperand(Expr_String *pExpr, Integer *pNum)
 {
-	const String &str = pExpr->GetStringSTL();
+	const String &buff = pExpr->GetBinary();
 	Segment *pSegment = GetDataSegment();
 	//const Expr_Integer *pExprFound = _stringToExprAssocMap.Lookup(str.c_str());
 	if (pExpr->GetExprAssoc() == nullptr) {
@@ -208,8 +208,8 @@ bool Context::HandleStringInOperand(Expr_String *pExpr, Integer *pNum)
 	} else {
 		*pNum = pExpr->GetExprAssoc()->GetInteger();
 	}
-	if (IsPhase(Context::PHASE_Generate)) pSegment->GetBuffer() += str;
-	pSegment->ForwardAddrOffset(static_cast<Integer>(str.size()));
+	if (IsPhase(Context::PHASE_Generate)) pSegment->GetBuffer() += buff;
+	pSegment->ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	return true;
 }
 

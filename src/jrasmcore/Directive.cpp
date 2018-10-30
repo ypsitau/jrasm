@@ -233,9 +233,9 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(num);
 			bytes++;
 		} else if (pExprResolved->IsTypeString()) {
-			const String &str = dynamic_cast<Expr_String *>(pExprResolved.get())->GetStringSTL();
-			for (auto ch : str) {
-				if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(ch);
+			const Binary &buff = dynamic_cast<Expr_String *>(pExprResolved.get())->GetBinary();
+			for (auto data : buff) {
+				if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(data);
 				bytes++;
 			}
 		} else if (pExprResolved->IsTypeBitPattern()) {

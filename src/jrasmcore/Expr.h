@@ -262,7 +262,7 @@ public:
 	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
 	inline Expr_String(const Expr_String &expr) : Expr(expr), _str(expr._str) {}
 	inline const char *GetString() const { return _str.c_str(); }
-	inline const String &GetStringSTL() const { return _str; }
+	inline const Binary &GetBinary() const { return _str; }
 	inline Expr_Integer *GetExprAssoc() { return _pExprAssoc.get(); }
 	inline void SetExprAssoc(Expr_Integer *pExprAssoc) { _pExprAssoc.reset(pExprAssoc); }
 	virtual Expr *Resolve(Context &context) const;
