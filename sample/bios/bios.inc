@@ -73,40 +73,64 @@ bios.cls:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.puthex
+;;; bios.puthex.acca
 ;;;------------------------------------------------------------------------------
-bios.puthex:
+bios.puthex.acca:
 	.macro
-	.save	a
-	anda	0xf0
-	clc
-	rora
-	rora
-	rora
-	rora
-	cmpa	10
-	blt	rel1
-	adda	'A' - 10 - '0'
-rel1:	adda	'0'
-	bios.putchar
+	jsr	bios._puthex.acca
 	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.puthex8
+;;;------------------------------------------------------------------------------
+bios.puthex8:
+	.macro	data
+	ldaa	data
+	bios.puthex.acca
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.puthex16
+;;;------------------------------------------------------------------------------
+bios.puthex16:
+	.macro	data
+	ldaa	data
+	bios.puthex.acca
+	ldaa	data <+> 1
+	bios.puthex.acca
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios._puthex.acca
+;;;------------------------------------------------------------------------------
+bios._puthex.acca:
 	.save	a
+	rora
+	rora
+	rora
+	rora
 	anda	0x0f
 	cmpa	10
 	blt	rel1
 	adda	'A' - 10 - '0'
+rel1:	adda	'0'
+	bios.putc.acca
+	.end
+	anda	0x0f
+	cmpa	10
+	blt	rel2
+	adda	'A' - 10 - '0'
 rel2:	adda	'0'
-	bios.putchar
-	.end
-	.end
+	bios.putc.acca
+	rts
 
 ;;;------------------------------------------------------------------------------
-;;; bios.putchar
+;;; bios.putc.acca
 ;;; Prints a character of ASCII code specified by accumulator A
-;;;  Format: bios.putchar
+;;;  Format: bios.putc.acca
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
-bios.putchar:
+bios.putc.acca:
 	.macro
 	jsr	0xebe7
 	.end
@@ -118,9 +142,9 @@ bios.putchar:
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
 bios.putc:
-	.macro ch
+	.macro	ch
 	ldaa	ch
-	bios.putchar
+	bios.putc.acca
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -130,7 +154,7 @@ bios.putc:
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
 bios.puts:
-	.macro addr
+	.macro	addr
 	ldx	addr
 	jsr	bios._puts
 	.end
@@ -141,7 +165,7 @@ loop:
 	ldaa	[x]
 	beq	done
 	.save	x
-	bios.putchar
+	bios.putc.acca
 	.restore x
 	.end
 	inx
