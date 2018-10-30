@@ -233,11 +233,10 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(num);
 			bytes++;
 		} else if (pExprResolved->IsTypeString()) {
-			const Binary &buff = dynamic_cast<Expr_String *>(pExprResolved.get())->GetBinary();
-			for (auto data : buff) {
-				if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(data);
-				bytes++;
-			}
+			Expr_String *pExprEx = dynamic_cast<Expr_String *>(pExprResolved.get());
+			const Binary &buff = pExprEx->GetBinary();
+			if (pBuffDst != nullptr) *pBuffDst += buff;
+			bytes += static_cast<Integer>(buff.size());
 		} else if (pExprResolved->IsTypeBitPattern()) {
 			Expr_BitPattern *pExprEx = dynamic_cast<Expr_BitPattern *>(pExprResolved.get());
 			const Binary &buff = pExprEx->GetBinary();
