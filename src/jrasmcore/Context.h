@@ -83,9 +83,11 @@ public:
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }
 	inline const char *GetFileBaseNameSrc() const { return _fileBaseNameSrc.c_str(); }
 	inline Segment *GetCodeSegment() { return _segmentOwner[0]; }
-	inline Segment *GetDataSegment() { return _segmentOwner[1]; }
+	inline Segment *GetInlineDataSegment() { return _segmentOwner[1]; }
+	inline Segment *GetDataSegment() { return _segmentOwner[2]; }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
-	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[1]; }
+	inline void SelectInlineDataSegment() { _pSegmentCur = _segmentOwner[1]; }
+	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[2]; }
 	inline Segment *GetSegmentCur() { return _pSegmentCur; }
 	inline const Segment *GetSegumentCur() const { return _pSegmentCur; }
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }

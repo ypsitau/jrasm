@@ -17,9 +17,11 @@ Context::Context(const String &pathNameSrc) :
 	pExprDict->Assign("@BYTE", new Expr_Integer(1), false);
 	pExprDict->Assign("@WORD", new Expr_Integer(2), false);
 	pExprDict->Assign("@DWORD", new Expr_Integer(4), false);
-	_exprDictStack.push_back(pExprDict.release());								// global exprDict
-	_segmentOwner.push_back(new Segment("code", nullptr));						// code segment
-	_segmentOwner.push_back(new Segment("data",									// data segment
+	_exprDictStack.push_back(pExprDict.release());				// global exprDict
+	_segmentOwner.push_back(new Segment("code", nullptr));		// code segment
+	_segmentOwner.push_back(new Segment("inline",				// inline data segment
+										_segmentOwner.back()->Reference()));
+	_segmentOwner.push_back(new Segment("data",					// data segment
 										_segmentOwner.back()->Reference()));
 	_pcgCharsBuiltIn.push_back(
 		new PCGChar(PCGTYPE_CRAM, 0x00, Binary("\x00\x00\x00\x00\x00\x00\x00\x00", 8)));
