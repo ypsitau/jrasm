@@ -234,18 +234,8 @@ bool Directive_DB::DoDirective(Context &context, const Expr *pExpr, Binary *pBuf
 			}
 			if (pBuffDst != nullptr) *pBuffDst += static_cast<UInt8>(num);
 			bytes++;
-		} else if (pExprResolved->IsTypeString()) {
-			Expr_String *pExprEx = dynamic_cast<Expr_String *>(pExprResolved.get());
-			const Binary &buff = pExprEx->GetBinary();
-			if (pBuffDst != nullptr) *pBuffDst += buff;
-			bytes += static_cast<Integer>(buff.size());
-		} else if (pExprResolved->IsTypeBitPattern()) {
-			Expr_BitPattern *pExprEx = dynamic_cast<Expr_BitPattern *>(pExprResolved.get());
-			const Binary &buff = pExprEx->GetBinary();
-			if (pBuffDst != nullptr) *pBuffDst += buff;
-			bytes += static_cast<Integer>(buff.size());
-		} else if (pExprResolved->IsTypeMML()) {
-			Expr_MML *pExprEx = dynamic_cast<Expr_MML *>(pExprResolved.get());
+		} else if (pExprResolved->IsTypeBuffer()) {
+			Expr_Buffer *pExprEx = dynamic_cast<Expr_Buffer *>(pExprResolved.get());
 			const Binary &buff = pExprEx->GetBinary();
 			if (pBuffDst != nullptr) *pBuffDst += buff;
 			bytes += static_cast<Integer>(buff.size());

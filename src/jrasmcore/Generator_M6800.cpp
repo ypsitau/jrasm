@@ -469,8 +469,8 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 			ErrorLog::AddError(pExpr, "immediate value exceeds 16-bit range");
 			return RESULT_Error;
 		}
-	} else if (pExprLast->IsTypeString()) {
-		num = dynamic_cast<Expr_String *>(pExprLast.get())->GetInlineData()->GetInteger();
+	} else if (pExprLast->IsTypeBuffer()) {
+		num = dynamic_cast<Expr_Buffer *>(pExprLast.get())->GetInlineData()->GetInteger();
 	} else {
 		return RESULT_Rejected;
 	}
