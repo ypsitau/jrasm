@@ -809,6 +809,17 @@ String Expr_Symbol::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Instruction::TYPE = Expr::TYPE_Instruction;
 
+bool Expr_Instruction::OnPhasePreprocess(Context &context)
+{
+	for (auto pExpr : GetExprOperands()) {
+		if (pExpr->IsTypeString()) {
+			Expr_String *pExprEx = dynamic_cast<Expr_String *>(pExpr);
+			pExprEx->SetInlineData(context.CreateInlineData(pExprEx->GetBinary()));
+		}
+	}
+	return true;
+}
+
 bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 {
 	const Macro *pMacro = context.GetMacroDict().Lookup(GetSymbol());

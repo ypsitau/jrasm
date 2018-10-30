@@ -479,6 +479,7 @@ public:
 		Expr(expr), _symbol(expr._symbol),
 		_pExprsExpanded(expr._pExprsExpanded.IsNull()? nullptr : expr._pExprsExpanded->Clone()) {}
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
+	virtual bool OnPhasePreprocess(Context &context);
 	virtual bool OnPhaseExpandMacro(Context &context);
 	virtual bool OnPhaseAssignSymbol(Context &context);
 	virtual bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;

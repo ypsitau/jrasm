@@ -197,25 +197,15 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	return false;
 }
 
-#if 0
-InlineData *Context::LookupInlineData(const Binary &buff)
+InlineData *Context::CreateInlineData(const Binary &buff)
 {
-	return InlineData *pInlineData = _inlineDataOwner.Lookup(buff);
-	return (pInlineData == nullptr)? 0 : pInlineData->GetInteger();
-#if 0
-	Segment *pSegment = GetDataSegment();
-	if (pExpr->GetExprAssoc() == nullptr) {
-		pExpr->SetExprAssoc(
-			new Expr_Integer(pSegment->GetAddrOffset(), pSegment->GetRegionCur()->Reference()));
-	} else {
-		*pNum = pExpr->GetExprAssoc()->GetInteger();
+	InlineData *pInlineData = _inlineDataOwner.Lookup(buff);
+	if (pInlineData == nullptr) {
+		pInlineData = new InlineData(buff);
+		_inlineDataOwner.push_back(pInlineData);
 	}
-	if (IsPhase(Context::PHASE_Generate)) pSegment->GetBuffer() += buff;
-	pSegment->ForwardAddrOffset(static_cast<Integer>(buff.size()));
-	return true;
-#endif
+	return pInlineData;
 }
-#endif
 
 //-----------------------------------------------------------------------------
 // Context::SymbolInfoList

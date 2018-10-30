@@ -126,7 +126,7 @@ public:
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
-	InlineData *LookupInlineData(const Binary &buff) { return _inlineDataOwner.Lookup(buff); }
+	InlineData *CreateInlineData(const Binary &buff);
 };
 
 #endif
