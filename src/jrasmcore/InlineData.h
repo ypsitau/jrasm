@@ -33,7 +33,7 @@ public:
 //-----------------------------------------------------------------------------
 class InlineDataList : public std::vector<InlineData *> {
 public:
-	InlineData *FindTheSame(const Binary &buff);
+	InlineData *Lookup(const Binary &buff);
 };
 
 //-----------------------------------------------------------------------------

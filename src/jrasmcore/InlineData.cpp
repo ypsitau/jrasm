@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 // InlineDataList
 //-----------------------------------------------------------------------------
-InlineData *InlineDataList::FindTheSame(const Binary &buff)
+InlineData *InlineDataList::Lookup(const Binary &buff)
 {
 	for (auto pInlineData : *this) {
 		if (pInlineData->GetBinary() == buff) return pInlineData;

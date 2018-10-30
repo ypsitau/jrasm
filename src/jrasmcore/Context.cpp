@@ -197,11 +197,13 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	return false;
 }
 
-bool Context::HandleStringInOperand(Expr_String *pExpr, Integer *pNum)
+#if 0
+InlineData *Context::LookupInlineData(const Binary &buff)
 {
-	const String &buff = pExpr->GetBinary();
+	return InlineData *pInlineData = _inlineDataOwner.Lookup(buff);
+	return (pInlineData == nullptr)? 0 : pInlineData->GetInteger();
+#if 0
 	Segment *pSegment = GetDataSegment();
-	//const Expr_Integer *pExprFound = _stringToExprAssocMap.Lookup(str.c_str());
 	if (pExpr->GetExprAssoc() == nullptr) {
 		pExpr->SetExprAssoc(
 			new Expr_Integer(pSegment->GetAddrOffset(), pSegment->GetRegionCur()->Reference()));
@@ -211,7 +213,9 @@ bool Context::HandleStringInOperand(Expr_String *pExpr, Integer *pNum)
 	if (IsPhase(Context::PHASE_Generate)) pSegment->GetBuffer() += buff;
 	pSegment->ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	return true;
+#endif
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Context::SymbolInfoList

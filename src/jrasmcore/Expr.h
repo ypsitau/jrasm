@@ -7,6 +7,7 @@
 #include "Directive.h"
 #include "Operator.h"
 #include "DisasmDumper.h"
+#include "InlineData.h"
 
 class ExprOwner;
 class Expr;
@@ -255,16 +256,17 @@ public:
 class Expr_String : public Expr {
 private:
 	String _str;
-	AutoPtr<Expr_Integer> _pExprAssoc;	// valid when the string appears as an operand
+	AutoPtr<InlineData> _pInlineData;	// valid when the string appears as an operand
 public:
 	static const Type TYPE;
 public:
 	inline Expr_String(const String &str) : Expr(TYPE), _str(str) {}
-	inline Expr_String(const Expr_String &expr) : Expr(expr), _str(expr._str) {}
+	inline Expr_String(const Expr_String &expr) :
+		Expr(expr), _str(expr._str), _pInlineData(InlineData::Reference(expr._pInlineData.get())) {}
 	inline const char *GetString() const { return _str.c_str(); }
 	inline const Binary &GetBinary() const { return _str; }
-	inline Expr_Integer *GetExprAssoc() { return _pExprAssoc.get(); }
-	inline void SetExprAssoc(Expr_Integer *pExprAssoc) { _pExprAssoc.reset(pExprAssoc); }
+	inline void SetInlineData(InlineData *pInlineData) { _pInlineData.reset(pInlineData); }
+	inline InlineData *GetInlineData() { return _pInlineData.get(); }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

@@ -470,8 +470,9 @@ Generator_M6800::Result Generator_M6800::Rule_IMM16::Apply(
 			return RESULT_Error;
 		}
 	} else if (pExprLast->IsTypeString()) {
-		if (!context.HandleStringInOperand(
-				dynamic_cast<Expr_String *>(pExprLast.get()), &num)) return RESULT_Error;
+		InlineData *pInlineData = context.LookupInlineData(
+			dynamic_cast<Expr_String *>(pExprLast.get())->GetBinary());
+		num = (pInlineData == nullptr)? 0 : pInlineData->GetInteger();
 	} else {
 		return RESULT_Rejected;
 	}
