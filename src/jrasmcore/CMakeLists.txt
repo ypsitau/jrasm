@@ -10,6 +10,7 @@ add_library(jrasmcore STATIC
 	FormatDump.cpp
 	Generator.cpp
 	Generator_M6800.cpp
+	InlineData.cpp
 	Macro.cpp
 	MMLParser.cpp
 	Operator.cpp

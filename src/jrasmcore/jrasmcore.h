@@ -15,6 +15,7 @@
 #include "FormatDump.h"
 #include "Generator.h"
 #include "Generator_M6800.h"
+#include "InlineData.h"
 #include "Macro.h"
 #include "MMLParser.h"
 #include "Parser.h"

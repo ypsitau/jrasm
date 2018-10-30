@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="jrasmcore.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Context.h" />
@@ -158,7 +159,7 @@
     <ClInclude Include="FormatDump.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Generator_M6800.h" />
-    <ClInclude Include="jrasmcore.h" />
+    <ClInclude Include="InlineData.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="MMLParser.h" />
     <ClInclude Include="Operator.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="FormatDump.cpp" />
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Generator_M6800.cpp" />
+    <ClCompile Include="InlineData.cpp" />
     <ClCompile Include="Macro.cpp" />
     <ClCompile Include="MMLParser.cpp" />
     <ClCompile Include="Operator.cpp" />

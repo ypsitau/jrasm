@@ -73,6 +73,34 @@ bios.cls:
 	.end
 
 ;;;------------------------------------------------------------------------------
+;;; bios.puthex
+;;;------------------------------------------------------------------------------
+bios.puthex:
+	.macro
+	.save	a
+	anda	0xf0
+	clc
+	rora
+	rora
+	rora
+	rora
+	cmpa	10
+	blt	rel1
+	adda	'A' - 10 - '0'
+rel1:	adda	'0'
+	bios.putchar
+	.end
+	.save	a
+	anda	0x0f
+	cmpa	10
+	blt	rel1
+	adda	'A' - 10 - '0'
+rel2:	adda	'0'
+	bios.putchar
+	.end
+	.end
+
+;;;------------------------------------------------------------------------------
 ;;; bios.putchar
 ;;; Prints a character of ASCII code specified by accumulator A
 ;;;  Format: bios.putchar
