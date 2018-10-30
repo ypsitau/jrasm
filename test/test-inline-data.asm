@@ -11,6 +11,8 @@ dseg_top:
 	ldx	"ABCDEFG\0"
 	ldx	"OPQRSTU\0"
 	ldx	"OPQRSTU\0"
+	ldx	m"CDEFGAB;"
+	ldx	m"CDEFGAB;"
 
 	macro1	"ABCDEFG\0"
 	macro1	"VWXYZ@@\0"
