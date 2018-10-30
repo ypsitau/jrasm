@@ -242,24 +242,3 @@ void Context::SymbolInfoOwner::Clear()
 	}
 	clear();
 }
-
-//-----------------------------------------------------------------------------
-// Context::StringToExprAssocMap
-//-----------------------------------------------------------------------------
-Context::StringToExprAssocMap::~StringToExprAssocMap()
-{
-	for (auto iter : *this) {
-		Expr::Delete(iter.second);
-	}
-}
-
-void Context::StringToExprAssocMap::Assign(const String &str, Expr_Integer *pExpr)
-{
-	insert(std::make_pair(str, pExpr));
-}
-
-const Expr_Integer *Context::StringToExprAssocMap::Lookup(const char *str) const
-{
-	const_iterator iter = find(str);
-	return (iter == end())? nullptr : iter->second;
-}
