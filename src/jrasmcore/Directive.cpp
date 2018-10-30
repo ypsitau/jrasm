@@ -43,6 +43,7 @@ const DirectiveFactory *Directive::RESTORE		= nullptr;
 const DirectiveFactory *Directive::SAVE			= nullptr;
 const DirectiveFactory *Directive::SCOPE		= nullptr;
 const DirectiveFactory *Directive::STRUCT		= nullptr;
+const DirectiveFactory *Directive::WSEG			= nullptr;
 
 Directive::~Directive()
 {
@@ -67,6 +68,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(SAVE			= new Directive_SAVE::Factory());
 	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
 	_directiveFactoryDict.Assign(STRUCT			= new Directive_STRUCT::Factory());
+	_directiveFactoryDict.Assign(WSEG			= new Directive_WSEG::Factory());
 }
 
 bool Directive::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken)
@@ -1316,4 +1318,37 @@ bool Directive_STRUCT::OnPhaseDisasm(Context &context, const Expr *pExpr,
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
 	return pExpr->GetExprChildren().OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
+}
+
+//-----------------------------------------------------------------------------
+// Directive_WSEG
+//-----------------------------------------------------------------------------
+Directive *Directive_WSEG::Factory::Create() const
+{
+	return new Directive_WSEG();
+}
+
+bool Directive_WSEG::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
+{
+	const ExprList &exprOperands = pExpr->GetExprOperands();
+	if (!exprOperands.empty()) {
+		ErrorLog::AddError(pExpr, "directive .WSEG needs no operands");
+		return false;
+	}
+	context.SelectWorkSegment();
+	return true;
+}
+
+bool Directive_WSEG::OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const
+{
+	context.SelectWorkSegment();
+	return true;
+}
+
+bool Directive_WSEG::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	context.SelectWorkSegment();
+	return true;
 }

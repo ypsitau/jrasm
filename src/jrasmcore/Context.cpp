@@ -23,6 +23,8 @@ Context::Context(const String &pathNameSrc) :
 										_segmentOwner.back()->Reference()));
 	_segmentOwner.push_back(new Segment("data",					// data segment
 										_segmentOwner.back()->Reference()));
+	_segmentOwner.push_back(new Segment("work",					// work segment
+										_segmentOwner.back()->Reference()));
 	_pcgCharsBuiltIn.push_back(
 		new PCGChar(PCGTYPE_CRAM, 0x00, Binary("\x00\x00\x00\x00\x00\x00\x00\x00", 8)));
 	SelectCodeSegment();

@@ -108,6 +108,7 @@ public:
 	static const DirectiveFactory *SAVE;
 	static const DirectiveFactory *SCOPE;
 	static const DirectiveFactory *STRUCT;
+	static const DirectiveFactory *WSEG;
 private:
 	static DirectiveFactoryDict _directiveFactoryDict;
 public:
@@ -484,6 +485,24 @@ public:
 	inline Directive_STRUCT() : Directive(STRUCT) {}
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
+	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_WSEG
+//-----------------------------------------------------------------------------
+class Directive_WSEG : public Directive {
+public:
+	class Factory : public DirectiveFactory {
+	public:
+		inline Factory() : DirectiveFactory(".WSEG", true, false) {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_WSEG() : Directive(WSEG) {}
+	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
+	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };

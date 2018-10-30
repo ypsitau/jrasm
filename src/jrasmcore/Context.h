@@ -85,9 +85,11 @@ public:
 	inline Segment *GetCodeSegment() { return _segmentOwner[0]; }
 	inline Segment *GetInlineDataSegment() { return _segmentOwner[1]; }
 	inline Segment *GetDataSegment() { return _segmentOwner[2]; }
+	inline Segment *GetWorkSegment() { return _segmentOwner[3]; }
 	inline void SelectCodeSegment() { _pSegmentCur = _segmentOwner[0]; }
 	inline void SelectInlineDataSegment() { _pSegmentCur = _segmentOwner[1]; }
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[2]; }
+	inline void SelectWorkSegment() { _pSegmentCur = _segmentOwner[3]; }
 	inline Segment *GetSegmentCur() { return _pSegmentCur; }
 	inline const Segment *GetSegumentCur() const { return _pSegmentCur; }
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
