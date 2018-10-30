@@ -86,7 +86,7 @@ bios.puthex.acca:
 bios.puthex8:
 	.macro	data
 	ldaa	data
-	bios.puthex.acca
+	jsr	bios._tohex.acca
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -101,9 +101,45 @@ bios.puthex16:
 	.end
 
 ;;;------------------------------------------------------------------------------
+;;; bios.todec
+;;;------------------------------------------------------------------------------
+bios.todec:
+	.macro	num
+	ldx	num
+	stx	[0x0160]
+	ldx	0x0160
+	jsr	0xfe86
+	ldx	{0xb7}
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.tohex
+;;;------------------------------------------------------------------------------
+bios.tohex:
+	.macro	num
+	ldaa	num
+	ldx	0x0170
+	jsr	bios._tohex.acca
+	ldab	2
+	.end
+
+;;;------------------------------------------------------------------------------
 ;;; bios._puthex.acca
 ;;;------------------------------------------------------------------------------
 bios._puthex.acca:
+	ldx	0x0170
+	jsr	bios._tohex.acca
+	ldab	2
+	jsr	bios._putn
+	rts
+
+;;;------------------------------------------------------------------------------
+;;; bios._tohex.acca
+;;; Converts accumulator A's value into a hexadecimal string.
+;;;  Param: A .. the value
+;;;         X .. address to store the result string
+;;;------------------------------------------------------------------------------
+bios._tohex.acca:
 	.scope
 	.save	a
 	rora
@@ -115,14 +151,14 @@ bios._puthex.acca:
 	blt	rel1
 	adda	'A' - 10 - '0'
 rel1:	adda	'0'
-	bios.putc.acca
+	staa	[x+0]
 	.end
 	anda	0x0f
 	cmpa	10
 	blt	rel2
 	adda	'A' - 10 - '0'
 rel2:	adda	'0'
-	bios.putc.acca
+	staa	[x+1]
 	rts
 	.end
 
