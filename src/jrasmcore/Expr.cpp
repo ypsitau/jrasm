@@ -128,17 +128,6 @@ Expr_Label *ExprList::SeekLabelToAssoc()
 	return pExprLabel->IsAssigned()? nullptr : pExprLabel;
 }
 
-String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
-{
-	String rtn;
-	for (const_iterator ppExpr = begin(); ppExpr != end(); ppExpr++) {
-		const Expr *pExpr = *ppExpr;
-		if (ppExpr != begin()) rtn += sep;
-		rtn += pExpr->ComposeSource(upperCaseFlag);
-	}
-	return rtn;
-}
-
 void ExprList::AssignExprDict(Context &context, bool recursiveFlag)
 {
 	for (auto pExpr : *this) {
@@ -192,6 +181,17 @@ bool ExprList::OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int i
 		if (!pExpr->OnPhaseDisasm(context, disasmDumper, indentLevelCode)) return false;
 	}
 	return true;
+}
+
+String ExprList::ComposeSource(bool upperCaseFlag, const char *sep) const
+{
+	String rtn;
+	for (const_iterator ppExpr = begin(); ppExpr != end(); ppExpr++) {
+		const Expr *pExpr = *ppExpr;
+		if (ppExpr != begin()) rtn += sep;
+		rtn += pExpr->ComposeSource(upperCaseFlag);
+	}
+	return rtn;
 }
 
 void ExprList::Print(bool upperCaseFlag) const
@@ -309,11 +309,6 @@ void ExprDictOwner::Clear()
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Null::TYPE = Expr::TYPE_Null;
 
-String Expr_Null::ComposeSource(bool upperCaseFlag) const
-{
-	return "";
-}
-
 Expr *Expr_Null::Resolve(Context &context) const
 {
 	return Reference();
@@ -327,6 +322,11 @@ Expr *Expr_Null::Clone() const
 Expr *Expr_Null::Substitute(const ExprDict &exprDict) const
 {
 	return Clone();
+}
+
+String Expr_Null::ComposeSource(bool upperCaseFlag) const
+{
+	return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -365,6 +365,21 @@ String Expr_Group::ComposeSource(bool upperCaseFlag) const
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Integer::TYPE = Expr::TYPE_Integer;
 
+Expr *Expr_Integer::Resolve(Context &context) const
+{
+	return Reference();
+}
+
+Expr *Expr_Integer::Clone() const
+{
+	return new Expr_Integer(*this);
+}
+
+Expr *Expr_Integer::Substitute(const ExprDict &exprDict) const
+{
+	return Clone();
+}
+
 String Expr_Integer::ComposeSource(bool upperCaseFlag) const
 {
 	if (!_str.empty()) {
@@ -384,33 +399,18 @@ String Expr_Integer::ComposeSource(bool upperCaseFlag) const
 	return buff;
 }
 
-Expr *Expr_Integer::Resolve(Context &context) const
-{
-	return Reference();
-}
-
-Expr *Expr_Integer::Clone() const
-{
-	return new Expr_Integer(*this);
-}
-
-Expr *Expr_Integer::Substitute(const ExprDict &exprDict) const
-{
-	return Clone();
-}
+//-----------------------------------------------------------------------------
+// Expr_Buffer
+//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_String::TYPE = Expr::TYPE_String;
 
-String Expr_String::ComposeSource(bool upperCaseFlag) const
+const Binary &Expr_String::GetBinary() const
 {
-	String str;
-	str = "\"";
-	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
-	str += "\"";
-	return str;
+	return _str;
 }
 
 Expr *Expr_String::Resolve(Context &context) const
@@ -428,18 +428,23 @@ Expr *Expr_String::Substitute(const ExprDict &exprDict) const
 	return Clone();
 }
 
+String Expr_String::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "\"";
+	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
+	str += "\"";
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // Expr_BitPattern
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_BitPattern::TYPE = Expr::TYPE_BitPattern;
 
-String Expr_BitPattern::ComposeSource(bool upperCaseFlag) const
+const Binary &Expr_BitPattern::GetBinary() const
 {
-	String str;
-	str = "b\"";
-	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
-	str += "\"";
-	return str;
+	return _buff;
 }
 
 Expr *Expr_BitPattern::Resolve(Context &context) const
@@ -457,18 +462,23 @@ Expr *Expr_BitPattern::Substitute(const ExprDict &exprDict) const
 	return Clone();
 }
 
+String Expr_BitPattern::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "b\"";
+	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
+	str += "\"";
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // Expr_MML
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_MML::TYPE = Expr::TYPE_MML;
 
-String Expr_MML::ComposeSource(bool upperCaseFlag) const
+const Binary &Expr_MML::GetBinary() const
 {
-	String str;
-	str = "m\"";
-	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
-	str += "\"";
-	return str;
+	return _pBuffShared->GetBinary();
 }
 
 Expr *Expr_MML::Resolve(Context &context) const
@@ -486,19 +496,19 @@ Expr *Expr_MML::Substitute(const ExprDict &exprDict) const
 	return Clone();
 }
 
+String Expr_MML::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "m\"";
+	str += MakeQuotedString(_str, '"'); // not affected by upperCaseFlag
+	str += "\"";
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Assign
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Assign::TYPE = Expr::TYPE_Assign;
-
-String Expr_Assign::ComposeSource(bool upperCaseFlag) const
-{
-	String str;
-	str += GetLeft()->ComposeSource(upperCaseFlag);
-	str += "=";
-	str += GetRight()->ComposeSource(upperCaseFlag);
-	return str;
-}
 
 Expr *Expr_Assign::Resolve(Context &context) const
 {
@@ -524,6 +534,15 @@ Expr *Expr_Assign::Substitute(const ExprDict &exprDict) const
 	return pExprRtn.release();
 }
 
+String Expr_Assign::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str += GetLeft()->ComposeSource(upperCaseFlag);
+	str += "=";
+	str += GetRight()->ComposeSource(upperCaseFlag);
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // Expr_BinOp
 //-----------------------------------------------------------------------------
@@ -537,33 +556,6 @@ void Expr_BinOp::GetFields(ExprList &exprFields) const
 	} else {
 		exprFields.push_back(const_cast<Expr_BinOp *>(this));
 	}
-}
-
-String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
-{
-	String str;
-	bool needParenFlagL = false;
-	bool needParenFlagR = false;
-	if (GetLeft()->IsTypeBinOp()) {
-		Token::Precedence prec = Operator::LookupPrec(
-			dynamic_cast<const Expr_BinOp *>(GetLeft())->GetOperator(),
-			GetOperator());
-		needParenFlagL = prec == (Token::PREC_LT);
-	}
-	if (GetRight()->IsTypeBinOp()) {
-		Token::Precedence prec = Operator::LookupPrec(
-			GetOperator(),
-			dynamic_cast<const Expr_BinOp *>(GetRight())->GetOperator());
-		needParenFlagR = prec == (Token::PREC_GT);
-	}
-	if (needParenFlagL) str += "(";
-	str += GetLeft()->ComposeSource(upperCaseFlag);
-	if (needParenFlagL) str += ")";
-	str += _pOperator->GetSymbol();
-	if (needParenFlagR) str += "(";
-	str += GetRight()->ComposeSource(upperCaseFlag);
-	if (needParenFlagR) str += ")";
-	return str;
 }
 
 Expr *Expr_BinOp::Resolve(Context &context) const
@@ -593,19 +585,37 @@ Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
 	return pExprRtn.release();
 }
 
+String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	bool needParenFlagL = false;
+	bool needParenFlagR = false;
+	if (GetLeft()->IsTypeBinOp()) {
+		Token::Precedence prec = Operator::LookupPrec(
+			dynamic_cast<const Expr_BinOp *>(GetLeft())->GetOperator(),
+			GetOperator());
+		needParenFlagL = prec == (Token::PREC_LT);
+	}
+	if (GetRight()->IsTypeBinOp()) {
+		Token::Precedence prec = Operator::LookupPrec(
+			GetOperator(),
+			dynamic_cast<const Expr_BinOp *>(GetRight())->GetOperator());
+		needParenFlagR = prec == (Token::PREC_GT);
+	}
+	if (needParenFlagL) str += "(";
+	str += GetLeft()->ComposeSource(upperCaseFlag);
+	if (needParenFlagL) str += ")";
+	str += _pOperator->GetSymbol();
+	if (needParenFlagR) str += "(";
+	str += GetRight()->ComposeSource(upperCaseFlag);
+	if (needParenFlagR) str += ")";
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Bracket
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;
-
-String Expr_Bracket::ComposeSource(bool upperCaseFlag) const
-{
-	String str;
-	str = "[";
-	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
-	str += "]";
-	return str;
-}
 
 Expr *Expr_Bracket::Resolve(Context &context) const
 {
@@ -636,19 +646,19 @@ Expr *Expr_Bracket::Substitute(const ExprDict &exprDict) const
 	return pExprRtn.release();
 }
 
+String Expr_Bracket::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "[";
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
+	str += "]";
+	return str;
+}
+
 //-----------------------------------------------------------------------------
 // Expr_Brace
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Brace::TYPE = Expr::TYPE_Brace;
-
-String Expr_Brace::ComposeSource(bool upperCaseFlag) const
-{
-	String str;
-	str = "{";
-	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
-	str += "}";
-	return str;
-}
 
 Expr *Expr_Brace::Resolve(Context &context) const
 {
@@ -677,6 +687,15 @@ Expr *Expr_Brace::Substitute(const ExprDict &exprDict) const
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
+}
+
+String Expr_Brace::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	str = "{";
+	str += GetExprOperands().ComposeSource(upperCaseFlag, ",");
+	str += "}";
+	return str;
 }
 
 //-----------------------------------------------------------------------------

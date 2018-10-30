@@ -44,7 +44,6 @@ public:
 class ExprList : public std::vector<Expr *> {
 public:
 	Expr_Label *SeekLabelToAssoc();
-	String ComposeSource(bool upperCaseFlag, const char *sep) const;
 	void AssignExprDict(Context &context, bool recursiveFlag);
 	bool OnPhasePreprocess(Context &context);
 	bool OnPhaseAssignMacro(Context &context);
@@ -52,6 +51,7 @@ public:
 	bool OnPhaseAssignSymbol(Context &context);
 	bool OnPhaseGenerate(Context &context, Binary *pBuffDst) const;
 	bool OnPhaseDisasm(Context &context, DisasmDumper &disasmDumper, int indentLevelCode) const;
+	String ComposeSource(bool upperCaseFlag, const char *sep) const;
 	void Print(bool upperCaseFlag) const;
 };
 
@@ -251,6 +251,21 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Expr_Buffer
+//-----------------------------------------------------------------------------
+class Expr_Buffer : public Expr {
+private:
+	AutoPtr<InlineData> _pInlineData;	// valid when the string appears as an operand
+public:
+	inline Expr_Buffer(Type type) : Expr(type) {}
+	inline Expr_Buffer(const Expr_Buffer &expr) :
+		Expr(expr), _pInlineData(InlineData::Reference(expr._pInlineData.get())) {}
+	inline void SetInlineData(InlineData *pInlineData) { _pInlineData.reset(pInlineData); }
+	inline InlineData *GetInlineData() { return _pInlineData.get(); }
+	virtual const Binary &GetBinary() const = 0;
+};
+
+//-----------------------------------------------------------------------------
 // Expr_String
 //-----------------------------------------------------------------------------
 class Expr_String : public Expr {
@@ -264,9 +279,9 @@ public:
 	inline Expr_String(const Expr_String &expr) :
 		Expr(expr), _str(expr._str), _pInlineData(InlineData::Reference(expr._pInlineData.get())) {}
 	inline const char *GetString() const { return _str.c_str(); }
-	inline const Binary &GetBinary() const { return _str; }
 	inline void SetInlineData(InlineData *pInlineData) { _pInlineData.reset(pInlineData); }
 	inline InlineData *GetInlineData() { return _pInlineData.get(); }
+	virtual const Binary &GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -286,7 +301,7 @@ public:
 	inline Expr_BitPattern(const String &str, const Binary &buff) : Expr(TYPE), _str(str), _buff(buff) {}
 	inline Expr_BitPattern(const Expr_BitPattern &expr) : Expr(expr), _str(expr._str), _buff(expr._buff) {}
 	inline const char *GetString() const { return _str.c_str(); }
-	inline const Binary &GetBinary() const { return _buff; }
+	virtual const Binary &GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
@@ -308,7 +323,7 @@ public:
 	inline Expr_MML(const Expr_MML &expr) :
 		Expr(expr), _str(expr._str), _pBuffShared(expr._pBuffShared->Reference()) {}
 	inline const char *GetString() const { return _str.c_str(); }
-	inline const Binary &GetBinary() const { return _pBuffShared->GetBinary(); }
+	virtual const Binary &GetBinary() const;
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;
