@@ -28,6 +28,7 @@ Context::Context(const String &pathNameSrc) :
 	_pcgCharsBuiltIn.push_back(
 		new PCGChar(PCGTYPE_CRAM, 0x00, Binary("\x00\x00\x00\x00\x00\x00\x00\x00", 8)));
 	SelectCodeSegment();
+	SetupDirNamesInc(_dirNamesInc);
 }
 
 void Context::Initialize(Generator *pGenerator)

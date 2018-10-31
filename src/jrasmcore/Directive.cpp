@@ -543,7 +543,22 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		_pExprIncluded.reset(new Expr_Null());
 		return true;
 	}
-	
+	if (!DoesExist(pathNameIncluded.c_str())) {
+		bool foundFlag = false;
+		for (auto dirName : context.GetDirNamesInc()) {
+			String pathName = JoinPathName(dirName.c_str(), pathNameIncluded.c_str());
+			//::printf("%s\n", pathName.c_str());
+			if (DoesExist(pathName.c_str())) {
+				pathNameIncluded = pathName;
+				foundFlag = true;
+				break;
+			}
+		}
+		if (!foundFlag) {
+			ErrorLog::AddError(pExpr, "failed to open file: %s\n", pathNameIncluded.c_str());
+			return false;
+		}
+	}
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
 	AutoPtr<Expr> pExprIncluded(parser.GetExprRoot()->Reference());

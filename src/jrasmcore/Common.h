@@ -199,7 +199,7 @@ String RemoveExtName(const char *pathName);
 bool DoesExist(const char *pathName);
 String GetEnv(const char *name, bool *pFoundFlag = nullptr);
 void PutEnv(const char *name, const char *value);
-void GetDirNamesInc(StringList &dirNamesInc);
+void SetupDirNamesInc(StringList &dirNamesInc);
 String GetExecutablePath();
 
 #endif

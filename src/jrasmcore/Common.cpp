@@ -288,7 +288,7 @@ void PutEnv(const char *name, const char *value)
 
 #if defined(JRASM_ON_MSWIN)
 
-void GetDirNamesInc(StringList &dirNamesInc)
+void SetupDirNamesInc(StringList &dirNamesInc)
 {
 	String str = GetEnv("JRASMPATH");
 	if (!str.empty()) {
@@ -306,7 +306,7 @@ String GetExecutablePath()
 
 #elif defined(JRASM_ON_DARWIN)
 
-void GetDirNamesInc(StringList &dirNamesInc)
+void SetupDirNamesInc(StringList &dirNamesInc)
 {
 	String str = GetEnv("JRASMPATH");
 	if (!str.empty()) {
