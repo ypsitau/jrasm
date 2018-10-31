@@ -3,7 +3,7 @@
 //=============================================================================
 #include "stdafx.h"
 
-#if defined(_MSC_VER)
+#if defined(JRASM_ON_MSWIN)
 const char FileSeparator = '\\';
 #else
 const char FileSeparator = '/';

@@ -19,6 +19,16 @@
 // Macros
 //-----------------------------------------------------------------------------
 #if defined(_MSC_VER)
+#define JRASM_ON_MSWIN
+#elif defined(__linux__)
+#define JRASM_ON_LINUX
+#elif defined(__APPLE__)
+#define JRASM_ON_DARWIN
+#else
+#define JRASM_ON_UNKNOWN
+#endif
+
+#if defined(JRASM_ON_MSWIN)
 #define strcasecmp _stricmp
 #else
 typedef int errno_t;
