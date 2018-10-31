@@ -529,15 +529,26 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, "directive .INCLUDE expects a string value as its operand");
 		return false;
 	}
-	String fileNameIncluded = CorrectFileSeparator(dynamic_cast<const Expr_String *>(pExprLast)->GetString());
+	bool allowMultipleFlag = false;
+	const char *str = dynamic_cast<const Expr_String *>(pExprLast)->GetString();
+	if (*str == '!') {
+		allowMultipleFlag = true;
+		str++;
+	}
+	String fileNameIncluded = CorrectFileSeparator(str);
 	String dirName;
 	::SplitFileName(pExpr->GetPathNameSrc(), &dirName, nullptr);
 	String pathNameIncluded = JoinPathName(dirName.c_str(), fileNameIncluded.c_str());
+	if (!allowMultipleFlag && context.FindExprIncluded(pathNameIncluded.c_str()) != nullptr) {
+		_pExprIncluded.reset(new Expr_Null());
+		return true;
+	}
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
-	AutoPtr<Expr> pExprRoot(parser.GetExprRoot()->Reference());
-	if (!pExprRoot->OnPhasePreprocess(context)) return false;
-	_pExprIncluded.reset(pExprRoot.release());
+	AutoPtr<Expr> pExprIncluded(parser.GetExprRoot()->Reference());
+	context.AddExprIncluded(pathNameIncluded.c_str(), pExprIncluded->Reference());
+	if (!pExprIncluded->OnPhasePreprocess(context)) return false;
+	_pExprIncluded.reset(pExprIncluded.release());
 	return true;
 }
 
@@ -565,6 +576,10 @@ bool Directive_INCLUDE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									  DisasmDumper &disasmDumper, int indentLevelCode) const
 {
 	disasmDumper.DumpCode(pExpr->ComposeSource(disasmDumper.GetUpperCaseFlag()).c_str(), indentLevelCode);
+	if (_pExprIncluded->IsTypeNull()) {
+		disasmDumper.DumpCode(";; already included", indentLevelCode);
+		return true;
+	}
 	return _pExprIncluded->OnPhaseDisasm(context, disasmDumper, indentLevelCode + 1);
 }
 

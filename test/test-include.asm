@@ -9,3 +9,5 @@
 	.dw	0xf000
 	.dw	0xf001
 	.dw	0xf002
+	.include "test-include/include2.asm"
+	.include "!test-include/include2.asm"

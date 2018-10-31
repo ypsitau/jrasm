@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 Context::Context(const String &pathNameSrc) :
 	_pathNameSrc(pathNameSrc), _phaseCur(PHASE_None), _iSavePoint(0),
-	_pExprListResolved(new ExprList())
+	_pExprListResolved(new ExprList()), _pExprDictIncluded(new ExprDict())
 {
 	String fileNameSrc;
 	SplitFileName(pathNameSrc.c_str(), &_dirNameSrc, &fileNameSrc);
@@ -203,6 +203,17 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	}
 	_pExprListResolved->push_back(const_cast<Expr *>(pExpr));
 	return false;
+}
+
+const Expr *Context::FindExprIncluded(const char *pathNameIncluded)
+{
+	ExprDict::iterator iter = _pExprDictIncluded->find(pathNameIncluded);
+	return (iter == _pExprDictIncluded->end())? nullptr : iter->second;
+}
+
+void Context::AddExprIncluded(const char *pathNameIncluded, Expr *pExpr)
+{
+	_pExprDictIncluded->insert(std::make_pair(pathNameIncluded, pExpr));
 }
 
 InlineData *Context::CreateInlineData(InlineData::Type type, const Binary &buff, const String &strSrc)

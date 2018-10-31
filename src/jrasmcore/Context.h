@@ -74,6 +74,7 @@ private:
 	PCGPageOwner _pcgPageOwner;
 	PCGCharOwner _pcgCharsBuiltIn;
 	std::unique_ptr<ExprList> _pExprListResolved;
+	AutoPtr<ExprDict> _pExprDictIncluded;
 	MMLParser _mmlParser;
 	InlineDataOwner _inlineDataOwner;
 public:
@@ -130,6 +131,8 @@ public:
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
+	const Expr *FindExprIncluded(const char *pathNameIncluded);
+	void AddExprIncluded(const char *pathNameIncluded, Expr *pExpr);
 	InlineData *CreateInlineData(InlineData::Type type, const Binary &buff, const String &strSrc);
 };
 
