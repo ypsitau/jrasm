@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -186,5 +189,7 @@ String JoinPathName(const char *pathName1, const char *pathName2);
 void SplitFileName(const char *pathName, String *pDirName, String *pFileName);
 const char *SeekExtName(const char *pathName);
 String RemoveExtName(const char *pathName);
+bool DoesExist(const char *pathName);
+String GetExecutablePath();
 
 #endif

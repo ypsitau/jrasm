@@ -180,3 +180,64 @@ String RemoveExtName(const char *pathName)
 {
 	return String(pathName, SeekExtName(pathName));
 }
+
+#if defined(JRASM_ON_MSWIN)
+
+bool DoesExist(const char *pathName)
+{
+	WIN32_FILE_ATTRIBUTE_DATA attrData;
+	return ::GetFileAttributesEx(pathName, GetFileExInfoStandard, &attrData) != 0;
+}
+
+#else
+
+bool DoesExist(const char *pathName)
+{
+	struct stat stat;
+	return ::stat(pathName, &stat) == 0;
+}
+
+#endif
+
+#if defined(GURA_ON_MSWIN)
+
+String GetExecutablePath()
+{
+	char pathName[1024];
+	::GetModuleFileName(nullptr, pathName, ArraySizeOf(pathName)); // Win32 API
+	return FromNativeString(pathName);
+}
+
+#elif defined(GURA_ON_DARWIN)
+
+String GetExecutablePath()
+{
+	uint32_t bufsize = 1024;
+	for (int i = 0; i < 2; i++) {
+		char *buf = new char [bufsize];
+		if (::_NSGetExecutablePath(buf, &bufsize) == 0) {
+			String rtn = buf;
+			delete[] buf;
+			return RegulatePathName(FileSeparator, rtn.c_str(), false);
+		}
+		delete[] buf;
+	}
+	return String("");
+}
+
+#elif defined(GURA_ON_LINUX)
+	
+String GetExecutablePath()
+{
+	String rtn = _ReadLink("/proc/self/exe");
+	return RegulatePathName(FileSeparator, rtn.c_str(), false);
+}
+
+#else
+
+String GetExecutablePath()
+{
+	return String("/usr/bin/gura");
+}
+
+#endif

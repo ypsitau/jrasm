@@ -60,6 +60,7 @@ public:
 		void Clear();
 	};
 private:
+	StringList _dirNamesInc;
 	String _pathNameSrc;
 	String _dirNameSrc;
 	String _fileBaseNameSrc;
@@ -79,6 +80,7 @@ private:
 	InlineDataOwner _inlineDataOwner;
 public:
 	Context(const String &pathNameSrc);
+	inline const StringList &GetDirNamesInc() const { return _dirNamesInc; }
 	inline void SetFileNameJR(const String &fileNameJR) { _fileNameJR = fileNameJR; }
 	inline const char *GetDirNameSrc() const { return _dirNameSrc.c_str(); }
 	inline const char *GetFileNameJR() const { return _fileNameJR.c_str(); }

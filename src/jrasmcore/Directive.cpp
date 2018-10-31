@@ -543,6 +543,7 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 		_pExprIncluded.reset(new Expr_Null());
 		return true;
 	}
+	
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
 	AutoPtr<Expr> pExprIncluded(parser.GetExprRoot()->Reference());
