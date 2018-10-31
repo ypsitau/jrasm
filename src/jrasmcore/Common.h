@@ -4,6 +4,16 @@
 #ifndef __JRASMCORE_COMMON_H__
 #define __JRASMCORE_COMMON_H__
 
+#if defined(_MSC_VER)
+#define JRASM_ON_MSWIN
+#elif defined(__linux__)
+#define JRASM_ON_LINUX
+#elif defined(__APPLE__)
+#define JRASM_ON_DARWIN
+#else
+#define JRASM_ON_UNKNOWN
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -18,19 +28,13 @@
 #include <map>
 #include <set>
 
+#if defined(JRASM_ON_DARWIN)
+#include <mach-o/dyld.h>
+#endif
+
 //-----------------------------------------------------------------------------
 // Macros
 //-----------------------------------------------------------------------------
-#if defined(_MSC_VER)
-#define JRASM_ON_MSWIN
-#elif defined(__linux__)
-#define JRASM_ON_LINUX
-#elif defined(__APPLE__)
-#define JRASM_ON_DARWIN
-#else
-#define JRASM_ON_UNKNOWN
-#endif
-
 #if defined(JRASM_ON_MSWIN)
 #define strcasecmp _stricmp
 #else
@@ -176,6 +180,7 @@ public:
 extern const char FileSeparator;
 
 inline bool IsFileSeparator(char ch) { return ch == '\\' || ch == '/'; }
+inline bool IsPathSeparator(char ch) { return ch == ':' || ch == ';'; }
 
 Binary BitPatternToBinary(const char *str);
 String MakePadding(size_t width, const char *padding = " ");
@@ -187,9 +192,14 @@ String MakeQuotedString(const String &str, char chBorder);
 String CorrectFileSeparator(const char *pathName);
 String JoinPathName(const char *pathName1, const char *pathName2);
 void SplitFileName(const char *pathName, String *pDirName, String *pFileName);
+String GetDirName(const char *pathName);
+String GetFileName(const char *pathName);
 const char *SeekExtName(const char *pathName);
 String RemoveExtName(const char *pathName);
 bool DoesExist(const char *pathName);
+String GetEnv(const char *name, bool *pFoundFlag = nullptr);
+void PutEnv(const char *name, const char *value);
+void GetDirNamesInc(StringList &dirNamesInc);
 String GetExecutablePath();
 
 #endif

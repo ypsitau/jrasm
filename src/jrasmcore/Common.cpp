@@ -164,6 +164,20 @@ void SplitFileName(const char *pathName, String *pDirName, String *pFileName)
 	if (pFileName != nullptr) *pFileName = String(p);
 }
 
+String GetDirName(const char *pathName)
+{
+	String dirName;
+	SplitFileName(pathName, &dirName, nullptr);
+	return dirName;
+}
+
+String GetFileName(const char *pathName)
+{
+	String fileName;
+	SplitFileName(pathName, nullptr, &fileName);
+	return fileName;
+}
+
 const char *SeekExtName(const char *pathName)
 {
 	const char *pBtm = pathName + ::strlen(pathName);
@@ -181,12 +195,68 @@ String RemoveExtName(const char *pathName)
 	return String(pathName, SeekExtName(pathName));
 }
 
+void SplitPathList(const char *str, StringList &strList)
+{
+	enum {
+		STAT_SkipSpace, STAT_Field,
+	} stat = STAT_SkipSpace;
+	char ch = '\0';
+	String field;
+	int cntSpace = 0;
+	bool eatNextFlag = true;
+	do {
+		if (eatNextFlag) ch = *str++;
+		eatNextFlag = true;
+		if (stat == STAT_SkipSpace) {
+			if (ch == ' ' || ch == '\t') {
+				// nothing to do
+			} else {
+				field.clear();
+				cntSpace = 0;
+				eatNextFlag = false;
+				stat = STAT_Field;
+			}
+		} else if (stat == STAT_Field) {
+			if (IsPathSeparator(ch) || ch == '\0') {
+				strList.push_back(field);
+				stat = STAT_SkipSpace;
+			} else if (ch == ' ') {
+				cntSpace++;
+			} else {
+				while (cntSpace-- > 0) field.push_back(' ');
+				field.push_back(ch);
+			}
+		}
+	} while (ch != '\0');
+}
+
 #if defined(JRASM_ON_MSWIN)
 
 bool DoesExist(const char *pathName)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attrData;
 	return ::GetFileAttributesEx(pathName, GetFileExInfoStandard, &attrData) != 0;
+}
+
+String GetEnv(const char *name, bool *pFoundFlag)
+{
+	String nameEnc = name;
+	DWORD len = ::GetEnvironmentVariable(nameEnc.c_str(), nullptr, 0);
+	if (len == 0) {
+		if (pFoundFlag != nullptr) *pFoundFlag = false;
+		return String("");
+	}
+	char *buff = new char [len];
+	::GetEnvironmentVariable(nameEnc.c_str(), buff, len);
+	String rtn(buff);
+	delete[] buff;
+	if (pFoundFlag != nullptr) *pFoundFlag = true;
+	return rtn;
+}
+
+void PutEnv(const char *name, const char *value)
+{
+	::SetEnvironmentVariable(name, value);
 }
 
 #else
@@ -197,9 +267,35 @@ bool DoesExist(const char *pathName)
 	return ::stat(pathName, &stat) == 0;
 }
 
+String GetEnv(const char *name, bool *pFoundFlag)
+{
+	const char *str = ::getenv(name);
+	if (str == nullptr) {
+		if (pFoundFlag != nullptr) *pFoundFlag = false;
+		return String("");
+	}
+	if (pFoundFlag != nullptr) *pFoundFlag = true;
+	return str;
+}
+
+void PutEnv(const char *name, const char *value)
+{
+	int overwrite = 1;
+	::setenv(name, value, overwrite);
+}
+
 #endif
 
-#if defined(GURA_ON_MSWIN)
+#if defined(JRASM_ON_MSWIN)
+
+void GetDirNamesInc(StringList &dirNamesInc)
+{
+	String str = GetEnv("JRASMPATH");
+	if (!str.empty()) {
+		SplitPathList(str.c_str(), dirNamesInc);
+	}
+	dirNamesInc.push_back(GetDirName(GetExecutablePath().c_str()) + "\\inc");
+}
 
 String GetExecutablePath()
 {
@@ -208,7 +304,16 @@ String GetExecutablePath()
 	return FromNativeString(pathName);
 }
 
-#elif defined(GURA_ON_DARWIN)
+#elif defined(JRASM_ON_DARWIN)
+
+void GetDirNamesInc(StringList &dirNamesInc)
+{
+	String str = GetEnv("JRASMPATH");
+	if (!str.empty()) {
+		SplitPathList(str.c_str(), dirNamesInc);
+	}
+	dirNamesInc.push_back(GetDirName(GetExecutablePath().c_str()) + "../share/jrasm/inc");
+}
 
 String GetExecutablePath()
 {
@@ -218,14 +323,14 @@ String GetExecutablePath()
 		if (::_NSGetExecutablePath(buf, &bufsize) == 0) {
 			String rtn = buf;
 			delete[] buf;
-			return RegulatePathName(FileSeparator, rtn.c_str(), false);
+			return rtn;
 		}
 		delete[] buf;
 	}
 	return String("");
 }
 
-#elif defined(GURA_ON_LINUX)
+#elif defined(JRASM_ON_LINUX)
 	
 String GetExecutablePath()
 {
