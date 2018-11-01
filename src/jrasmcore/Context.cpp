@@ -58,6 +58,7 @@ bool Context::Prepare()
 	if (!_pExprRoot->OnPhaseExpandMacro(*this)) return false;
 	SetPhase(PHASE_AssignSymbol);
 	ResetSegment();
+	SelectCodeSegment();
 	if (!_inlineDataOwner.OnPhaseAssignSymbol(*this)) return false;
 	if (!_pExprRoot->OnPhaseAssignSymbol(*this)) return false;
 	if (!_segmentOwner.AdjustAddress()) return false;
@@ -68,6 +69,7 @@ RegionOwner *Context::Generate(size_t bytesGapToJoin, UInt8 dataFiller)
 {
 	SetPhase(PHASE_Generate);
 	ResetSegment();
+	SelectCodeSegment();
 	if (!_inlineDataOwner.OnPhaseGenerate(*this, nullptr)) return nullptr;
 	if (!_pExprRoot->OnPhaseGenerate(*this, nullptr)) return nullptr;
 	return GetSegmentOwner().JoinRegionToGenerate(bytesGapToJoin, dataFiller);
@@ -78,6 +80,7 @@ bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)
 	SetPhase(PHASE_Generate);
 	DisasmDumper disasmDumper(fp, upperCaseFlag, nColsPerLine);
 	ResetSegment();
+	SelectCodeSegment();
 	if (!_pExprRoot->OnPhaseDisasm(*this, disasmDumper, 0)) return false;
 	if (!_inlineDataOwner.OnPhaseDisasm(*this, disasmDumper, 0)) return false;
 	return true;
