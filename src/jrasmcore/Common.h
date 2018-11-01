@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #if defined(JRASM_ON_MSWIN)
+#include <windows.h>
 #include <direct.h>		// getcwd()
 #elif defined(JRASM_ON_DARWIN)
 #include <mach-o/dyld.h>
