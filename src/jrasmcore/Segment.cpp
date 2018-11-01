@@ -28,14 +28,20 @@ bool Segment::AdjustAddress()
 	Region *pRegionTop = _regionOwner.front();
 	if (pRegionTop->GetAddrTop() == 0) {
 		Integer addrTop = 0;
-		if (_pSegmentPrev.IsNull() ||
-			(addrTop = _pSegmentPrev->GetRegionOwner().GetAddrBtmMax()) == 0) {
+		if (_pSegmentPrev.IsNull() || (addrTop = _pSegmentPrev->GetAddrBtmMax()) == 0) {
 			ErrorLog::AddError("missing .org directive in %s segment", GetName());
 			return false;
 		}
 		pRegionTop->SetAddrTop(addrTop);
 	}
 	return true;
+}
+
+Integer Segment::GetAddrBtmMax() const
+{
+	Integer addrBtmMaxPrev = _pSegmentPrev.IsNull()? 0 : _pSegmentPrev->GetAddrBtmMax();
+	Integer addrBtmMax = GetRegionOwner().GetAddrBtmMax();
+	return (addrBtmMax > addrBtmMaxPrev)? addrBtmMax : addrBtmMaxPrev;
 }
 
 //-----------------------------------------------------------------------------
@@ -48,10 +54,11 @@ void SegmentList::ResetAddrOffset()
 	}
 }
 
-RegionOwner *SegmentList::JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) const
+RegionOwner *SegmentList::JoinRegionToGenerate(size_t bytesGapToJoin, UInt8 dataFiller) const
 {
 	RegionList regionList;
 	for (auto pSegment : *this) {
+		
 		for (auto pRegion : pSegment->GetRegionOwner()) {
 			if (!pRegion->IsBufferEmpty()) regionList.push_back(pRegion);
 		}

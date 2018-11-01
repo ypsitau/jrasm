@@ -70,7 +70,7 @@ RegionOwner *Context::Generate(size_t bytesGapToJoin, UInt8 dataFiller)
 	ResetSegment();
 	if (!_inlineDataOwner.OnPhaseGenerate(*this, nullptr)) return nullptr;
 	if (!_pExprRoot->OnPhaseGenerate(*this, nullptr)) return nullptr;
-	return GetSegmentOwner().JoinRegion(bytesGapToJoin, dataFiller);
+	return GetSegmentOwner().JoinRegionToGenerate(bytesGapToJoin, dataFiller);
 }
 
 bool Context::DumpDisasm(FILE *fp, bool upperCaseFlag, size_t nColsPerLine)

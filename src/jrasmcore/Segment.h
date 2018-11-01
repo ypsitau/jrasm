@@ -38,6 +38,7 @@ public:
 	inline void ForwardAddrOffset(Integer bytes) { _pRegionCur->ForwardAddrOffset(bytes); }
 	void AddRegion(Integer addrTop);
 	bool AdjustAddress();
+	Integer GetAddrBtmMax() const;
 };
 
 //-----------------------------------------------------------------------------
@@ -46,7 +47,7 @@ public:
 class SegmentList : public std::vector<Segment *> {
 public:
 	void ResetAddrOffset();
-	RegionOwner *JoinRegion(size_t bytesGapToJoin, UInt8 dataFiller) const;
+	RegionOwner *JoinRegionToGenerate(size_t bytesGapToJoin, UInt8 dataFiller) const;
 	bool AdjustAddress();
 };
 
