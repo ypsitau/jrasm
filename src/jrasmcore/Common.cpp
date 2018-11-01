@@ -230,6 +230,130 @@ void SplitPathList(const char *str, StringList &strList)
 	} while (ch != '\0');
 }
 
+String EliminateBottomDirName(const char *pathName)
+{
+	size_t len = ::strlen(pathName);
+	if (len == 0) return String("");
+	const char *pEnd = pathName + len;
+	if (pathName < pEnd && IsFileSeparator(*(pEnd - 1))) {
+		pEnd--;
+	}
+	if (pathName < pEnd) pEnd--;
+	const char *pBegin = pEnd;
+	for ( ; pathName < pBegin; pBegin--) {
+		if (IsFileSeparator(*pBegin)) break;
+	}
+	return String(pathName, pBegin);
+}
+
+bool IsAbsPathName(const char *pathName)
+{
+	return IsFileSeparator(*pathName) ||
+		(isalpha(*pathName) && *(pathName + 1) == ':');
+}
+
+String MakeAbsPathName(const char *fileName, const char *dirNameBase, char chSeparator)
+{
+	bool cutLastSepFlag = false;
+	String pathName;
+	if (IsAbsPathName(fileName)) {
+		// nothing to do
+	} else if (dirNameBase == nullptr) {
+		pathName += GetCurDir();
+	} else {
+		pathName += dirNameBase;
+		if (pathName.empty() || !IsFileSeparator(pathName[pathName.size() - 1])) {
+			pathName += FileSeparator;
+		}
+	}
+	pathName += fileName;
+	return RegulatePathName(pathName.c_str(), chSeparator, cutLastSepFlag);
+}
+
+String RegulatePathName(const char *pathName, char chSeparator, bool cutLastSepFlag)
+{
+	enum {
+		STAT_Field, STAT_FileSeparator,
+	} stat = STAT_Field;
+	String prefix;
+	char driveLetter = '\0';
+	const char *p = pathName;
+	if (isalpha(*p) && *(p + 1) == ':') {
+		driveLetter = *p;
+		p += 2;
+		if (IsFileSeparator(*p)) {
+			prefix += chSeparator;
+			p++;
+		}
+		while (IsFileSeparator(*p)) p++;
+	} else {
+		while (IsFileSeparator(*p)) {
+			prefix += chSeparator;
+			p++;
+		}
+	}
+	StringList fields;
+	String field;
+	bool sepTailFlag = false;
+	for ( ; ; p++) {
+		char ch = *p;
+		BeginPushbackRegion();
+		switch (stat) {
+		case STAT_Field: {
+			if (IsFileSeparator(ch) || ch == '\0') {
+				if (field == ".") {
+					// nothing to do
+				} else if (field == "..") {
+					if (fields.empty()) {
+						if (prefix.empty()) {
+							fields.push_back(field);
+						}
+					} else if (fields.back() == "..") {
+						fields.push_back(field);
+					} else {
+						fields.pop_back();
+					}
+				} else if (!field.empty()) {
+					fields.push_back(field);
+				}
+				field.clear();
+				stat = STAT_FileSeparator;
+			} else {
+				field += ch;
+			}
+			break;
+		}
+		case STAT_FileSeparator: {
+			if (ch == '\0') {
+				sepTailFlag = true;
+			} else if (IsFileSeparator(ch)) {
+				// nothing to do
+			} else {
+				Pushback();
+				stat = STAT_Field;
+			}
+			break;
+		}
+		}
+		EndPushbackRegion();
+		if (ch == '\0') break;
+	}
+	String rtn;
+	if (driveLetter != '\0') {
+		rtn += driveLetter;
+		rtn += ':';
+	}
+	rtn += prefix;
+	for (StringList::iterator pField = fields.begin(); pField != fields.end(); pField++) {
+		if (pField != fields.begin()) rtn += chSeparator;
+		rtn += *pField;
+	}
+	if (sepTailFlag && !rtn.empty() && !IsFileSeparator(rtn[rtn.size() - 1])) {
+		rtn += chSeparator;
+	}
+	return rtn;
+}
+
 #if defined(JRASM_ON_MSWIN)
 
 bool DoesExist(const char *pathName)
@@ -259,6 +383,33 @@ void PutEnv(const char *name, const char *value)
 	::SetEnvironmentVariable(name, value);
 }
 
+String GetCurDir()
+{
+	char pathName[MAX_PATH];
+	::GetCurrentDirectory(MAX_PATH, pathName);
+	String rtn = pathName;
+	if (rtn.empty() || !IsFileSeparator(rtn[rtn.size() - 1])) {
+		rtn += FileSeparator;
+	}
+	return rtn;
+}
+
+void SetupDirNamesInc(StringList &dirNamesInc)
+{
+	String str = GetEnv("JRASMPATH");
+	if (!str.empty()) {
+		SplitPathList(str.c_str(), dirNamesInc);
+	}
+	dirNamesInc.push_back(GetDirName(GetExecutablePath().c_str()) + "\\inc");
+}
+
+String GetExecutablePath()
+{
+	char pathName[1024];
+	::GetModuleFileName(nullptr, pathName, ArraySizeOf(pathName)); // Win32 API
+	return pathName;
+}
+
 #else
 
 bool DoesExist(const char *pathName)
@@ -284,27 +435,36 @@ void PutEnv(const char *name, const char *value)
 	::setenv(name, value, overwrite);
 }
 
-#endif
-
-#if defined(JRASM_ON_MSWIN)
-
-void SetupDirNamesInc(StringList &dirNamesInc)
+String GetCurDir()
 {
-	String str = GetEnv("JRASMPATH");
-	if (!str.empty()) {
-		SplitPathList(str.c_str(), dirNamesInc);
+	//char *pathName = ::get_current_dir_name();
+	char *pathName = ::getcwd(nullptr, 0);
+	String rtn = pathName;
+	::free(pathName);
+	if (rtn.empty() || !IsFileSeparator(rtn[rtn.size() - 1])) {
+		rtn += FileSeparator;
 	}
-	dirNamesInc.push_back(GetDirName(GetExecutablePath().c_str()) + "\\inc");
+	return rtn;
 }
 
-String GetExecutablePath()
+String _ReadLink(const char *pathName)
 {
-	char pathName[1024];
-	::GetModuleFileName(nullptr, pathName, ArraySizeOf(pathName)); // Win32 API
-	return FromNativeString(pathName);
+	size_t bufsize = 128;
+	for (int i = 0; i < 8; i++) {
+		char *buf = new char [bufsize + 1];
+		int size = ::readlink(pathName, buf, bufsize);
+		if (size >= 0) {
+			buf[size] = '\0';
+			String rtn = buf;
+			delete[] buf;
+			return rtn;
+		}
+		delete[] buf;
+		if (errno != EFAULT) return String("");
+		bufsize *= 2;
+	}
+	return String("");
 }
-
-#elif defined(JRASM_ON_DARWIN)
 
 void SetupDirNamesInc(StringList &dirNamesInc)
 {
@@ -315,7 +475,29 @@ void SetupDirNamesInc(StringList &dirNamesInc)
 	dirNamesInc.push_back(GetDirName(GetExecutablePath().c_str()) + "../share/jrasm/inc");
 }
 
+String _GetExecutablePath();
+
 String GetExecutablePath()
+{
+	String pathName = _GetExecutablePath();
+	for (int i = 0; i < 100; i++) {
+		struct stat sb;
+		int rtn = ::lstat(pathName.c_str(), &sb);
+		if (rtn < 0 || !S_ISLNK(sb.st_mode)) break;
+		String linkName = _ReadLink(pathName.c_str());
+		if (linkName.empty()) break; // this must not happen.
+		String dirNameBase = EliminateBottomDirName(pathName.c_str());
+		if (dirNameBase.empty()) dirNameBase = "/";
+		pathName = MakeAbsPathName(linkName.c_str(), dirNameBase.c_str(), FileSeparator);
+	}
+	return pathName;
+}
+
+#endif
+
+#if defined(JRASM_ON_DARWIN)
+
+String _GetExecutablePath()
 {
 	uint32_t bufsize = 1024;
 	for (int i = 0; i < 2; i++) {
@@ -332,15 +514,15 @@ String GetExecutablePath()
 
 #elif defined(JRASM_ON_LINUX)
 	
-String GetExecutablePath()
+String _GetExecutablePath()
 {
 	String rtn = _ReadLink("/proc/self/exe");
-	return RegulatePathName(FileSeparator, rtn.c_str(), false);
+	return RegulatePathName(rtn.c_str(), FileSeparator, false);
 }
 
 #else
 
-String GetExecutablePath()
+String _GetExecutablePath()
 {
 	return String("/usr/bin/gura");
 }

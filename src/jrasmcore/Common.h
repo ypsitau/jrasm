@@ -17,20 +17,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <ctype.h>
+#include <math.h>
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#if defined(JRASM_ON_MSWIN)
+#include <direct.h>		// getcwd()
+#elif defined(JRASM_ON_DARWIN)
+#include <mach-o/dyld.h>
+#endif
+#if defined(JRASM_ON_DARWIN) || defined(JRASM_ON_LINUX)
+#include <semaphore.h>
+#include <dirent.h>
+#include <utime.h>
+#include <unistd.h>
+#include <dlfcn.h>
+#include <pthread.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/wait.h>
+#include <sys/mman.h>
+#endif
+
 #include <algorithm>
 #include <string>
 #include <vector>
 #include <deque>
 #include <map>
 #include <set>
-
-#if defined(JRASM_ON_DARWIN)
-#include <mach-o/dyld.h>
-#endif
 
 //-----------------------------------------------------------------------------
 // Macros
@@ -199,6 +216,10 @@ String RemoveExtName(const char *pathName);
 bool DoesExist(const char *pathName);
 String GetEnv(const char *name, bool *pFoundFlag = nullptr);
 void PutEnv(const char *name, const char *value);
+String GetCurDir();
+bool IsAbsPathName(const char *pathName);
+String MakeAbsPathName(const char *fileName, const char *dirNameBase, char chSeparator = FileSeparator);
+String RegulatePathName(const char *pathName, char chSeparator = FileSeparator, bool cutLastSepFlag = false);
 void SetupDirNamesInc(StringList &dirNamesInc);
 String GetExecutablePath();
 

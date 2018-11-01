@@ -538,7 +538,7 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	String fileNameIncluded = CorrectFileSeparator(str);
 	String dirName;
 	::SplitFileName(pExpr->GetPathNameSrc(), &dirName, nullptr);
-	String pathNameIncluded = JoinPathName(dirName.c_str(), fileNameIncluded.c_str());
+	String pathNameIncluded = RegulatePathName(JoinPathName(dirName.c_str(), fileNameIncluded.c_str()).c_str());
 	if (!allowMultipleFlag && context.FindExprIncluded(pathNameIncluded.c_str()) != nullptr) {
 		_pExprIncluded.reset(new Expr_Null());
 		return true;
@@ -546,7 +546,7 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	if (!DoesExist(pathNameIncluded.c_str())) {
 		bool foundFlag = false;
 		for (auto dirName : context.GetDirNamesInc()) {
-			String pathName = JoinPathName(dirName.c_str(), pathNameIncluded.c_str());
+			String pathName = RegulatePathName(JoinPathName(dirName.c_str(), pathNameIncluded.c_str()).c_str());
 			//::printf("%s\n", pathName.c_str());
 			if (DoesExist(pathName.c_str())) {
 				pathNameIncluded = pathName;
