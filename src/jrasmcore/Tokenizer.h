@@ -42,6 +42,7 @@ public:
 		STAT_MMLPre,
 		STAT_Quoted,
 		STAT_QuotedEsc,
+		STAT_QuotedHex,
 	};
 	enum QuotedType {
 		QUOTEDTYPE_None,
@@ -55,6 +56,7 @@ private:
 	Listener *_pListener;
 	AutoPtr<StringShared> _pPathNameSrc;
 	bool _numNegFlag;
+	int _nDigits;
 	Integer _num;
 	String _str;
 	int _nLines;

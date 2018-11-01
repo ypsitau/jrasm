@@ -8,8 +8,8 @@
 //-----------------------------------------------------------------------------
 Tokenizer::Tokenizer(Listener *pListener, const String &pathNameSrc) :
 	_stat(STAT_LineTop), _pListener(pListener),
-	_pPathNameSrc(new StringShared(pathNameSrc)), _numNegFlag(false), _num(0), _nLines(0),
-	_quotedType(QUOTEDTYPE_None)
+	_pPathNameSrc(new StringShared(pathNameSrc)), _numNegFlag(false),
+	_nDigits(0), _num(0), _nLines(0), _quotedType(QUOTEDTYPE_None)
 {
 }
 
@@ -357,21 +357,54 @@ bool Tokenizer::FeedChar(char ch)
 	case STAT_QuotedEsc: {
 		if (ch == '"') {
 			_str += ch;
+			_stat = STAT_Quoted;
 		} else if (ch == '\'') {
 			_str += ch;
+			_stat = STAT_Quoted;
 		} else if (ch == '\\') {
 			_str += ch;
+			_stat = STAT_Quoted;
 		} else if (ch == 'n') {
 			_str += '\n';
+			_stat = STAT_Quoted;
 		} else if (ch == 'r') {
 			_str += '\r';
+			_stat = STAT_Quoted;
+		} else if (ch == 'x') {
+			_nDigits = 0;
+			_num = 0;
+			_stat = STAT_QuotedHex;
 		} else if (ch == '0') {
 			_str += '\0';
+			_stat = STAT_Quoted;
 		} else {
 			AddError("invalid escape character code: 0x%02x", static_cast<UInt8>(ch));
 			rtn = false;
 		}
-		_stat = STAT_Quoted;
+		break;
+	}
+	case STAT_QuotedHex: {
+		if (IsDigit(ch)) {
+			_num = (_num << 4) + (ch - '0');
+		} else if ('a' <= ch && ch <= 'f') {
+			_num = (_num << 4) + (ch - 'a' + 10);
+		} else if ('A' <= ch && ch <= 'F') {
+			_num = (_num << 4) + (ch - 'A' + 10);
+		} else if (_nDigits == 0) {
+			AddError("invalid format of quoted hex");
+			rtn = false;
+			break;
+		} else {
+			_str += static_cast<UInt8>(_num);
+			_stat = STAT_Quoted;
+			Pushback();
+			break;
+		}
+		_nDigits++;
+		if (_nDigits == 2) {
+			_str += static_cast<UInt8>(_num);
+			_stat = STAT_Quoted;
+		}
 		break;
 	}
 	case STAT_DetectZero: {
