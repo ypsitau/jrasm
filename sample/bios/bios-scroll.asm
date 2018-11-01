@@ -1,9 +1,12 @@
+;;;=============================================================================
+;;; bios-scroll.asm
+;;;=============================================================================
 	.org	0x1000
 scroll_down:
 	.scope
 	bios.cls
 	bios.locate 0,0
-	bios.puts "Scroll-Down. Push [\x88] for scroll-up\0"
+	bios.puts "Scroll-Down. Push [\x88] for Up\0"
 loop:
 	bios.pick
 	cmpa	30
@@ -19,7 +22,7 @@ scroll_up:
 	.scope
 	bios.cls
 	bios.locate 0,23
-	bios.puts "Scroll-Up. Push [\x87] for scroll-down\0"
+	bios.puts "Scroll-Up. Push [\x87] for Down\0"
 loop:
 	bios.pick
 	cmpa	31
