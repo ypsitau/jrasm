@@ -73,6 +73,25 @@ bios.cls:
 	.end
 
 ;;;------------------------------------------------------------------------------
+;;; bios.putdec.acca
+;;;------------------------------------------------------------------------------
+bios.putdec.acca:
+	.macro
+	jsr	bios._puthex.acca
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.putdec.b
+;;;  Format: bios.putdec.b num
+;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to print
+;;;------------------------------------------------------------------------------
+bios.putdec.b:
+	.macro	num
+	bios.todec.b num
+	jsr	bios._putn
+	.end
+
+;;;------------------------------------------------------------------------------
 ;;; bios.putdec.w
 ;;;  Format: bios.putdec.w num
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to print
@@ -114,11 +133,36 @@ bios.puthex.w:
 	.end
 
 ;;;------------------------------------------------------------------------------
+;;; bios.todec.b
+;;;  Format: bios.todec.b num
+;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to convert
+;;;  Return: X .. Address of the result string
+;;;          B .. Length of the result string
+;;;  Broken: A
+;;;------------------------------------------------------------------------------
+bios.todec.b:
+	.macro	num
+	clr	[0x0160]
+	lda	num
+	sta	[0x0161]
+	ldx	0x0160
+	jsr	0xfe86
+	ldx	{0xb7}
+	tstb
+	bne	nonzero
+	ldaa	'0'
+	staa	[x]
+	incb
+nonzero:
+	.end
+
+;;;------------------------------------------------------------------------------
 ;;; bios.todec.w
 ;;;  Format: bios.todec.w num
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to convert
 ;;;  Return: X .. Address of the result string
 ;;;          B .. Length of the result string
+;;;  Broken: A
 ;;;------------------------------------------------------------------------------
 bios.todec.w:
 	.macro	num
