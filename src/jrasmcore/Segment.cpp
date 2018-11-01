@@ -6,8 +6,8 @@
 //-----------------------------------------------------------------------------
 // Segment
 //-----------------------------------------------------------------------------
-Segment::Segment(const String &name, Segment *pSegmentPrev) :
-	_cntRef(1), _name(name), _pSegmentPrev(pSegmentPrev)
+Segment::Segment(const String &name, bool generationFlag, Segment *pSegmentPrev) :
+	_cntRef(1), _name(name), _generationFlag(generationFlag), _pSegmentPrev(pSegmentPrev)
 {
 	_pRegionCur = new Region(0);
 	_regionOwner.push_back(_pRegionCur);
@@ -58,7 +58,7 @@ RegionOwner *SegmentList::JoinRegionToGenerate(size_t bytesGapToJoin, UInt8 data
 {
 	RegionList regionList;
 	for (auto pSegment : *this) {
-		
+		if (!pSegment->GetGenerationFlag()) continue;
 		for (auto pRegion : pSegment->GetRegionOwner()) {
 			if (!pRegion->IsBufferEmpty()) regionList.push_back(pRegion);
 		}
