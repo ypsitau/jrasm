@@ -171,7 +171,7 @@ bios.puthex.mw:
 bios.todec.a:
 	.macro
 	clr	[0x0160]
-	sta	[0x0161]
+	staa	[0x0161]
 	ldx	0x0160
 	jsr	0xfe86
 	ldx	{0xb7}
