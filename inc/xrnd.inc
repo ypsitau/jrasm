@@ -3,7 +3,7 @@
 ;;; This code has been ported from a Z80 program released in the site:
 ;;; http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
 ;;;==================================================================================
-
+	.cseg
 ;;;------------------------------------------------------------------------------
 ;;; xrndn.a
 ;;; Generates an 8bit random number within a range from 0 to n-1.
