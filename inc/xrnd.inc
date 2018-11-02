@@ -7,15 +7,28 @@
 ;;;------------------------------------------------------------------------------
 ;;; xrndn.a
 ;;; Generates an 8bit random number within a range from 0 to n-1.
-;;;  Format: xrndn.a n=0
-;;;  Param:  n [IMM, DIR, IDX, EXT] .. Range of random number
+;;;  Format: xrndn.a
+;;;  Param:  A .. Range of random number
 ;;;  Return: A .. Random number
 ;;;  Broken: B
 ;;;------------------------------------------------------------------------------
 xrndn.a:
+	.macro
+	jsr	_xrndn
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; xrndn.mb
+;;; Generates an 8bit random number within a range from 0 to n-1.
+;;;  Format: xrndn.mb n=0
+;;;  Param:  n [IMM, DIR, IDX, EXT] .. Range of random number
+;;;  Return: A .. Random number
+;;;  Broken: B
+;;;------------------------------------------------------------------------------
+xrndn.mb:
 	.macro	n=0
 	ldaa	n
-	jsr	_xrndn.a
+	xrndn.a
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -42,7 +55,7 @@ notzero:
 ;;;  Return: A .. Random number
 ;;;  Broken: B
 ;;;------------------------------------------------------------------------------
-_xrndn.a:
+_xrndn:
 	.scope
 	tsta
 	bne	notzero
