@@ -3,9 +3,9 @@
 ;;;==============================================================================
 
 ;;;------------------------------------------------------------------------------
-;;; bios.keystat
-;;; Sets the key status.
-;;;  Format: bios.keystat click, mode=0
+;;; bios.keyclick
+;;; Sets the key click status.
+;;;  Format: bios.keyclick click, mode=0
 ;;;  Param: click [IMM] .. Click sound is disabled (0) or enabled (1)
 ;;;         mode [IMM] .. Sets key-in mode to BASIC (0) or neutral (1).
 ;;;                       Default is 0.
