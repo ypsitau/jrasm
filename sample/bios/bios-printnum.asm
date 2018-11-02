@@ -2,19 +2,19 @@
 	ldx	0x0000
 	stx	[num]
 loop:
-	bios.puthex.w [num]
-	bios.putc ' '
-	bios.todec.w [num]
+	bios.puthex.mw [num]
+	bios.putc.mb ' '
+	bios.todec.mw [num]
 	.save	x,b
 	negb
 	addb	6
 	ldaa	'*'
-	jsr	bios._filln
+	jsr	bios.filln.a_b
 	.end
-	jsr	bios._putn
+	bios.putn.x_b
 	bios.putc ' '
-	bios.putdec.w [num]
-	bios.putc '\r'
+	bios.putdec.mw [num]
+	bios.putc.mb '\r'
 	ldx	[num]
 	inx
 	stx	[num]

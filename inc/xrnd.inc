@@ -5,17 +5,17 @@
 ;;;==================================================================================
 
 ;;;------------------------------------------------------------------------------
-;;; xrndn8
+;;; xrndn.a
 ;;; Generates an 8bit random number within a range from 0 to n-1.
-;;;  Format: xrndn8 n=0
+;;;  Format: xrndn.a n=0
 ;;;  Param:  n [IMM, DIR, IDX, EXT] .. Range of random number
 ;;;  Return: A .. Random number
 ;;;  Broken: B
 ;;;------------------------------------------------------------------------------
-xrndn8:
+xrndn.a:
 	.macro	n=0
 	ldaa	n
-	jsr	_xrndn8
+	jsr	_xrndn.a
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -37,12 +37,12 @@ notzero:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; _xrndn8
+;;; _xrndn.a
 ;;;  Input:  A .. Range of random number
 ;;;  Return: A .. Random number
 ;;;  Broken: B
 ;;;------------------------------------------------------------------------------
-_xrndn8:
+_xrndn.a:
 	.scope
 	tsta
 	bne	notzero

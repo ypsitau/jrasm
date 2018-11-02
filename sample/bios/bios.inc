@@ -73,77 +73,104 @@ bios.cls:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.putdec.acca
+;;; bios.putdec.a
+;;;  Format: bios.putdec.a
+;;;  Param:  A .. Byte-sized number to print
 ;;;------------------------------------------------------------------------------
-bios.putdec.acca:
+bios.putdec.a:
 	.macro
-	jsr	bios._puthex.acca
+	bios.todec.a
+	bios.putn.x_b
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.putdec.b
-;;;  Format: bios.putdec.b num
+;;; bios.putdec.mb
+;;;  Format: bios.putdec.mb num
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to print
 ;;;------------------------------------------------------------------------------
-bios.putdec.b:
-	.macro	num
-	bios.todec.b num
-	jsr	bios._putn
-	.end
-
-;;;------------------------------------------------------------------------------
-;;; bios.putdec.w
-;;;  Format: bios.putdec.w num
-;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to print
-;;;------------------------------------------------------------------------------
-bios.putdec.w:
-	.macro	num
-	bios.todec.w num
-	jsr	bios._putn
-	.end
-
-;;;------------------------------------------------------------------------------
-;;; bios.puthex.acca
-;;;------------------------------------------------------------------------------
-bios.puthex.acca:
-	.macro
-	jsr	bios._puthex.acca
-	.end
-
-;;;------------------------------------------------------------------------------
-;;; bios.puthex.b
-;;;  Format: bios.puthex.b num
-;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to print
-;;;------------------------------------------------------------------------------
-bios.puthex.b:
+bios.putdec.mb:
 	.macro	num
 	ldaa	num
-	jsr	bios._tohex.acca
+	bios.putdec.a
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.puthex.w
+;;; bios.putdec.x
+;;;  Format: bios.putdec.x
+;;;  Param:  X .. Word-sized number to print
+;;;------------------------------------------------------------------------------
+bios.putdec.x:
+	.macro
+	bios.todec.x
+	bios.putn.x_b
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.putdec.mw
+;;;  Format: bios.putdec.mw num
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to print
-;;;  Format: bios.puthex.w num
 ;;;------------------------------------------------------------------------------
-bios.puthex.w:
+bios.putdec.mw:
 	.macro	num
-	bios.tohex.w num
-	jsr	bios._putn
+	ldx	num
+	bios.putdec.x
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.todec.b
-;;;  Format: bios.todec.b num
-;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to convert
+;;; bios.puthex.a
+;;;  Format: bios.puthex.a
+;;;  Param:  A .. Byte-sized number to print
+;;;------------------------------------------------------------------------------
+bios.puthex.a:
+	.macro
+	bios.tohex.a
+	bios.putn.x_b
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.puthex.mb
+;;;  Format: bios.puthex.mb num
+;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to print
+;;;------------------------------------------------------------------------------
+bios.puthex.mb:
+	.macro	num
+	ldaa	num
+	bios.puthex.a
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.puthex.x
+;;;  Param:  X .. Word-sized number to print
+;;;  Format: bios.puthex.mw num
+;;;------------------------------------------------------------------------------
+bios.puthex.x:
+	.macro
+	bios.tohex.x
+	bios.putn.x_b
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.puthex.mw
+;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to print
+;;;  Format: bios.puthex.mw num
+;;;------------------------------------------------------------------------------
+bios.puthex.mw:
+	.macro	num
+	ldx	num
+	bios.puthex.x
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.todec.a
+;;;  Format: bios.todec.a
+;;;  Param:  A .. Byte-sized number to convert
 ;;;  Return: X .. Address of the result string
 ;;;          B .. Length of the result string
 ;;;  Broken: A
 ;;;------------------------------------------------------------------------------
-bios.todec.b:
-	.macro	num
+bios.todec.a:
+	.macro
 	clr	[0x0160]
-	lda	num
 	sta	[0x0161]
 	ldx	0x0160
 	jsr	0xfe86
@@ -157,16 +184,15 @@ nonzero:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.todec.w
-;;;  Format: bios.todec.w num
-;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to convert
+;;; bios.todec.x
+;;;  Format: bios.todec.mw num
+;;;  Param:  X .. Word-sized number to convert
 ;;;  Return: X .. Address of the result string
 ;;;          B .. Length of the result string
 ;;;  Broken: A
 ;;;------------------------------------------------------------------------------
-bios.todec.w:
-	.macro	num
-	ldx	num
+bios.todec.x:
+	.macro
 	stx	[0x0160]
 	ldx	0x0160
 	jsr	0xfe86
@@ -180,88 +206,103 @@ nonzero:
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.tohex.b
-;;;  Format: bios.todec.b num
+;;; bios.todec.mb
+;;;  Format: bios.todec.mb num
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to convert
 ;;;  Return: X .. Address of the result string
 ;;;          B .. Length of the result string
 ;;;  Broken: A
 ;;;------------------------------------------------------------------------------
-bios.tohex.b:
+bios.todec.mb:
 	.macro	num
 	ldaa	num
-	ldx	0x0170
-	jsr	bios._tohex.acca
-	ldab	2
+	bios.todec.a
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.tohex.w
-;;;  Format: bios.todec.w num
+;;; bios.todec.mw
+;;;  Format: bios.todec.mw num
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to convert
 ;;;  Return: X .. Address of the result string
 ;;;          B .. Length of the result string
 ;;;  Broken: A
 ;;;------------------------------------------------------------------------------
-bios.tohex.w:
+bios.todec.mw:
 	.macro	num
 	ldx	num
+	bios.todec.x
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.tohex.a
+;;;  Format: bios.tohex.a
+;;;  Param:  A .. Byte-sized number to convert
+;;;  Return: X .. Address of the result string
+;;;          B .. Length of the result string
+;;;  Broken: A
+;;;------------------------------------------------------------------------------
+bios.tohex.a:
+	.macro
+	ldx	0x0170
+	jsr	bios._tohex
+	ldab	2
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.tohex.mb
+;;;  Format: bios.tohex.mb num
+;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to convert
+;;;  Return: X .. Address of the result string
+;;;          B .. Length of the result string
+;;;  Broken: A
+;;;------------------------------------------------------------------------------
+bios.tohex.mb:
+	.macro	num
+	ldaa	num
+	bios.tohex.a
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.tohex.x
+;;;  Format: bios.todec.x
+;;;  Param:  X .. Word-sized number to convert
+;;;  Return: X .. Address of the result string
+;;;          B .. Length of the result string
+;;;  Broken: A
+;;;------------------------------------------------------------------------------
+bios.tohex.x:
+	.macro
 	stx	[0x0160]
 	ldaa	[0x0161]
 	ldx	0x0172
-	jsr	bios._tohex.acca
+	jsr	bios._tohex
 	ldaa	[0x0160]
 	ldx	0x0170
-	jsr	bios._tohex.acca
+	jsr	bios._tohex
 	ldab	4
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios._puthex.acca
+;;; bios.tohex.mw
+;;;  Format: bios.todec.mw num
+;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to convert
+;;;  Return: X .. Address of the result string
+;;;          B .. Length of the result string
+;;;  Broken: A
 ;;;------------------------------------------------------------------------------
-bios._puthex.acca:
-	ldx	0x0170
-	jsr	bios._tohex.acca
-	ldab	2
-	jsr	bios._putn
-	rts
-
-;;;------------------------------------------------------------------------------
-;;; bios._tohex.acca
-;;; Converts accumulator A's value into a hexadecimal string.
-;;;  Param: A .. the value
-;;;         X .. address to store the result string
-;;;------------------------------------------------------------------------------
-bios._tohex.acca:
-	.scope
-	.save	a
-	rora
-	rora
-	rora
-	rora
-	anda	0x0f
-	cmpa	10
-	blt	rel1
-	adda	'A' - 10 - '0'
-rel1:	adda	'0'
-	staa	[x+0]
-	.end
-	anda	0x0f
-	cmpa	10
-	blt	rel2
-	adda	'A' - 10 - '0'
-rel2:	adda	'0'
-	staa	[x+1]
-	rts
+bios.tohex.mw:
+	.macro	num
+	ldx	num
+	bios.tohex.x
 	.end
 
 ;;;------------------------------------------------------------------------------
-;;; bios.putc.acca
+;;; bios.putc.a
 ;;; Prints a character of ASCII code specified by accumulator A
-;;;  Format: bios.putc.acca
+;;;  Format: bios.putc.a
 ;;;  Broken: A, B, X
 ;;;------------------------------------------------------------------------------
-bios.putc.acca:
+bios.putc.a:
 	.macro
 	jsr	0xebe7
 	.end
@@ -275,7 +316,20 @@ bios.putc.acca:
 bios.putc:
 	.macro	ch
 	ldaa	ch
-	bios.putc.acca
+	bios.putc.a
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; bios.puts.x
+;;; Putss a string of ASCII characters that is terminated with zero on the screen.
+;;;  Format: bios.puts.x
+;;;  Param:  X .. Address of the string
+;;;  Broken: A, B, X
+;;;------------------------------------------------------------------------------
+bios.puts.x:
+	.macro
+	ldx	addr
+	jsr	bios._puts
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -287,23 +341,19 @@ bios.putc:
 bios.puts:
 	.macro	addr
 	ldx	addr
-	jsr	bios._puts
+	bios.puts.x
 	.end
 
-bios._puts:
-	.scope
-loop:	
-	ldaa	[x]
-	beq	done
-	.save	x
-	bios.putc.acca
+;;;------------------------------------------------------------------------------
+;;; bios.filln.a_b
+;;;  Format: bios.filln ch,len
+;;;  Broken: A, B, X
+;;;------------------------------------------------------------------------------
+bios.filln.a_b:
+	.macro
+	jsr	bios._filln
 	.end
-	inx
-	bra	loop
-done:	
-	rts
-	.end
-
+	
 ;;;------------------------------------------------------------------------------
 ;;; bios.filln
 ;;;  Format: bios.filln ch,len
@@ -313,21 +363,19 @@ bios.filln:
 	.macro	ch,len
 	ldaa	ch
 	ldab	len
-	jsr	bios._filln
+	bios.filln.a_b
 	.end
 
-bios._filln:
-	.scope
-loop:	
-	tstb
-	beq	done
-	.save	x,a,b
-	bios.putc.acca
-	.end
-	decb
-	bne	loop
-done:	
-	rts
+;;;------------------------------------------------------------------------------
+;;; bios.putn.x_b
+;;;  Format: bios.putn.x_b
+;;;  Param:  X .. Address of string
+;;;          B .. Length of string
+;;;  Broken: A, B, X
+;;;------------------------------------------------------------------------------
+bios.putn.x_b:
+	.macro
+	jsr	bios._putn
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -339,23 +387,7 @@ bios.putn:
 	.macro	addr,len
 	ldx	addr
 	ldab	len
-	jsr	bios._putn
-	.end
-
-bios._putn:
-	.scope
-loop:	
-	tstb
-	beq	done
-	ldaa	[x]
-	.save	x,b
-	bios.putc.acca
-	.end
-	inx
-	decb
-	bne	loop
-done:	
-	rts
+	bios.putn.x_b
 	.end
 
 ;;;------------------------------------------------------------------------------
@@ -396,4 +428,74 @@ bios.scrolldown:
 	ldx	addr
 	stx	{0x22}
 	jsr	0xed76
+	.end
+
+;;;------------------------------------------------------------------------------
+;;; Helper procedures
+;;;------------------------------------------------------------------------------
+bios._tohex:
+	.scope
+	.save	a
+	rora
+	rora
+	rora
+	rora
+	anda	0x0f
+	cmpa	10
+	blt	rel1
+	adda	'A' - 10 - '0'
+rel1:	adda	'0'
+	staa	[x+0]
+	.end
+	anda	0x0f
+	cmpa	10
+	blt	rel2
+	adda	'A' - 10 - '0'
+rel2:	adda	'0'
+	staa	[x+1]
+	rts
+	.end
+
+bios._filln:
+	.scope
+loop:	
+	tstb
+	beq	done
+	.save	x,a,b
+	bios.putc.a
+	.end
+	decb
+	bne	loop
+done:	
+	rts
+	.end
+
+bios._puts:
+	.scope
+loop:	
+	ldaa	[x]
+	beq	done
+	.save	x
+	bios.putc.a
+	.end
+	inx
+	bra	loop
+done:	
+	rts
+	.end
+
+bios._putn:
+	.scope
+loop:	
+	tstb
+	beq	done
+	ldaa	[x]
+	.save	x,b
+	bios.putc.a
+	.end
+	inx
+	decb
+	bne	loop
+done:	
+	rts
 	.end

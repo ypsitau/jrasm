@@ -6,7 +6,7 @@
 	bios.keyclick 0
 loop:
 	bios.pick
-	bios.puthex.acca
+	bios.puthex.a
 	bios.puts "  \0"
 	bra	loop
 
