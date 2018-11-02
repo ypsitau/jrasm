@@ -5,7 +5,7 @@
 
 	bios.cls
 
-	ldx	0x0000
+	ldx	0xff00
 	stx	[num]
 loop:
 	bios.scrollup
@@ -30,6 +30,7 @@ loop:
 	.scope
 	bios.locate 14,23
 	bios.putdec.mw [num]
+	bios.puts "    \0"
 	.end
 
 	.scope
@@ -40,6 +41,7 @@ loop:
 	.scope
 	bios.locate 26,23
 	bios.putdec.mb [num+1]
+	bios.puts "  \0"
 	.end
 
 	ldx	[num]
