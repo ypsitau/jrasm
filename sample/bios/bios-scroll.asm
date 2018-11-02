@@ -12,7 +12,7 @@ loop:
 	cmpa	30
 	beq	scroll_up
 	bios.locate 15,1
-	bios.puthex.w [num]
+	bios.puthex.mw [num]
 	inc.w	[num]
 	bios.scrolldown 0xc100 + 32
 	bra	loop
@@ -28,15 +28,16 @@ loop:
 	cmpa	31
 	beq	scroll_down
 	bios.locate 15,22
-	bios.puthex.w [num]
+	bios.puthex.mw [num]
 	inc.w	[num]
 	bios.scrollup 0xc3e0 - 32
 	bra	loop
 	.end
 
 num:	.dw	0
+
 	.include "bios.inc"
-	
+
 inc.w:
 	.macro	num
 	ldx	num

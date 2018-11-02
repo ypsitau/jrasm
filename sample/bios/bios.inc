@@ -328,7 +328,6 @@ bios.putc:
 ;;;------------------------------------------------------------------------------
 bios.puts.x:
 	.macro
-	ldx	addr
 	jsr	bios._puts
 	.end
 
@@ -353,7 +352,7 @@ bios.filln.a_b:
 	.macro
 	jsr	bios._filln
 	.end
-	
+
 ;;;------------------------------------------------------------------------------
 ;;; bios.filln
 ;;;  Format: bios.filln ch,len
