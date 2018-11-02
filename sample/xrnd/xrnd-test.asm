@@ -26,6 +26,12 @@ posx:	.equ	12
 	bios.puts "0-255\0"
 	.end
 
+	.scope
+posx:	.equ	18
+	bios.locate posx,23
+	bios.puts "0-18\0"
+	.end
+
 	bios.color 7,0
 
 loop:
@@ -52,6 +58,14 @@ posx:	.equ	12
 	xrndn.mb
 	bios.putdec.a
 	bios.puts "  \0"
+	.end
+
+	.scope
+posx:	.equ	18
+	bios.locate posx,19
+	xrndn.mb
+	bios.putdec.a
+	bios.puts " \0"
 	.end
 
 	jmp 	loop

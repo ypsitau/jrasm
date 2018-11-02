@@ -74,46 +74,64 @@ bios.cls:
 
 ;;;------------------------------------------------------------------------------
 ;;; bios.putdec.a
-;;;  Format: bios.putdec.a
+;;;  Format: bios.putdec.a width=0
 ;;;  Param:  A .. Byte-sized number to print
 ;;;------------------------------------------------------------------------------
 bios.putdec.a:
-	.macro
+	.macro width=0
 	bios.todec.a
+	cmpb	width
+	bge	skip
+	.save	x,b
+	subb	width
+	negb
+	clra
+	bios.filln.a_b
+	.end
+skip:
 	bios.putn.x_b
 	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; bios.putdec.mb
-;;;  Format: bios.putdec.mb num
+;;;  Format: bios.putdec.mb num,width=0
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Byte-sized number to print
 ;;;------------------------------------------------------------------------------
 bios.putdec.mb:
-	.macro	num
+	.macro	num,width=0
 	ldaa	num
-	bios.putdec.a
+	bios.putdec.a width
 	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; bios.putdec.x
-;;;  Format: bios.putdec.x
+;;;  Format: bios.putdec.x width=0
 ;;;  Param:  X .. Word-sized number to print
 ;;;------------------------------------------------------------------------------
 bios.putdec.x:
-	.macro
+	.macro width=0
 	bios.todec.x
+	cmpb	width
+	bge	skip
+	.save	x,b
+	subb	width
+	negb
+	clra
+	bios.filln.a_b
+	.end
+skip:
 	bios.putn.x_b
 	.end
 
 ;;;------------------------------------------------------------------------------
 ;;; bios.putdec.mw
-;;;  Format: bios.putdec.mw num
+;;;  Format: bios.putdec.mw num,width=0
 ;;;  Param:  num [IMM, DIR, IDX, EXT] .. Word-sized number to print
 ;;;------------------------------------------------------------------------------
 bios.putdec.mw:
-	.macro	num
+	.macro	num,width=0
 	ldx	num
-	bios.putdec.x
+	bios.putdec.x width
 	.end
 
 ;;;------------------------------------------------------------------------------
