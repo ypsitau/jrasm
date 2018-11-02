@@ -35,24 +35,26 @@ loop:
 posx:	.equ	0
 	bios.locate posx,22
 	xrndn.mb 2
-	bios.puthex.a
+	bios.putdec.a
 	.end
 
 	.scope
 posx:	.equ	6
 	bios.locate posx,22
 	xrndn.mb 16
-	bios.puthex.a
+	bios.putdec.a
+	bios.puts " \0"
 	.end
 
 	.scope
 posx:	.equ	12
 	bios.locate posx,22
 	xrndn.mb
-	bios.puthex.a
+	bios.putdec.a
+	bios.puts "  \0"
 	.end
 
-	bra 	loop
+	jmp 	loop
 
 	.include "xrnd.inc"
 	.include "bios.inc"
