@@ -52,6 +52,7 @@ posy:	.equ	0
 	bios.putdec.mw	0xffff
 	.end
 	
-	rts
+infinite:
+	bra	infinite
 	
 	.include "bios.inc"
