@@ -860,6 +860,7 @@ bool Expr_Instruction::OnPhaseExpandMacro(Context &context)
 
 bool Expr_Instruction::OnPhaseAssignSymbol(Context &context)
 {
+	if (!context.CheckGeneratable(this)) return false;
 	if (!Expr::OnPhaseAssignSymbol(context)) return false;
 	bool rtn = true;
 	if (_pExprsExpanded.IsNull()) {

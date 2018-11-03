@@ -94,7 +94,7 @@ public:
 	inline void SelectDataSegment() { _pSegmentCur = _segmentOwner[2]; }
 	inline void SelectWorkSegment() { _pSegmentCur = _segmentOwner[3]; }
 	inline Segment *GetSegmentCur() { return _pSegmentCur; }
-	inline const Segment *GetSegumentCur() const { return _pSegmentCur; }
+	inline const Segment *GetSegmentCur() const { return _pSegmentCur; }
 	inline Binary &GetSegmentBuffer() { return _pSegmentCur->GetBuffer(); }
 	inline const Binary &GetSegmentBuffer() const { return _pSegmentCur->GetBuffer(); }
 	inline void ResetSegment() { _segmentOwner.ResetAddrOffset(); }
@@ -133,6 +133,7 @@ public:
 	SymbolInfoOwner *MakeSymbolInfoOwner();
 	void StartToResolve();
 	bool CheckCircularReference(const Expr *pExpr);
+	bool CheckGeneratable(const Expr *pExpr) const;
 	const Expr *FindExprIncluded(const char *pathNameIncluded);
 	void AddExprIncluded(const char *pathNameIncluded, Expr *pExpr);
 	InlineData *CreateInlineData(InlineData::Type type, const Binary &buff, const String &strSrc);

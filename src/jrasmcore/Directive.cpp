@@ -192,6 +192,7 @@ Directive *Directive_DB::Factory::Create() const
 
 bool Directive_DB::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.CheckGeneratable(pExpr)) return false;
 	Integer bytes = 0;
 	if (!DoDirective(context, pExpr, nullptr, &bytes)) return false;
 	context.ForwardAddrOffset(bytes);
@@ -354,6 +355,7 @@ Directive *Directive_DW::Factory::Create() const
 
 bool Directive_DW::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.CheckGeneratable(pExpr)) return false;
 	context.ForwardAddrOffset(static_cast<Integer>(pExpr->GetExprOperands().size() * sizeof(UInt16)));
 	return true;
 }
@@ -1046,6 +1048,7 @@ bool Directive_PCGPAGE::OnPhaseExpandMacro(Context &context, Expr *pExpr)
 
 bool Directive_PCGPAGE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.CheckGeneratable(pExpr)) return false;
 	if (!_pExprGenerated->OnPhaseAssignSymbol(context)) return false;
 	for (auto pPCGChar : _pPCGPage->GetPCGCharOwner()) {
 		const Binary &buff = pPCGChar->GetBuffer();
@@ -1146,6 +1149,7 @@ bool Directive_RESTORE::OnPhasePreprocess(Context &context, Expr *pExpr)
 
 bool Directive_RESTORE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.CheckGeneratable(pExpr)) return false;
 	return pExpr->GetExprChildren().OnPhaseAssignSymbol(context);
 }
 
@@ -1209,6 +1213,7 @@ bool Directive_SAVE::OnPhasePreprocess(Context &context, Expr *pExpr)
 
 bool Directive_SAVE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.CheckGeneratable(pExpr)) return false;
 	if (!GetSaveInfo().CheckValidation(pExpr)) return false;
 	if (!pExpr->GetExprChildren().OnPhaseAssignSymbol(context)) return false;
 	return true;
@@ -1248,6 +1253,7 @@ bool Directive_SCOPE::OnPhaseParse(const Parser *pParser, ExprStack &exprStack, 
 
 bool Directive_SCOPE::OnPhaseAssignSymbol(Context &context, Expr *pExpr)
 {
+	if (!context.CheckGeneratable(pExpr)) return false;
 	const ExprList &exprOperands = pExpr->GetExprOperands();
 	if (!exprOperands.empty()) {
 		ErrorLog::AddError(pExpr, "directive .SCOPE needs no operands");

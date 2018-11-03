@@ -415,6 +415,39 @@ label6:
     1333-1372      .ds  @word*32
     1373-1392      .ds  @byte*32
 label7:
+    1393 00 01     .db  "\0\x01\x02\x03\x04\x05\x06\a\b\t\n\v\f\r\x0e\x0f"
+    1395 02 03   
+    1397 04 05   
+    1399 06 07   
+    139b 08 09   
+    139d 0a 0b   
+    139f 0c 0d   
+    13a1 0e 0f   
+    13a3 00 01     .db  "\0\x01\x02\x03\x04\x05\x06\a\b\t\n\v\f\r\x0e\x0f"
+    13a5 02 03   
+    13a7 04 05   
+    13a9 06 07   
+    13ab 08 09   
+    13ad 0a 0b   
+    13af 0c 0d   
+    13b1 0e 0f   
+    13b3 10 11     .db  "\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
+    13b5 12 13   
+    13b7 14 15   
+    13b9 16 17   
+    13bb 18 19   
+    13bd 1a 1b   
+    13bf 1c 1d   
+    13c1 1e 1f   
+    13c3 f0 f1     .db  "\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff"
+    13c5 f2 f3   
+    13c7 f4 f5   
+    13c9 f6 f7   
+    13cb f8 f9   
+    13cd fa fb   
+    13cf fc fd   
+    13d1 fe ff   
+label8:
 [Symbol List]
 0001  @BYTE
 0002  @WORD
@@ -426,3 +459,4 @@ label7:
 1121  label5
 1321  label6
 1393  label7
+13d3  label8

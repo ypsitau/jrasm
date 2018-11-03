@@ -13,19 +13,19 @@ class Segment {
 private:
 	int _cntRef;
 	String _name;
-	bool _generationFlag;
+	bool _generatableFlag;
 	AutoPtr<Segment> _pSegmentPrev;
 	RegionOwner _regionOwner;
 	Region *_pRegionCur;
 public:
 	DeclareReferenceAccessor(Segment);
 public:
-	Segment(const String &name, bool generationFlag, Segment *pSegmentPrev);
+	Segment(const String &name, bool generatableFlag, Segment *pSegmentPrev);
 private:
 	inline ~Segment() {}
 public:
 	inline const char *GetName() const { return _name.c_str(); }
-	inline bool GetGenerationFlag() const { return _generationFlag; }
+	inline bool GetGeneratableFlag() const { return _generatableFlag; }
 	inline const RegionOwner &GetRegionOwner() const { return _regionOwner; }
 	inline void SetRegionCur(Region *pRegionCur) { _pRegionCur = pRegionCur; }
 	inline Region *GetRegionCur() { return _pRegionCur; }

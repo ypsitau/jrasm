@@ -209,6 +209,13 @@ bool Context::CheckCircularReference(const Expr *pExpr)
 	return false;
 }
 
+bool Context::CheckGeneratable(const Expr *pExpr) const
+{
+	if (GetSegmentCur()->GetGeneratableFlag()) return true;
+	ErrorLog::AddError(pExpr, "code or data generation is not allowed in %s segment", GetSegmentCur()->GetName());
+	return false;
+}
+
 const Expr *Context::FindExprIncluded(const char *pathNameIncluded)
 {
 	ExprDict::iterator iter = _pExprDictIncluded->find(pathNameIncluded);
