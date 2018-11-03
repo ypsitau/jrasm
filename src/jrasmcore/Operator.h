@@ -34,6 +34,7 @@ public:
 	static const Operator *ShiftL;
 	static const Operator *ShiftR;
 	static const Operator *FieldSep;
+	static const Operator *ToString;
 private:
 	const TokenInfo &_tokenInfo;
 public:
@@ -229,6 +230,15 @@ class Operator_FieldSep : public Operator {
 public:
 	inline Operator_FieldSep() : Operator(TOKEN_Colon) {}
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
+};
+
+//-----------------------------------------------------------------------------
+// Operator_ToString
+//-----------------------------------------------------------------------------
+class Operator_ToString : public Operator {
+public:
+	inline Operator_ToString() : Operator(TOKEN_Hash) {}
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExpr) const;
 };
 
 #endif

@@ -232,6 +232,10 @@ bool Parser::ReduceTwo()
 			pExpr.reset(new Expr_UnaryOp(Operator::Add, pExprOperand.release()));
 		} else if (pToken1->IsType(TOKEN_Minus)) {
 			pExpr.reset(new Expr_UnaryOp(Operator::Sub, pExprOperand.release()));
+#if 0
+		} else if (pToken1->IsType(TOKEN_Hash)) {
+			pExpr.reset(new Expr_UnaryOp(Operator::ToString, pExprOperand.release()));
+#endif
 		} else {
 			AddError("unacceptable unary operator: %s", pToken1->GetSymbol());
 			return false;

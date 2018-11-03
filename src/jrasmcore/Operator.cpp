@@ -26,6 +26,7 @@ const Operator *Operator::Ge		= nullptr;
 const Operator *Operator::ShiftL	= nullptr;
 const Operator *Operator::ShiftR	= nullptr;
 const Operator *Operator::FieldSep	= nullptr;
+const Operator *Operator::ToString	= nullptr;
 
 void Operator::Initialize()
 {
@@ -49,6 +50,7 @@ void Operator::Initialize()
 	ShiftL		= new Operator_ShiftL();
 	ShiftR		= new Operator_ShiftR();
 	FieldSep	= new Operator_FieldSep();
+	ToString	= new Operator_ToString();
 }
 
 Expr *Operator::Resolve(Context &context, AutoPtr<Expr> pExpr) const
@@ -360,4 +362,12 @@ Expr *Operator_ShiftR::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 Expr *Operator_FieldSep::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	return new Expr_BinaryOp(Operator::FieldSep, pExprL.release(), pExprR.release());
+}
+
+//-----------------------------------------------------------------------------
+// Operator_ToString
+//-----------------------------------------------------------------------------
+Expr *Operator_ToString::Resolve(Context &context, AutoPtr<Expr> pExpr) const
+{
+	return new Expr_String(pExpr->ComposeSource(true));
 }

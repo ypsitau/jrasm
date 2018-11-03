@@ -93,6 +93,8 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
 			rtn = FeedToken(TOKEN_Plus);
+		} else if (ch == '#') {
+			rtn = FeedToken(TOKEN_Hash);
 		} else if (ch == '*') {
 			rtn = FeedToken(TOKEN_Asterisk);
 		} else if (ch == '%') {

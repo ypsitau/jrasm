@@ -25,6 +25,7 @@ const TokenInfo TOKEN_GtGt =			{ 10, "GtGt",			">>"	};
 const TokenInfo TOKEN_Plus =			{ 11, "Plus",			"+"		};
 const TokenInfo TOKEN_Minus =			{ 11, "Minus",			"-"		};
 const TokenInfo TOKEN_LtPlus =			{ 11, "LtPlus",			"<+>"	};
+const TokenInfo TOKEN_Hash =			{ 11, "Hash",			"#"		};
 const TokenInfo TOKEN_Asterisk =		{ 12, "Asterisk",		"*"		};
 const TokenInfo TOKEN_Slash =			{ 12, "Slash",			"/"		};
 const TokenInfo TOKEN_Percent =			{ 12, "Percent",		"%"		};
