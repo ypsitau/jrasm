@@ -64,5 +64,5 @@ rel6:
 	bios.putc '\r'
 	.end
 
-	.include "jump.inc"
+	.include "jumputil.inc"
 	.include "bios.inc"
