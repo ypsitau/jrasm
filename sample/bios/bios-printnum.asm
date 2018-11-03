@@ -19,9 +19,9 @@ loop:
 	bios.locate 6,23
 	bios.todec.mw [num]
 	.save	x,b
+	subb	5
 	negb
-	addb	6
-	ldaa	'_'
+	ldaa	'*'
 	bios.filln.a_b
 	.end
 	bios.putn.x_b
@@ -29,8 +29,7 @@ loop:
 
 	.scope
 	bios.locate 14,23
-	bios.putdec.mw [num]
-	bios.puts "    \0"
+	bios.putdec.mw [num],5
 	.end
 
 	.scope
@@ -40,8 +39,7 @@ loop:
 
 	.scope
 	bios.locate 26,23
-	bios.putdec.mb [num+1]
-	bios.puts "  \0"
+	bios.putdec.mb [num+1],3
 	.end
 
 	ldx	[num]
@@ -50,7 +48,7 @@ loop:
 
 	jmp	loop
 
-	.include "bios.inc"
-
 	.wseg
 num:	.dw	0
+
+	.include "bios.inc"
