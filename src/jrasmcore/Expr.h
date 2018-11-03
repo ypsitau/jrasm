@@ -86,6 +86,7 @@ public:
 		TYPE_String,
 		TYPE_BitPattern,
 		TYPE_MML,
+		TYPE_UnaryOp,
 		TYPE_BinaryOp,
 		TYPE_Assign,
 		TYPE_Bracket,
@@ -122,6 +123,7 @@ public:
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
 	inline bool IsTypeMML() const { return IsType(TYPE_MML); }
+	inline bool IsTypeUnaryOp() const { return IsType(TYPE_UnaryOp); }
 	inline bool IsTypeBinaryOp() const { return IsType(TYPE_BinaryOp); }
 	inline bool IsTypeAssign() const { return IsType(TYPE_Assign); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
@@ -152,6 +154,7 @@ public:
 	void AssignExprDict(Context &context, bool recursiveFlag);
 	bool IsTypeLabel(const char *symbol) const;
 	bool IsTypeSymbol(const char *symbol) const;
+	bool IsTypeUnaryOp(const Operator *pOperator) const;
 	bool IsTypeBinaryOp(const Operator *pOperator) const;
 	bool IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const;
 	bool IsGroupingDirective() const;
@@ -350,6 +353,33 @@ public:
 	inline Expr *GetRight(){ return GetExprOperands()[1]; }
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }
 	inline const Expr *GetRight() const { return GetExprOperands()[1]; }
+	virtual Expr *Resolve(Context &context) const;
+	virtual Expr *Clone() const;
+	virtual Expr *Substitute(const ExprDict &exprDict) const;
+	virtual String ComposeSource(bool upperCaseFlag) const;
+};
+
+//-----------------------------------------------------------------------------
+// Expr_UnaryOp
+//-----------------------------------------------------------------------------
+class Expr_UnaryOp : public Expr {
+private:
+	const Operator *_pOperator;
+public:
+	static const Type TYPE;
+public:
+	inline Expr_UnaryOp(const Operator *pOperator, Expr *pExprOperand) :
+			Expr(TYPE), _pOperator(pOperator) {
+		GetExprOperands().push_back(pExprOperand);
+	}
+	inline Expr_UnaryOp(const Operator *pOperator, ExprOwner *pExprOperands) :
+		Expr(TYPE, pExprOperands), _pOperator(pOperator) {}
+	inline Expr_UnaryOp(const Operator *pOperator, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+		Expr(TYPE, pExprOperands, pExprChildren), _pOperator(pOperator) {}
+	inline Expr_UnaryOp(const Expr_UnaryOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
+	inline Expr *GetOperand() { return GetExprOperands()[0]; }
+	inline const Expr *GetOperand() const { return GetExprOperands()[0]; }
+	inline const Operator *GetOperator() const { return _pOperator; }
 	virtual Expr *Resolve(Context &context) const;
 	virtual Expr *Clone() const;
 	virtual Expr *Substitute(const ExprDict &exprDict) const;

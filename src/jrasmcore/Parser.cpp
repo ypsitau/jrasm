@@ -224,6 +224,20 @@ bool Parser::ReduceTwo()
 	if (pToken1->IsType(TOKEN_Expr) && pToken2->IsType(TOKEN_Comma)) {
 		// (null) -> [Exp] ,
 		_pExprStack->back()->GetExprOperands().push_back(pToken1->GetExpr()->Reference());
+	} else if (pToken2->IsType(TOKEN_Expr)) {
+		// [Exp] -> [Exp] OP [Exp]
+		AutoPtr<Expr> pExprOperand(pToken2->GetExpr()->Reference());
+		AutoPtr<Expr> pExpr;
+		if (pToken1->IsType(TOKEN_Plus)) {
+			pExpr.reset(new Expr_UnaryOp(Operator::Add, pExprOperand.release()));
+		} else if (pToken1->IsType(TOKEN_Minus)) {
+			pExpr.reset(new Expr_UnaryOp(Operator::Sub, pExprOperand.release()));
+		} else {
+			AddError("unacceptable unary operator: %s", pToken1->GetSymbol());
+			return false;
+		}
+		SetExprSourceInfo(pExpr.get(), pToken1.get());
+		_tokenStack.Push(new Token(pExpr.release()));
 	} else {
 		AddError("unacceptable syntax: %s %s",
 				 pToken1->ToString().c_str(), pToken2->ToString().c_str());

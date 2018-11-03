@@ -42,10 +42,11 @@ public:
 	inline const TokenInfo &GetTokenInfo() const { return _tokenInfo; }
 	inline const char *GetSymbol() const { return _tokenInfo.symbol; }
 	inline bool IsIdentical(const Operator *pOperator) const { return this == pOperator; }
-	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const = 0;
 	inline static Token::Precedence LookupPrec(const Operator *pOperator1, const Operator *pOperator2) {
 		return Token::LookupPrec(pOperator1->GetTokenInfo(), pOperator2->GetTokenInfo());
 	}
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExpr) const;
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -54,6 +55,7 @@ public:
 class Operator_Add : public Operator {
 public:
 	inline Operator_Add() : Operator(TOKEN_Plus) {}
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExpr) const;
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 
@@ -63,6 +65,7 @@ public:
 class Operator_Sub : public Operator {
 public:
 	inline Operator_Sub() : Operator(TOKEN_Minus) {}
+	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExpr) const;
 	virtual Expr *Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const;
 };
 

@@ -621,6 +621,47 @@ String Expr_BinaryOp::ComposeSource(bool upperCaseFlag) const
 }
 
 //-----------------------------------------------------------------------------
+// Expr_UnaryOp
+//-----------------------------------------------------------------------------
+const Expr::Type Expr_UnaryOp::TYPE = Expr::TYPE_UnaryOp;
+
+Expr *Expr_UnaryOp::Resolve(Context &context) const
+{
+	AutoPtr<Expr> pExprOperand(GetOperand()->Resolve(context));
+	if (pExprOperand.IsNull()) return nullptr;
+	return _pOperator->Resolve(context, pExprOperand.release());
+}
+
+Expr *Expr_UnaryOp::Clone() const
+{
+	return new Expr_UnaryOp(*this);
+}
+
+Expr *Expr_UnaryOp::Substitute(const ExprDict &exprDict) const
+{
+	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
+	if (pExprOperandsSubst.IsNull()) return nullptr;
+	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
+	if (pExprChildrenSubst.IsNull()) return nullptr;
+	AutoPtr<Expr> pExprRtn(new Expr_UnaryOp(
+							   GetOperator(),
+							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
+	pExprRtn->DeriveSourceInfo(this);
+	return pExprRtn.release();
+}
+
+String Expr_UnaryOp::ComposeSource(bool upperCaseFlag) const
+{
+	String str;
+	bool needParenFlag = GetOperand()->IsTypeBinaryOp() || GetOperand()->IsTypeUnaryOp();
+	str += _pOperator->GetSymbol();
+	if (needParenFlag) str += "(";
+	str += GetOperand()->ComposeSource(upperCaseFlag);
+	if (needParenFlag) str += ")";
+	return str;
+}
+
+//-----------------------------------------------------------------------------
 // Expr_Bracket
 //-----------------------------------------------------------------------------
 const Expr::Type Expr_Bracket::TYPE = Expr::TYPE_Bracket;

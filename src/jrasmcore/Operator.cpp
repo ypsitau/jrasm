@@ -51,9 +51,24 @@ void Operator::Initialize()
 	FieldSep	= new Operator_FieldSep();
 }
 
+Expr *Operator::Resolve(Context &context, AutoPtr<Expr> pExpr) const
+{
+	return new Expr_Null();
+}
+
+Expr *Operator::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
+{
+	return new Expr_Null();
+}
+
 //-----------------------------------------------------------------------------
 // Operator_Add
 //-----------------------------------------------------------------------------
+Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExpr) const
+{
+	return pExpr->Clone();
+}
+
 Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeInteger() && pExprR->IsTypeInteger()) {
@@ -77,6 +92,15 @@ Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 //-----------------------------------------------------------------------------
 // Operator_Sub
 //-----------------------------------------------------------------------------
+Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExpr) const
+{
+	if (pExpr->IsTypeInteger()) {
+		Integer num = dynamic_cast<const Expr_Integer *>(pExpr.get())->GetInteger();
+		return new Expr_Integer(-num);
+	}
+	return new Expr_UnaryOp(Operator::Sub, pExpr.release());
+}
+
 Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
 	if (pExprL->IsTypeInteger() && pExprR->IsTypeInteger()) {
