@@ -54,10 +54,10 @@ bool Expr::IsTypeSymbol(const char *symbol) const
 		::strcasecmp(dynamic_cast<const Expr_Symbol *>(this)->GetSymbol(), symbol) == 0;
 }
 
-bool Expr::IsTypeBinOp(const Operator *pOperator) const
+bool Expr::IsTypeBinaryOp(const Operator *pOperator) const
 {
-	return IsTypeBinOp() &&
-		dynamic_cast<const Expr_BinOp *>(this)->GetOperator()->IsIdentical(pOperator);
+	return IsTypeBinaryOp() &&
+		dynamic_cast<const Expr_BinaryOp *>(this)->GetOperator()->IsIdentical(pOperator);
 }
 
 bool Expr::IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const
@@ -552,21 +552,21 @@ String Expr_Assign::ComposeSource(bool upperCaseFlag) const
 }
 
 //-----------------------------------------------------------------------------
-// Expr_BinOp
+// Expr_BinaryOp
 //-----------------------------------------------------------------------------
-const Expr::Type Expr_BinOp::TYPE = Expr::TYPE_BinOp;
+const Expr::Type Expr_BinaryOp::TYPE = Expr::TYPE_BinaryOp;
 
-void Expr_BinOp::GetFields(ExprList &exprFields) const
+void Expr_BinaryOp::GetFields(ExprList &exprFields) const
 {
 	if (_pOperator->IsIdentical(Operator::FieldSep)) {
 		GetLeft()->GetFields(exprFields);
 		GetRight()->GetFields(exprFields);
 	} else {
-		exprFields.push_back(const_cast<Expr_BinOp *>(this));
+		exprFields.push_back(const_cast<Expr_BinaryOp *>(this));
 	}
 }
 
-Expr *Expr_BinOp::Resolve(Context &context) const
+Expr *Expr_BinaryOp::Resolve(Context &context) const
 {
 	AutoPtr<Expr> pExprL(GetLeft()->Resolve(context));
 	if (pExprL.IsNull()) return nullptr;
@@ -575,39 +575,39 @@ Expr *Expr_BinOp::Resolve(Context &context) const
 	return _pOperator->Resolve(context, pExprL.release(), pExprR.release());
 }
 
-Expr *Expr_BinOp::Clone() const
+Expr *Expr_BinaryOp::Clone() const
 {
-	return new Expr_BinOp(*this);
+	return new Expr_BinaryOp(*this);
 }
 
-Expr *Expr_BinOp::Substitute(const ExprDict &exprDict) const
+Expr *Expr_BinaryOp::Substitute(const ExprDict &exprDict) const
 {
 	AutoPtr<ExprOwner> pExprOperandsSubst(GetExprOperands().Substitute(exprDict));
 	if (pExprOperandsSubst.IsNull()) return nullptr;
 	AutoPtr<ExprOwner> pExprChildrenSubst(GetExprChildren().Substitute(exprDict));
 	if (pExprChildrenSubst.IsNull()) return nullptr;
-	AutoPtr<Expr> pExprRtn(new Expr_BinOp(
+	AutoPtr<Expr> pExprRtn(new Expr_BinaryOp(
 							   GetOperator(),
 							   pExprOperandsSubst.release(), pExprChildrenSubst.release()));
 	pExprRtn->DeriveSourceInfo(this);
 	return pExprRtn.release();
 }
 
-String Expr_BinOp::ComposeSource(bool upperCaseFlag) const
+String Expr_BinaryOp::ComposeSource(bool upperCaseFlag) const
 {
 	String str;
 	bool needParenFlagL = false;
 	bool needParenFlagR = false;
-	if (GetLeft()->IsTypeBinOp()) {
+	if (GetLeft()->IsTypeBinaryOp()) {
 		Token::Precedence prec = Operator::LookupPrec(
-			dynamic_cast<const Expr_BinOp *>(GetLeft())->GetOperator(),
+			dynamic_cast<const Expr_BinaryOp *>(GetLeft())->GetOperator(),
 			GetOperator());
 		needParenFlagL = prec == (Token::PREC_LT);
 	}
-	if (GetRight()->IsTypeBinOp()) {
+	if (GetRight()->IsTypeBinaryOp()) {
 		Token::Precedence prec = Operator::LookupPrec(
 			GetOperator(),
-			dynamic_cast<const Expr_BinOp *>(GetRight())->GetOperator());
+			dynamic_cast<const Expr_BinaryOp *>(GetRight())->GetOperator());
 		needParenFlagR = prec == (Token::PREC_GT);
 	}
 	if (needParenFlagL) str += "(";

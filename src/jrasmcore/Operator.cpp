@@ -60,18 +60,18 @@ Expr *Operator_Add::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		Integer numL = dynamic_cast<const Expr_Integer *>(pExprL.get())->GetInteger();
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL + numR);
-	} else if (pExprL->IsTypeBinOp(Operator::Add) && pExprR->IsTypeInteger()) {
-		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprL.get());
-		if (pExprBinOp->GetLeft()->IsTypeInteger()) {
-			Integer numL = dynamic_cast<const Expr_Integer *>(pExprBinOp->GetLeft())->GetInteger();
+	} else if (pExprL->IsTypeBinaryOp(Operator::Add) && pExprR->IsTypeInteger()) {
+		const Expr_BinaryOp *pExprBinaryOp = dynamic_cast<Expr_BinaryOp *>(pExprL.get());
+		if (pExprBinaryOp->GetLeft()->IsTypeInteger()) {
+			Integer numL = dynamic_cast<const Expr_Integer *>(pExprBinaryOp->GetLeft())->GetInteger();
 			Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
-			return new Expr_BinOp(
-				Operator::Add, new Expr_Integer(numL + numR), pExprBinOp->GetRight()->Reference());
+			return new Expr_BinaryOp(
+				Operator::Add, new Expr_Integer(numL + numR), pExprBinaryOp->GetRight()->Reference());
 		}
 	} else if (pExprL->IsTypeSymbol() && pExprR->IsTypeInteger()) {
-		return new Expr_BinOp(Operator::Add, pExprR.release(), pExprL.release());
+		return new Expr_BinaryOp(Operator::Add, pExprR.release(), pExprL.release());
 	}
-	return new Expr_BinOp(Operator::Add, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Add, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL - numR);
 	}
-	return new Expr_BinOp(Operator::Sub, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Sub, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ Expr *Operator_AddInj::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 		const ExprList &exprOperandsOrg = dynamic_cast<const Expr_Bracket *>(pExprL.get())->GetExprOperands();
 		AutoPtr<ExprOwner> pExprOperands(new ExprOwner());
 		for (auto pExprOperandOrg : exprOperandsOrg) {
-			AutoPtr<Expr> pExprOperand(new Expr_BinOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
+			AutoPtr<Expr> pExprOperand(new Expr_BinaryOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
 			AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
 			if (pExprOperandResolved.IsNull()) return nullptr;
 			pExprOperands->push_back(pExprOperandResolved.release());
@@ -106,14 +106,14 @@ Expr *Operator_AddInj::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 		const ExprList &exprOperandsOrg = dynamic_cast<const Expr_Brace *>(pExprL.get())->GetExprOperands();
 		AutoPtr<ExprOwner> pExprOperands(new ExprOwner());
 		for (auto pExprOperandOrg : exprOperandsOrg) {
-			AutoPtr<Expr> pExprOperand(new Expr_BinOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
+			AutoPtr<Expr> pExprOperand(new Expr_BinaryOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
 			AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
 			if (pExprOperandResolved.IsNull()) return nullptr;
 			pExprOperands->push_back(pExprOperandResolved.release());
 		}
 		return new Expr_Brace(pExprOperands.release());
 	}
-	return new Expr_BinOp(Operator::AddInj, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::AddInj, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +126,7 @@ Expr *Operator_Mul::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL * numR);
 	}
-	return new Expr_BinOp(Operator::Mul, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Mul, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +144,7 @@ Expr *Operator_Div::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		//}
 		return new Expr_Integer(numL / numR);
 	}
-	return new Expr_BinOp(Operator::Div, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Div, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -158,7 +158,7 @@ Expr *Operator_Mod::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		if (numR == 0) numR = 1;
 		return new Expr_Integer(numL % numR);
 	}
-	return new Expr_BinOp(Operator::Mod, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Mod, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ Expr *Operator_LogicOr::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL || numR);
 	}
-	return new Expr_BinOp(Operator::LogicOr, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::LogicOr, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -184,7 +184,7 @@ Expr *Operator_LogicAnd::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL && numR);
 	}
-	return new Expr_BinOp(Operator::LogicAnd, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::LogicAnd, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -197,7 +197,7 @@ Expr *Operator_Or::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL | numR);
 	}
-	return new Expr_BinOp(Operator::Or, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Or, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -210,7 +210,7 @@ Expr *Operator_Xor::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL ^ numR);
 	}
-	return new Expr_BinOp(Operator::Xor, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Xor, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -223,7 +223,7 @@ Expr *Operator_And::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL & numR);
 	}
-	return new Expr_BinOp(Operator::And, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::And, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ Expr *Operator_Eq::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer((numL == numR)? 1 : 0);
 	}
-	return new Expr_BinOp(Operator::Eq, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Eq, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ Expr *Operator_NotEq::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Ex
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer((numL != numR)? 1 : 0);
 	}
-	return new Expr_BinOp(Operator::NotEq, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::NotEq, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -262,7 +262,7 @@ Expr *Operator_Lt::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer((numL < numR)? 1 : 0);
 	}
-	return new Expr_BinOp(Operator::Lt, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Lt, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -275,7 +275,7 @@ Expr *Operator_Le::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer((numL <= numR)? 1 : 0);
 	}
-	return new Expr_BinOp(Operator::Le, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Le, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -288,7 +288,7 @@ Expr *Operator_Gt::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer((numL > numR)? 1 : 0);
 	}
-	return new Expr_BinOp(Operator::Gt, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Gt, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -301,7 +301,7 @@ Expr *Operator_Ge::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr>
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer((numL >= numR)? 1 : 0);
 	}
-	return new Expr_BinOp(Operator::Ge, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::Ge, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -314,7 +314,7 @@ Expr *Operator_ShiftL::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL << numR);
 	}
-	return new Expr_BinOp(Operator::ShiftL, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::ShiftL, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -327,7 +327,7 @@ Expr *Operator_ShiftR::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 		Integer numR = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
 		return new Expr_Integer(numL >> numR);
 	}
-	return new Expr_BinOp(Operator::ShiftR, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::ShiftR, pExprL.release(), pExprR.release());
 }
 
 //-----------------------------------------------------------------------------
@@ -335,5 +335,5 @@ Expr *Operator_ShiftR::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<E
 //-----------------------------------------------------------------------------
 Expr *Operator_FieldSep::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
-	return new Expr_BinOp(Operator::FieldSep, pExprL.release(), pExprR.release());
+	return new Expr_BinaryOp(Operator::FieldSep, pExprL.release(), pExprR.release());
 }

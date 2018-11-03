@@ -86,7 +86,7 @@ public:
 		TYPE_String,
 		TYPE_BitPattern,
 		TYPE_MML,
-		TYPE_BinOp,
+		TYPE_BinaryOp,
 		TYPE_Assign,
 		TYPE_Bracket,
 		TYPE_Brace,
@@ -122,7 +122,7 @@ public:
 	inline bool IsTypeString() const { return IsType(TYPE_String); }
 	inline bool IsTypeBitPattern() const { return IsType(TYPE_BitPattern); }
 	inline bool IsTypeMML() const { return IsType(TYPE_MML); }
-	inline bool IsTypeBinOp() const { return IsType(TYPE_BinOp); }
+	inline bool IsTypeBinaryOp() const { return IsType(TYPE_BinaryOp); }
 	inline bool IsTypeAssign() const { return IsType(TYPE_Assign); }
 	inline bool IsTypeBracket() const { return IsType(TYPE_Bracket); }
 	inline bool IsTypeBrace() const { return IsType(TYPE_Brace); }
@@ -152,7 +152,7 @@ public:
 	void AssignExprDict(Context &context, bool recursiveFlag);
 	bool IsTypeLabel(const char *symbol) const;
 	bool IsTypeSymbol(const char *symbol) const;
-	bool IsTypeBinOp(const Operator *pOperator) const;
+	bool IsTypeBinaryOp(const Operator *pOperator) const;
 	bool IsTypeDirective(const DirectiveFactory *pDirectiveFactory) const;
 	bool IsGroupingDirective() const;
 	void Print() const;
@@ -357,24 +357,24 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Expr_BinOp
+// Expr_BinaryOp
 //-----------------------------------------------------------------------------
-class Expr_BinOp : public Expr {
+class Expr_BinaryOp : public Expr {
 private:
 	const Operator *_pOperator;
 public:
 	static const Type TYPE;
 public:
-	inline Expr_BinOp(const Operator *pOperator, Expr *pExprL, Expr *pExprR) :
+	inline Expr_BinaryOp(const Operator *pOperator, Expr *pExprL, Expr *pExprR) :
 			Expr(TYPE), _pOperator(pOperator) {
 		GetExprOperands().push_back(pExprL);
 		GetExprOperands().push_back(pExprR);
 	}
-	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprOperands) :
+	inline Expr_BinaryOp(const Operator *pOperator, ExprOwner *pExprOperands) :
 		Expr(TYPE, pExprOperands), _pOperator(pOperator) {}
-	inline Expr_BinOp(const Operator *pOperator, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
+	inline Expr_BinaryOp(const Operator *pOperator, ExprOwner *pExprOperands, ExprOwner *pExprChildren) :
 		Expr(TYPE, pExprOperands, pExprChildren), _pOperator(pOperator) {}
-	inline Expr_BinOp(const Expr_BinOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
+	inline Expr_BinaryOp(const Expr_BinaryOp &expr) : Expr(expr), _pOperator(expr._pOperator) {}
 	inline Expr *GetLeft() { return GetExprOperands()[0]; }
 	inline Expr *GetRight(){ return GetExprOperands()[1]; }
 	inline const Expr *GetLeft() const { return GetExprOperands()[0]; }

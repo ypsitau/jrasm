@@ -548,14 +548,14 @@ Generator_M6800::Result Generator_M6800::Rule_IDX::Apply(
 	ExprList &exprList = pExprLast->GetExprOperands();
 	if (exprList.size() != 1) return RESULT_Rejected;
 	Integer num = 0;
-	if (exprList.front()->IsTypeBinOp()) {
-		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(exprList.front());
+	if (exprList.front()->IsTypeBinaryOp()) {
+		const Expr_BinaryOp *pExprBinaryOp = dynamic_cast<Expr_BinaryOp *>(exprList.front());
 		// If operand was specified in [x+data16], it has been modified to [data16+x] in reducing process.
-		if (!pExprBinOp->GetLeft()->IsTypeInteger() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
+		if (!pExprBinaryOp->GetLeft()->IsTypeInteger() || !pExprBinaryOp->GetRight()->IsTypeSymbol("x")) {
 			return RESULT_Rejected;
 		}
 		// This rule was determined to be applied.
-		num = dynamic_cast<const Expr_Integer *>(pExprBinOp->GetLeft())->GetInteger();
+		num = dynamic_cast<const Expr_Integer *>(pExprBinaryOp->GetLeft())->GetInteger();
 	} else if (exprList.front()->IsTypeSymbol("x")) {
 		num = 0;
 	} else {
@@ -582,14 +582,14 @@ Generator_M6800::Result Generator_M6800::Rule_IDXV::Apply(
 	AutoPtr<Expr> pExprLast(exprOperands.back()->Resolve(context));
 	if (pExprLast.IsNull()) return RESULT_Error;
 	Integer num = 0;
-	if (pExprLast->IsTypeBinOp()) {
-		const Expr_BinOp *pExprBinOp = dynamic_cast<Expr_BinOp *>(pExprLast.get());
+	if (pExprLast->IsTypeBinaryOp()) {
+		const Expr_BinaryOp *pExprBinaryOp = dynamic_cast<Expr_BinaryOp *>(pExprLast.get());
 		// If operand was specified in x+data16, it has been modified to data16+x in resolving process.
-		if (!pExprBinOp->GetLeft()->IsTypeInteger() || !pExprBinOp->GetRight()->IsTypeSymbol("x")) {
+		if (!pExprBinaryOp->GetLeft()->IsTypeInteger() || !pExprBinaryOp->GetRight()->IsTypeSymbol("x")) {
 			return RESULT_Rejected;
 		}
 		// This rule was determined to be applied.
-		num = dynamic_cast<const Expr_Integer *>(pExprBinOp->GetLeft())->GetInteger();
+		num = dynamic_cast<const Expr_Integer *>(pExprBinaryOp->GetLeft())->GetInteger();
 	} else if (pExprLast->IsTypeSymbol("x")) {
 		num = 0;
 	} else {
