@@ -47,11 +47,11 @@ addmb:
 
 addmw.a:
 	.macro	memw
-	adda	memw <+> 1
-	staa	memw <+> 1
+	adda	memw <+> 2:1
+	staa	memw <+> 2:1
 	clra
-	adca	memw
-	staa	memw
+	adca	memw <+> 2:0
+	staa	memw <+> 2:0
 	.end
 
 addmw.mb:
@@ -62,10 +62,10 @@ addmw.mb:
 
 addmw.mw:
 	.macro	memw,numw
-	ldaa	numw <+> 1
-	adda	memw <+> 1
-	staa	memw <+> 1
-	ldaa	numw
-	adca	memw
-	staa	memw
+	ldaa	numw <+> 2:1
+	adda	memw <+> 2:1
+	staa	memw <+> 2:1
+	ldaa	numw <+> 2:0
+	adca	memw <+> 2:0
+	staa	memw <+> 2:0
 	.end

@@ -48,8 +48,14 @@ num3:              | .equ 0x3
     1054 96 13     | ldaa {num2-num1}<+>num3
     1056 96 b3     | ldaa {num1+num2*3}<+>num3
                    | .end
-    1058 ff f8     .dw  -(3+5)
-    105a 00 08     .dw  +(3+5)
+                   .scope
+    1058 86 12     | ldaa 0x1234<+>[2,0]
+    105a 86 34     | ldaa 0x1234<+>[2,1]
+    105c b6 12 34  | ldaa [0x1234]<+>[2,0]
+    105f b6 12 35  | ldaa [0x1234]<+>[2,1]
+                   | .end
+    1062 ff f8     .dw  -(3+5)
+    1064 00 08     .dw  +(3+5)
 [Symbol List]
 0001  @BYTE
 0002  @WORD

@@ -52,5 +52,12 @@ num3:	.equ	0x3
 	ldaa	{num1+num2*3} <+> num3
 	.end
 	
+	.scope
+	ldaa	0x1234 <+> [2,0]
+	ldaa	0x1234 <+> [2,1]
+	ldaa	[0x1234] <+> [2,0]
+	ldaa	[0x1234] <+> [2,1]
+	.end
+	
 	.dw	-(3+5)
 	.dw	+(3+5)

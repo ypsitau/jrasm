@@ -118,26 +118,55 @@ Expr *Operator_Sub::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr
 //-----------------------------------------------------------------------------
 Expr *Operator_AddInj::Resolve(Context &context, AutoPtr<Expr> pExprL, AutoPtr<Expr> pExprR) const
 {
-	if (pExprL->IsTypeBracket() && pExprR->IsTypeInteger()) {
+	Integer nBytes = 0, iByte = 0;
+	if (pExprR->IsTypeBracket()) {
+		const ExprList &exprOperands = dynamic_cast<const Expr_Bracket *>(pExprR.get())->GetExprOperands();
+		if (exprOperands.size() != 2 || !exprOperands[0]->IsTypeInteger() || !exprOperands[1]->IsTypeInteger()) {
+			ErrorLog::AddError(pExprR.get(), "invalid format of value");
+			return nullptr;
+		}
+		nBytes = dynamic_cast<const Expr_Integer *>(exprOperands[0])->GetInteger();
+		iByte = dynamic_cast<const Expr_Integer *>(exprOperands[1])->GetInteger();
+	} else if (pExprR->IsTypeInteger()) {
+		iByte = dynamic_cast<const Expr_Integer *>(pExprR.get())->GetInteger();
+	} else {
+		ErrorLog::AddError(pExprR.get(), "right operand must be a field or an integer");
+		return nullptr;
+	}
+	if (pExprL->IsTypeBracket()) {
 		const ExprList &exprOperandsOrg = dynamic_cast<const Expr_Bracket *>(pExprL.get())->GetExprOperands();
 		AutoPtr<ExprOwner> pExprOperands(new ExprOwner());
 		for (auto pExprOperandOrg : exprOperandsOrg) {
-			AutoPtr<Expr> pExprOperand(new Expr_BinaryOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
+			AutoPtr<Expr> pExprOperand(new Expr_BinaryOp(
+										   Operator::Add, pExprOperandOrg->Clone(), new Expr_Integer(iByte)));
 			AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
 			if (pExprOperandResolved.IsNull()) return nullptr;
 			pExprOperands->push_back(pExprOperandResolved.release());
 		}
 		return new Expr_Bracket(pExprOperands.release());
-	} else if (pExprL->IsTypeBrace() && pExprR->IsTypeInteger()) {
+	} else if (pExprL->IsTypeBrace()) {
 		const ExprList &exprOperandsOrg = dynamic_cast<const Expr_Brace *>(pExprL.get())->GetExprOperands();
 		AutoPtr<ExprOwner> pExprOperands(new ExprOwner());
 		for (auto pExprOperandOrg : exprOperandsOrg) {
-			AutoPtr<Expr> pExprOperand(new Expr_BinaryOp(Operator::Add, pExprOperandOrg->Clone(), pExprR->Clone()));
+			AutoPtr<Expr> pExprOperand(new Expr_BinaryOp(
+										   Operator::Add, pExprOperandOrg->Clone(), new Expr_Integer(iByte)));
 			AutoPtr<Expr> pExprOperandResolved(pExprOperand->Resolve(context));
 			if (pExprOperandResolved.IsNull()) return nullptr;
 			pExprOperands->push_back(pExprOperandResolved.release());
 		}
 		return new Expr_Brace(pExprOperands.release());
+	} else if (pExprL->IsTypeInteger()) {
+		if (!pExprR->IsTypeBracket()) {
+			ErrorLog::AddError(pExprR.get(), "right operand must be a bracket");
+			return nullptr;
+		}
+		Integer nShifts = 8 * (nBytes - iByte - 1);
+		if (nShifts < 0) {
+			ErrorLog::AddError(pExprL.get(), "invalid number");
+			return nullptr;
+		}
+		Integer num = dynamic_cast<const Expr_Integer *>(pExprL.get())->GetInteger();
+		return new Expr_Integer((num >> nShifts) & 0xff);
 	}
 	return new Expr_BinaryOp(Operator::AddInj, pExprL.release(), pExprR.release());
 }
