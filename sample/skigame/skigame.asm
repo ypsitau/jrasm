@@ -3,10 +3,8 @@
 ;;;=============================================================================
 	.org	0x1000
 	bios.cls
-	ldx	0
-	stx	[score]
-	ldaa	16
-	staa	[player.posx]
+	ldmw	[score],0
+	ldmb	[player.posx],16
 loop:
 	bios.locate 0,0
 	bios.puts "SCORE\0"
@@ -24,7 +22,7 @@ loop:
 nogate:
 	.scope
 	ldx	0xc100 + 17 * 32
-	addx	[player.posx]
+	addx.mb	[player.posx]
 	ldaa	[x]
 	cmpa	0x9b
 	bne	rel1
@@ -59,34 +57,6 @@ rel2:
 	bios.putc 'A'
 	jmp	loop
 
-;;;-----------------------------------------------------------------------------
-;;; Format: addx num
-;;; Param: num [IMM, DIR, IDX, EXT] .. Added 8bit number
-;;;-----------------------------------------------------------------------------
-addx:
-	.macro num
-	ldaa	num
-	jsr	_addx
-	.end
-
-_addx:
-	.scope
-	stx	[result]
-	clrb
-	adda	[result.l]
-	adcb	[result.h]
-	staa	[result.l]
-	stab	[result.h]
-result:
-	.equ $+1
-result.h:
-	.equ $+1
-result.l:
-	.equ $+2
-	ldx	0x0000
-	rts
-	.end
-
 	.wseg
 score:
 	.ds	1
@@ -97,3 +67,4 @@ player.posx:
 
 	.include "xrnd.inc"
 	.include "bios.inc"
+	.include "addsub.inc"
