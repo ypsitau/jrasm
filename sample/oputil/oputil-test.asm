@@ -5,11 +5,23 @@
 	.org	0x1000
 
 	jsr	init
-	ldaa	0x56
-	addmb.a	[byte1]
-	bios.puts "0x12+0x56="
+	bios.puthex.mb [byte1]
+	bios.putc '+'
+	bios.puthex.mb [byte2]
+	addmb.mb [byte1],[byte2]
+	bios.putc '='
 	bios.puthex.mb [byte1]
 	bios.putc '\r'
+	
+	jsr	init
+	bios.puthex.mw [word1]
+	bios.putc '+'
+	bios.puthex.mb [byte2]
+	addmw.mb [word1],[byte2]
+	bios.putc '='
+	bios.puthex.mb [word1]
+	bios.putc '\r'
+
 	rts
 	addmb	[byte1],8
 	addmb	[byte1],[byte2]
@@ -29,9 +41,9 @@
 
 init:	
 	ldmb	[byte1],0x12
-	ldmb	[byte2],0x34
+	ldmb	[byte2],0xf4
 	ldmw	[word1],0x1234
-	ldmw	[word2],0x5678
+	ldmw	[word2],0x56f8
 	rts
 
 	.wseg
