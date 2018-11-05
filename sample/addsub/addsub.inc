@@ -1,5 +1,6 @@
 ;;;=============================================================================
-;;; oputil.inc
+;;; addsub.inc
+;;; Macros to extend add/sub operations.
 ;;;=============================================================================
 	.cseg
 
@@ -16,7 +17,7 @@ ldmb.a:
 
 ;;;-----------------------------------------------------------------------------
 ;;; ldmb.b
-::: memb <- B
+;;; memb <- B
 ;;;  Format: memb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to write to
 ;;;-----------------------------------------------------------------------------
@@ -88,7 +89,7 @@ addmb.mb:
 
 ;;;-----------------------------------------------------------------------------
 ;;; addmb
-::: memb <- memb + numb
+;;; memb <- memb + numb
 ;;;  Format: addmb memb,numb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
@@ -100,7 +101,7 @@ addmb:
 
 ;;;-----------------------------------------------------------------------------
 ;;; addmw.a
-::: memw <- memw + A
+;;; memw <- memw + A
 ;;;  Format: addmw.a memw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
 ;;;-----------------------------------------------------------------------------
