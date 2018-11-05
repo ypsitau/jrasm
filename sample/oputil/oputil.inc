@@ -109,6 +109,7 @@ addmw.mw:
 ;;;-----------------------------------------------------------------------------
 addx.a:
 	.macro
+	stx	[result]
 	addmw.a [result]
 result:
 	.equ	$+1
@@ -120,6 +121,7 @@ result:
 ;;;-----------------------------------------------------------------------------
 addx.mb:
 	.macro	numb
+	stx	[result]
 	addmw.mb [result],numb
 result:
 	.equ	$+1
@@ -131,6 +133,7 @@ result:
 ;;;-----------------------------------------------------------------------------
 addx.mw:
 	.macro	numw
+	stx	[result]
 	addmw.mw [result],numw
 result:
 	.equ	$+1
@@ -207,6 +210,7 @@ submw.mw:
 ;;;-----------------------------------------------------------------------------
 subx.a:
 	.macro
+	stx	[result]
 	submw.a [result]
 result:
 	.equ	$+1
@@ -218,6 +222,7 @@ result:
 ;;;-----------------------------------------------------------------------------
 subx.mb:
 	.macro	numb
+	stx	[result]
 	submw.mb [result],numb
 result:
 	.equ	$+1
@@ -229,6 +234,7 @@ result:
 ;;;-----------------------------------------------------------------------------
 subx.mw:
 	.macro	numw
+	stx	[result]
 	submw.mw [result],numw
 result:
 	.equ	$+1
