@@ -3,6 +3,24 @@
 ;;;=============================================================================
 	.cseg
 	.org	0x1000
+	bios.cls
+loop:
+	bios.puts "--------\r\0"
+	jsr	test_add
+	waitkey
+	bios.puts "--------\r\0"
+	jsr	test_sub
+	waitkey
+	bra	loop
+
+waitkey:
+	.macro
+loop:	bios.pick
+	tsta
+	beq	loop
+	.end
+
+test_add:
 	;;-----------------------
 	;; addmb
 	;;-----------------------
@@ -169,15 +187,175 @@
 	bios.puthex.x
 	bios.putc '\r'
 
-
 	rts
 
+test_sub:
+	;;-----------------------
+	;; submb
+	;;-----------------------
+	jsr	init
+	bios.puts "submb.a       \0"
+	bios.puthex.mb [byte1]
+	bios.putc '-'
+	bios.puthex.mb [byte2]
+	ldaa	[byte2]
+	submb.a [byte1]
+	bios.putc '='
+	bios.puthex.mb [byte1]
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "submb.mb(EXT) \0"
+	bios.puthex.mb [byte1]
+	bios.putc '-'
+	bios.puthex.mb [byte2]
+	submb.mb [byte1],[byte2]
+	bios.putc '='
+	bios.puthex.mb [byte1]
+	bios.putc '\r'
 	
-	addx.a
-	addx.mb	0x12
-	addx.mb	[byte1]
-	addx.mw	0x1234
-	addx.mw	[word1]
+	jsr	init
+	bios.puts "submb.mb(IMM) \0"
+	bios.puthex.mb [byte1]
+	bios.putc '-'
+	bios.puthex.mb 0x34
+	submb.mb [byte1],0x34
+	bios.putc '='
+	bios.puthex.mb [byte1]
+	bios.putc '\r'
+	
+	;;-----------------------
+	;; submw
+	;;-----------------------
+	jsr	init
+	bios.puts "submw.mb(EXT) \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mb [byte2]
+	submw.mb [word1],[byte2]
+	bios.putc '='
+	bios.puthex.mw [word1]
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "submw.mb(EXT) \0"
+	bios.puthex.mw [word2]
+	bios.putc '-'
+	bios.puthex.mb [byte2]
+	submw.mb [word2],[byte2]
+	bios.putc '='
+	bios.puthex.mw [word2]
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "submw.mw(EXT) \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mw [word2]
+	submw.mw [word1],[word2]
+	bios.putc '='
+	bios.puthex.mw [word1]
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "submw.mb(IMM) \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mb 0x34
+	submw.mb [word1],0x34
+	bios.putc '='
+	bios.puthex.mw [word1]
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "submw.mb(IMM) \0"
+	bios.puthex.mw [word2]
+	bios.putc '-'
+	bios.puthex.mb 0x34
+	submw.mb [word2],0x34
+	bios.putc '='
+	bios.puthex.mw [word2]
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "submw.mw(EXT) \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mw 0x12f4
+	submw.mw [word1],0x12f4
+	bios.putc '='
+	bios.puthex.mw [word1]
+	bios.putc '\r'
+
+	;;-----------------------
+	;; subx
+	;;-----------------------
+	jsr	init
+	bios.puts "subx.mb(EXT)  \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mb [byte2]
+	ldx	[word1]
+	subx.mb [byte2]
+	bios.putc '='
+	bios.puthex.x
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "subx.mb(EXT)  \0"
+	bios.puthex.mw [word2]
+	bios.putc '-'
+	bios.puthex.mb [byte2]
+	ldx	[word2]
+	subx.mb [byte2]
+	bios.putc '='
+	bios.puthex.x
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "subx.mw(EXT)  \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mw [word2]
+	ldx	[word1]
+	subx.mw [word2]
+	bios.putc '='
+	bios.puthex.x
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "subx.mb(IMM)  \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mb 0x34
+	ldx	[word1]
+	subx.mb 0x34
+	bios.putc '='
+	bios.puthex.x
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "subx.mb(IMM)  \0"
+	bios.puthex.mw [word2]
+	bios.putc '-'
+	bios.puthex.mb 0x34
+	ldx	[word2]
+	subx.mb 0x34
+	bios.putc '='
+	bios.puthex.x
+	bios.putc '\r'
+
+	jsr	init
+	bios.puts "subx.mw(IMM)  \0"
+	bios.puthex.mw [word1]
+	bios.putc '-'
+	bios.puthex.mw 0x12f4
+	ldx	[word1]
+	subx.mw 0x12f4
+	bios.putc '='
+	bios.puthex.x
+	bios.putc '\r'
+
 	rts
 
 init:	
