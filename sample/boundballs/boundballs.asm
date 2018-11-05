@@ -12,40 +12,39 @@ posy:	.ds	@byte
 dirx:	.ds	@byte
 diry:	.ds	@byte
 	.end
-	
+
 ;;;-----------------------------------------------------------------------------
 ;;; Main routine
 ;;;-----------------------------------------------------------------------------
-	clra
-	staa	{0x00}		; disable click sound
-	jsr	0xec7f		; clear screen with attribute data in {0x0e}
-	
+	ldmb	{0x00},0	; disable click sound
+	bios.cls
+
 	pcgpage.mainpage.store
 
 	;; Initialize parameter table
 	.scope
 	ldx	balls
 each_ball:
-	; ball.posx = xrndn8(30) + 1
-	xrndn8	30
+	; ball.posx = xrndn.mb(30) + 1
+	xrndn.mb	30
 	inca
 	staa	[x+ball.posx]
-	; ball.posy = xrndn8(22) + 1
-	xrndn8	22
+	; ball.posy = xrndn.mb(22) + 1
+	xrndn.mb	22
 	inca
 	staa	[x+ball.posy]
-	; ball.dirx = xrndn8(2) * 2 - 1
-	xrndn8	2
+	; ball.dirx = xrndn.mb(2) * 2 - 1
+	xrndn.mb	2
 	asla
 	deca
 	staa	[x+ball.dirx]
-	; ball.diry = xrndn8(2) * 2 - 1
-	xrndn8	2
+	; ball.diry = xrndn.mb(2) * 2 - 1
+	xrndn.mb	2
 	asla
 	deca
 	staa	[x+ball.diry]
 	; next entry
-	addx	@ball
+	addx.mb	@ball
 	cpx	ballsEnd
 	bne	each_ball
 	.end
@@ -71,7 +70,7 @@ each_ball:
 
 	.restore x
 	.end
-	addx	4
+	addx.mb	4
 	cpx	ballsEnd
 	jne	each_ball
 	.end
@@ -129,11 +128,9 @@ rel1:
 	ldaa	1
 	staa	dir
 rel2:
-	ldaa	pos
-	adda	dir
-	staa	pos
+	addmb	pos,dir
 	.end
-	
+
 ;;;-----------------------------------------------------------------------------
 ;;; delay
 ;;;  Format: delay num
@@ -147,5 +144,8 @@ loop:
 	bne	loop
 	.end
 
+	.include "bios.inc"
 	.include "xrnd.inc"
+	.include "jbranch.inc"
+	.include "addsub.inc"
 	.include "utils.inc"
