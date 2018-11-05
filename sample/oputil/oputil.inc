@@ -40,6 +40,7 @@ addmb.mb:
 	ldaa	numb
 	addmb.a	memb
 	.end
+
 addmb:
 	.macro	memb,numb
 	addmb.mb memb,numb
@@ -72,41 +73,99 @@ addmw.mw:
 
 addx.a:
 	.macro
-	stx	[result]
-	adda	[result.l]	
-	staa	[result.l]
-	clra
-	adca	[result.h]
-	staa	[result.h]
+	addmw.a [result]
 result:
 	.equ	$+1
-result.h:
-	.equ	$+1
-result.l:
-	.equ	$+2
 	ldx	0x0000
 	.end
 
 addx.mb:
 	.macro	numb
-	ldaa	numb
-	addx.a
+	addmw.mb [result],numb
+result:
+	.equ	$+1
+	ldx	0x0000
 	.end
 
 addx.mw:
 	.macro	numw
-	stx	[result]
-	ldaa	numw <+> [2,1]
-	adda	[result.l]
-	staa	[result.l]
-	ldaa	numw <+> [2,0]
-	adca	[result.h]
-	staa	[result.h]
+	addmw.mw [result],numw
 result:
 	.equ	$+1
-result.h:
-	.equ	$+1
-result.l:
-	.equ	$+2
 	ldx	0x0000
 	.end
+
+submb.a:
+	.macro	memb
+	suba	memb
+	nega
+	staa	memb
+	.end
+
+submb.mb:
+	.macro	memb,numb
+	ldaa	memb
+	suba	numb
+	staa	memb
+	.end
+
+submb:
+	.macro	memb,numb
+	submb.mb memb,numb
+	.end
+
+submw.a:
+	.macro	memw
+	ldab	memw <+> [2,1]
+	staa	memw <+> [2,1]
+	subb	memw <+> [2,1]
+	stab	memw <+> [2,1]
+	ldaa	memw <+> [2,0]
+	sbca	0
+	staa	memw <+> [2,0]
+	.end
+
+submw.mb:
+	.macro	memw,numb
+	ldaa	memw <+> [2,1]
+	suba	numb
+	staa	memw <+> [2,1]
+	ldaa	memw <+> [2,0]
+	sbca	0
+	staa	memw <+> [2,0]
+	.end
+
+submw.mw:
+	.macro	memw,numw
+	ldaa	memw <+> [2,1]
+	suba	numw <+> [2,1]
+	staa	memw <+> [2,1]
+	ldaa	memw <+> [2,0]
+	sbca	numw <+> [2,0]
+	staa	memw <+> [2,0]
+	.end
+
+subx.a:
+	.macro
+	submw.a [result]
+result:
+	.equ	$+1
+	ldx	0x0000
+	.end
+
+subx.mb:
+	.macro	numb
+	submw.mb [result],numb
+result:
+	.equ	$+1
+	ldx	0x0000
+	.end
+
+subx.mw:
+	.macro	numw
+	submw.mw [result],numw
+result:
+	.equ	$+1
+	ldx	0x0000
+	.end
+	
