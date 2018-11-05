@@ -77,7 +77,7 @@ addmw.a:
 	.macro	memw
 	adda	memw <+> [2,1]
 	staa	memw <+> [2,1]
-	clra
+	ldaa	0
 	adca	memw <+> [2,0]
 	staa	memw <+> [2,0]
 	.end
