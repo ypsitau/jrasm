@@ -383,6 +383,7 @@ rel2:	.end
 	bra	rel2
 rel1:	bios.puts " NG\0"
 rel2:	.end
+	bios.putc '\r'
 	
 	;;-----------------------
 	;; cmpmw
@@ -403,6 +404,7 @@ rel2:	.end
 	bra	rel2
 rel1:	bios.puts " NG\0"
 rel2:	.end
+	bios.putc '\r'
 	
 	rts
 	.end
