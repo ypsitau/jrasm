@@ -1,5 +1,5 @@
 ;;;=============================================================================
-;;; addsub-test.inc
+;;; oputil-test.inc
 ;;;=============================================================================
 	.cseg
 	.org	0x1000
@@ -372,4 +372,4 @@ word1:	.ds	@word
 word2:	.ds	@word
 
 	.include "bios.inc"
-	.include "addsub.inc"
+	.include "oputil.inc"

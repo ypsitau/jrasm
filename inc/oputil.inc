@@ -9,6 +9,7 @@
 ;;; memb <- A
 ;;;  Format: ldmd.a memb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to write to
+;;;  Broken: (none)
 ;;;-----------------------------------------------------------------------------
 ldmb.a:
 	.macro	memb
@@ -20,6 +21,7 @@ ldmb.a:
 ;;; memb <- B
 ;;;  Format: memb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to write to
+;;;  Broken: (none)
 ;;;-----------------------------------------------------------------------------
 ldmb.b:
 	.macro	memb
@@ -32,6 +34,7 @@ ldmb.b:
 ;;;  Format: ldmb memb,numb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be loaded
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 ldmb:
 	.macro	memb,numb
@@ -44,17 +47,20 @@ ldmb:
 ;;; memw <- X
 ;;;  Format: ldmw.x memw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to write to
+;;;  Broken: (none)
 ;;;-----------------------------------------------------------------------------
 ldmw.x:
 	.macro	memw
 	stx	memw
 	.end
+
 ;;;-----------------------------------------------------------------------------
 ;;; ldmw
 ;;; memw <- numw
 ;;;  Format: ldmw memw,numw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be loaded
+;;;  Broken: X
 ;;;-----------------------------------------------------------------------------
 ldmw:
 	.macro	memw,numw
@@ -67,6 +73,7 @@ ldmw:
 ;;; memb <- memb + A
 ;;;  Format: addmb.a memb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addmb.a:
 	.macro	memb
@@ -80,6 +87,7 @@ addmb.a:
 ;;;  Format: addmb.mb memb,numb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addmb.mb:
 	.macro	memb,numb
@@ -93,6 +101,7 @@ addmb.mb:
 ;;;  Format: addmb memb,numb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addmb:
 	.macro	memb,numb
@@ -104,6 +113,7 @@ addmb:
 ;;; memw <- memw + A
 ;;;  Format: addmw.a memw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addmw.a:
 	.macro	memw
@@ -120,6 +130,7 @@ addmw.a:
 ;;;  Format: addmw.mb memw,numb
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addmw.mb:
 	.macro	memw,numb
@@ -133,6 +144,7 @@ addmw.mb:
 ;;;  Format: addmw.mw memw,numw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
 ;;;          numw [IMM,DIR,IDX,EXT] .. Word-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addmw.mw:
 	.macro	memw,numw
@@ -148,6 +160,7 @@ addmw.mw:
 ;;; addx.a
 ;;; X <- X + A
 ;;;  Format: addx.a
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addx.a:
 	.macro
@@ -163,6 +176,7 @@ result:
 ;;; X <- X + numb
 ;;;  Format: addx.mb numb
 ;;;  Param:  numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addx.mb:
 	.macro	numb
@@ -178,6 +192,7 @@ result:
 ;;; X <- X + numw
 ;;;  Format: addx.mw numw
 ;;;  Param:  numw [IMM,DIR,IDX,EXT] .. Word-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 addx.mw:
 	.macro	numw
@@ -193,6 +208,7 @@ result:
 ;;; memb <- memb - A
 ;;;  Format: submb.a memb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 submb.a:
 	.macro	memb
@@ -207,6 +223,7 @@ submb.a:
 ;;;  Format: submb.mb memb,numb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be subtracted
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 submb.mb:
 	.macro	memb,numb
@@ -221,6 +238,7 @@ submb.mb:
 ;;;  Format: submb memb,numb
 ;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be subtracted
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 submb:
 	.macro	memb,numb
@@ -232,6 +250,7 @@ submb:
 ;;; memw <- memw - A
 ;;;  Format: submw.a memw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
+;;;  Broken: A, B
 ;;;-----------------------------------------------------------------------------
 submw.a:
 	.macro	memw
@@ -250,6 +269,7 @@ submw.a:
 ;;;  Format: submw.mb memw,numb
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
 ;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be subtracted
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 submw.mb:
 	.macro	memw,numb
@@ -267,6 +287,7 @@ submw.mb:
 ;;;  Format: submw.mw memw,numw
 ;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
 ;;;          numw [IMM,DIR,IDX,EXT] .. Word-sized number to be subtracted
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 submw.mw:
 	.macro	memw,numw
@@ -282,6 +303,7 @@ submw.mw:
 ;;; subx.a
 ;;; X <- X - A
 ;;;  Format: subx.a
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 subx.a:
 	.macro
@@ -297,6 +319,7 @@ result:
 ;;; X <- X - numb
 ;;;  Format: subx.mb numb
 ;;;  Param:  numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 subx.mb:
 	.macro	numb
@@ -312,6 +335,7 @@ result:
 ;;; X <- X - numw
 ;;;  Format: subx.mw numw
 ;;;  Param:  numw [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
 ;;;-----------------------------------------------------------------------------
 subx.mw:
 	.macro	numw
@@ -320,4 +344,32 @@ subx.mw:
 result:
 	.equ	$+1
 	ldx	0x0000
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; cmpmb
+;;; memb - numb
+;;;  Format: cmpb memb,numb
+;;;  Param:  memb [DIR,IDX,EXT] .. Byte-sized memory to read from and write to
+;;;          numb [IMM,DIR,IDX,EXT] .. Byte-sized number to be added
+;;;  Broken: A
+;;;-----------------------------------------------------------------------------
+cmpmb:
+	.macro	memb,numb
+	ldaa	memb
+	cmpa	numb
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; cmpmw
+;;; memw - numw
+;;;  Format: cmpw memw,numw
+;;;  Param:  memw [DIR,IDX,EXT] .. Word-sized memory to read from and write to
+;;;          numw [IMM,DIR,IDX,EXT] .. Word-sized number to be added
+;;;  Broken: X
+;;;-----------------------------------------------------------------------------
+cmpmw:
+	.macro	memw,numw
+	ldx	memw
+	cpx	numw
 	.end
