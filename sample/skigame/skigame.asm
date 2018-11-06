@@ -5,25 +5,62 @@
 	bios.cls
 	ldmw	[score],0
 	ldmb	[player.posx],16
-	ldmb	[course.posx],0
-	ldmb	[course.width],31
-loop:
+	ldmb	[course.posx],4
+	ldmb	[course.dirx],0
+	ldmb	[course.width],32 - 4 - 4
+mainloop:
 	bios.locate 0,0
 	bios.puts "SCORE\0"
 	bios.putdec.mb [score],4
 	bios.scrolldown 0xc120
-	bios.locate 0,1
-	bios.filln 0,32
+	;---------------------------
+	; show a player
+	;---------------------------
+	bios.locate [player.posx], 18
+	bios.putc '.'
 	;---------------------------
 	; show a course
 	;---------------------------
+	bios.locate 0,1
+	bios.filln 0,32
 	bios.locate [course.posx],1
-	bios.putc 0x9a
+	bios.putc 0x8c
 	ldaa	[course.posx]
 	adda	[course.width]
+	deca
 	staa	[byte1]
 	bios.locate [byte1],1
-	bios.putc 0x9a
+	bios.putc 0x8c
+	;---------------------------
+	; move course
+	;---------------------------
+	.scope
+	ldaa	[course.dirx]
+	cmpa	1
+	bne	elsif1
+	ldaa	[course.posx]
+	adda	[course.width]
+	deca
+	cmpa	31
+	beq	endif
+	addmb	[course.posx],1
+	bra	endif
+elsif1:	cmpa	2
+	bne	endif
+	ldaa	[course.posx]
+	beq	endif
+	submb	[course.posx],1
+endif:	
+	.end
+
+	.scope
+	xrndn.mb 10
+	cmpa	3
+	bge	endif
+	staa	[course.dirx]
+endif:
+	.end
+
 	;---------------------------
 	; show a gate
 	;---------------------------
@@ -31,8 +68,11 @@ loop:
 	xrndn.mb 8
 	tsta
 	bne	skip
-	xrndn.mb 32 - 8 - 2
+	ldaa	[course.width]
+	suba	8 + 2
+	xrndn.a
 	inca
+	adda	[course.posx]
 	staa	[gate.posx]
 	bios.locate [gate.posx],1
 	bios.puts "\x81\x9b\x9b\x9b\x9b\x9b\x9b\x81\0"
@@ -75,26 +115,22 @@ nohit_tree:
 	; move player
 	;---------------------------
 	bios.pick
-	cmpa	28
+	cmpa	28	; [right] key
 	bne	rel1
-	ldaa	[player.posx]
-	cmpa	31
+	cmpmb	[player.posx],31
 	beq	rel2
-	inca
-	staa	[player.posx]
+	addmb	[player.posx],1
 	bra	rel2
 rel1:
-	cmpa	29
+	cmpa	29	; [left] key
 	bne	rel2
-	ldaa	[player.posx]
-	cmpa	0
+	cmpmb	[player.posx],0
 	beq	rel2
-	deca
-	staa	[player.posx]
+	submb	[player.posx],1
 rel2:
 	bios.locate [player.posx], 17
 	bios.putc 'A'
-	jmp	loop
+	jmp	mainloop
 
 	.wseg
 byte1:
@@ -108,6 +144,8 @@ word2:
 score:
 	.ds	1
 course.posx:
+	.ds	1
+course.dirx:
 	.ds	1
 course.width:
 	.ds	1
