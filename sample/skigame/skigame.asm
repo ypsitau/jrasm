@@ -5,6 +5,8 @@
 	bios.cls
 	ldmw	[score],0
 	ldmb	[player.posx],16
+	ldmb	[course.posx],0
+	ldmb	[course.width],31
 loop:
 	bios.locate 0,0
 	bios.puts "SCORE\0"
@@ -12,29 +14,66 @@ loop:
 	bios.scrolldown 0xc120
 	bios.locate 0,1
 	bios.filln 0,32
+	;---------------------------
+	; show a course
+	;---------------------------
+	bios.locate [course.posx],1
+	bios.putc 0x9a
+	ldaa	[course.posx]
+	adda	[course.width]
+	staa	[byte1]
+	bios.locate [byte1],1
+	bios.putc 0x9a
+	;---------------------------
+	; show a gate
+	;---------------------------
+	.scope
 	xrndn.mb 8
 	tsta
-	bne	nogate
-	xrndn.mb 32 - 8
+	bne	skip
+	xrndn.mb 32 - 8 - 2
+	inca
 	staa	[gate.posx]
 	bios.locate [gate.posx],1
 	bios.puts "\x81\x9b\x9b\x9b\x9b\x9b\x9b\x81\0"
-nogate:
+skip:
+	.end
+	;---------------------------
+	; hit test
+	;---------------------------
 	.scope
 	ldx	0xc100 + 17 * 32
 	addx.mb	[player.posx]
 	ldaa	[x]
 	cmpa	0x9b
-	bne	rel1
+	bne	nohit_gate
 	inc	[score]
-	bra	rel2
-rel1:
-	cmpa	0x81
+
+	; erase gate
+loop1:	ldaa	[x]
+	cmpa	0x9b
+	bne	rel1
+	dex
+	bra	loop1
+rel1:	inx
+loop2:	ldaa	[x]
+	cmpa	0x9b
 	bne	rel2
-	dec	[score]
+	ldmb	[x],0
+	inx
+	bra	loop2
 rel2:
+	bra	nohit_tree
+nohit_gate:
+	cmpa	0x81
+	bne	nohit_tree
+	dec	[score]
+nohit_tree:
 	.end
 
+	;---------------------------
+	; move player
+	;---------------------------
 	bios.pick
 	cmpa	28
 	bne	rel1
@@ -58,7 +97,19 @@ rel2:
 	jmp	loop
 
 	.wseg
+byte1:
+	.ds	1
+byte2:
+	.ds	1
+word1:
+	.ds	2
+word2:
+	.ds	2
 score:
+	.ds	1
+course.posx:
+	.ds	1
+course.width:
 	.ds	1
 gate.posx:
 	.ds	1
@@ -67,4 +118,4 @@ player.posx:
 
 	.include "xrnd.inc"
 	.include "bios.inc"
-	.include "addsub.inc"
+	.include "oputil.inc"
