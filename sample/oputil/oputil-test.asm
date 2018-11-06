@@ -11,6 +11,9 @@ loop:
 	bios.puts "--------\r\0"
 	jsr	test_sub
 	waitkey
+	bios.puts "--------\r\0"
+	jsr	test_cmp
+	waitkey
 	bra	loop
 
 waitkey:
@@ -357,6 +360,52 @@ test_sub:
 	bios.putc '\r'
 
 	rts
+
+test_cmp:
+	jsr	init
+	.scope
+	;;-----------------------
+	;; cmpmb
+	;;-----------------------
+	bios.puts "cmpmb\0"
+	.scope
+	cmpmb	[byte1],0xc3
+	beq	rel1
+	bios.puts " NG\0"
+	bra	rel2
+rel1:	bios.puts " OK\0"
+rel2:	.end
+	
+	.scope
+	cmpmb	[byte1],[byte2]
+	beq	rel1
+	bios.puts " OK\0"
+	bra	rel2
+rel1:	bios.puts " NG\0"
+rel2:	.end
+	
+	;;-----------------------
+	;; cmpmw
+	;;-----------------------
+	bios.puts "cmpmw\0"
+	.scope
+	cmpmw	[word1],0x5612
+	beq	rel1
+	bios.puts " NG\0"
+	bra	rel2
+rel1:	bios.puts " OK\0"
+rel2:	.end
+	
+	.scope
+	cmpmw	[word1],[word2]
+	beq	rel1
+	bios.puts " OK\0"
+	bra	rel2
+rel1:	bios.puts " NG\0"
+rel2:	.end
+	
+	rts
+	.end
 
 init:	
 	ldmb	[byte1],0xc3
