@@ -1,6 +1,8 @@
 	.org	0x1000
+
 	
-transfer:
+
+refresh_vram:
 	.scope
 	ldmw	[srcp],vrambuff
 	ldmw	[dstp_char],0xc100
