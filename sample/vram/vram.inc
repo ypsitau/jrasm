@@ -1,17 +1,18 @@
-	.org	0x1000
-
-	
+;;;=============================================================================
+;;; vram.inc
+;;;=============================================================================
+	.cseg
 
 refresh_vram:
 	.scope
-	ldmw	[srcp],vrambuff
+	ldmw	[srcp],vram
 	ldmw	[dstp_char],0xc100
 	ldmw	[dstp_attr],0xc500
 loop:	
 srcp:
 	.equ	$+1
 	ldx	0x0000
-	cpx	vrambuff_end
+	cpx	vram.end
 	beq	done
 	ldaa	[x]
 	inx
@@ -36,8 +37,8 @@ done:
 	.end
 	
 	.wseg
-vrambuff:
+vram:
 	.ds	32 * 2 * 24
-vrambuff_end:
+vram.end:
 
 	.include "oputil.inc"
