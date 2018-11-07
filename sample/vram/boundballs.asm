@@ -54,19 +54,17 @@ mainloop:
 	ldx	balls
 each_ball:
 	.save	x
-	xy2codeaddr [x+ball.posx], [x+ball.posy]
-	pcg.chkcircle2x2.erase
-	code2attraddr
-	pcg.chkcircle2x2.eraseattr
+	xy2vram vram,[x+ball.posx], [x+ball.posy]
+	pcg.chkcircle2x2.erase 0
+	pcg.chkcircle2x2.eraseattr 1
 
 	.restore x
 	movebound [x+ball.posx], [x+ball.dirx], 0, 30
 	movebound [x+ball.posy], [x+ball.diry], 0, 22
 
-	xy2codeaddr [x+ball.posx], [x+ball.posy]
-	pcg.chkcircle2x2.put
-	code2attraddr
-	pcg.chkcircle2x2.putattr
+	xy2vram vram,[x+ball.posx], [x+ball.posy]
+	pcg.chkcircle2x2.put 0
+	pcg.chkcircle2x2.putattr 1
 
 	.restore x
 	.end
@@ -75,6 +73,7 @@ each_ball:
 	jne	each_ball
 	.end
 
+	jsr	refresh_vram
 	delay	0x10
 	
 	jmp	mainloop
@@ -85,7 +84,7 @@ ballsEnd:
 
 	.pcgpage mainpage,cram:32
 
-	.pcg	chkcircle2x2,2,2,,,2:0
+	.pcg	chkcircle2x2, 2,2, 2,32, 2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."

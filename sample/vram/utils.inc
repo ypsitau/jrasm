@@ -3,58 +3,45 @@
 ;;;=============================================================================
 
 ;;;-----------------------------------------------------------------------------
-;;; Format: xy2codeaddr posx,posy
-;;; Param: posx [IMM, DIR, IDX, EXT] .. X position
-;;;        posy [IMM, DIR, IDX, EXT] .. Y position
-;;; Output: x .. Code address that begins from 0xc100
-;;; Broken: a, b
+;;; Format: xy2vram vram,posx,posy
+;;;  Param: vram
+;;;         posx [IMM, DIR, IDX, EXT] .. X position
+;;;         posy [IMM, DIR, IDX, EXT] .. Y position
+;;;  Output: x .. VRAM address
+;;;  Broken: a, b
 ;;;-----------------------------------------------------------------------------
-xy2codeaddr:
-	.macro	posx,posy
+xy2vram:
+	.macro	vram,posx,posy
+	ldx	vram
 	ldaa	posx
 	ldab	posy
-	jsr	_xy2codeaddr
+	jsr	_xy2vram
 	.end
-	
-_xy2codeaddr:
+
+_xy2vram:
 	.scope
-posx:	.equ	0x18
-	staa	{posx}
+posx2:	.equ	0x18
+	stx	[result]
+	asla
+	staa	{posx2}
 	clra
 	clc
 	rorb
 	rora
 	rorb
 	rora
-	rorb
-	rora
-	adda	{posx}
-	adcb	0xc1
-	stab	[result.h]
+	adda	{posx2}
+	adcb	0
+	adda	[result.l]
 	staa	[result.l]
+	adcb	[result.h]
+	stab	[result.h]
+result:
+	.equ	$+1
 result.h:
-	.equ $+1
+	.equ	$+1
 result.l:
-	.equ $+2
+	.equ	$+2
 	ldx	0x0000
 	rts
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; Format: code2attraddr
-;;; Input: x .. Code address that begins from 0xc100
-;;; Output: x .. Attribute address that begins from 0xc500
-;;; Broken: a
-;;;-----------------------------------------------------------------------------
-code2attraddr:
-	.macro
-	stx	[result]
-	ldaa	0x04
-	adda	[result.h]
-	staa	[result.h]
-result:
-	.equ $+1
-result.h:
-	.equ $+1
-	ldx	0x0000
 	.end

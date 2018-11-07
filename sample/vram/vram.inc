@@ -3,7 +3,29 @@
 ;;;=============================================================================
 	.cseg
 
-refresh_vram:
+vram.clear:
+	.macro
+	jsr	vram._clear
+	.end
+
+vram.refresh:
+	.macro
+	jsr	vram._refresh
+	.end
+
+vram._clear:
+	.scope
+	ldx	vram
+	clra
+loop:
+	staa	[x]
+	inx
+	cpx	vram.end
+	bne	loop
+	rts
+	.end
+
+vram._refresh:
 	.scope
 	ldmw	[srcp],vram
 	ldmw	[dstp_char],0xc100
