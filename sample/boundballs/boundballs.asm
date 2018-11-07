@@ -147,5 +147,5 @@ loop:
 	.include "bios.inc"
 	.include "xrnd.inc"
 	.include "jbranch.inc"
-	.include "addsub.inc"
+	.include "oputil.inc"
 	.include "utils.inc"

@@ -49,6 +49,6 @@ loop:
 	jmp	loop
 
 	.wseg
-num:	.dw	0
+num:	.ds	@word
 
 	.include "bios.inc"
