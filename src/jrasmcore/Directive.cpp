@@ -541,10 +541,6 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	String dirName;
 	::SplitFileName(pExpr->GetPathNameSrc(), &dirName, nullptr);
 	String pathNameIncluded = RegulatePathName(JoinPathName(dirName.c_str(), fileNameIncluded.c_str()).c_str());
-	if (!allowMultipleFlag && context.FindExprIncluded(pathNameIncluded.c_str()) != nullptr) {
-		_pExprIncluded.reset(new Expr_Null());
-		return true;
-	}
 	if (!DoesExist(pathNameIncluded.c_str())) {
 		bool foundFlag = false;
 		for (auto dirName : context.GetDirNamesInc()) {
@@ -560,6 +556,10 @@ bool Directive_INCLUDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 			ErrorLog::AddError(pExpr, "failed to open file: %s\n", pathNameIncluded.c_str());
 			return false;
 		}
+	}
+	if (!allowMultipleFlag && context.FindExprIncluded(pathNameIncluded.c_str()) != nullptr) {
+		_pExprIncluded.reset(new Expr_Null());
+		return true;
 	}
 	Parser parser(pathNameIncluded);
 	if (!parser.ParseFile()) return false;
