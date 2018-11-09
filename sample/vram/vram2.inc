@@ -1,54 +1,80 @@
-	.org	0x1000
-	
-margin_l: .equ	2
-margin_r: .equ	2
+;;;=============================================================================
+;;; vram2.inc
+;;;=============================================================================
+	.cseg
 
-transfer:
+vram.margin@l: .equ	2
+vram.margin@r: .equ	2
+
+vram.clear:
+	.macro
+	jsr	vram._clear
+	.end
+
+vram.refresh:
+	.macro
+	jsr	vram._refresh
+	.end
+
+vram._clear:
 	.scope
-	ldmw	[srcp],vrambuff + margin_l * 2
+	ldx	vram
+	clra
+loop:
+	staa	[x]
+	inx
+	cpx	vram.end
+	bne	loop
+	rts
+	.end
+
+vram._refresh:
+	.scope
+	ldmw	[srcp],vram + vram.margin@l * 2
 	ldmw	[dstp_char],0xc100
 	ldmw	[dstp_attr],0xc500
 	ldmb	[cnty],24
 loopy:	
 	ldmb	[cntx],32
+srcp:
+	.equ	$+1
 loopx:	
-	ldx	[srcp]
+	ldx	0x0000
 	ldaa	[x]
 	inx
 	ldab	[x]
 	inx
 	stx	[srcp]
-	ldx	[dstp_char]
+dstp_char:
+	.equ	$+1
+	ldx	0x0000
 	staa	[x]
 	inx
 	stx	[dstp_char]
-	ldx	[dstp_attr]
+dstp_attr:
+	.equ	$+1
+	ldx	0x0000
 	stab	[x]
 	inx
 	stx	[dstp_attr]
 	dec	[cntx]
 	bne	loopx
-	addx.mb	(margin_r + margin_l) * 2
+	addx.mb	(vram.margin@r + vram.margin@l) * 2
 	dec	[cnty]
 	bne	loopy
 done:
 	rts
+
 	.wseg
 cntx:
 	.ds	1
 cnty:
 	.ds	1
-srcp:
-	.ds	2
-dstp_char:
-	.ds	2
-dstp_attr:
-	.ds	2
 	.end
-	
+
 	.wseg
-vrambuff:
-	.ds	(margin_l + 32 + margin_r) * 2 * 24
-vrambuff_end:
+vram:
+	.ds	(vram.margin@l + 32 + vram.margin@r) * 2 * 24
+vram.end:
 
 	.include "oputil.inc"
