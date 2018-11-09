@@ -6,14 +6,52 @@
 vram.margin@l: .equ	2
 vram.margin@r: .equ	2
 
+;;;-----------------------------------------------------------------------------
+;;; vram.fromxy
+;;; Calculate: X = posx * 2 + posy * 32 * 2 + posy * 4 * 2
+;;;-----------------------------------------------------------------------------
+vram.fromxy:
+	.macro	posx,posy
+	ldaa	posx
+	ldab	posy
+	jsr	_vram.fromxy
+	.end
+
+_vram.fromxy:
+	.scope
+posx2:	.equ	0x18
+	ldx	vram
+	stx	[result]
+	asla
+	staa	{posx2}
+	clra
+	clc
+	rorb
+	rora
+	rorb
+	rora
+	adda	{posx2}
+	adcb	0
+	adda	[result.l]
+	staa	[result.l]
+	adcb	[result.h]
+	stab	[result.h]
+result:
+	.equ	$+1
+result.h:
+	.equ	$+1
+result.l:
+	.equ	$+2
+	ldx	0x0000
+	rts
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.clear
+;;;-----------------------------------------------------------------------------
 vram.clear:
 	.macro
 	jsr	vram._clear
-	.end
-
-vram.refresh:
-	.macro
-	jsr	vram._refresh
 	.end
 
 vram._clear:
@@ -26,6 +64,14 @@ loop:
 	cpx	vram.end
 	bne	loop
 	rts
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.refresh
+;;;-----------------------------------------------------------------------------
+vram.refresh:
+	.macro
+	jsr	vram._refresh
 	.end
 
 vram._refresh:
@@ -72,6 +118,9 @@ cnty:
 	.ds	1
 	.end
 
+;;;-----------------------------------------------------------------------------
+;;; VRAM Buffer
+;;;-----------------------------------------------------------------------------
 	.wseg
 vram:
 	.ds	(vram.margin@l + 32 + vram.margin@r) * 2 * 24

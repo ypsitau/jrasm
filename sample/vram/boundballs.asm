@@ -57,7 +57,7 @@ eachball1:
 	movebound [x+ball.posx], [x+ball.dirx], 0, 30
 	movebound [x+ball.posy], [x+ball.diry], 0, 22
 	.save	x
-	xy2vram vram,[x+ball.posx], [x+ball.posy]
+	vram.fromxy [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.put 0
 	pcg.chkcircle2x2.putattr 1
 	.end
@@ -70,7 +70,7 @@ eachball1:
 	ldx	balls
 eachball2:
 	.save	x
-	xy2vram vram,[x+ball.posx], [x+ball.posy]
+	vram.fromxy [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.erase 0
 	pcg.chkcircle2x2.eraseattr ,,1
 	.end
@@ -150,5 +150,4 @@ loop:
 	.include "xrnd.inc"
 	.include "jbranch.inc"
 	.include "oputil.inc"
-	.include "utils.inc"
 	.include "vram.inc"
