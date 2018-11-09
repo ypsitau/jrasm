@@ -150,4 +150,4 @@ loop:
 	.include "xrnd.inc"
 	.include "jbranch.inc"
 	.include "oputil.inc"
-	.include "vram.inc"
+	.include "vram32x24x2.inc"

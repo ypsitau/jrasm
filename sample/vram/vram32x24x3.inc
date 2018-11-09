@@ -35,7 +35,8 @@ posx:	.equ	0x18
 	adcb	0
 	staa	[result.l]
 	stab	[result.h]
-	asla
+	clc
+	rola
 	rolb
 	adda	[result.l]
 	staa	[result.l]
@@ -45,7 +46,7 @@ posx:	.equ	0x18
 	adda	[result.l]
 	staa	[result.l]
 	ldaa	vram <+> [2,0]
-	adda	[result.h]
+	adca	[result.h]
 	staa	[result.h]
 result:
 	.equ	$+1
