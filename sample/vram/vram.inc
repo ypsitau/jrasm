@@ -2,10 +2,9 @@
 ;;; vram.inc
 ;;;=============================================================================
 	.cseg
-
 ;;;-----------------------------------------------------------------------------
 ;;; vram.fromxy
-;;; Calculate: X = posx * 2 + posy * 64
+;;; Calculate: X = (posx + posy * 32) * 3
 ;;;  Format: vram.fromxy posx,posy
 ;;;  Param: vram
 ;;;         posx [IMM, DIR, IDX, EXT] .. X-position
@@ -22,23 +21,32 @@ vram.fromxy:
 
 _vram.fromxy:
 	.scope
-posx2:	.equ	0x18
-	ldx	vram
-	stx	[result]
-	asla
-	staa	{posx2}
+posx:	.equ	0x18
+	staa	{posx}
 	clra
 	clc
 	rorb
 	rora
 	rorb
 	rora
-	adda	{posx2}
+	rorb
+	rora
+	adda	{posx}
 	adcb	0
+	staa	[result.l]
+	stab	[result.h]
+	asla
+	rolb
 	adda	[result.l]
 	staa	[result.l]
 	adcb	[result.h]
 	stab	[result.h]
+	ldaa	vram <+> [2,1]
+	adda	[result.l]
+	staa	[result.l]
+	ldaa	vram <+> [2,0]
+	adda	[result.h]
+	staa	[result.h]
 result:
 	.equ	$+1
 result.h:
@@ -80,8 +88,8 @@ vram.refresh:
 vram._refresh:
 	.scope
 	ldmw	[srcp],vram
-	ldmw	[dstp_char],0xc100
-	ldmw	[dstp_attr],0xc500
+	ldmw	[charp],0xc100
+	ldmw	[attrp],0xc500
 loop:	
 srcp:
 	.equ	$+1
@@ -92,19 +100,20 @@ srcp:
 	inx
 	ldab	[x]
 	inx
+	inx
 	stx	[srcp]
-dstp_char:
+charp:
 	.equ	$+1
 	ldx	0x0000
 	staa	[x]
 	inx
-	stx	[dstp_char]
-dstp_attr:
+	stx	[charp]
+attrp:
 	.equ	$+1
 	ldx	0x0000
 	stab	[x]
 	inx
-	stx	[dstp_attr]
+	stx	[attrp]
 	bra	loop
 done:
 	rts
@@ -115,7 +124,7 @@ done:
 ;;;-----------------------------------------------------------------------------
 	.wseg
 vram:
-	.ds	32 * 2 * 24
+	.ds	32 * 24 * 3
 vram.end:
 
 	.include "oputil.inc"
