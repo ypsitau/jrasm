@@ -740,41 +740,53 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
 	do {
-		Expr *pExprOperand = *ppExprOperand++;
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
+		ppExprOperand++;
+		if (pExprOperand.IsNull()) return false;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
 			return false;
 		}
-		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
+		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
 	} while (0);
 	do {
-		Expr *pExprOperand = *ppExprOperand++;
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
+		ppExprOperand++;
+		if (pExprOperand.IsNull()) return false;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter height expects an integer value");
 			return false;
 		}
-		htChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
+		htChar = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
 	} while (0);
 	if (ppExprOperand != exprOperands.end()) {
-		Expr *pExprOperand = *ppExprOperand++;
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
+		ppExprOperand++;
+		if (pExprOperand.IsNull()) return false;
 		if (pExprOperand->IsTypeNull()) {
 			// nothing to do
 		} else if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter stepx expects an integer value");
 			return false;
 		} else {
-			stepX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
+			stepX = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
 		}
 	} while (0);
 	if (ppExprOperand != exprOperands.end()) {
-		Expr *pExprOperand = *ppExprOperand++;
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
+		ppExprOperand++;
+		if (pExprOperand.IsNull()) return false;
 		if (pExprOperand->IsTypeNull()) {
 			// nothing to do
 		} else if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter stepy expects an integer value");
 			return false;
 		} else {
-			stepY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
+			stepY = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
 		}
 	} while (0);
 	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {

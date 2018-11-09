@@ -8,14 +8,28 @@
 	pcg.pcg1.fill 0xaa
 	pcg.pcg1.putattr
 	pcg.pcg1.putattrfg
-	pcg.pcg1.eraseattr
+	pcg.pcg1.eraseattr 7,0
 	
 	pcg.pcg2.put
 	pcg.pcg2.erase
 	pcg.pcg2.fill 0xaa
 	pcg.pcg2.putattr
 	pcg.pcg2.putattrfg
-	pcg.pcg2.eraseattr
+	pcg.pcg2.eraseattr 7,0
+
+	pcg.pcg3.put
+	pcg.pcg3.erase
+	pcg.pcg3.fill 0xaa
+	pcg.pcg3.putattr
+	pcg.pcg3.putattrfg
+	pcg.pcg3.eraseattr 7,0
+	
+	pcg.pcg3.put 1
+	pcg.pcg3.erase 1
+	pcg.pcg3.fill 0xaa,1
+	pcg.pcg3.putattr 1
+	pcg.pcg3.putattrfg 1
+	pcg.pcg3.eraseattr 7,0,1
 	
 	.pcgpage page1,user:0x20
 	.pcg	pcg1,3,3,1,32,1:0,2:0:2,3:0,5:0:4,6:0
@@ -72,5 +86,26 @@
 	.db	0xff,0xff,0xff
 	.db	0xff,0xff,0xff
 	.db	0xff,0xff,0xff
+	.end
+	.end
+
+	.pcgpage page3,cram:0x80
+	.pcg	pcg3,2,2, 3,3*32
+	.db	b".....######....."
+	.db	b"...##########..."
+	.db	b"..############.."
+	.db	b".##############."
+	.db	b".##############."
+	.db	b"################"
+	.db	b"################"
+	.db	b"################"
+	.db	b"################"
+	.db	b"################"
+	.db	b"################"
+	.db	b".##############."
+	.db	b".##############."
+	.db	b"..############.."
+	.db	b"...##########..."
+	.db	b".....######....."
 	.end
 	.end

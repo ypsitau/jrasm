@@ -1,6 +1,6 @@
                    .org 0x1000
                    pcgpage.page1.store
-    1000 ce 12 19  | ldx  pcgpage.page1.src
+    1000 ce 12 c1  | ldx  pcgpage.page1.src
     1003 ff 10 1f  | stx  [srcp]
     1006 ce 10 44  | ldx  entries
 loop_nextentry:    | 
@@ -45,7 +45,7 @@ entries:           |
 done:              | 
                    | .end
                    pcgpage.page2.store
-    104a ce 12 61  | ldx  pcgpage.page2.src
+    104a ce 13 09  | ldx  pcgpage.page2.src
     104d ff 10 69  | stx  [srcp]
     1050 ce 10 8e  | ldx  entries
 loop_nextentry:    | 
@@ -193,7 +193,7 @@ done:              |
     1142 8a 46     | oraa (1<<6)+6
     1144 a7 42     | staa [x+0x42+0]
                    | .end
-                   pcg.pcg1.eraseattr
+                   pcg.pcg1.eraseattr 7,0
     1146 86 07     | ldaa 7+(0<<3)
     1148 a7 00     | staa [x+0x00+0]
     114a a7 01     | staa [x+0x01+0]
@@ -304,7 +304,7 @@ done:              |
     1201 8a 46     | oraa (1<<6)+6
     1203 a7 42     | staa [x+0x42+0]
                    | .end
-                   pcg.pcg2.eraseattr
+                   pcg.pcg2.eraseattr 7,0
     1205 86 07     | ldaa 7+(0<<3)
     1207 a7 00     | staa [x+0x00+0]
     1209 a7 01     | staa [x+0x01+0]
@@ -316,83 +316,213 @@ done:              |
     1215 a7 41     | staa [x+0x41+0]
     1217 a7 42     | staa [x+0x42+0]
                    | .end
+                   pcg.pcg3.put
+    1219 86 80     | ldaa 0x80
+    121b a7 00     | staa [x+0x00+0]
+    121d 4c        | inca
+    121e a7 03     | staa [x+0x03+0]
+    1220 4c        | inca
+    1221 a7 60     | staa [x+0x60+0]
+    1223 4c        | inca
+    1224 a7 63     | staa [x+0x63+0]
+                   | .end
+                   pcg.pcg3.erase
+    1226 4f        | clra
+    1227 a7 00     | staa [x+0x00+0]
+    1229 a7 03     | staa [x+0x03+0]
+    122b a7 60     | staa [x+0x60+0]
+    122d a7 63     | staa [x+0x63+0]
+                   | .end
+                   pcg.pcg3.fill 0xaa
+    122f 86 aa     | ldaa 0xaa
+    1231 a7 00     | staa [x+0x00+0]
+    1233 a7 03     | staa [x+0x03+0]
+    1235 a7 60     | staa [x+0x60+0]
+    1237 a7 63     | staa [x+0x63+0]
+                   | .end
+                   pcg.pcg3.putattr
+    1239 86 07     | ldaa 7+(0<<3)
+    123b a7 00     | staa [x+0x00+0]
+    123d a7 03     | staa [x+0x03+0]
+    123f a7 60     | staa [x+0x60+0]
+    1241 a7 63     | staa [x+0x63+0]
+                   | .end
+                   pcg.pcg3.putattrfg
+    1243 a6 00     | ldaa [x+0x00+0]
+    1245 84 38     | anda 0x38
+    1247 8a 07     | oraa 7
+    1249 a7 00     | staa [x+0x00+0]
+    124b a6 03     | ldaa [x+0x03+0]
+    124d 84 38     | anda 0x38
+    124f 8a 07     | oraa 7
+    1251 a7 03     | staa [x+0x03+0]
+    1253 a6 60     | ldaa [x+0x60+0]
+    1255 84 38     | anda 0x38
+    1257 8a 07     | oraa 7
+    1259 a7 60     | staa [x+0x60+0]
+    125b a6 63     | ldaa [x+0x63+0]
+    125d 84 38     | anda 0x38
+    125f 8a 07     | oraa 7
+    1261 a7 63     | staa [x+0x63+0]
+                   | .end
+                   pcg.pcg3.eraseattr 7,0
+    1263 86 07     | ldaa 7+(0<<3)
+    1265 a7 00     | staa [x+0x00+0]
+    1267 a7 03     | staa [x+0x03+0]
+    1269 a7 60     | staa [x+0x60+0]
+    126b a7 63     | staa [x+0x63+0]
+                   | .end
+                   pcg.pcg3.put 1
+    126d 86 80     | ldaa 0x80
+    126f a7 01     | staa [x+0x00+1]
+    1271 4c        | inca
+    1272 a7 04     | staa [x+0x03+1]
+    1274 4c        | inca
+    1275 a7 61     | staa [x+0x60+1]
+    1277 4c        | inca
+    1278 a7 64     | staa [x+0x63+1]
+                   | .end
+                   pcg.pcg3.erase 1
+    127a 4f        | clra
+    127b a7 01     | staa [x+0x00+1]
+    127d a7 04     | staa [x+0x03+1]
+    127f a7 61     | staa [x+0x60+1]
+    1281 a7 64     | staa [x+0x63+1]
+                   | .end
+                   pcg.pcg3.fill 0xaa,1
+    1283 86 aa     | ldaa 0xaa
+    1285 a7 01     | staa [x+0x00+1]
+    1287 a7 04     | staa [x+0x03+1]
+    1289 a7 61     | staa [x+0x60+1]
+    128b a7 64     | staa [x+0x63+1]
+                   | .end
+                   pcg.pcg3.putattr 1
+    128d 86 07     | ldaa 7+(0<<3)
+    128f a7 01     | staa [x+0x00+1]
+    1291 a7 04     | staa [x+0x03+1]
+    1293 a7 61     | staa [x+0x60+1]
+    1295 a7 64     | staa [x+0x63+1]
+                   | .end
+                   pcg.pcg3.putattrfg 1
+    1297 a6 01     | ldaa [x+0x00+1]
+    1299 84 38     | anda 0x38
+    129b 8a 07     | oraa 7
+    129d a7 01     | staa [x+0x00+1]
+    129f a6 04     | ldaa [x+0x03+1]
+    12a1 84 38     | anda 0x38
+    12a3 8a 07     | oraa 7
+    12a5 a7 04     | staa [x+0x03+1]
+    12a7 a6 61     | ldaa [x+0x60+1]
+    12a9 84 38     | anda 0x38
+    12ab 8a 07     | oraa 7
+    12ad a7 61     | staa [x+0x60+1]
+    12af a6 64     | ldaa [x+0x63+1]
+    12b1 84 38     | anda 0x38
+    12b3 8a 07     | oraa 7
+    12b5 a7 64     | staa [x+0x63+1]
+                   | .end
+                   pcg.pcg3.eraseattr 7,0,1
+    12b7 86 07     | ldaa 7+(0<<3)
+    12b9 a7 01     | staa [x+0x00+1]
+    12bb a7 04     | staa [x+0x03+1]
+    12bd a7 61     | staa [x+0x60+1]
+    12bf a7 64     | staa [x+0x63+1]
+                   | .end
                    .pcgpage page1,user:0x20
-    1219 ff 01     | .db  0xff,0x01,0xff,0xff,0xff,0xff,0xff,0xff
-    121b ff ff     |
-    121d ff ff     |
-    121f ff ff     |
-    1221 ff 02     | .db  0xff,0x02,0xff,0xff,0xff,0xff,0xff,0xff
-    1223 ff ff     |
-    1225 ff ff     |
-    1227 ff ff     |
-    1229 ff 03     | .db  0xff,0x03,0xff,0xff,0xff,0xff,0xff,0xff
-    122b ff ff     |
-    122d ff ff     |
-    122f ff ff     |
-    1231 ff 04     | .db  0xff,0x04,0xff,0xff,0xff,0xff,0xff,0xff
-    1233 ff ff     |
-    1235 ff ff     |
-    1237 ff ff     |
-    1239 ff 05     | .db  0xff,0x05,0xff,0xff,0xff,0xff,0xff,0xff
-    123b ff ff     |
-    123d ff ff     |
-    123f ff ff     |
-    1241 ff 06     | .db  0xff,0x06,0xff,0xff,0xff,0xff,0xff,0xff
-    1243 ff ff     |
-    1245 ff ff     |
-    1247 ff ff     |
-    1249 ff 07     | .db  0xff,0x07,0xff,0xff,0xff,0xff,0xff,0xff
-    124b ff ff     |
-    124d ff ff     |
-    124f ff ff     |
-    1251 ff 08     | .db  0xff,0x08,0xff,0xff,0xff,0xff,0xff,0xff
-    1253 ff ff     |
-    1255 ff ff     |
-    1257 ff ff     |
-    1259 ff 09     | .db  0xff,0x09,0xff,0xff,0xff,0xff,0xff,0xff
-    125b ff ff     |
-    125d ff ff     |
-    125f ff ff     |
+    12c1 ff 01     | .db  0xff,0x01,0xff,0xff,0xff,0xff,0xff,0xff
+    12c3 ff ff     |
+    12c5 ff ff     |
+    12c7 ff ff     |
+    12c9 ff 02     | .db  0xff,0x02,0xff,0xff,0xff,0xff,0xff,0xff
+    12cb ff ff     |
+    12cd ff ff     |
+    12cf ff ff     |
+    12d1 ff 03     | .db  0xff,0x03,0xff,0xff,0xff,0xff,0xff,0xff
+    12d3 ff ff     |
+    12d5 ff ff     |
+    12d7 ff ff     |
+    12d9 ff 04     | .db  0xff,0x04,0xff,0xff,0xff,0xff,0xff,0xff
+    12db ff ff     |
+    12dd ff ff     |
+    12df ff ff     |
+    12e1 ff 05     | .db  0xff,0x05,0xff,0xff,0xff,0xff,0xff,0xff
+    12e3 ff ff     |
+    12e5 ff ff     |
+    12e7 ff ff     |
+    12e9 ff 06     | .db  0xff,0x06,0xff,0xff,0xff,0xff,0xff,0xff
+    12eb ff ff     |
+    12ed ff ff     |
+    12ef ff ff     |
+    12f1 ff 07     | .db  0xff,0x07,0xff,0xff,0xff,0xff,0xff,0xff
+    12f3 ff ff     |
+    12f5 ff ff     |
+    12f7 ff ff     |
+    12f9 ff 08     | .db  0xff,0x08,0xff,0xff,0xff,0xff,0xff,0xff
+    12fb ff ff     |
+    12fd ff ff     |
+    12ff ff ff     |
+    1301 ff 09     | .db  0xff,0x09,0xff,0xff,0xff,0xff,0xff,0xff
+    1303 ff ff     |
+    1305 ff ff     |
+    1307 ff ff     |
                    .pcgpage page2,user:0x20:0x21,cram:0x80:0x81,user:0x3e
-    1261 ff 01     | .db  0xff,0x01,0xff,0xff,0xff,0xff,0xff,0xff
-    1263 ff ff     |
-    1265 ff ff     |
-    1267 ff ff     |
-    1269 ff 02     | .db  0xff,0x02,0xff,0xff,0xff,0xff,0xff,0xff
-    126b ff ff     |
-    126d ff ff     |
-    126f ff ff     |
-    1271 ff 03     | .db  0xff,0x03,0xff,0xff,0xff,0xff,0xff,0xff
-    1273 ff ff     |
-    1275 ff ff     |
-    1277 ff ff     |
-    1279 ff 04     | .db  0xff,0x04,0xff,0xff,0xff,0xff,0xff,0xff
-    127b ff ff     |
-    127d ff ff     |
-    127f ff ff     |
-    1281 ff 05     | .db  0xff,0x05,0xff,0xff,0xff,0xff,0xff,0xff
-    1283 ff ff     |
-    1285 ff ff     |
-    1287 ff ff     |
-    1289 ff 06     | .db  0xff,0x06,0xff,0xff,0xff,0xff,0xff,0xff
-    128b ff ff     |
-    128d ff ff     |
-    128f ff ff     |
-    1291 ff 07     | .db  0xff,0x07,0xff,0xff,0xff,0xff,0xff,0xff
-    1293 ff ff     |
-    1295 ff ff     |
-    1297 ff ff     |
-    1299 ff 08     | .db  0xff,0x08,0xff,0xff,0xff,0xff,0xff,0xff
-    129b ff ff     |
-    129d ff ff     |
-    129f ff ff     |
-    12a1 ff 09     | .db  0xff,0x09,0xff,0xff,0xff,0xff,0xff,0xff
-    12a3 ff ff     |
-    12a5 ff ff     |
-    12a7 ff ff     |
+    1309 ff 01     | .db  0xff,0x01,0xff,0xff,0xff,0xff,0xff,0xff
+    130b ff ff     |
+    130d ff ff     |
+    130f ff ff     |
+    1311 ff 02     | .db  0xff,0x02,0xff,0xff,0xff,0xff,0xff,0xff
+    1313 ff ff     |
+    1315 ff ff     |
+    1317 ff ff     |
+    1319 ff 03     | .db  0xff,0x03,0xff,0xff,0xff,0xff,0xff,0xff
+    131b ff ff     |
+    131d ff ff     |
+    131f ff ff     |
+    1321 ff 04     | .db  0xff,0x04,0xff,0xff,0xff,0xff,0xff,0xff
+    1323 ff ff     |
+    1325 ff ff     |
+    1327 ff ff     |
+    1329 ff 05     | .db  0xff,0x05,0xff,0xff,0xff,0xff,0xff,0xff
+    132b ff ff     |
+    132d ff ff     |
+    132f ff ff     |
+    1331 ff 06     | .db  0xff,0x06,0xff,0xff,0xff,0xff,0xff,0xff
+    1333 ff ff     |
+    1335 ff ff     |
+    1337 ff ff     |
+    1339 ff 07     | .db  0xff,0x07,0xff,0xff,0xff,0xff,0xff,0xff
+    133b ff ff     |
+    133d ff ff     |
+    133f ff ff     |
+    1341 ff 08     | .db  0xff,0x08,0xff,0xff,0xff,0xff,0xff,0xff
+    1343 ff ff     |
+    1345 ff ff     |
+    1347 ff ff     |
+    1349 ff 09     | .db  0xff,0x09,0xff,0xff,0xff,0xff,0xff,0xff
+    134b ff ff     |
+    134d ff ff     |
+    134f ff ff     |
+                   .pcgpage page3,cram:0x80
+    1351 07 1f     | .db  0x07,0x1f,0x3f,0x7f,0x7f,0xff,0xff,0xff
+    1353 3f 7f     |
+    1355 7f ff     |
+    1357 ff ff     |
+    1359 e0 f8     | .db  0xe0,0xf8,0xfc,0xfe,0xfe,0xff,0xff,0xff
+    135b fc fe     |
+    135d fe ff     |
+    135f ff ff     |
+    1361 ff ff     | .db  0xff,0xff,0xff,0x7f,0x7f,0x3f,0x1f,0x07
+    1363 ff 7f     |
+    1365 7f 3f     |
+    1367 1f 07     |
+    1369 ff ff     | .db  0xff,0xff,0xff,0xfe,0xfe,0xfc,0xf8,0xe0
+    136b ff fe     |
+    136d fe fc     |
+    136f f8 e0     |
 [Symbol List]
 0001  @BYTE
 0002  @WORD
 0004  @DWORD
-1219  pcgpage.page1.src
-1261  pcgpage.page2.src
+12c1  pcgpage.page1.src
+1309  pcgpage.page2.src
+1351  pcgpage.page3.src
