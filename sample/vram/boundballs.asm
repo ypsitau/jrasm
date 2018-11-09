@@ -87,7 +87,7 @@ ballsEnd:
 
 	.pcgpage mainpage,cram:0x80
 
-	.pcg	chkcircle2x2, 2,2, 2,64, 2:0
+	.pcg	chkcircle2x2, 2,2, 3,96, 2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."
@@ -150,4 +150,4 @@ loop:
 	.include "xrnd.inc"
 	.include "jbranch.inc"
 	.include "oputil.inc"
-	.include "vram32x24x2.inc"
+	.include "vram32x24x3.inc"
