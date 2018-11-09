@@ -7,6 +7,7 @@
 ;;; Structure
 ;;;-----------------------------------------------------------------------------
 ball:	.struct
+id:	.ds	@byte
 posx:	.ds	@byte
 posy:	.ds	@byte
 dirx:	.ds	@byte
@@ -23,8 +24,11 @@ diry:	.ds	@byte
 
 	;; Initialize parameter table
 	.scope
+	clra
 	ldx	balls
 each_ball:
+	.save	a
+	staa	[x+ball.id]
 	; ball.posx = xrndn.mb(30) + 1
 	xrndn.mb	30
 	inca
@@ -45,6 +49,8 @@ each_ball:
 	staa	[x+ball.diry]
 	; next entry
 	addx.mb	@ball
+	.end
+	inca
 	cpx	ballsEnd
 	bne	each_ball
 	.end
@@ -57,9 +63,14 @@ eachball1:
 	movebound [x+ball.posx], [x+ball.dirx], 0, 30
 	movebound [x+ball.posy], [x+ball.diry], 0, 22
 	.save	x
+	ldmb	[ball_id],[x+ball.id]
 	vram.fromxy [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.put 0
 	pcg.chkcircle2x2.putattr 1
+	pcg.chkcircle2x2.fill [ball_id],2
+	ldaa	[ball_id]
+	adda	'A'
+	staa	[x]
 	.end
 	addx.mb	@ball
 	cpx	ballsEnd
@@ -72,7 +83,8 @@ eachball2:
 	.save	x
 	vram.fromxy [x+ball.posx], [x+ball.posy]
 	pcg.chkcircle2x2.erase 0
-	pcg.chkcircle2x2.eraseattr ,,1
+	pcg.chkcircle2x2.eraseattr 7,0,1
+	pcg.chkcircle2x2.fill 0,2
 	.end
 	addx.mb	@ball
 	cpx	ballsEnd
@@ -84,6 +96,9 @@ eachball2:
 balls:
 	.ds	@ball * 10
 ballsEnd:
+
+ball_id:
+	.ds	1
 
 	.pcgpage mainpage,cram:0x80
 
@@ -131,19 +146,6 @@ rel1:
 	staa	dir
 rel2:
 	addmb	pos,dir
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; delay
-;;;  Format: delay num
-;;;  Param: num [IMM, DIR, IDX, EXT] .. Delay duration
-;;;-----------------------------------------------------------------------------
-delay:
-	.macro	num
-	ldx	num
-loop:
-	dex
-	bne	loop
 	.end
 
 	.include "bios.inc"
