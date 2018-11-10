@@ -225,13 +225,20 @@ bool Parser::ReduceTwo()
 		// (null) -> [Exp] ,
 		_pExprStack->back()->GetExprOperands().push_back(pToken1->GetExpr()->Reference());
 	} else if (pToken2->IsType(TOKEN_Expr)) {
-		// [Exp] -> [Exp] OP [Exp]
+		// [Exp] -> OP [Exp]
 		AutoPtr<Expr> pExprOperand(pToken2->GetExpr()->Reference());
 		AutoPtr<Expr> pExpr;
 		if (pToken1->IsType(TOKEN_Plus)) {
 			pExpr.reset(new Expr_UnaryOp(Operator::Add, pExprOperand.release()));
 		} else if (pToken1->IsType(TOKEN_Minus)) {
-			pExpr.reset(new Expr_UnaryOp(Operator::Sub, pExprOperand.release()));
+			if (pExprOperand->IsTypeInteger()) {
+				Expr_Integer *pExprEx = dynamic_cast<Expr_Integer *>(pExprOperand.get());
+				String str = "-";
+				str += pExprEx->ComposeSource(false);
+				pExpr.reset(new Expr_Integer(str, -pExprEx->GetInteger()));
+			} else {
+				pExpr.reset(new Expr_UnaryOp(Operator::Sub, pExprOperand.release()));
+			}
 #if 0
 		} else if (pToken1->IsType(TOKEN_Hash)) {
 			pExpr.reset(new Expr_UnaryOp(Operator::ToString, pExprOperand.release()));

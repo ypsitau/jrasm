@@ -69,8 +69,6 @@ bool Tokenizer::FeedChar(char ch)
 			Pushback();
 		} else if (ch == ';') {
 			_stat = STAT_LineComment;
-		} else if (ch == '-') {
-			_stat = STAT_Minus;
 		} else if (ch == ':') {
 			_stat = STAT_Colon;
 		} else if (ch == '=') {
@@ -93,6 +91,8 @@ bool Tokenizer::FeedChar(char ch)
 			rtn = FeedToken(TOKEN_Comma);
 		} else if (ch == '+') {
 			rtn = FeedToken(TOKEN_Plus);
+		} else if (ch == '-') {
+			rtn = FeedToken(TOKEN_Minus);
 		} else if (ch == '#') {
 			rtn = FeedToken(TOKEN_Hash);
 		} else if (ch == '*') {
@@ -156,28 +156,6 @@ bool Tokenizer::FeedChar(char ch)
 			_stat = STAT_Neutral;
 		} else {
 			_stat = STAT_BlockComment;
-			Pushback();
-		}
-		break;
-	}
-	case STAT_Minus: {
-		if (ch == '0') {
-			_numNegFlag = true;
-			_num = 0;
-			_str.clear();
-			_str += '-';
-			_str += ch;
-			_stat = STAT_DetectZero;
-		} else if (IsDigit(ch)) {
-			_numNegFlag = true;
-			_num = 0;
-			_str.clear();
-			_str += '-';
-			_stat = STAT_DecInteger;
-			Pushback();
-		} else {
-			rtn = FeedToken(TOKEN_Minus);
-			_stat = STAT_Neutral;
 			Pushback();
 		}
 		break;

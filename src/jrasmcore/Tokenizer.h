@@ -22,7 +22,6 @@ public:
 		STAT_LineComment,
 		STAT_BlockComment,
 		STAT_BlockComment_Asterisk,
-		STAT_Minus,
 		STAT_Colon,
 		STAT_Equal,
 		STAT_VBar,
