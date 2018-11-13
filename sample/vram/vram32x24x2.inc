@@ -69,14 +69,30 @@ loop:
 	.end
 
 ;;;-----------------------------------------------------------------------------
+;;; vram.fill
+;;;-----------------------------------------------------------------------------
+vram.fill:
+	.macro	ch,cnt
+	ldab	cnt
+loop:
+	ldaa	ch
+	staa	[x]
+	ldaa	{0x0e}
+	staa	[x+1]
+	inx
+	inx
+	decb
+	bne	loop
+	.end
+
+;;;-----------------------------------------------------------------------------
 ;;; vram.scrollup
-;;;  Format: vram.scrollup top=0,bottom=24
+;;;  Format: vram.scrollup top=0,bottom=23
 ;;;-----------------------------------------------------------------------------
 vram.scrollup:
-	.macro	top=0,bottom=24
+	.macro	top=0,bottom=23
 posy:	.equ	0x18
 	ldaa	bottom
-	deca
 	staa	{posy}
 	vram.fromxy 0,{posy}
 	stx	[endaddr1]
@@ -179,3 +195,4 @@ vram:
 vram.end:
 
 	.include "oputil.inc"
+	.include "vramcmn.inc"
