@@ -8,11 +8,13 @@
 	vram.color 7,0
 	vram.fromxy 0,23
 	vram.fill '*',32
+	vram.fromxy 0,0
+	vram.puts "Hello\0"
 loop:
-	vram.scrollup 1,22
-	xrndn.mb 31
+	vram.scrolldown 1,22
+	xrndn.mb 32
 	staa	[posx]
-	vram.fromxy [posx],22
+	vram.fromxy [posx],1
 	ldaa	'A'
 	staa	[x]
 	ldaa	7
@@ -25,4 +27,4 @@ posx:	.ds	1
 
 	.include "oputil.inc"
 	.include "xrnd.inc"
-	.include "vram32x24x2.inc"
+	.include "vram32x24x3.inc"

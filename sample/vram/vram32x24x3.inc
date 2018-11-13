@@ -1,10 +1,27 @@
 ;;;=============================================================================
-;;; vram.inc
+;;; vram32x24x3.inc
 ;;;=============================================================================
 	.cseg
 ;;;-----------------------------------------------------------------------------
+;;; Constant
+;;;-----------------------------------------------------------------------------
+vram.width:		.equ	32
+vram.height:		.equ	24
+vram.bytes_per_char:	.equ	3
+
+;;;-----------------------------------------------------------------------------
+;;; vram.nextx
+;;;-----------------------------------------------------------------------------
+vram.nextx:
+	.macro
+	inx
+	inx
+	inx
+	.end
+
+;;;-----------------------------------------------------------------------------
 ;;; vram.fromxy
-;;; Calculate: X = (posx + posy * 32) * 3
+;;; Calculate: X = vram + (posx + posy * 32) * 3
 ;;;  Format: vram.fromxy posx,posy
 ;;;  Param: vram
 ;;;         posx [IMM, DIR, IDX, EXT] .. X-position
@@ -58,74 +75,5 @@ result.l:
 	rts
 	.end
 
-;;;-----------------------------------------------------------------------------
-;;; vram.clear
-;;;-----------------------------------------------------------------------------
-vram.clear:
-	.macro
-	jsr	vram._clear
-	.end
-
-vram._clear:
-	.scope
-	ldx	vram
-	clra
-loop:
-	staa	[x]
-	inx
-	cpx	vram.end
-	bne	loop
-	rts
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; vram.refresh
-;;;-----------------------------------------------------------------------------
-vram.refresh:
-	.macro
-	jsr	vram._refresh
-	.end
-
-vram._refresh:
-	.scope
-	ldmw	[srcp],vram
-	ldmw	[charp],0xc100
-	ldmw	[attrp],0xc500
-loop:	
-srcp:
-	.equ	$+1
-	ldx	0x0000
-	cpx	vram.end
-	beq	done
-	ldaa	[x]
-	inx
-	ldab	[x]
-	inx
-	inx
-	stx	[srcp]
-charp:
-	.equ	$+1
-	ldx	0x0000
-	staa	[x]
-	inx
-	stx	[charp]
-attrp:
-	.equ	$+1
-	ldx	0x0000
-	stab	[x]
-	inx
-	stx	[attrp]
-	bra	loop
-done:
-	rts
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; VRAM Buffer
-;;;-----------------------------------------------------------------------------
-	.wseg
-vram:
-	.ds	32 * 24 * 3
-vram.end:
-
 	.include "oputil.inc"
+	.include "vramcmn.inc"
