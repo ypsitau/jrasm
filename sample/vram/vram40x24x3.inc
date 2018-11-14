@@ -23,6 +23,20 @@ vram.nextx:
 	.end
 
 ;;;-----------------------------------------------------------------------------
+;;; vram.zero_and_nextx
+;;;-----------------------------------------------------------------------------
+vram.zero_and_nextx:
+	.macro
+	clra
+	staa	[x]
+	staa	[x+1]
+	staa	[x+2]
+	inx
+	inx
+	inx
+	.end
+
+;;;-----------------------------------------------------------------------------
 ;;; vram.fromxy
 ;;; Calculate: X = vram + (posx + posy * 32 + posy * 4) * 3
 ;;;  Format: vram.fromxy posx,posy

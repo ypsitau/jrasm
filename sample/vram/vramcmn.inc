@@ -161,6 +161,7 @@ cnty:
 	.ds	1
 	.end
 
+	.cseg
 ;;;-----------------------------------------------------------------------------
 ;;; vram.scrollup
 ;;;  Format: vram.scrollup top=0,bottom=23
@@ -219,6 +220,39 @@ endaddr2:
 	.equ	$+1
 	cpx	0x0000
 	bne	loop2
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.scrollleft
+;;;-----------------------------------------------------------------------------
+vram.scrollleft:
+	.macro
+	jsr	vram._scrollleft
+	.end
+
+vram._scrollleft:
+	.scope
+	ldx	vram
+	ldmb	[cnty],vram.height
+loopy:
+	ldab	(vram.width-1)*vram.bytes_per_char
+loopx:
+	ldaa	[x+vram.bytes_per_char]
+	staa	[x]
+	inx
+	decb
+	bne	loopx
+	vram.zero_and_nextx
+	dec	[cnty]
+	bne	loopy
+done:
+	rts
+
+	.wseg
+cntx:
+	.ds	1
+cnty:
+	.ds	1
 	.end
 
 ;;;-----------------------------------------------------------------------------

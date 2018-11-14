@@ -10,11 +10,11 @@
 	vram.fill '*',vram.width
 	//vram.refresh
 loop:	//bra	loop
-	vram.scrolldown 1,22
-	xrndn.mb vram.width
-	staa	[posx]
-	vram.fromxy [posx],1
-	ldaa	'A'
+	vram.scrollleft
+	xrndn.mb vram.height
+	staa	[posy]
+	vram.fromxy vram.width-1,[posy]
+	ldaa	'<'
 	staa	[x]
 	ldaa	7
 	staa	[x+1]
@@ -23,6 +23,7 @@ loop:	//bra	loop
 
 	.wseg
 posx:	.ds	1
+posy:	.ds	1
 
 	.include "oputil.inc"
 	.include "xrnd.inc"
