@@ -27,4 +27,4 @@ posy:	.ds	1
 
 	.include "oputil.inc"
 	.include "xrnd.inc"
-	.include "vram40x24x3.inc"
+	.include "vram32x24x3.inc"
