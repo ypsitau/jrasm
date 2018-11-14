@@ -84,8 +84,8 @@ loop:
 ;;;-----------------------------------------------------------------------------
 ;;; vram.refresh
 ;;;-----------------------------------------------------------------------------
-vram.refresh:
-	.macro
+vram._refresh_without_margin:
+	.scope
 	ldmw	[srcp],vram
 	ldmw	[charp],0xc100
 	ldmw	[attrp],0xc500
@@ -113,6 +113,53 @@ attrp:
 	stx	[attrp]
 	bra	loop
 done:
+	rts
+	.end
+
+vram._refresh_with_margin:
+	.scope
+	ldmw	[srcp],vram + vram.margin@l * vram.bytes_per_char
+	ldmw	[charp],0xc100
+	ldmw	[attrp],0xc500
+	ldmb	[cnty],24
+loopy:
+	ldmb	[cntx],32
+srcp:
+	.equ	$+1
+loopx:
+	ldx	0x0000
+	ldaa	[x]
+	ldab	[x+1]
+	inx
+	inx
+	stx	[srcp]
+charp:
+	.equ	$+1
+	ldx	0x0000
+	staa	[x]
+	inx
+	stx	[charp]
+attrp:
+	.equ	$+1
+	ldx	0x0000
+	stab	[x]
+	inx
+	stx	[attrp]
+	dec	[cntx]
+	bne	loopx
+	ldx	[srcp]
+	addx.mb	(vram.margin@r + vram.margin@l) * vram.bytes_per_char
+	stx	[srcp]
+	dec	[cnty]
+	bne	loopy
+done:
+	rts
+
+	.wseg
+cntx:
+	.ds	1
+cnty:
+	.ds	1
 	.end
 
 ;;;-----------------------------------------------------------------------------
