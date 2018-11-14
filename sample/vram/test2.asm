@@ -10,7 +10,7 @@
 	vram.fill '*',vram.width
 	//vram.refresh
 loop:	//bra	loop
-	vram.scrollleft
+	vram.scrollleft 1,22
 	xrndn.mb vram.height
 	staa	[posy]
 	vram.fromxy vram.width-1,[posy]

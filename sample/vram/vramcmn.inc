@@ -226,14 +226,19 @@ endaddr2:
 ;;; vram.scrollleft
 ;;;-----------------------------------------------------------------------------
 vram.scrollleft:
-	.macro
+	.macro	top=0,bottom=23
+	clra
+	ldab	top
+	jsr	vram._fromxy
+	ldab	bottom
+	incb
+	subb	top
 	jsr	vram._scrollleft
 	.end
 
 vram._scrollleft:
 	.scope
-	ldx	vram
-	ldmb	[cnty],vram.height
+	stab	[cnty]
 loopy:
 	ldab	(vram.width-1)*vram.bytes_per_char
 loopx:
