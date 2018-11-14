@@ -34,10 +34,10 @@ vram.fromxy:
 	.macro	posx,posy
 	ldaa	posx
 	ldab	posy
-	jsr	_vram.fromxy
+	jsr	vram._fromxy
 	.end
 
-_vram.fromxy:
+vram._fromxy:
 	.scope
 posx:	.equ	0x18
 	staa	{posx}

@@ -130,8 +130,7 @@ loopx:
 	ldx	0x0000
 	ldaa	[x]
 	ldab	[x+1]
-	inx
-	inx
+	vram.nextx
 	stx	[srcp]
 charp:
 	.equ	$+1
@@ -170,11 +169,11 @@ vram.scrollup:
 	.macro	top=0,bottom=23
 	vram.fromxy 0,bottom
 	stx	[endaddr1]
-	addx.mb	32 * vram.bytes_per_char
+	addx.mb	vram.width * vram.bytes_per_char
 	stx	[endaddr2]
 	vram.fromxy 0,top
 loop1:
-	ldaa	[x + 32 * vram.bytes_per_char]
+	ldaa	[x + vram.width * vram.bytes_per_char]
 	staa	[x]
 	inx
 endaddr1:
@@ -200,13 +199,13 @@ vram.scrolldown:
 	vram.fromxy 0,top
 	dex
 	stx	[endaddr1]
-	subx.mb	32 * vram.bytes_per_char
+	subx.mb	vram.width * vram.bytes_per_char
 	stx	[endaddr2]
 	vram.fromxy 0,bottom
 	dex
 loop1:
 	ldaa	[x]
-	staa	[x + 32 * vram.bytes_per_char]
+	staa	[x + vram.width * vram.bytes_per_char]
 	dex
 endaddr1:
 	.equ	$+1
@@ -214,7 +213,7 @@ endaddr1:
 	bne	loop1
 	clra
 loop2:
-	staa	[x + 32 * vram.bytes_per_char]
+	staa	[x + vram.width * vram.bytes_per_char]
 	dex
 endaddr2:
 	.equ	$+1
