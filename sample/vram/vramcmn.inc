@@ -3,7 +3,7 @@
 ;;;=============================================================================
 	.cseg
 ;;;------------------------------------------------------------------------------
-;;; bios.color
+;;; vram.color
 ;;; Specifies color attribute.
 ;;;  Format: bios.color fg, bg, user=0
 ;;;  Param: fg [IMM] .. Color code for foreground (0 to 7)
