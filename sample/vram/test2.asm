@@ -17,6 +17,7 @@
 	vram.puts "0123456789\0"
 
 	vram.fromxy 2,1
+	stx	[0x2000]
 	ldaa	'*'
 	staa	[x]
 	ldaa	7
@@ -25,6 +26,13 @@
 	staa	[x+120]
 	ldaa	7
 	staa	[x+121]
+	vram.fromxy 2,2
+	stx	[0x2002]
+	ldaa	'+'
+	staa	[x]
+	ldaa	7
+	staa	[x+1]
+
 	//pcg.chkcircle2x2.put 0
 	//pcg.chkcircle2x2.putattr 1
 
@@ -71,6 +79,7 @@ posy:	.ds	1
 
 	.end
 
+	.include "bios.inc"
 	.include "oputil.inc"
 	.include "xrnd.inc"
 	.include "vram40x24x3.inc"
