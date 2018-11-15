@@ -260,6 +260,47 @@ cnty:
 	.ds	1
 	.end
 
+	.cseg
+;;;-----------------------------------------------------------------------------
+;;; vram.scrollright
+;;;-----------------------------------------------------------------------------
+vram.scrollright:
+	.macro	top=0,bottom=23
+	ldaa	vram.width
+	deca
+	ldab	bottom
+	jsr	vram._fromxy
+	dex
+	ldab	bottom
+	incb
+	subb	top
+	jsr	vram._scrollright
+	.end
+
+vram._scrollright:
+	.scope
+	stab	[cnty]
+loopy:
+	ldab	(vram.width-1)*vram.bytes_per_char
+loopx:
+	ldaa	[x]
+	staa	[x+vram.bytes_per_char]
+	dex
+	decb
+	bne	loopx
+	vram.zero_and_prevx
+	dec	[cnty]
+	bne	loopy
+done:
+	rts
+
+	.wseg
+cntx:
+	.ds	1
+cnty:
+	.ds	1
+	.end
+
 ;;;-----------------------------------------------------------------------------
 ;;; VRAM Buffer
 ;;;-----------------------------------------------------------------------------

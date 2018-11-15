@@ -10,11 +10,13 @@
 	vram.fill '*',vram.width
 	//vram.refresh
 loop:	//bra	loop
-	vram.scrollleft 1,22
+	//vram.scrollleft 1,22
+	vram.scrollright 1,22
 	xrndn.mb vram.height
 	staa	[posy]
-	vram.fromxy vram.width-1,[posy]
-	ldaa	'<'
+	//vram.fromxy vram.width-1,[posy]
+	vram.fromxy 0,[posy]
+	ldaa	'>'
 	staa	[x]
 	ldaa	7
 	staa	[x+1]
@@ -27,4 +29,4 @@ posy:	.ds	1
 
 	.include "oputil.inc"
 	.include "xrnd.inc"
-	.include "vram32x24x3.inc"
+	.include "vram40x24x3.inc"
