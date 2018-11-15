@@ -2,7 +2,6 @@
 ;;; boundballs.asm
 ;;;=============================================================================
 	.org	0x1000
-
 ;;;-----------------------------------------------------------------------------
 ;;; Structure
 ;;;-----------------------------------------------------------------------------
@@ -60,8 +59,8 @@ mainloop:
 
 	ldx	balls
 eachball1:
-	movebound [x+ball.posx], [x+ball.dirx], 0, 30
-	movebound [x+ball.posy], [x+ball.diry], 0, 22
+	movebound [x+ball.posx], [x+ball.dirx], 0, vram.width-2
+	movebound [x+ball.posy], [x+ball.diry], 0, vram.height-2
 	.save	x
 	ldmb	[ball_id],[x+ball.id]
 	vram.fromxy [x+ball.posx], [x+ball.posy]
@@ -102,7 +101,7 @@ ball_id:
 
 	.pcgpage mainpage,cram:0x80
 
-	.pcg	chkcircle2x2, 2,2, 3,40*3, 2:0
+	.pcg	chkcircle2x2, 2,2, 3,36*3, 2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."
@@ -152,4 +151,4 @@ rel2:
 	.include "xrnd.inc"
 	.include "jbranch.inc"
 	.include "oputil.inc"
-	.include "vram40x24x3.inc"
+	.include "vram36x24x3.inc"

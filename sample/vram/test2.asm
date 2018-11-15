@@ -3,38 +3,13 @@
 	pcgpage.mainpage.store
 	vram.clear
 	ldmb	[0xca00],1
-	
-	/*
-	vram.color 7,0
-	vram.fromxy 0,0
-	vram.fill '*',vram.width
-	vram.color 7,0
-	vram.fromxy 0,23
-	vram.fill '*',vram.width
-	*/
 
 	vram.fromxy 0,0
 	vram.puts "0123456789\0"
 
-	vram.fromxy 2,1
-	stx	[0x2000]
-	ldaa	'*'
-	staa	[x]
-	ldaa	7
-	staa	[x+1]
-	ldaa	'*'
-	staa	[x+120]
-	ldaa	7
-	staa	[x+121]
-	vram.fromxy 2,2
-	stx	[0x2002]
-	ldaa	'+'
-	staa	[x]
-	ldaa	7
-	staa	[x+1]
-
-	//pcg.chkcircle2x2.put 0
-	//pcg.chkcircle2x2.putattr 1
+	vram.fromxy 10,10
+	pcg.chkcircle2x2.put 0
+	pcg.chkcircle2x2.putattr 1
 
 	vram.refresh
 loop:	bra	loop
@@ -58,7 +33,7 @@ posy:	.ds	1
 	.dseg
 	.pcgpage mainpage,cram:0x80
 
-	.pcg	chkcircle2x2, 2,2, 3,40*3, 2:0
+	.pcg	chkcircle2x2, 2,2, 1,32*2, 2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."
@@ -82,4 +57,4 @@ posy:	.ds	1
 	.include "bios.inc"
 	.include "oputil.inc"
 	.include "xrnd.inc"
-	.include "vram40x24x3.inc"
+	.include "vram32x24x3.inc"
