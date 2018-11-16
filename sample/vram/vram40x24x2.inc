@@ -3,39 +3,107 @@
 ;;;=============================================================================
 	.cseg
 
-vram.margin@l: .equ	2
-vram.margin@r: .equ	2
+;;;-----------------------------------------------------------------------------
+;;; Constant
+;;;-----------------------------------------------------------------------------
+vram.margin@l: 		.equ	2
+vram.margin@r: 		.equ	2
+vram.width:		.equ	32 + vram.margin@l + vram.margin@r
+vram.height:		.equ	24
+vram.bytes_per_char:	.equ	2
+
+;;;-----------------------------------------------------------------------------
+;;; vram.nextx
+;;;-----------------------------------------------------------------------------
+vram.nextx:
+	.macro
+	inx
+	inx
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.zero_and_nextx
+;;;-----------------------------------------------------------------------------
+vram.zero_and_nextx:
+	.macro
+	clra
+	staa	[x]
+	staa	[x+1]
+	inx
+	inx
+	.end
+
+ ;;;-----------------------------------------------------------------------------
+;;; vram.prevx
+;;;-----------------------------------------------------------------------------
+vram.prevx:
+	.macro
+	dex
+	dex
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.zero_and_prevx
+;;;-----------------------------------------------------------------------------
+vram.zero_and_prevx:
+	.macro
+	clra
+	staa	[x+1]
+	staa	[x+2]
+	dex
+	dex
+	.end
 
 ;;;-----------------------------------------------------------------------------
 ;;; vram.fromxy
-;;; Calculate: X = posx * 2 + posy * 32 * 2 + posy * 4 * 2
+;;; Calculate: X = vram + (posx + posy * 32 + posy * 4) * 2
+;;;  Format: vram.fromxy posx,posy
+;;;  Param: vram
+;;;         posx [IMM, DIR, IDX, EXT] .. X-position
+;;;         posy [IMM, DIR, IDX, EXT] .. Y-position
+;;;  Output: X .. VRAM address
+;;;  Broken: A, B
 ;;;-----------------------------------------------------------------------------
 vram.fromxy:
 	.macro	posx,posy
 	ldaa	posx
 	ldab	posy
-	jsr	_vram.fromxy
+	jsr	vram._fromxy
 	.end
 
-_vram.fromxy:
+vram._fromxy:
 	.scope
-posx2:	.equ	0x18
-	ldx	vram
-	stx	[result]
-	asla
-	staa	{posx2}
+posx:	.equ	0x18
+	staa	{posx}
 	clra
 	clc
-	rorb
-	rora
-	rorb
-	rora
-	adda	{posx2}
-	adcb	0
+	rolb
+	rola
+	rolb
+	rola
+	stab	[result.l]
+	staa	[result.h]
+	rolb
+	rola
+	rolb
+	rola
+	rolb
+	rola
+	addb	{posx}
+	adca	0
+	addb	[result.l]
+	adca	[result.h]
+	clc
+	rolb
+	rola
+	stab	[result.l]
+	staa	[result.h]
+	ldaa	vram <+> [2,1]
 	adda	[result.l]
 	staa	[result.l]
-	adcb	[result.h]
-	stab	[result.h]
+	ldaa	vram <+> [2,0]
+	adca	[result.h]
+	staa	[result.h]
 result:
 	.equ	$+1
 result.h:
@@ -47,83 +115,12 @@ result.l:
 	.end
 
 ;;;-----------------------------------------------------------------------------
-;;; vram.clear
-;;;-----------------------------------------------------------------------------
-vram.clear:
-	.macro
-	jsr	vram._clear
-	.end
-
-vram._clear:
-	.scope
-	ldx	vram
-	clra
-loop:
-	staa	[x]
-	inx
-	cpx	vram.end
-	bne	loop
-	rts
-	.end
-
-;;;-----------------------------------------------------------------------------
 ;;; vram.refresh
 ;;;-----------------------------------------------------------------------------
 vram.refresh:
 	.macro
-	jsr	vram._refresh
+	jsr	vram._refresh_with_margin
 	.end
-
-vram._refresh:
-	.scope
-	ldmw	[srcp],vram + vram.margin@l * 2
-	ldmw	[dstp_char],0xc100
-	ldmw	[dstp_attr],0xc500
-	ldmb	[cnty],24
-loopy:	
-	ldmb	[cntx],32
-srcp:
-	.equ	$+1
-loopx:	
-	ldx	0x0000
-	ldaa	[x]
-	inx
-	ldab	[x]
-	inx
-	stx	[srcp]
-dstp_char:
-	.equ	$+1
-	ldx	0x0000
-	staa	[x]
-	inx
-	stx	[dstp_char]
-dstp_attr:
-	.equ	$+1
-	ldx	0x0000
-	stab	[x]
-	inx
-	stx	[dstp_attr]
-	dec	[cntx]
-	bne	loopx
-	addx.mb	(vram.margin@r + vram.margin@l) * 2
-	dec	[cnty]
-	bne	loopy
-done:
-	rts
-
-	.wseg
-cntx:
-	.ds	1
-cnty:
-	.ds	1
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; VRAM Buffer
-;;;-----------------------------------------------------------------------------
-	.wseg
-vram:
-	.ds	(vram.margin@l + 32 + vram.margin@r) * 2 * 24
-vram.end:
 
 	.include "oputil.inc"
+	.include "vramcmn.inc"

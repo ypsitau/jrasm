@@ -3,6 +3,57 @@
 ;;;=============================================================================
 	.cseg
 ;;;-----------------------------------------------------------------------------
+;;; Constant
+;;;-----------------------------------------------------------------------------
+vram.margin@l: 		.equ	0
+vram.margin@r: 		.equ	0
+vram.width:		.equ	32
+vram.height:		.equ	24
+vram.bytes_per_char:	.equ	2
+
+;;;-----------------------------------------------------------------------------
+;;; vram.nextx
+;;;-----------------------------------------------------------------------------
+vram.nextx:
+	.macro
+	inx
+	inx
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.zero_and_nextx
+;;;-----------------------------------------------------------------------------
+vram.zero_and_nextx:
+	.macro
+	clra
+	staa	[x]
+	staa	[x+1]
+	inx
+	inx
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.prevx
+;;;-----------------------------------------------------------------------------
+vram.prevx:
+	.macro
+	dex
+	dex
+	.end
+
+;;;-----------------------------------------------------------------------------
+;;; vram.zero_and_prevx
+;;;-----------------------------------------------------------------------------
+vram.zero_and_prevx:
+	.macro
+	clra
+	staa	[x+1]
+	staa	[x+2]
+	dex
+	dex
+	.end
+
+;;;-----------------------------------------------------------------------------
 ;;; vram.fromxy
 ;;; Calculate: X = vram + (posx + posy * 32) * 2
 ;;;  Format: vram.fromxy posx,posy
@@ -16,10 +67,10 @@ vram.fromxy:
 	.macro	posx,posy
 	ldaa	posx
 	ldab	posy
-	jsr	_vram.fromxy
+	jsr	vram._fromxy
 	.end
 
-_vram.fromxy:
+vram._fromxy:
 	.scope
 posx:	.equ	0x18
 	staa	{posx}
@@ -55,127 +106,12 @@ result.l:
 	.end
 
 ;;;-----------------------------------------------------------------------------
-;;; vram.clear
-;;;-----------------------------------------------------------------------------
-vram.clear:
-	.macro
-	ldx	vram
-	clra
-loop:
-	staa	[x]
-	inx
-	cpx	vram.end
-	bne	loop
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; vram.scrollup
-;;;  Format: vram.scrollup top=0,bottom=24
-;;;-----------------------------------------------------------------------------
-vram.scrollup:
-	.macro	top=0,bottom=24
-posy:	.equ	0x18
-	ldaa	bottom
-	deca
-	staa	{posy}
-	vram.fromxy 0,{posy}
-	stx	[endaddr1]
-	addx.mb	32*2
-	stx	[endaddr2]
-	vram.fromxy 0,top
-loop1:
-	ldaa	[x+32*2]
-	staa	[x]
-	inx
-endaddr1:
-	.equ	$+1
-	cpx	0x0000
-	bne	loop1
-	clra
-loop2:
-	staa	[x]
-	inx
-endaddr2:
-	.equ	$+1
-	cpx	0x0000
-	bne	loop2
-	.end
-
-;;;-----------------------------------------------------------------------------
-;;; vram.scrolldown
-;;;  Format: vram.scrolldown top=0,bottom=24
-;;;-----------------------------------------------------------------------------
-vram.scrolldown:
-	.macro	top=0,bottom=24
-posy:	.equ	0x18
-	vram.fromxy 0,top
-	dex
-	stx	[endaddr1]
-	subx.mb	32*2
-	stx	[endaddr2]
-	vram.fromxy 0,bottom
-	dex
-loop1:
-	ldaa	[x]
-	staa	[x+32*2]
-	dex
-endaddr1:
-	.equ	$+1
-	cpx	0x0000
-	bne	loop1
-	clra
-loop2:
-	staa	[x+32*2]
-	inx
-endaddr2:
-	.equ	$+1
-	cpx	0x0000
-	bne	loop2
-	.end
-
-;;;-----------------------------------------------------------------------------
 ;;; vram.refresh
 ;;;-----------------------------------------------------------------------------
 vram.refresh:
 	.macro
-	ldmw	[srcp],vram
-	ldmw	[charp],0xc100
-	ldmw	[attrp],0xc500
-loop:
-srcp:
-	.equ	$+1
-	ldx	0x0000
-	cpx	vram.end
-	beq	done
-	ldaa	[x]
-	inx
-	ldab	[x]
-	inx
-	stx	[srcp]
-charp:
-	.equ	$+1
-	ldx	0x0000
-	staa	[x]
-	inx
-	stx	[charp]
-attrp:
-	.equ	$+1
-	ldx	0x0000
-	stab	[x]
-	inx
-	stx	[attrp]
-	bra	loop
-done:
+	jsr	vram._refresh_without_margin
 	.end
 
-;;;-----------------------------------------------------------------------------
-;;; VRAM Buffer
-;;;-----------------------------------------------------------------------------
-	.wseg
-vram.work:
-	.ds	1
-vram:
-	.ds	32 * 24 * 2
-vram.end:
-
 	.include "oputil.inc"
+	.include "vramcmn.inc"
