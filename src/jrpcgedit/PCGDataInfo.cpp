@@ -6,17 +6,17 @@
 //-----------------------------------------------------------------------------
 // PCGDataInfo
 //-----------------------------------------------------------------------------
-PCGDataInfo::PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY,
+PCGDataInfo::PCGDataInfo(const String &symbol, Pattern *pPattern, const PCGStride &pcgStride,
 						 PCGColorOwner *pPCGColorOwner, bool upperCaseFlag) :
-	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY), _pPCGColorOwner(pPCGColorOwner),
+	_cntRef(1), _symbol(symbol), _pcgStride(pcgStride), _pPCGColorOwner(pPCGColorOwner),
 	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(pPattern)
 {
 }
 
-PCGDataInfo::PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY,
+PCGDataInfo::PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, const PCGStride &pcgStride,
 						 PCGColorOwner *pPCGColorOwner, bool upperCaseFlag) :
-	_cntRef(1), _symbol(symbol), _stepX(stepX), _stepY(stepY), _pPCGColorOwner(pPCGColorOwner),
+	_cntRef(1), _symbol(symbol), _pcgStride(pcgStride), _pPCGColorOwner(pPCGColorOwner),
 	_upperCaseFlag(upperCaseFlag), _dotSizeBrowser(0), _dotSizeEditor(20),
 	_dotPosX(0), _dotPosY(0), _selectedFlag(false), _pPattern(new Pattern(dotNumX, dotNumY))
 {
@@ -72,8 +72,8 @@ bool PCGDataInfo::WriteFile(FILE *fp)
 		strDB = ".DB";
 		strEND = ".END";
 	}
-	::fprintf(fp, "\t%s\t%s,%d,%d,%d,%d\n",
-			  strPCG, GetSymbol(), GetDotNumX() / 8, GetDotNumY() / 8, GetStepX(), GetStepY());
+	::fprintf(fp, "\t%s\t%s,%d,%d\n",
+			  strPCG, GetSymbol(), GetDotNumX() / 8, GetDotNumY() / 8);
 	for (int dotPosY = 0; dotPosY < GetDotNumY(); dotPosY++) {
 		String str = "b\"";
 		for (int dotPosX = 0; dotPosX < GetDotNumX(); dotPosX++) {
@@ -198,7 +198,7 @@ void PCGDataInfoOwner::NewPCGDataInfo(bool selectedFlag)
 	if (selectedFlag) {
 		for (auto pPCGDataInfo : *this) pPCGDataInfo->SetSelectedFlag(false);
 	}
-	AutoPtr<PCGDataInfo> pPCGDataInfo(new PCGDataInfo(symbol, 16, 16, 1, 32,
+	AutoPtr<PCGDataInfo> pPCGDataInfo(new PCGDataInfo(symbol, 16, 16, PCGStride(),
 													  new PCGColorOwner(), upperCaseFlag));
 	pPCGDataInfo->SetSelectedFlag(selectedFlag);
 	push_back(pPCGDataInfo.release());

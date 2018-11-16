@@ -104,6 +104,7 @@ public:
 	static const DirectiveFactory *ORG;
 	static const DirectiveFactory *PCG;
 	static const DirectiveFactory *PCGPAGE;
+	static const DirectiveFactory *PCGSTRIDE;
 	static const DirectiveFactory *RESTORE;
 	static const DirectiveFactory *SAVE;
 	static const DirectiveFactory *SCOPE;
@@ -362,7 +363,7 @@ private:
 public:
 	inline Directive_PCG() : Directive(PCG) {}
 	static bool ExtractParams(Context &context, const Expr *pExpr, String *pSymbol,
-							  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY,
+							  int *pWdChar, int *pHtChar,
 							  std::unique_ptr<PCGColorOwner> *ppPCGColorOwner, Binary &buff);
 	virtual bool OnPhaseParse(const Parser *pParser, ExprStack &exprStack, const Token *pToken);
 	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
@@ -398,6 +399,23 @@ public:
 	virtual bool OnPhaseExpandMacro(Context &context, Expr *pExpr);
 	virtual bool OnPhaseAssignSymbol(Context &context, Expr *pExpr);
 	virtual bool OnPhaseGenerate(Context &context, const Expr *pExpr, Binary *pBuffDst) const;
+	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
+							   DisasmDumper &disasmDumper, int indentLevelCode) const;
+};
+
+//-----------------------------------------------------------------------------
+// Directive_PCGSTRIDE
+//-----------------------------------------------------------------------------
+class Directive_PCGSTRIDE : public Directive {
+public:
+	class Factory : public DirectiveFactory {
+	public:
+		inline Factory() : DirectiveFactory(".PCGSTRIDE", false, true) {}
+		virtual Directive *Create() const;
+	};
+public:
+	inline Directive_PCGSTRIDE() : Directive(PCGSTRIDE) {}
+	virtual bool OnPhasePreprocess(Context &context, Expr *pExpr);
 	virtual bool OnPhaseDisasm(Context &context, const Expr *pExpr,
 							   DisasmDumper &disasmDumper, int indentLevelCode) const;
 };
