@@ -46,15 +46,14 @@ PCGPageInfo *PCGPageInfo::CreateFromExpr(Context &context, const Expr *pExpr)
 		if (!pExprChild->IsTypeDirective(Directive::PCG)) continue;
 		String symbol;
 		int wdChar, htChar;
-		int stepX, stepY;
 		std::unique_ptr<PCGColorOwner> pPCGColorOwner;
 		Binary buff;
 		if (!Directive_PCG::ExtractParams(context, pExprChild, &symbol,
-										  &wdChar, &htChar, &stepX, &stepY,
+										  &wdChar, &htChar,
 										  &pPCGColorOwner, buff)) return nullptr;
 		AutoPtr<PCGDataInfo> pPCGDataInfo(
 			new PCGDataInfo(symbol, PCGDataInfo::Pattern::CreateFromBuff(
-							wdChar, htChar, buff), stepX, stepY,
+							wdChar, htChar, buff), context.GetPCGStride(),
 							pPCGColorOwner.release(), upperCaseFlag));
 		pPCGDataInfo->SetSelectedFlag(firstFlag);
 		firstFlag = false;

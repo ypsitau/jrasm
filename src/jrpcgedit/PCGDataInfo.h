@@ -41,8 +41,7 @@ public:
 private:
 	int _cntRef;
 	String _symbol;
-	int _stepX;
-	int _stepY;
+	PCGStride _pcgStride;
 	std::unique_ptr<PCGColorOwner> _pPCGColorOwner;
 	bool _upperCaseFlag;
 	int _dotSizeBrowser;
@@ -57,16 +56,16 @@ private:
 public:
 	DeclareReferenceAccessor(PCGDataInfo);
 public:
-	PCGDataInfo(const String &symbol, Pattern *pPattern, int stepX, int stepY,
+	PCGDataInfo(const String &symbol, Pattern *pPattern, const PCGStride &pcgStride,
 				PCGColorOwner *pPCGColorOwner, bool upperCaseFlag);
-	PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, int stepX, int stepY,
+	PCGDataInfo(const String &symbol, int dotNumX, int dotNumY, const PCGStride &pcgStride,
 				PCGColorOwner *pPCGColorOwner, bool upperCaseFlag);
 protected:
 	inline ~PCGDataInfo() {};
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline int GetStepX() const { return _stepX; }
-	inline int GetStepY() const { return _stepY; }
+	inline int GetStrideX() const { return _pcgStride.strideX; }
+	inline int GetStrideY() const { return _pcgStride.strideY; }
 	inline void SetDotSizeEditor(int dotSizeEditor) { _dotSizeEditor = dotSizeEditor; }
 	inline int GetDotSizeEditor() const { return _dotSizeEditor; }
 	inline int GetDotNumX() const { return _pPattern->GetDotNumX(); }

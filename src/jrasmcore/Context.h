@@ -72,6 +72,7 @@ private:
 	ExprDictStack _exprDictStack;
 	MacroDict _macroDict;
 	AutoPtr<Expr> _pExprRoot;
+	PCGStride _pcgStride;
 	PCGPageOwner _pcgPageOwner;
 	PCGCharOwner _pcgCharsBuiltIn;
 	std::unique_ptr<ExprList> _pExprListResolved;
@@ -113,6 +114,10 @@ public:
 	inline const MacroDict &GetMacroDict() const { return _macroDict; }
 	inline bool DoesExistLocalExprDict() const { return _exprDictStack.size() > 1; }
 	inline const Expr *GetExprRoot() { return _pExprRoot.get(); }
+	inline void SetPCGStride(int strideX, int strideY) {
+		_pcgStride.strideX = strideX, _pcgStride.strideY = strideY;
+	}
+	inline const PCGStride &GetPCGStride() const { return _pcgStride; }
 	inline const PCGPageOwner &GetPCGPageOwner() const { return _pcgPageOwner; }
 	inline void AddPCGPage(PCGPage *pPCGPage) { _pcgPageOwner.push_back(pPCGPage); }
 	inline PCGPage *GetPCGPageCur() { return _pcgPageOwner.back(); }

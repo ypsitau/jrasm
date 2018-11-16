@@ -35,7 +35,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iCol = 0, iRow = 0;
 		int iBoundary = 1;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -78,7 +78,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iBoundary = 1;
 		bool firstFlag = true;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -109,7 +109,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iBoundary = 1;
 		bool firstFlag = true;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -143,7 +143,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iCol = 0, iRow = 0, iChar = 0;
 		int iBoundary = 1;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -179,7 +179,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iCol = 0, iRow = 0, iChar = 0;
 		int iBoundary = 1;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -222,7 +222,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		PCGColorOwner::iterator ppPCGColor = _pPCGColorOwner->begin();
 		PCGType pcgTypePrev = PCGTYPE_None;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -272,7 +272,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int charCount = 0;
 		PCGColorOwner::iterator ppPCGColor = _pPCGColorOwner->begin();
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -319,7 +319,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iBoundary = 1;
 		PCGType pcgTypePrev = PCGTYPE_None;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;
@@ -355,7 +355,7 @@ String PCGData::ComposeSource(bool putZeroFlag) const
 		int iBoundary = 1;
 		bool firstFlag = true;
 		for (auto pPCGChar : _pcgCharOwner) {
-			int offsetBase = iCol * _stepX + iRow * _stepY;
+			int offsetBase = iCol * _pcgStride.strideX + iRow * _pcgStride.strideY;
 			if (offsetBase >= iBoundary * 0x100) {
 				::sprintf_s(str, formatForwardX, iBoundary, iBoundary, iBoundary);
 				asmCode += str;

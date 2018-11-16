@@ -32,7 +32,7 @@
 	pcg.pcg3.eraseattr 7,0,1
 	
 	.pcgpage page1,user:0x20
-	.pcg	pcg1,3,3,1,32,1:0,2:0:2,3:0,5:0:4,6:0
+	.pcg	pcg1,3,3,1:0,2:0:2,3:0,5:0:4,6:0
 	.db	0xff,0xff,0xff
 	.db	0x01,0x02,0x03
 	.db	0xff,0xff,0xff
@@ -61,7 +61,7 @@
 	.end
 	
 	.pcgpage page2,user:0x20:0x21,cram:0x80:0x81,user:0x3e
-	.pcg	pcg2,3,3,1,32,1:0,2:0:2,3:0,5:0:4,6:0
+	.pcg	pcg2,3,3,1:0,2:0:2,3:0,5:0:4,6:0
 	.db	0xff,0xff,0xff
 	.db	0x01,0x02,0x03
 	.db	0xff,0xff,0xff
@@ -90,7 +90,8 @@
 	.end
 
 	.pcgpage page3,cram:0x80
-	.pcg	pcg3,2,2, 3,3*32
+	.pcgstride 3,3*32
+	.pcg	pcg3,2,2
 	.db	b".....######....."
 	.db	b"...##########..."
 	.db	b"..############.."

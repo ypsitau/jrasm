@@ -39,6 +39,7 @@ const DirectiveFactory *Directive::MACRO		= nullptr;
 const DirectiveFactory *Directive::ORG			= nullptr;
 const DirectiveFactory *Directive::PCG			= nullptr;
 const DirectiveFactory *Directive::PCGPAGE		= nullptr;
+const DirectiveFactory *Directive::PCGSTRIDE	= nullptr;
 const DirectiveFactory *Directive::RESTORE		= nullptr;
 const DirectiveFactory *Directive::SAVE			= nullptr;
 const DirectiveFactory *Directive::SCOPE		= nullptr;
@@ -64,6 +65,7 @@ void Directive::Initialize()
 	_directiveFactoryDict.Assign(ORG			= new Directive_ORG::Factory());
 	_directiveFactoryDict.Assign(PCG			= new Directive_PCG::Factory());
 	_directiveFactoryDict.Assign(PCGPAGE		= new Directive_PCGPAGE::Factory());
+	_directiveFactoryDict.Assign(PCGSTRIDE		= new Directive_PCGSTRIDE::Factory());
 	_directiveFactoryDict.Assign(RESTORE		= new Directive_RESTORE::Factory());
 	_directiveFactoryDict.Assign(SAVE			= new Directive_SAVE::Factory());
 	_directiveFactoryDict.Assign(SCOPE			= new Directive_SCOPE::Factory());
@@ -716,20 +718,19 @@ Directive *Directive_PCG::Factory::Create() const
 }
 
 bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *pSymbol,
-								  int *pWdChar, int *pHtChar, int *pStepX, int *pStepY,
+								  int *pWdChar, int *pHtChar,
 								  std::unique_ptr<PCGColorOwner> *ppPCGColorOwner, Binary &buff)
 {
 	std::unique_ptr<PCGColorOwner> &pPCGColorOwner = *ppPCGColorOwner;
 	pPCGColorOwner.reset(new PCGColorOwner());
 	const ExprOwner &exprOperands = pExpr->GetExprOperands();
-	const char *errMsg = "directive syntax: .PCG symbol,width,height,[[stepx,[stepy]],color,...]";
+	const char *errMsg = "directive syntax: .PCG symbol,width,height,color,...]";
 	if (exprOperands.size() < 3) {
 		ErrorLog::AddError(pExpr, errMsg);
 		return false;
 	}
 	String symbol;
 	int wdChar = 0, htChar = 0;
-	int stepX = 1, stepY = 32;
 	ExprOwner::const_iterator ppExprOperand = exprOperands.begin();
 	do {
 		Expr *pExprOperand = *ppExprOperand++;
@@ -760,34 +761,6 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 			return false;
 		}
 		htChar = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
-	} while (0);
-	if (ppExprOperand != exprOperands.end()) {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
-		ppExprOperand++;
-		if (pExprOperand.IsNull()) return false;
-		if (pExprOperand->IsTypeNull()) {
-			// nothing to do
-		} else if (!pExprOperand->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, "parameter stepx expects an integer value");
-			return false;
-		} else {
-			stepX = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
-		}
-	} while (0);
-	if (ppExprOperand != exprOperands.end()) {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
-		ppExprOperand++;
-		if (pExprOperand.IsNull()) return false;
-		if (pExprOperand->IsTypeNull()) {
-			// nothing to do
-		} else if (!pExprOperand->IsTypeInteger()) {
-			ErrorLog::AddError(pExpr, "parameter stepy expects an integer value");
-			return false;
-		} else {
-			stepY = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
-		}
 	} while (0);
 	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {
 		Expr *pExprOperand = *ppExprOperand;
@@ -853,8 +826,6 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 	*pSymbol = symbol;
 	*pWdChar = wdChar;
 	*pHtChar = htChar;
-	*pStepX = stepX;
-	*pStepY = stepY;
 	return true;
 }
 
@@ -872,11 +843,10 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 {
 	String symbol;
 	int wdChar, htChar;
-	int stepX, stepY;
 	std::unique_ptr<PCGColorOwner> pPCGColorOwner;
 	Binary buffOrg;
 	if (!ExtractParams(context, pExpr, &symbol, &wdChar, &htChar,
-					   &stepX, &stepY, &pPCGColorOwner, buffOrg)) return false;
+					   &pPCGColorOwner, buffOrg)) return false;
 	if (context.GetPCGPageCur() == nullptr) {
 		ErrorLog::AddError(pExpr, ".PCGPAGE is not declared");
 		return false;
@@ -885,7 +855,7 @@ bool Directive_PCG::OnPhasePreprocess(Context &context, Expr *pExpr)
 		ErrorLog::AddError(pExpr, "duplicated .PCG symbol '%s'", symbol.c_str());
 		return false;
 	}
-	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, stepX, stepY, pPCGColorOwner.release()));
+	_pPCGData.reset(new PCGData(symbol, wdChar, htChar, context.GetPCGStride(), pPCGColorOwner.release()));
 	context.GetPCGPageCur()->AddPCGData(_pPCGData->Reference());
 	for (int yChar = 0; yChar < htChar; yChar++) {
 		Binary::iterator pDataColOrg = buffOrg.begin() + yChar * wdChar * 8;
@@ -941,8 +911,9 @@ bool Directive_PCGPAGE::ExtractParams(const Expr *pExpr, String *pSymbol,
 	std::unique_ptr<PCGRangeOwner> &pPCGRangeOwner = *ppPCGRangeOwner;
 	pPCGRangeOwner.reset(new PCGRangeOwner());
 	for (auto pExprChild : pExpr->GetExprChildren()) {
-		if (!pExprChild->IsTypeDirective(Directive::PCG) && !pExprChild->IsTypeDirective(Directive::END)) {
-			ErrorLog::AddError(pExprChild, "only .PCG directive can be stored in .PCGPAGE");
+		if (!pExprChild->IsTypeDirective(Directive::PCG) && !pExprChild->IsTypeDirective(Directive::PCGSTRIDE) &&
+			!pExprChild->IsTypeDirective(Directive::END)) {
+			ErrorLog::AddError(pExprChild, "only .PCG and .PCGSTRIDE directive can be stored in .PCGPAGE");
 			return false;
 		}
 	}
@@ -1043,6 +1014,7 @@ bool Directive_PCGPAGE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	}
 	_pPCGPage.reset(new PCGPage(symbol, pPCGRangeOwner.release()));
 	context.AddPCGPage(_pPCGPage->Reference());
+	context.SetPCGStride(1, 32);
 	return true;
 }
 
@@ -1101,6 +1073,57 @@ bool Directive_PCGPAGE::OnPhaseDisasm(Context &context, const Expr *pExpr,
 									 (strHead + strData).c_str(), indentLevelCode + 1);
 		context.ForwardAddrOffset(static_cast<Integer>(buff.size()));
 	}
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Directive_PCGSTRIDE
+//-----------------------------------------------------------------------------
+Directive *Directive_PCGSTRIDE::Factory::Create() const
+{
+	return new Directive_PCGSTRIDE();
+}
+
+bool Directive_PCGSTRIDE::OnPhasePreprocess(Context &context, Expr *pExpr)
+{
+	const ExprOwner &exprOperands = pExpr->GetExprOperands();
+	const char *errMsg = "directive syntax: .PCGSTRIDE stridex,stridey";
+	if (exprOperands.size() != 2) {
+		ErrorLog::AddError(pExpr, errMsg);
+		return false;
+	}
+	int strideX, strideY;
+	ExprOwner::const_iterator ppExprOperand = exprOperands.begin();
+	do {
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
+		ppExprOperand++;
+		if (pExprOperand.IsNull()) return false;
+		if (!pExprOperand->IsTypeInteger()) {
+			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
+			return false;
+		}
+		strideX = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
+	} while (0);
+	do {
+		context.StartToResolve();
+		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
+		ppExprOperand++;
+		if (pExprOperand.IsNull()) return false;
+		if (!pExprOperand->IsTypeInteger()) {
+			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
+			return false;
+		}
+		strideY = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
+	} while (0);
+	context.SetPCGStride(strideX, strideY);
+	return true;
+}
+
+bool Directive_PCGSTRIDE::OnPhaseDisasm(Context &context, const Expr *pExpr,
+								   DisasmDumper &disasmDumper, int indentLevelCode) const
+{
+	// nothing to do
 	return true;
 }
 

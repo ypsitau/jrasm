@@ -16,27 +16,26 @@ class PCGData {
 private:
 	int _cntRef;
 	String _symbol;
-	size_t _wdChar;
-	size_t _htChar;
-	size_t _stepX;
-	size_t _stepY;
+	int _wdChar;
+	int _htChar;
+	PCGStride _pcgStride;
 	std::unique_ptr<PCGColorOwner> _pPCGColorOwner;
 	PCGCharOwner _pcgCharOwner;
 public:
 	DeclareReferenceAccessor(PCGData);
 public:
-	inline PCGData(const String &symbol, size_t wdChar, size_t htChar,
-				   size_t stepX, size_t stepY, PCGColorOwner *pPCGColorOwner) :
+	inline PCGData(const String &symbol, int wdChar, int htChar,
+				   const PCGStride &pcgStride, PCGColorOwner *pPCGColorOwner) :
 		_cntRef(1), _symbol(symbol), _wdChar(wdChar), _htChar(htChar),
-			_stepX(stepX), _stepY(stepY), _pPCGColorOwner(pPCGColorOwner) {}
+		_pcgStride(pcgStride), _pPCGColorOwner(pPCGColorOwner) {}
 private:
 	inline ~PCGData() {}
 public:
 	inline const char *GetSymbol() const { return _symbol.c_str(); }
-	inline size_t GetWdChar() const { return _wdChar; }
-	inline size_t GetHtChar() const { return _htChar; }
-	inline size_t GetStepX() const { return _stepX; }
-	inline size_t GetStepY() const { return _stepY; }
+	inline int GetWdChar() const { return _wdChar; }
+	inline int GetHtChar() const { return _htChar; }
+	inline int GetStrideX() const { return _pcgStride.strideX; }
+	inline int GetStrideY() const { return _pcgStride.strideY; }
 	inline void AddPCGChar(PCGChar *pPCGChar) { _pcgCharOwner.push_back(pPCGChar); }
 	Expr *ComposeExpr() const;
 private:
