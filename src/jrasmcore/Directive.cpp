@@ -741,26 +741,20 @@ bool Directive_PCG::ExtractParams(Context &context, const Expr *pExpr, String *p
 		symbol = dynamic_cast<Expr_Symbol *>(pExprOperand)->GetSymbol();
 	} while (0);
 	do {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
-		ppExprOperand++;
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
 			return false;
 		}
-		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
+		wdChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	do {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
-		ppExprOperand++;
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter height expects an integer value");
 			return false;
 		}
-		htChar = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
+		htChar = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	for ( ; ppExprOperand != exprOperands.end(); ppExprOperand++) {
 		Expr *pExprOperand = *ppExprOperand;
