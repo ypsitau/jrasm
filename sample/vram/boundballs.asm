@@ -101,7 +101,9 @@ ball_id:
 
 	.pcgpage mainpage,cram:0x80
 
-	.pcg	chkcircle2x2, 2,2, 3,36*3, 2:0
+	.pcgstride 3,108
+
+	.pcg	chkcircle2x2, 2,2, 2:0
 	.db	b".....######....."
 	.db	b"...##...#####..."
 	.db	b"..#.....######.."
@@ -151,4 +153,6 @@ rel2:
 	.include "xrnd.inc"
 	.include "jbranch.inc"
 	.include "oputil.inc"
+	//.include "vram32x24x2.inc"
+	//.include "vram32x24x3.inc"
 	.include "vram36x24x3.inc"
