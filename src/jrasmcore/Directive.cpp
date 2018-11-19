@@ -1089,26 +1089,20 @@ bool Directive_PCGSTRIDE::OnPhasePreprocess(Context &context, Expr *pExpr)
 	int strideX, strideY;
 	ExprOwner::const_iterator ppExprOperand = exprOperands.begin();
 	do {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
-		ppExprOperand++;
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
 			return false;
 		}
-		strideX = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
+		strideX = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	do {
-		context.StartToResolve();
-		AutoPtr<Expr> pExprOperand((*ppExprOperand)->Resolve(context));
-		ppExprOperand++;
-		if (pExprOperand.IsNull()) return false;
+		Expr *pExprOperand = *ppExprOperand++;
 		if (!pExprOperand->IsTypeInteger()) {
 			ErrorLog::AddError(pExpr, "parameter width expects an integer value");
 			return false;
 		}
-		strideY = dynamic_cast<Expr_Integer *>(pExprOperand.get())->GetInteger();
+		strideY = dynamic_cast<Expr_Integer *>(pExprOperand)->GetInteger();
 	} while (0);
 	context.SetPCGStride(strideX, strideY);
 	return true;
