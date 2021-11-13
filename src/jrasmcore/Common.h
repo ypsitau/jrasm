@@ -44,6 +44,9 @@
 #endif
 
 #include <algorithm>
+#include <cstdlib>
+#include <memory>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <deque>
