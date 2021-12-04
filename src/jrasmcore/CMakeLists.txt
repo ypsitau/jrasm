@@ -28,3 +28,8 @@ add_library(jrasmcore STATIC
 	Token.cpp
 	Tokenizer.cpp
 )
+
+install(TARGETS jrasmcore
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION lib
+)
