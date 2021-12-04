@@ -1,6 +1,8 @@
 #===============================================================================
 # CMakeLists for jrasm project
 #===============================================================================
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/../..)
+
 add_library(jrasmcore STATIC
 	CommandLine.cpp
 	Common.cpp

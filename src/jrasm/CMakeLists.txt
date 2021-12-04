@@ -7,6 +7,7 @@ set(JRASM_RELDIR_INC share/jrasm/inc)
 add_executable(jrasm jrasm.cpp)
 
 include_directories("..")
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/../..)
 
 target_link_libraries(jrasm jrasmcore)
 
