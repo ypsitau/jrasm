@@ -21,3 +21,5 @@ else ()
 endif ()
 
 add_subdirectory(src)
+
+include(CPack)
